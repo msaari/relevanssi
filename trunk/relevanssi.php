@@ -3,7 +3,7 @@
 Plugin Name: Relevanssi
 Plugin URI: http://www.relevanssi.com/
 Description: This plugin replaces WordPress search with a relevance-sorting search.
-Version: 3.5.8
+Version: 3.5.9
 Author: Mikko Saari
 Author URI: http://www.mikkosaari.fi/
 */
@@ -375,10 +375,10 @@ function relevanssi_sidebar() {
 <p>Do you want more features? Support Relevanssi development? Get a
 better search experience for your users?</p>
 
-<p><strong>Go Premium!</strong> Buy Relevanssi Premium. See <a href="http://www.relevanssi.com/features/?utm_source=plugin&utm_medium=link&utm_campaign=features">feature
-comparison</a> and <a href="http://www.relevanssi.com/buy-premium/?utm_source=plugin&utm_medium=link&utm_campaign=license">license prices</a>.</p>
+<p><strong>Go Premium!</strong> Buy Relevanssi Premium. See <a href="https://www.relevanssi.com/features/?utm_source=plugin&utm_medium=link&utm_campaign=features">feature
+comparison</a> and <a href="https://www.relevanssi.com/buy-premium/?utm_source=plugin&utm_medium=link&utm_campaign=license">license prices</a>.</p>
 
-<p><strong><a href="http://www.relevanssi.com/buy-premium/?utm_source=plugin&utm_medium=link&utm_campaign=license">Buy Premium now &raquo;</a></strong></p>
+<p><strong><a href="https://www.relevanssi.com/buy-premium/?utm_source=plugin&utm_medium=link&utm_campaign=license">Buy Premium now &raquo;</a></strong></p>
 
 <p>Use the coupon <strong>FREE2017</strong> to get 20% off the price (valid through 2017).</p>
 			</div>
@@ -400,6 +400,7 @@ comparison</a> and <a href="http://www.relevanssi.com/buy-premium/?utm_source=pl
 - Index and search user profile pages<br />
 - Index and search taxonomy term pages<br />
 - Import and export options<br />
+- WP CLI commands<br />
 - And more!
 </p>
 			</div>
@@ -411,7 +412,7 @@ comparison</a> and <a href="http://www.relevanssi.com/buy-premium/?utm_source=pl
 			<h3 class="hndle"><span>Relevanssi on Facebook</span></h3>
 			<div class="inside">
 			<div style="float: left; margin-right: 5px"><img src="$facebooklogo" width="45" height="43" alt="Facebook" /></div>
-			<p><a href="http://www.facebook.com/relevanssi">Check
+			<p><a href="https://www.facebook.com/relevanssi">Check
 			out the Relevanssi page on Facebook</a> for news and updates about your favourite plugin.</p>
 			</div>
 		</div>
@@ -424,7 +425,7 @@ comparison</a> and <a href="http://www.relevanssi.com/buy-premium/?utm_source=pl
 			<p>For Relevanssi support, see:</p>
 			
 			<p>- <a href="http://wordpress.org/tags/relevanssi?forum_id=10">WordPress.org forum</a><br />
-			- <a href="http://www.relevanssi.com/category/knowledge-base/?utm_source=plugin&utm_medium=link&utm_campaign=kb">Knowledge base</a></p>
+			- <a href="https://www.relevanssi.com/category/knowledge-base/?utm_source=plugin&utm_medium=link&utm_campaign=kb">Knowledge base</a></p>
 			</div>
 		</div>
 	</div>

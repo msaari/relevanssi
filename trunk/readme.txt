@@ -268,6 +268,12 @@ Each document database is full of useless words. All the little words that appea
 
 == Changelog ==
 
+= 3.5.9 =
+* Improved the way highlighting handles HTML tags, especially when highlighting on post pages.
+* The throttle limit setting was removed from the settings page for causing trouble. If you need to change it, update `relevanssi_throttle_limit` option directly.
+* Relevanssi didn't support tax_queries with `field` set to `name`. That works now.
+* Much faster way of showing the 25 most common words in the index. If you've disabled this feature because it was so slow, try enabling it - you might be surprised!
+
 = 3.5.8 =
 * Did you mean function had a XSS vulnerability, which is now removed.
 * Minimum word length wasn't applied to titles in indexing. It is now fixed. If you think this is a problem, rebuild the index.
@@ -1035,6 +1041,9 @@ Each document database is full of useless words. All the little words that appea
 * First published version.
 
 == Upgrade notice ==
+
+= 3.5.9 =
+* Improvements in highlighting and taxonomy searches.
 
 = 3.5.8 =
 * Fix for a XSS vulnerability.
