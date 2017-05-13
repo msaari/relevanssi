@@ -25,8 +25,6 @@ function relevanssi_clear_database_tables() {
 		$sql = "DROP TABLE $log_table";
 		$wpdb->query($sql);
 	}
-
-	echo '<div id="message" class="updated fade"><p>' . __("Data wiped clean, you can now delete the plugin.", "relevanssi") . '</p></div>';
 }
 
 ?>
