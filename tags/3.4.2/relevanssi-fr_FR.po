@@ -1,0 +1,1309 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Relevanssi v1.4\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-08-14 14:06+0200\n"
+"PO-Revision-Date: 2015-05-09 15:43+0100\n"
+"Last-Translator: Li-An <lian00@gmail.com>\n"
+"Language-Team: \n"
+"Language: fr_FR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;"
+"_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2\n"
+"X-Textdomain-Support: yes\n"
+"X-Generator: Poedit 1.7.5\n"
+"X-Poedit-SearchPath-0: .\n"
+
+# @ default
+#: relevanssi.php:703
+msgid "There is no excerpt because this is a protected post."
+msgstr "Il n'y a aucun extrait car ce billet est protégé."
+
+# @ relevanssi
+#: relevanssi.php:994
+msgid "Indexing complete!"
+msgstr "Indexation complète !"
+
+# @ relevanssi
+#: relevanssi.php:1183
+msgid "Relevanssi Search Options"
+msgstr "Options de recherche de Relevanssi"
+
+#: relevanssi.php:1294
+#, php-format
+msgid ""
+"<div id='message' class='update fade'><p>Term '%s' added to stopwords!</p></"
+"div>"
+msgstr ""
+"<div id='message' class='update fade'><p>Terme '%s' ajouté aux stopwords!</"
+"p></div>"
+
+#: relevanssi.php:1297
+#, php-format
+msgid ""
+"<div id='message' class='update fade'><p>Couldn't add term '%s' to stopwords!"
+"</p></div>"
+msgstr ""
+"<div id='message' class='update fade'><p>Impossible d'ajouter le terme '%s' "
+"aux stopwords!</p></div>"
+
+# @ relevanssi
+#: relevanssi.php:1306
+msgid "25 most common words in the index"
+msgstr "Les 25 mots des plus fréquents de l'index"
+
+# @ relevanssi
+#: relevanssi.php:1308
+msgid ""
+"These words are excellent stopword material. A word that appears in most of "
+"the posts in the database is quite pointless when searching. This is also an "
+"easy way to create a completely new stopword list, if one isn't available in "
+"your language. Click the icon after the word to add the word to the stopword "
+"list. The word will also be removed from the index, so rebuilding the index "
+"is not necessary."
+msgstr ""
+"Ces mots font d'excellents stopwords. Un mot qui apparait dans la plupart "
+"des billets de la base de donnée ne sert pas à grand chose pour une "
+"recherche. C'est aussi une manière simple de créer une nouvelle liste de "
+"stopwords si celle-ci n'est pas disponible dans votre langue. Cliquez "
+"l'icone après le mot pour l'ajouter dans la liste de stopwords. Le mot sera "
+"retiré de l'index aussi est-il inutile de reconstruire l'index."
+
+# @ relevanssi
+#: relevanssi.php:1331
+msgid "Add to stopwords"
+msgstr "Ajouter aux stopwords."
+
+#: relevanssi.php:1344
+msgid "25 most popular queries"
+msgstr "Les 25 requêtes les plus populaires"
+
+#: relevanssi.php:1356
+msgid "Recent queries that got 0 hits"
+msgstr "Requêtes récentes qui ont eu zéro résultat"
+
+#: relevanssi.php:1491
+msgid "Title boost:"
+msgstr "Poids du titre:"
+
+#: relevanssi.php:1492
+#, php-format
+msgid ""
+"Default: %d. 0 means titles are ignored, 1 means no boost, more than 1 gives "
+"extra value."
+msgstr ""
+"Par défaut: %d. 0 signifie que les titres sont ignorés, 1 signifie aucun "
+"poids, plus de 1 ajoute une plusvalue."
+
+#: relevanssi.php:1493
+msgid "Tag boost:"
+msgstr "Poids des mots clef:"
+
+#: relevanssi.php:1494
+#, php-format
+msgid ""
+"Default: %d. 0 means tags are ignored, 1 means no boost, more than 1 gives "
+"extra value."
+msgstr ""
+"Par défaut: %d. 0 signifie que les mots clef sont ignorés, 1 signifie aucun "
+"poids, plus de 1 ajoute une plusvalue."
+
+#: relevanssi.php:1495
+msgid "Comment boost:"
+msgstr "Poids des commentaires:"
+
+#: relevanssi.php:1496
+#, php-format
+msgid ""
+"Default: %d. 0 means comments are ignored, 1 means no boost, more than 1 "
+"gives extra value."
+msgstr ""
+"Par défaut: %d. 0 signifie que les commentaires sont ignorés, 1 signifie "
+"aucun poids, plus de 1 ajoute une plusvalue."
+
+# @ relevanssi
+#: relevanssi.php:1497
+msgid "Use search for admin:"
+msgstr "Utiliser la recherche pour l'administration:"
+
+# @ relevanssi
+#: relevanssi.php:1498
+msgid "If checked, Relevanssi will be used for searches in the admin interface"
+msgstr ""
+"Si coché, Relevanssi sera utilisé pour les recherches dans l'interface "
+"d'administration"
+
+# @ relevanssi
+#: relevanssi.php:1499
+msgid "Restrict search to these categories and tags:"
+msgstr "Restreindre la recherche à ces catégories et tags:"
+
+#: relevanssi.php:1500
+msgid ""
+"Enter a comma-separated list of category and tag IDs to restrict search to "
+"those categories or tags. You can also use <code>&lt;input type='hidden' "
+"name='cat' value='list of cats and tags' /&gt;</code> in your search form. "
+"The input field will overrun this setting."
+msgstr ""
+"Entrez une liste d'IDs de catégories et de mots clef, séparés par une "
+"virgule, pour restreindre la recherche à ces catégories ou mots clef. Vous "
+"pouvez aussi utiliser <code>&lt;input type='hidden' name='cat' value='list "
+"of cats and tags' /&gt;</code> dans votre formulaire de recherche. Ce champ "
+"de saisie sera prioritaire sur le réglage."
+
+#: relevanssi.php:1501
+msgid "Exclude these categories and tags from search:"
+msgstr "Exclure ces catégories et mots clef de la recherche:"
+
+#: relevanssi.php:1502
+msgid ""
+"Enter a comma-separated list of category and tag IDs that are excluded from "
+"search results. This only works here, you can't use the input field option "
+"(WordPress doesn't pass custom parameters there)."
+msgstr ""
+"Entrez une liste d'IDs de catégories et mots clef, séparés par une virgule, "
+"à exclure des résultats de recherche. Vous pouvez exclure des catégories "
+"avec le champ d'entrée 'cat' en utilisant des valeurs négatives."
+
+# @ relevanssi
+#: relevanssi.php:1505
+msgid "Exclude these posts/pages from search:"
+msgstr "Exclure ces billets/pages de la recherche:"
+
+# @ relevanssi
+#: relevanssi.php:1506
+msgid ""
+"Enter a comma-separated list of post/page IDs that are excluded from search "
+"results. This only works here, you can't use the input field option "
+"(WordPress doesn't pass custom parameters there)."
+msgstr ""
+"Entrez une liste d'ID de billets et de pages à exclure des résultats de "
+"recherche. Cela ne fonctionne qu'ici, vous ne pouvez pas utiliser l'option "
+"de champ d'insertion (Wordpress ne gèrera pas les paramètres personnalisés "
+"dans ce cas). "
+
+#: relevanssi.php:1507
+msgid "Index and search your posts' tags:"
+msgstr "Indexer et rechercher dans vos mots clef de billet:"
+
+#: relevanssi.php:1508
+msgid ""
+"If checked, Relevanssi will also index and search the tags of your posts. "
+"Remember to rebuild the index if you change this option!"
+msgstr ""
+"Si coché, Relevanssi indexera et recherchera aussi dans les mots clef de vos "
+"billets. N'oubliez pas de reconstruire l'index si vous changez cette option !"
+
+# @ relevanssi
+#: relevanssi.php:1509
+msgid "Index and search these comments:"
+msgstr "Indexer et rechercher ces commentaires:"
+
+# @ relevanssi
+#: relevanssi.php:1510
+msgid ""
+"Relevanssi will index and search ALL (all comments including track- &amp; "
+"pingbacks and custom comment types), NONE (no comments) or NORMAL (manually "
+"posted comments on your blog).<br />Remember to rebuild the index if you "
+"change this option!"
+msgstr ""
+"Relevanssi indexera et cherchera dans TOUT (tous les commentaires incluant "
+"track- &amp; pingbacks et types de commentaires personnalisés), AUCUN (aucun "
+"commentaire) ou NORMAL (commentaires postés manuellement sur votre blog)."
+"<br />N'oubliez pas de reconstruire l'index si vous modifiez cette option !"
+
+# @ relevanssi
+#: relevanssi.php:1511
+msgid "all"
+msgstr "tout"
+
+# @ relevanssi
+#: relevanssi.php:1512
+msgid "normal"
+msgstr "normal"
+
+# @ relevanssi
+#: relevanssi.php:1513
+msgid "none"
+msgstr "aucun"
+
+# @ relevanssi
+#: relevanssi.php:1516
+msgid "Create custom search result snippets:"
+msgstr "Créer des snippets personalisés de résultats de recherche:"
+
+# @ relevanssi
+#: relevanssi.php:1517
+msgid ""
+"If checked, Relevanssi will create excerpts that contain the search term "
+"hits. To make them work, make sure your search result template uses "
+"the_excerpt() to display post excerpts."
+msgstr ""
+"Si coché, Relevanssi créera des extraits qui contiennent les résultats de la "
+"recherche de terme. Pour que cela fonctionne, vérifiez bien que le fichier "
+"de thème de résultat de recherche utilise the_excerpt() pour afficher les "
+"extraits de billet."
+
+# @ relevanssi
+#: relevanssi.php:1518
+msgid "Length of the snippet:"
+msgstr "Longueur du snippet:"
+
+# @ relevanssi
+#: relevanssi.php:1519
+msgid "This must be an integer."
+msgstr "Ceci doit être un nombre entier."
+
+# @ relevanssi
+#: relevanssi.php:1520
+msgid "words"
+msgstr "mots"
+
+# @ relevanssi
+#: relevanssi.php:1521
+msgid "characters"
+msgstr "lettres"
+
+# @ relevanssi
+#: relevanssi.php:1522
+msgid "Keep a log of user queries:"
+msgstr "Conserver une liste des recherches des visiteurs:"
+
+#: relevanssi.php:1523
+msgid "If checked, Relevanssi will log user queries."
+msgstr ""
+"Si coché, Relevanssi conservera dans les stats les requêtes d'utilisateur"
+
+# @ relevanssi
+#: relevanssi.php:1524
+msgid "Highlight query terms in search results:"
+msgstr ""
+"Mettre en surbrillance les termes de recherche dans les résultats de "
+"recherche:"
+
+# @ relevanssi
+#: relevanssi.php:1525
+msgid "Highlighting isn't available unless you use custom snippets"
+msgstr ""
+"La mise en surbrillance n'est pas disponible tant que vous n'avez pas activé "
+"l'utilisation de snippets personnalisés."
+
+# @ relevanssi
+#: relevanssi.php:1526
+msgid "Highlight query terms in result titles too:"
+msgstr "Mettre en surbrillance les mots recherchés dans le titre également:"
+
+#: relevanssi.php:1529
+msgid "Save"
+msgstr "Sauvegarder"
+
+#: relevanssi.php:1530
+msgid "Building the index and indexing options"
+msgstr "Construction de l'index et indexation des options"
+
+#: relevanssi.php:1531
+msgid ""
+"After installing the plugin, you need to build the index. This generally "
+"needs to be done once, you don't have to re-index unless something goes "
+"wrong. Indexing is a heavy task and might take more time than your servers "
+"allow. If the indexing cannot be finished - for example you get a blank "
+"screen or something like that after indexing - you can continue indexing "
+"from where you left by clicking 'Continue indexing'. Clicking 'Build the "
+"index' will delete the old index, so you can't use that."
+msgstr ""
+"Après avoir installé le plugin, vous devez construire l'index. En général, "
+"vous n'avez à le faire qu'une fois, vous n'avez pas besoin de réindexer à "
+"moins que quelque chose ne fonctionne pas comme prévu. Indexer est une "
+"tâcher gourmande et peut demander plus de temps que celui autorisé par vos "
+"serveurs. Si l'indexation n'a pas pu se terminer - par exemple vous obtenez "
+"un écran blanc ou quelque chose du genre après indexation - vous pouvez "
+"continuez l'indexation au point où vous en étiez en cliquant 'Continuer "
+"l'indexation'. Cliquer sur 'Construire l'index' suprimera le vieil index "
+"aussi vous ne pouvez pas l'utiliser."
+
+#: relevanssi.php:1532
+msgid ""
+"So, if you build the index and don't get the 'Indexing complete' in the end, "
+"keep on clicking the 'Continue indexing' button until you do. On my blogs, I "
+"was able to index ~400 pages on one go, but had to continue indexing twice "
+"to index ~950 pages."
+msgstr ""
+"Ainsi, si vous construisez l'index et n'obtenez pas le message 'indexation "
+"complète', continuez de cliquer sur 'Continuer l'indexation' jusqu'à "
+"l'apparition du message. Sur mes blogs, j'ai réussi à indexer à peu près 400 "
+"pages en une passe mais j'ai dû continuer à indexer deux fois pour indexer à "
+"peu près 950 pages."
+
+#: relevanssi.php:1533
+msgid "Save indexing options and build the index"
+msgstr "Sauvegarder les options d'indexation et construire l'index"
+
+# @ relevanssi
+#: relevanssi.php:1534
+msgid "Continue indexing"
+msgstr "Continuer l'indexation"
+
+# @ relevanssi
+#: relevanssi.php:1535
+msgid "No highlighting"
+msgstr "Pas de mise en surbrillance"
+
+# @ relevanssi
+#: relevanssi.php:1536
+msgid "Text color"
+msgstr "Couleur du texte"
+
+# @ relevanssi
+#: relevanssi.php:1537
+msgid "Background color"
+msgstr "Couleur du fond"
+
+# @ relevanssi
+#: relevanssi.php:1538
+msgid "CSS Style"
+msgstr "Style CSS"
+
+# @ relevanssi
+#: relevanssi.php:1539
+msgid "CSS Class"
+msgstr "Classe CSS"
+
+# @ relevanssi
+#: relevanssi.php:1541
+msgid "Text color for highlights:"
+msgstr "Couleur du texte pour la surbrillance:"
+
+# @ relevanssi
+#: relevanssi.php:1542
+msgid "Background color for highlights:"
+msgstr "Couleur du fond pour la surbrillance:"
+
+# @ relevanssi
+#: relevanssi.php:1543
+msgid "CSS style for highlights:"
+msgstr "Style CSS pour la surbrillance:"
+
+# @ relevanssi
+#: relevanssi.php:1544
+msgid "CSS class for highlights:"
+msgstr "Classe CSS pour la surbrillance:"
+
+# @ relevanssi
+#: relevanssi.php:1546 relevanssi.php:1547
+msgid "Use HTML color codes (#rgb or #rrggbb)"
+msgstr "Utiliser les codes de couleurs HTML (#rgb ou #rrggbb)"
+
+# @ relevanssi
+#: relevanssi.php:1548
+msgid ""
+"You can use any CSS styling here, style will be inserted with a &lt;span&gt;"
+msgstr ""
+"Vous pouvez utiliser tout habillage CSS ici. Le style sera inséré avec un "
+"&lt;span&gt;"
+
+# @ relevanssi
+#: relevanssi.php:1549
+msgid ""
+"Name a class here, search results will be wrapped in a &lt;span&gt; with the "
+"class"
+msgstr ""
+"Nommez une classe ici. Les résultats seront encadrés dans un &lt;span&gt; "
+"avec cette classe"
+
+#: relevanssi.php:1551
+msgid "What to include in the index"
+msgstr "Quoi inclure dans l'index"
+
+#: relevanssi.php:1552
+msgid "Everything"
+msgstr "Tout"
+
+#: relevanssi.php:1553
+msgid "Just posts"
+msgstr "Juste les billets"
+
+#: relevanssi.php:1554
+msgid "Just pages"
+msgstr "Juste les pages"
+
+# @ relevanssi
+#: relevanssi.php:1556
+msgid "Custom fields to index:"
+msgstr "Champs personnalisés à indexer:"
+
+#: relevanssi.php:1557
+msgid "A comma-separated list of custom field names to include in the index."
+msgstr ""
+"Une liste séparée de noms de champs personnalisés séparés par une virgule à "
+"inclure dans l'index."
+
+# @ relevanssi
+#: relevanssi.php:1559
+msgid "Show breakdown of search hits in excerpts:"
+msgstr "Montrer la répartition des résultats de recherche dans les extraits:"
+
+# @ relevanssi
+#: relevanssi.php:1560
+msgid ""
+"Check this to show more information on where the search hits were made. "
+"Requires custom snippets to work."
+msgstr ""
+"Cochez ceci pour afficher plus d'informations sur la répartition des "
+"résultats de recherche. Nécessite l'activation des snippets personnalisés "
+"pour fonctionner."
+
+# @ relevanssi
+#: relevanssi.php:1561
+msgid "The breakdown format:"
+msgstr "Mise en forme des répartitions:"
+
+#: relevanssi.php:1562
+msgid ""
+"Use %body%, %title%, %tags%, %comments% and %score% to display the number of "
+"hits and the document weight."
+msgstr ""
+"Utilisez %body%, %title%, %tags% et %comments% et %score% pour afficher le "
+"nombre de résultats trouvés et l poids du document."
+
+# @ relevanssi
+#: relevanssi.php:1564
+msgid "When to use fuzzy matching?"
+msgstr "Quand utiliser la correspondance approximative ?"
+
+# @ relevanssi
+#: relevanssi.php:1565
+msgid "When straight search gets no hits"
+msgstr "Quand la recherche directe ne donne pas de résultat"
+
+# @ relevanssi
+#: relevanssi.php:1566
+msgid "Always"
+msgstr "Toujours"
+
+# @ relevanssi
+#: relevanssi.php:1567
+msgid "Don't use fuzzy search"
+msgstr "Ne pas utiliser l'approximation"
+
+# @ relevanssi
+#: relevanssi.php:1568
+msgid ""
+"Straight search matches just the term. Fuzzy search matches everything that "
+"begins or ends with the search term."
+msgstr ""
+"La recherche pure prend en compte juste le terme. La recherche approximative "
+"prend en compte tout ce qui commence ou finit par le terme recherché."
+
+# @ default
+#~ msgid ""
+#~ "You do not have an index! Remember to build the index (click the \"Build "
+#~ "the index\" button), otherwise searching won't work."
+#~ msgstr ""
+#~ "Vous n'avez pas d'index! N'oubliez pas de construire l'index (cliquez sur "
+#~ "le bouton \"Construire l'index\" sinon la recherche ne fonctionnera pas."
+
+# @ relevanssi
+#~ msgid "User searches"
+#~ msgstr "Recherches par les utilisateurs"
+
+# @ relevanssi
+#~ msgid "Relevanssi Premium Search Options"
+#~ msgstr "Options de recherche de Relevanssi Premium"
+
+# @ relevanssi
+#~ msgid "User Searches"
+#~ msgstr "Recherches par les utilisateurs"
+
+# @ relevanssi
+#~ msgid "Relevanssi User Searches"
+#~ msgstr "Recherches Relevanssi par les utilisateurs"
+
+# @ relevanssi
+#~ msgid ""
+#~ "<div id='message' class='updated fade'><p>Successfully added %d/%d terms "
+#~ "to stopwords!</p></div>"
+#~ msgstr ""
+#~ "<div id='message' class='updated fade'><p>Ajout réussi de %d/%d termes "
+#~ "aux stopwords!</p></div>"
+
+# @ relevanssi
+#~ msgid ""
+#~ "<div id='message' class='updated fade'><p>Term '%s' added to stopwords!</"
+#~ "p></div>"
+#~ msgstr ""
+#~ "<div id='message' class='updated fade'><p>Terme '%s' ajouté aux stopwords!"
+#~ "</p></div>"
+
+# @ relevanssi
+#~ msgid ""
+#~ "<div id='message' class='updated fade'><p>Couldn't add term '%s' to "
+#~ "stopwords!</p></div>"
+#~ msgstr ""
+#~ "<div id='message' class='updated fade'><p>Impossible d'ajouter '%s' aux "
+#~ "stopwords!</p></div>"
+
+# @ relevanssi
+#~ msgid ""
+#~ "<div id='message' class='updated fade'><p>Stopwords removed! Remember to "
+#~ "re-index.</p></div>"
+#~ msgstr ""
+#~ "<div id='message' class='updated fade'><p>Stopwords retirés ! N'oubliez "
+#~ "pas de réindexer.</p></div>"
+
+# @ relevanssi
+#~ msgid ""
+#~ "<div id='message' class='updated fade'><p>Term '%s' removed from "
+#~ "stopwords! Re-index to get it back to index.</p></div>"
+#~ msgstr ""
+#~ "<div id='message' class='updated fade'><p>Terme '%s' retiré des "
+#~ "stopwords! Réindexer pour le récupérer dans l'index.</p></div>"
+
+# @ relevanssi
+#~ msgid ""
+#~ "<div id='message' class='updated fade'><p>Couldn't remove term '%s' from "
+#~ "stopwords!</p></div>"
+#~ msgstr ""
+#~ "<div id='message' class='updated fade'><p>Impossible de retirer '%s' des "
+#~ "stopwords !</p></div>"
+
+#~ msgid "Total Searches"
+#~ msgstr "Nombre de recherches total"
+
+#~ msgid "Totals"
+#~ msgstr "Totaux"
+
+#~ msgid "Common Queries"
+#~ msgstr "Requêtes en commun"
+
+# @ relevanssi
+#~ msgid ""
+#~ "Here you can see the 20 most common user search queries, how many times "
+#~ "those \n"
+#~ "\t\tqueries were made and how many results were found for those queries."
+#~ msgstr ""
+#~ "Vous pouvez voir ici les 20 requêtes les plus courantes, combien de fois "
+#~ "ces \n"
+#~ "\\\\\t\\\\\trequêtes  ont été faites et combien de résultats ont été "
+#~ "trouvés pour ces requêtes."
+
+# @ relevanssi
+#~ msgid "Today and yesterday"
+#~ msgstr "Aujourd'hui et hier"
+
+# @ relevanssi
+#~ msgid "Last 7 days"
+#~ msgstr "Sept derniers jours"
+
+# @ relevanssi
+#~ msgid "Last 30 days"
+#~ msgstr "Trente derniers jours"
+
+# @ relevanssi
+#~ msgid "Unsuccessful Queries"
+#~ msgstr "Requêtes sans résultat"
+
+#~ msgid "Reset Logs"
+#~ msgstr "Remettre à zéro les logs"
+
+#~ msgid "To reset the logs, type \"reset\" into the box here %s and click %s"
+#~ msgstr ""
+#~ "Pour remettre à zéro les logs, tapez  \"reset\" dans le champ ici %s et "
+#~ "cliquez %s"
+
+#~ msgid "Forever"
+#~ msgstr "Pour toujours"
+
+#~ msgid "When"
+#~ msgstr "Quand"
+
+# @ relevanssi
+#~ msgid "Searches"
+#~ msgstr "Recherches"
+
+#~ msgid "Query"
+#~ msgstr "Requête"
+
+#~ msgid "Hits"
+#~ msgstr "Hits"
+
+# @ relevanssi
+#~ msgid "Basic options"
+#~ msgstr "Options basiques"
+
+#~ msgid "Weights"
+#~ msgstr "Poids"
+
+# @ relevanssi
+#~ msgid "Logs"
+#~ msgstr "Logs"
+
+# @ relevanssi
+#~ msgid "Exclusions and restrictions"
+#~ msgstr "Exclusions et restrictions"
+
+# @ relevanssi
+#~ msgid "Custom excerpts"
+#~ msgstr "Extraits personnalisés"
+
+# @ relevanssi
+#~ msgid "Highlighting search results"
+#~ msgstr "Mise en évidence des résultats de recherche"
+
+# @ relevanssi
+#~ msgid "Indexing options"
+#~ msgstr "Options d'indexation"
+
+# @ relevanssi
+#~ msgid "Synonyms"
+#~ msgstr "Synonymes"
+
+# @ relevanssi
+#~ msgid "Stopwords"
+#~ msgstr "Stopwords"
+
+#~ msgid "Import/export options"
+#~ msgstr "Import/export des options"
+
+#~ msgid "Buy Relevanssi Premium"
+#~ msgstr "Achetez Relevanssi Premium"
+
+# @ relevanssi
+#~ msgid "Quick tools"
+#~ msgstr "Outils rapides"
+
+# @ relevanssi
+#~ msgid "Save options"
+#~ msgstr "Sauvegarder les options"
+
+# @ relevanssi
+#~ msgid "Build the index"
+#~ msgstr "Construire l'index"
+
+# @ relevanssi
+#~ msgid "add"
+#~ msgstr "ajouter"
+
+# @ relevanssi
+#~ msgid "documents."
+#~ msgstr "documents."
+
+#~ msgid ""
+#~ "WARNING: You've chosen no post types to index. Nothing will be indexed. "
+#~ "<a href='#indexing'>Choose some post types to index</a>."
+#~ msgstr ""
+#~ "ATTENTION: vous n'avez choisi aucun type de billet à indexer. Rien ne "
+#~ "sera indexé.<a href='#indexing'>Choisissez les types de billet à indexer</"
+#~ "a>."
+
+# @ relevanssi
+#~ msgid ""
+#~ "Use 'Build the index' to build the index with current <a "
+#~ "href='#indexing'>indexing options</a>. If you can't finish indexing with "
+#~ "one go, use 'Continue indexing' to finish the job. You can change the "
+#~ "number of documents to add until you find the largest amount you can add "
+#~ "with one go. See 'State of the Index' below to find out how many "
+#~ "documents actually go into the index."
+#~ msgstr ""
+#~ "Utiliser 'Construire l'index' pour construire l'index avec les <a "
+#~ "href='#indexing'>options actuelles</a> d'indexation. Si vous ne pouvez "
+#~ "pas terminer l'indexation en une passe, utilisez 'Continuer l'indexation' "
+#~ "pour finir le travail. Vous pouvez modifier le nombre de documents à "
+#~ "ajouter jusqu'à ce que vous trouviez le maximum que vous pouvez ajouter "
+#~ "en une passe. Regardez 'État de l'indexation' ci-dessous pour déterminer "
+#~ "le nombre de documents actuellement pris en compte dans l'indexation."
+
+# @ relevanssi
+#~ msgid "State of the Index"
+#~ msgstr "État de l'index"
+
+# @ relevanssi
+#~ msgid "Documents in the index"
+#~ msgstr "Documents dans l'index"
+
+# @ relevanssi
+#~ msgid "Terms in the index"
+#~ msgstr "Termes dans l'index"
+
+# @ relevanssi
+#~ msgid "Highest post ID indexed"
+#~ msgstr "ID de billet le plus élevé indexé"
+
+# @ relevanssi
+#~ msgid "Default operator for the search?"
+#~ msgstr "Opérateur logique par défaut pour la recherche ?"
+
+# @ relevanssi
+#~ msgid "AND - require all terms"
+#~ msgstr "ET - nécessite tous les termes"
+
+# @ relevanssi
+#~ msgid "OR - any term present is enough"
+#~ msgstr "OU - n'importe lequel des termes présents est suffisant"
+
+# @ relevanssi
+#~ msgid ""
+#~ "If you choose AND and the search finds no matches, it will automatically "
+#~ "do an OR search."
+#~ msgstr ""
+#~ "Si vous choisissez ET et la recherche ne trouve rien, une recherche OU "
+#~ "sera lancée automatiquement."
+
+# @ relevanssi
+#~ msgid "Disable OR fallback:"
+#~ msgstr "Désactiver le passage à OU:"
+
+# @ relevanssi
+#~ msgid ""
+#~ "If you don't want Relevanssi to fall back to OR search when AND search "
+#~ "gets no hits, check this option. For most cases, leave this one unchecked."
+#~ msgstr ""
+#~ "Si vous ne désirez pas que Relevanssi ne se rabatte pas sur une recherche "
+#~ "OU quand la recherche ET ne donne aucun résultat, cochez cette option. "
+#~ "Dans la plupart des cas, laissez la décochée."
+
+# @ relevanssi
+#~ msgid "Default order for results:"
+#~ msgstr "Ordre par défaut pour les résultats:"
+
+# @ relevanssi
+#~ msgid "Relevance (highly recommended)"
+#~ msgstr "Pertinence (hautement recommandé)"
+
+# @ relevanssi
+#~ msgid "Post date"
+#~ msgstr "Date de billet"
+
+#~ msgid ""
+#~ "If you want date-based results, see the recent post bonus in the Weights "
+#~ "section."
+#~ msgstr ""
+#~ "Si vous désirez des résultats chronologiques, veuillez consulter le "
+#~ "nouveau bonus pour billet dans la section Poids."
+
+# @ relevanssi
+#~ msgid "Limit searches:"
+#~ msgstr "Limiter les recherches:"
+
+#~ msgid ""
+#~ "If this option is checked, Relevanssi will limit search results to at "
+#~ "most 500 results per term. This will improve performance, but may cause "
+#~ "some relevant documents to go unfound. However, Relevanssi tries to "
+#~ "prioritize the most relevant documents. <strong>This does not work well "
+#~ "when sorting results by date.</strong> The throttle can end up cutting "
+#~ "off recent posts to favour more relevant posts."
+#~ msgstr ""
+#~ "Si cette option est cochée, Relevanssi limitera les résultats de "
+#~ "recherche à 500 résultats par terme. Ceci améliorera les performances "
+#~ "mais peut faire en forte que certains documents pertinents ne soient pas "
+#~ "trouvés. Quoiqu'il en soit, Relevanssi essaie de classer par priorité les "
+#~ "documents les plus pertinents. <strong>Ceci ne fonctionne pas bien en "
+#~ "classant les résultats par date.</strong> Le tri peut être amené à mettre "
+#~ "de côté des billets récents pour favoriser des billets plus pertinents."
+
+#~ msgid "Limit:"
+#~ msgstr "Limite:"
+
+#~ msgid ""
+#~ "For better performance, adjust the limit to a smaller number. Adjusting "
+#~ "the limit to 100 or 200 should be safe for good results, and might bring "
+#~ "a boost in search speed. DO NOT use this feature to limit the number of "
+#~ "search results on search results pages, as that will lead to problems. "
+#~ "For adjusting the number of search results displayed, see <a "
+#~ "href='%s'>this knowledge base entry</a>."
+#~ msgstr ""
+#~ "Pour de meilleures performances, ajustez la limite à un nombre plus "
+#~ "petit. Ajuster la limite à 100 ou 200 devrait être sans danger pour de "
+#~ "bons résultats et pourrait apporter un boost dans la vitesse de "
+#~ "recherche. NE PAS utiliser cette fonction pour limiter le nombre de "
+#~ "résultats de recherche sur les pages de résultat, ce qui pourrait "
+#~ "conduire à des problèmes. Pour ajuster le nombre de résultats de "
+#~ "recherche affichés, veuillez lire <a href='%s'>cette entrée de la base de "
+#~ "connaissance</a>."
+
+# @ relevanssi
+#~ msgid ""
+#~ "These values affect the weights of the documents. These are all "
+#~ "multipliers, so 1 means no change in weight, less than 1 means less "
+#~ "weight, and more than 1 means more weight. Setting something to zero "
+#~ "makes that worthless. For example, if title weight is more than 1, words "
+#~ "in titles are more significant than words elsewhere. If title weight is "
+#~ "0, words in titles won't make any difference to the search results."
+#~ msgstr ""
+#~ "Ces valeurs affectent le poids des documents. Ce sont tous des "
+#~ "multiplicateurs, ainsi 1 signifie aucune modification du poids, moins de "
+#~ "1 signifie moins de poids et plus de 1 signifie plus de poids. Un réglage "
+#~ "proche de zéro correspond à une partie négligeable. Par exemple, si le "
+#~ "poids du titre vaut plus que 1, les mots dans le titre sont plus "
+#~ "significatifs que les mêmes mots partout ailleurs. Si le poids du titre "
+#~ "vaut 0, les mots dans le titre n'affecteront pas les résultats de "
+#~ "recherche."
+
+#~ msgid "Element"
+#~ msgstr "Élément"
+
+#~ msgid "Weight"
+#~ msgstr "Poids"
+
+# @ relevanssi
+#~ msgid "Default weight"
+#~ msgstr "Poids par défaut"
+
+# @ relevanssi
+#~ msgid "Post titles"
+#~ msgstr "Titres de billet"
+
+# @ relevanssi
+#~ msgid "Comment text"
+#~ msgstr "Text de commentaire"
+
+# @ relevanssi
+#~ msgid "WPML/Polylang compatibility"
+#~ msgstr "Compatibilité WPML/Polylang"
+
+# @ relevanssi
+#~ msgid "Limit results to current language:"
+#~ msgstr "Limiter les résultats au langage suivant:"
+
+# @ relevanssi
+#~ msgid ""
+#~ "If this option is checked, Relevanssi will only return results in the "
+#~ "current active language. Otherwise results will include posts in every "
+#~ "language."
+#~ msgstr ""
+#~ "Si cette option est cochée, Relevanssi retournera uniquement les "
+#~ "résultats dans le langage actuellement activé. Sinon, les résultats "
+#~ "inclueront les billets dans tous les langages."
+
+# @ relevanssi
+#~ msgid ""
+#~ "If checked, Relevanssi will log user queries. The log appears in 'User "
+#~ "searches' on the Dashboard admin menu."
+#~ msgstr ""
+#~ "Si coché, Relevanssi conservera dans les stats les requêtes "
+#~ "d'utilisateur. Les stats apparaissent dans 'Recherches d'utilisateur' "
+#~ "dans le menu du tableau de bord de l'administration."
+
+#~ msgid "Log the user's IP with the queries:"
+#~ msgstr "Enregistrer l'adresse IP de l'utilisateur avec ses requêtes:"
+
+# @ relevanssi
+#~ msgid "If checked, Relevanssi will log user's IP-Adress with the queries."
+#~ msgstr ""
+#~ "Si coché, Relevanssi enregistrera les adresses IP des utilisateurs avec "
+#~ "leurs requêtes."
+
+# @ relevanssi
+#~ msgid "Don't log queries from these users:"
+#~ msgstr "Ne conservez pas les statistiques de recherche de ces utilisateurs:"
+
+# @ relevanssi
+#~ msgid ""
+#~ "Comma-separated list of numeric user IDs or user login names that will "
+#~ "not be logged."
+#~ msgstr ""
+#~ "Liste d'ID d'utilisateurs ou de noms de login séparés par une virgule qui "
+#~ "ne seront pas pris en compte."
+
+# @ relevanssi
+#~ msgid ""
+#~ "If you enable logs, you can see what your users are searching for. You "
+#~ "can prevent your own searches from getting in the logs with the omit "
+#~ "feature."
+#~ msgstr ""
+#~ "Si vous activez les logs, vous pouvez voir ce que les utilisateurs "
+#~ "recherchent. Vous pouvez exclure vos propres recherches des logs avec le "
+#~ "réglage d'exemption."
+
+# @ relevanssi
+#~ msgid ""
+#~ "If you enable logs, you can see what your users are searching for. Logs "
+#~ "are also needed to use the 'Did you mean?' feature. You can prevent your "
+#~ "own searches from getting in the logs with the omit feature."
+#~ msgstr ""
+#~ "Si vous activez les logs, vous pouvez voir ce que les utilisateurs "
+#~ "recherchent. Les logs sont aussi utilisés pour la fonction 'Vous vouliez "
+#~ "dire ?'. Vous pouvez empêcher vos propres recherches d'être enregistrées "
+#~ "avec la fonction d'exception."
+
+# @ relevanssi
+#~ msgid ""
+#~ "Enter a comma-separated list of category and tag IDs to restrict search "
+#~ "to those categories or tags. You can also use <code>&lt;input "
+#~ "type='hidden' name='cats' value='list of cats and tags' /&gt;</code> in "
+#~ "your search form. The input field will \toverrun this setting."
+#~ msgstr ""
+#~ "Entrez une liste d'ID de catégories et de mots-clefs pour restreindre la "
+#~ "recherche à ces catégories et mots-clef. Vous pouvez aussi utiliser "
+#~ "<code>&lt;input type='hidden' name='cats' value='list of cats and tags' /"
+#~ "&gt;</code> dans votre formulaire de recherche. Le champ inséré sera "
+#~ "prioritaire sur ce réglage."
+
+# @ relevanssi
+#~ msgid "Exclude these categories from search:"
+#~ msgstr "Exclure ces catégories de la recherche:"
+
+# @ relevanssi
+#~ msgid ""
+#~ "Enter a comma-separated list of category IDs that are excluded from "
+#~ "search results."
+#~ msgstr ""
+#~ "Entrez une liste d'ID de catégories à exclure des résultats de recherche."
+
+# @ relevanssi
+#~ msgid "Exclude these tags from search:"
+#~ msgstr "Exclure ces mots-clef de la recherche:"
+
+# @ relevanssi
+#~ msgid ""
+#~ "Enter a comma-separated list of tag IDs that are excluded from search "
+#~ "results."
+#~ msgstr ""
+#~ "Entrez une liste d'ID de mots-clef à exclure des résultats de recherche."
+
+# @ relevanssi
+#~ msgid ""
+#~ "Enter a comma-separated list of post/page IDs that are excluded from "
+#~ "search results. This only works here, you can't use the input field "
+#~ "option (WordPress doesn't pass custom parameters there). You can also use "
+#~ "a checkbox on post/page edit pages to remove posts from index."
+#~ msgstr ""
+#~ "Entrez une liste d'ID de billets et de pages à exclure des résultats de "
+#~ "recherche. Cela ne fonctionne qu'ici, vous ne pouvez pas utiliser "
+#~ "l'option de champ d'insertion (Wordpress ne gèrera pas les paramètres "
+#~ "personnalisés dans ce cas). Vous pouvez aussi utiliser une case à cocher "
+#~ "dans les pages d'éditions des billets/pages pour retirer des billetx de "
+#~ "l'index."
+
+# @ relevanssi
+#~ msgid "Respect exclude_from_search for custom post types:"
+#~ msgstr ""
+#~ "Respecter exclude_from_search pour les types de billets personnalisés:"
+
+# @ relevanssi
+#~ msgid ""
+#~ "If checked, Relevanssi won't display posts of custom post types that have "
+#~ "'exclude_from_search' set to true. If not checked, Relevanssi will "
+#~ "display anything that is indexed."
+#~ msgstr ""
+#~ "Si coché, Relevanssi n'affichera aucun billet de types de billets "
+#~ "personnalisés pour lesquels 'exclude_from_search' a été indiqué. Si non "
+#~ "coché, Relevanssi affichera tout ce qui est indexé."
+
+# @ relevanssi
+#~ msgid "Custom excerpts/snippets"
+#~ msgstr "Personnaliser extraits/snippets"
+
+#~ msgid ""
+#~ "Note: Building custom excerpts can be slow. If you are not actually using "
+#~ "the excerpts, make sure you disable the option."
+#~ msgstr ""
+#~ "Remarque: construire les extraits personnalisés peut être lent. Si vous "
+#~ "n'utilisez pas les extraits, soyez certain de désactiver cette option."
+
+#~ msgid "Allowable tags in excerpts:"
+#~ msgstr "Mots-clefs autorisés dans les extraits:"
+
+#~ msgid ""
+#~ "List all tags you want to allow in excerpts, without any whitespace. For "
+#~ "example: '&lt;p&gt;&lt;a&gt;&lt;strong&gt;'."
+#~ msgstr ""
+#~ "Listez tous les mots-clef que vous voulez autoriser dans les extraits "
+#~ "sans aucun espace. Par exemple: '&lt;p&gt;&lt;a&gt;&lt;strong&gt;'."
+
+# @ relevanssi
+#~ msgid ""
+#~ "Use %body%, %title%, %tags% and %comments% to display the number of hits "
+#~ "(in different parts of the post), %total% for total hits, %score% to "
+#~ "display the document weight and %terms% to show how many hits each search "
+#~ "term got. No double quotes (\") allowed!"
+#~ msgstr ""
+#~ "Utilisez %body%, %title%, %tags% et %comments% pour afficher le nombre de "
+#~ "résultats trouvés (en différents endroits du billet), %total% pour le "
+#~ "nombre total de résultats affichés, %score% pour afficher le poids "
+#~ "d'importance du document et %terms% pour montrer combien de résultats "
+#~ "affichés ont obtenu chacun des termes recherché. Interdit d'utiliser des "
+#~ "guillemets (\")!"
+
+# @ relevanssi
+#~ msgid "Search hit highlighting"
+#~ msgstr "Surbrillance des résultats de recherche"
+
+# @ relevanssi
+#~ msgid "First, choose the type of highlighting used:"
+#~ msgstr "En premier, veuillez choisir le type de surbrillance utilisée:"
+
+# @ relevanssi
+#~ msgid "Highlight query terms in documents from local searches:"
+#~ msgstr ""
+#~ "Mettre en évidence les termes de la requête  dans les documents pour les "
+#~ "recherches locales:"
+
+# @ relevanssi
+#~ msgid ""
+#~ "Highlights hits when user opens the post from search results. This is "
+#~ "based on HTTP referrer, so if that's blocked, there'll be no highlights."
+#~ msgstr ""
+#~ "Surligne les mots choisis quand l'utilisateur ouvre le billet à partir "
+#~ "des résultats de recherche. La fonction est basée sur HTTP referrer "
+#~ "ainsi, en cas de blocage, il y aura pas de surlignage."
+
+# @ relevanssi
+#~ msgid "Highlight query terms in comments:"
+#~ msgstr "Surligner les termes recherchés dans les commentaires:"
+
+# @ relevanssi
+#~ msgid ""
+#~ "Highlights hits in comments when user opens the post from search results."
+#~ msgstr ""
+#~ "Surligner les résultats affichés dans les commentaires quand "
+#~ "l'utilisateur ouvre le billet à partir des résultats de recherche."
+
+# @ relevanssi
+#~ msgid "Uncheck this if you use non-ASCII characters:"
+#~ msgstr "Décochez ceci si vous utilisez des caractères non-ASCII:"
+
+# @ relevanssi
+#~ msgid ""
+#~ "If you use non-ASCII characters (like Cyrillic alphabet) and the "
+#~ "highlights don't work, uncheck this option to make highlights work."
+#~ msgstr ""
+#~ "Si vous utilisez des caractères non-ASCII (comme l'alphabet Cyrillique) "
+#~ "et que le surlignage ne fonctionne pas, décochez cette option pour faire "
+#~ "fonctionner le surlignage."
+
+# @ relevanssi
+#~ msgid "Then adjust the settings for your chosen type:"
+#~ msgstr "Ensuite ajustez les réglages du type choisi:"
+
+# @ relevanssi
+#~ msgid "Save the options"
+#~ msgstr "Sauvegarder les options"
+
+# @ relevanssi
+#~ msgid "Choose post types to index:"
+#~ msgstr "Veuillez choisir les types de billets personnalisés à indexer:"
+
+#~ msgid "Type"
+#~ msgstr "Type"
+
+#~ msgid "Index"
+#~ msgstr "Index"
+
+#~ msgid "Public?"
+#~ msgstr "Publique ?"
+
+#~ msgid "%s"
+#~ msgstr "%s"
+
+#~ msgid "yes"
+#~ msgstr "oui"
+
+# @ relevanssi
+#~ msgid "no"
+#~ msgstr "non"
+
+# @ relevanssi
+#~ msgid "Choose taxonomies to index:"
+#~ msgstr "Veuillez choisir les taxonomie  à indexer:"
+
+#~ msgid "Taxonomy"
+#~ msgstr "Taxonomie"
+
+#~ msgid ""
+#~ "If you check a taxonomy here, the terms for that taxonomy are indexed "
+#~ "with the posts. If you for example choose \"post_tag\", searching for "
+#~ "tags will find all posts that have the tag."
+#~ msgstr ""
+#~ "Si vous cochez une taxonomie ici, les termes de cette taxonomie seront "
+#~ "indexées avec les billets. Si par exemple vous choisissez \"post_tag\", "
+#~ "la recherche pour les mots-clef affichera tous les billets qui sont "
+#~ "associés au mot-clef."
+
+# @ relevanssi
+#~ msgid "Minimum word length to index"
+#~ msgstr "Longueur minimum des mots à indexer"
+
+# @ relevanssi
+#~ msgid "Words shorter than this number will not be indexed."
+#~ msgstr "Les mots plus courts que ce nombre ne seront pas indexés."
+
+# @ relevanssi
+#~ msgid "Expand shortcodes in post content:"
+#~ msgstr "Traduire les shortcodes dans le contenu des billets:"
+
+# @ relevanssi
+#~ msgid ""
+#~ "If checked, Relevanssi will expand shortcodes in post content before "
+#~ "indexing. Otherwise shortcodes will be stripped. If you use shortcodes to "
+#~ "include dynamic content, Relevanssi will not keep the index updated, the "
+#~ "index will reflect the status of the shortcode content at the moment of "
+#~ "indexing."
+#~ msgstr ""
+#~ "Si coché, Relevanssi traduira tous les shortcodes des contenu de billets "
+#~ "avec l'indexation. Dans le cas contraire, les shortcodes seront ignorés. "
+#~ "Si vous utilisez des shortcodes pour générer du contenu dynamique, "
+#~ "Relevanssi ne mettra pas l'index à jour. Ce dernier présentera le statut "
+#~ "du contenu du shortcode au moment de l'indexation."
+
+# @ relevanssi
+#~ msgid "Index and search your posts' authors:"
+#~ msgstr "Indexer et rechercher les auteurs des billets:"
+
+# @ relevanssi
+#~ msgid ""
+#~ "If checked, Relevanssi will also index and search the authors of your "
+#~ "posts. Author display name will be indexed. Remember to rebuild the index "
+#~ "if you change this option!"
+#~ msgstr ""
+#~ "Si coché, Relevanssi indexera et cherchera aussi dans les auteurs de vos "
+#~ "billets. Le nom affiché des auteurs sera indexé. N'oubliez pas de "
+#~ "reconstruire l'index si vous modifiez cette option !"
+
+# @ relevanssi
+#~ msgid "Index and search post excerpts:"
+#~ msgstr "Indexer et rechercher dans les extraits de billets:"
+
+# @ relevanssi
+#~ msgid ""
+#~ "If checked, Relevanssi will also index and search the excerpts of your "
+#~ "posts.Remember to rebuild the index if you change this option!"
+#~ msgstr ""
+#~ "Si coché, Relevanssi indexera et cherchera dans les extraits de vos "
+#~ "billets. N'oubliez pas de reconstruire l'index si vous modifiez cette "
+#~ "option !"
+
+#~ msgid ""
+#~ "A comma-separated list of custom fields to include in the index. Set to "
+#~ "'visible' to index all visible custom fields and to 'all' to index all "
+#~ "custom fields, also those starting with a '_' character."
+#~ msgstr ""
+#~ "Une liste séparée par des virgules de champs personnalisés à inclure dans "
+#~ "l'index. Utilisez 'visible' pour indexer tous les champs personnalisés "
+#~ "visibles et 'tout' pour indexer tous les champs personnalisés même ceux "
+#~ "commençant par le caractère '_' ."
+
+#~ msgid "Save indexing options, erase index and rebuild the index"
+#~ msgstr ""
+#~ "Sauvegarder les options d'indexation, supprimer puis reconstruire l'index"
+
+# @ relevanssi
+#~ msgid ""
+#~ "Add synonyms here in 'key = value' format. When searching with the OR "
+#~ "operator, any search of 'key' will be expanded to include 'value' as "
+#~ "well. Using phrases is possible. The key-value pairs work in one "
+#~ "direction only, but you can of course repeat the same pair reversed."
+#~ msgstr ""
+#~ "Ajouter les synonymes ici au format 'clef = valeur'. Lors d'une recherche "
+#~ "avec l'opérateur logique OU, toute recherche de 'clef' sera étendue pour "
+#~ "inclure aussi 'valeur'. Il est possible d'utiliser des phrases. Les "
+#~ "paires clef-valeur ne fonctionnent que dans un sens mais, évidemment, "
+#~ "vous pouvez répéter la même clef à l'envers."
+
+# @ relevanssi
+#~ msgid ""
+#~ "<p>Enter a word here to add it to the list of stopwords. The word will "
+#~ "automatically be removed from the index, so re-indexing is not necessary. "
+#~ "You can enter many words at the same time, separate words with commas.</p>"
+#~ msgstr ""
+#~ "<p>Entrez un mot ici pour l'ajouter dans la liste des stopwords. Le mot "
+#~ "sera automatiquement retiré de l'index, de cette manière il est inutile "
+#~ "de réindexer. Si vous entrez plusieurs mots d'un coup, séparez les mots "
+#~ "avec une virgule.</p>"
+
+# @ relevanssi
+#~ msgid "Stopword(s) to add: "
+#~ msgstr "Stopword(s) à ajouter: "
+
+# @ relevanssi
+#~ msgid "Add"
+#~ msgstr "Ajouter"
+
+# @ relevanssi
+#~ msgid ""
+#~ "<p>Here's a list of stopwords in the database. Click a word to remove it "
+#~ "from stopwords. Removing stopwords won't automatically return them to "
+#~ "index, so you need to re-index all posts after removing stopwords to get "
+#~ "those words back to index."
+#~ msgstr ""
+#~ "<p>Voici une liste des stopwords de la base de données. Cliquez sur un "
+#~ "mot pour le retirer des stopwords. Retirer de la liste des stopwords ne "
+#~ "les réinjectera pas automatiquement dans l'index aussi vous devez "
+#~ "réindexer tous les billet après retrait de stopwords pour les réinjecter "
+#~ "dans l'index."
+
+# @ relevanssi
+#~ msgid "Remove all stopwords"
+#~ msgstr "Retirer tous les stopwords"
+
+# @ relevanssi
+#~ msgid ""
+#~ "Here's a list of stopwords you can use to export the stopwords to another "
+#~ "blog."
+#~ msgstr ""
+#~ "<p>Voici une liste des stopwords de la base de données. Cliquez sur un "
+#~ "mot pour le retirer des stopwords. Retirer de la liste des stopwords ne "
+#~ "les réinjectera pas automatiquement dans l'index aussi vous devez "
+#~ "réindexer tous les billet après retrait de stopwords pour les réinjecter "
+#~ "dans l'index."
+
+# @ relevanssi
+#~ msgid "Data wiped clean, you can now delete the plugin."
+#~ msgstr "Données effacées, vous pouvez maintenant supprimer le plugin."
+
+# @ relevanssi
+#~ msgid "Tag weight:"
+#~ msgstr "Poids des mots-clef:"
+
+# @ relevanssi
+#~ msgid "Category weight:"
+#~ msgstr "Poids des catégories:"
+
+# @ relevanssi
+#~ msgid "Caching"
+#~ msgstr "Mise en cache"
+
+#~ msgid ""
+#~ "For better performance, adjust the limit to a smaller number. Adjusting "
+#~ "the limit to 100 - or even lower - should be safe for good results, and "
+#~ "might bring a boost in search speed."
+#~ msgstr ""
+#~ "Pour de meilleures performances, ajustez la limite à un nombre plus "
+#~ "petit. Ajuster la limite à 100 - et même en dessous - ne pose pas de "
+#~ "problèmes pour de bons résultats et est susceptible de booster la vitesse "
+#~ "de recherche."
+
+# @ relevanssi
+#~ msgid ""
+#~ "Warning: In many cases caching is not useful, and in some cases can be "
+#~ "even harmful. Do not\n"
+#~ "\tactivate cache unless you have a good reason to do so."
+#~ msgstr ""
+#~ "Attention: dans de nombreux cas, le cache n'est pas utile et dans "
+#~ "certains cas il peut même causer du tort. Ne pas\n"
+#~ "\n"
+#~ "\\\tactiver le cache à moins que vous n'ayez une bonne raison."
+
+# @ relevanssi
+#~ msgid "Enable result and excerpt caching:"
+#~ msgstr "Autoriser la mise en cache des résultats et d'extraits:"
+
+# @ relevanssi
+#~ msgid "If checked, Relevanssi will cache search results and post excerpts."
+#~ msgstr ""
+#~ "Si coché, Relevanssi mettra en cache les résultats et extraits de billets."
+
+# @ relevanssi
+#~ msgid "Cache expire (in seconds):"
+#~ msgstr "Expiration du coche (en secondes):"
+
+# @ relevanssi
+#~ msgid "86400 = day"
+#~ msgstr "86400 = jour"
+
+# @ relevanssi
+#~ msgid "Entries in the cache"
+#~ msgstr "Entrées dans le cache"

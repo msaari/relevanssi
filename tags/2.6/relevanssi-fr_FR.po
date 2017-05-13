@@ -1,0 +1,721 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Relevanssi v1.4\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2009-07-20 11:31+0200\n"
+"Last-Translator: lian <lian00@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Poedit-Language: French\n"
+"X-Poedit-Country: FRANCE\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;\n"
+"X-Poedit-Basepath: \n"
+"X-Poedit-Bookmarks: \n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Textdomain-Support: yes"
+
+#: relevanssi.php:1078
+#@ default
+msgid "There is no excerpt because this is a protected post."
+msgstr ""
+
+#: relevanssi.php:1860
+#@ relevanssi
+msgid "Relevanssi Search Options"
+msgstr "Options de recherche de Relevanssi"
+
+#: relevanssi.php:2105
+#@ relevanssi
+msgid "25 most common words in the index"
+msgstr "Les 25 mots des plus fréquents de l'index"
+
+#: relevanssi.php:2107
+#@ relevanssi
+msgid "These words are excellent stopword material. A word that appears in most of the posts in the database is quite pointless when searching. This is also an easy way to create a completely new stopword list, if one isn't available in your language. Click the icon after the word to add the word to the stopword list. The word will also be removed from the index, so rebuilding the index is not necessary."
+msgstr "Ces mots font d'excellents \\\"stopwords\\\". Un mot qui apparait dans la plupart des billets de la base de donnée ne sert pas à grand chose pour une recherche. C'est aussi une manière simple de créer une nouvelle liste de \\\"stopwords\\\" si celle-ci n'est pas disponible dans votre langue. Cliquez l'icone après le mot pour l'ajouter dans la liste de stopwords. Le mot sera retiré de l'index aussi est-il inutile de reconstruire l'index."
+
+#: relevanssi.php:2130
+#@ relevanssi
+msgid "Add to stopwords"
+msgstr "Ajouter aux stopwords."
+
+#: relevanssi.php:2411
+#@ relevanssi
+msgid "Title boost:"
+msgstr "Augmenter l'importance du titre:"
+
+#: relevanssi.php:2423
+#@ relevanssi
+msgid "Use search for admin:"
+msgstr "Utiliser la recherche pour l'administration:"
+
+#: relevanssi.php:2462
+#@ relevanssi
+msgid "Restrict search to these categories and tags:"
+msgstr "Restreindre la recherche à ces catégories et tags:"
+
+#: relevanssi.php:2480
+#@ relevanssi
+msgid "Create custom search result snippets:"
+msgstr "Créer des snippets personalisés de résultats de recherche:"
+
+#: relevanssi.php:2486
+#@ relevanssi
+msgid "Length of the snippet:"
+msgstr "Longueur du snippet:"
+
+#: relevanssi.php:2448
+#@ relevanssi
+msgid "Keep a log of user queries:"
+msgstr "Conserver une liste des recherches des visiteurs:"
+
+#: relevanssi.php:2511
+#@ relevanssi
+msgid "Highlight query terms in search results:"
+msgstr "Mettre en surbrillance les termes de recherche dans les résultats de recherche:"
+
+#: relevanssi.php:2522
+#@ relevanssi
+msgid "Highlighting isn't available unless you use custom snippets"
+msgstr "La mise en surbrillance n'est pas disponible tant que vous n'avez pas activé l'utilisation de snippets personnalisés."
+
+#: relevanssi.php:2400
+#: relevanssi.php:2651
+#@ relevanssi
+msgid "Continue indexing"
+msgstr "Continuer l'indexation"
+
+#: relevanssi.php:2513
+#@ relevanssi
+msgid "No highlighting"
+msgstr "Pas de mise en surbrillance"
+
+#: relevanssi.php:2517
+#@ relevanssi
+msgid "Text color"
+msgstr "Couleur du texte"
+
+#: relevanssi.php:2518
+#@ relevanssi
+msgid "Background color"
+msgstr "Couleur du fond"
+
+#: relevanssi.php:2519
+#@ relevanssi
+msgid "CSS Style"
+msgstr "Style CSS"
+
+#: relevanssi.php:2520
+#@ relevanssi
+msgid "CSS Class"
+msgstr "Classe CSS"
+
+#: relevanssi.php:2549
+#@ relevanssi
+msgid "Text color for highlights:"
+msgstr "Couleur du texte pour la surbrillance:"
+
+#: relevanssi.php:2555
+#@ relevanssi
+msgid "Background color for highlights:"
+msgstr "Couleur du fond pour la surbrillance:"
+
+#: relevanssi.php:2561
+#@ relevanssi
+msgid "CSS style for highlights:"
+msgstr "Style CSS pour la surbrillance:"
+
+#: relevanssi.php:2567
+#@ relevanssi
+msgid "CSS class for highlights:"
+msgstr "Classe CSS pour la surbrillance:"
+
+#: relevanssi.php:2551
+#: relevanssi.php:2557
+#@ relevanssi
+msgid "Use HTML color codes (#rgb or #rrggbb)"
+msgstr "Utiliser les codes de couleurs HTML (#rgb ou #rrggbb)"
+
+#: relevanssi.php:102
+#, php-format
+#@ default
+msgid "Relevanssi needs attention: Remember to build the index (you can do it at <a href=\"%1$s\">the settings page</a>), otherwise searching won't work."
+msgstr ""
+
+#: relevanssi.php:1539
+#@ relevanssi
+msgid "Indexing complete!"
+msgstr "Indexation complète !"
+
+#: relevanssi.php:2415
+#@ relevanssi
+msgid "Tag boost:"
+msgstr "Ajout du poids pour les tags:"
+
+#: relevanssi.php:2419
+#@ relevanssi
+msgid "Comment boost:"
+msgstr "Ajout de poids pour les commentaires:"
+
+#: relevanssi.php:2468
+#@ relevanssi
+msgid "Exclude these categories and tags from search:"
+msgstr "Exclure ces catégories et tags de la recherche:"
+
+#: relevanssi.php:2387
+#: relevanssi.php:2460
+#@ relevanssi
+msgid "Exclusions and restrictions"
+msgstr "Exclusions et restrictions"
+
+#: relevanssi.php:2474
+#@ relevanssi
+msgid "Exclude these posts/pages from search:"
+msgstr "Exclure ces billets/pages de la recherche:"
+
+#: relevanssi.php:2603
+#@ relevanssi
+msgid "Index and search your posts' tags:"
+msgstr "Indexer et rechercher les tags de vos billets:"
+
+#: relevanssi.php:2627
+#@ relevanssi
+msgid "Index and search these comments:"
+msgstr "Indexer et rechercher ces commentaires:"
+
+#: relevanssi.php:2631
+#@ relevanssi
+msgid "all"
+msgstr "tout"
+
+#: relevanssi.php:2630
+#@ relevanssi
+msgid "normal"
+msgstr "normal"
+
+#: relevanssi.php:2629
+#@ relevanssi
+msgid "none"
+msgstr "aucun"
+
+#: relevanssi.php:2478
+#@ relevanssi
+msgid "Custom excerpts/snippets"
+msgstr "Personnaliser extraits/snippets"
+
+#: relevanssi.php:2492
+#@ relevanssi
+msgid "This must be an integer."
+msgstr "Ceci doit être un nombre entier."
+
+#: relevanssi.php:2490
+#@ relevanssi
+msgid "words"
+msgstr "mots"
+
+#: relevanssi.php:2489
+#@ relevanssi
+msgid "characters"
+msgstr "lettres"
+
+#: relevanssi.php:2506
+#@ relevanssi
+msgid "Search hit highlighting"
+msgstr "Surbrillance des résultats de recherche"
+
+#: relevanssi.php:2508
+#@ relevanssi
+msgid "First, choose the type of highlighting used:"
+msgstr "En premier, veuillez choisir le type de surbrillance utilisée:"
+
+#: relevanssi.php:2545
+#@ relevanssi
+msgid "Then adjust the settings for your chosen type:"
+msgstr "Ensuite ajustez les réglages du type choisi:"
+
+#: relevanssi.php:2526
+#@ relevanssi
+msgid "Highlight query terms in result titles too:"
+msgstr "Mettre en surbrillance les mots recherchés dans le titre également:"
+
+#: relevanssi.php:2576
+#: relevanssi.php:2659
+#@ relevanssi
+msgid "Save the options"
+msgstr "Sauvegarder les options"
+
+#: relevanssi.php:2649
+#@ relevanssi
+msgid "Save indexing options and build the index"
+msgstr "Sauvegarder les options d'indexation et construire l'index"
+
+#: relevanssi.php:2580
+#@ relevanssi
+msgid "What to include in the index"
+msgstr "Ce qu'il faut inclure dans l'index"
+
+#: relevanssi.php:2582
+#@ relevanssi
+msgid "Everything"
+msgstr "Tout"
+
+#: relevanssi.php:2584
+#@ relevanssi
+msgid "Just posts"
+msgstr "Uniquement les billets"
+
+#: relevanssi.php:2585
+#@ relevanssi
+msgid "Just pages"
+msgstr "Uniquement les pages"
+
+#: relevanssi.php:2637
+#@ relevanssi
+msgid "Custom fields to index:"
+msgstr "Champs personnalisés à indexer:"
+
+#: relevanssi.php:2496
+#@ relevanssi
+msgid "Show breakdown of search hits in excerpts:"
+msgstr "Montrer la répartition des résultats de recherche dans les extraits:"
+
+#: relevanssi.php:2502
+#@ relevanssi
+msgid "The breakdown format:"
+msgstr "Mise en forme des répartitions:"
+
+#: relevanssi.php:2438
+#@ relevanssi
+msgid "When to use fuzzy matching?"
+msgstr "Quand utiliser la correspondance approximative ?"
+
+#: relevanssi.php:2440
+#@ relevanssi
+msgid "When straight search gets no hits"
+msgstr "Quand la recherche directe ne donne pas de résultat"
+
+#: relevanssi.php:2441
+#@ relevanssi
+msgid "Always"
+msgstr "Toujours"
+
+#: relevanssi.php:2442
+#@ relevanssi
+msgid "Don't use fuzzy search"
+msgstr "Ne pas utiliser l'approximation"
+
+#: relevanssi.php:325
+#@ relevanssi
+msgid "Data wiped clean, you can now delete the plugin."
+msgstr "Données effacées, vous pouvez maintenant supprimer le plugin."
+
+#: relevanssi.php:2669
+#@ relevanssi
+msgid "Remove plugin data"
+msgstr "Supprimer les données du plugin"
+
+#: relevanssi.php:2597
+#@ relevanssi
+msgid "Expand shortcodes in post content:"
+msgstr "Traduire les shortcodes dans le contenu des billets:"
+
+#: relevanssi.php:2609
+#@ relevanssi
+msgid "Index and search your posts' categories:"
+msgstr "Indexer et rechercher vos catégories de billets:"
+
+#: relevanssi.php:2591
+#@ relevanssi
+msgid "Custom post types to index"
+msgstr "Types de billets personnalisés à indexer"
+
+#: relevanssi.php:2643
+#@ relevanssi
+msgid "Custom taxonomies to index:"
+msgstr "Taxonomie personnalisée à indexer:"
+
+#: relevanssi.php:2583
+#@ relevanssi
+msgid "All public post types"
+msgstr "Tous les types de billets publics"
+
+#: relevanssi.php:2615
+#@ relevanssi
+msgid "Index and search your posts' authors:"
+msgstr "Indexer et rechercher les auteurs des billets:"
+
+#: relevanssi.php:2404
+#@ relevanssi
+msgid "State of the Index"
+msgstr "État de l'index"
+
+#: relevanssi.php:2407
+#@ relevanssi
+msgid "Highest post ID indexed"
+msgstr "ID de billet le plus élevé indexé"
+
+#: relevanssi.php:2406
+#@ relevanssi
+msgid "Documents in the index"
+msgstr "Documents dans l'index"
+
+#: relevanssi.php:2385
+#: relevanssi.php:2410
+#@ relevanssi
+msgid "Basic options"
+msgstr "Options basiques"
+
+#: relevanssi.php:2429
+#@ relevanssi
+msgid "Default operator for the search?"
+msgstr "Opérateur logique par défaut pour la recherche ?"
+
+#: relevanssi.php:2431
+#@ relevanssi
+msgid "AND - require all terms"
+msgstr "ET - nécessite tous les termes"
+
+#: relevanssi.php:2432
+#@ relevanssi
+msgid "OR - any term present is enough"
+msgstr "OU - n'importe lequel des termes présents est suffisant"
+
+#: relevanssi.php:2434
+#@ relevanssi
+msgid "If you choose AND and the search finds no matches, it will automatically do an OR search."
+msgstr "Si vous choisissez ET et la recherche ne trouve rien, une recherche OU sera lancée automatiquement."
+
+#: relevanssi.php:2454
+#@ relevanssi
+msgid "Don't log queries from these users:"
+msgstr "Ne conservez pas les statistiques de recherche de ces utilisateurs:"
+
+#: relevanssi.php:2456
+#@ relevanssi
+msgid "Comma-separated list of user ids that will not be logged."
+msgstr "Liste d'ID d'utilisateurs séparés par une virgule qui ne seront pas pris en compte."
+
+#: relevanssi.php:2391
+#: relevanssi.php:2653
+#@ relevanssi
+msgid "Synonyms"
+msgstr "Synonymes"
+
+#: relevanssi.php:2657
+#@ relevanssi
+msgid "Add synonyms here in 'key = value' format. When searching with the OR operator, any search of 'key' will be expanded to include 'value' as well. Using phrases is possible. The key-value pairs work in one direction only, but you can of course repeat the same pair reversed."
+msgstr "Ajouter les synonymes ici au format 'clef = valeur'. Lors d'une recherche avec l'opérateur logique OU, toute recherche de 'clef' sera étendue pour inclure aussi 'valeur'. Il est possible d'utiliser des phrases. Les paires clef-valeur ne fonctionnent que dans un sens mais, évidemment, vous pouvez répéter la même clef à l'envers."
+
+#: relevanssi.php:2621
+#@ relevanssi
+msgid "Index and search post excerpts:"
+msgstr "Indexer et rechercher dans les extraits de billets:"
+
+#: relevanssi.php:2532
+#@ relevanssi
+msgid "Highlight query terms in documents:"
+msgstr "Mettre en évidence les termes de la requête  dans les documents:"
+
+#: relevanssi.php:2534
+#@ relevanssi
+msgid "Highlights hits when user opens the post from search results. This is based on HTTP referrer, so if that's blocked, there'll be no highlights."
+msgstr "Surligne les mots choisis quand l'utilisateur ouvre le billet à partir des résultats de recherche. La fonction est basée sur HTTP referrer ainsi, en cas de blocage, il y aura pas de surlignage."
+
+#: relevanssi.php:1912
+#@ relevanssi
+msgid "Relevanssi User Searches"
+msgstr "Recherches Relevanssi par les utilisateurs"
+
+#: relevanssi.php:2079
+#, php-format
+#@ relevanssi
+msgid "<div id='message' class='updated fade'><p>Term '%s' added to stopwords!</p></div>"
+msgstr "<div id='message' class='updated fade'><p>Terme '%s' ajouté aux stopwords!</p></div>"
+
+#: relevanssi.php:2082
+#, php-format
+#@ relevanssi
+msgid "<div id='message' class='updated fade'><p>Couldn't add term '%s' to stopwords!</p></div>"
+msgstr "<div id='message' class='updated fade'><p>Impossible d'ajouter '%s' aux stopwords!</p></div>"
+
+#: relevanssi.php:2141
+#@ relevanssi
+msgid ""
+"Here you can see the 20 most common user search queries, how many times those \n"
+"\t\tqueries were made and how many results were found for those queries."
+msgstr ""
+"Vous pouvez voir ici les 20 requêtes les plus courantes, combien de fois ces \n"
+"\\\t\\\tqueries  ont été faites et combien de résultats ont été trouvés pour ces requêtes."
+
+#: relevanssi.php:2156
+#: relevanssi.php:2175
+#@ relevanssi
+msgid "Today and yesterday"
+msgstr "Aujourd'hui et hier"
+
+#: relevanssi.php:2161
+#: relevanssi.php:2180
+#@ relevanssi
+msgid "Last 7 days"
+msgstr "Sept derniers jours"
+
+#: relevanssi.php:2166
+#: relevanssi.php:2185
+#@ relevanssi
+msgid "Last 30 days"
+msgstr "Trente derniers jours"
+
+#: relevanssi.php:2172
+#@ relevanssi
+msgid "Unsuccessful queries"
+msgstr "Requêtes sans succès"
+
+#: relevanssi.php:2386
+#: relevanssi.php:2446
+#@ relevanssi
+msgid "Logs"
+msgstr "Logs"
+
+#: relevanssi.php:2388
+#@ relevanssi
+msgid "Custom excerpts"
+msgstr "Extraits personnalisés"
+
+#: relevanssi.php:2389
+#@ relevanssi
+msgid "Highlighting search results"
+msgstr "Mise en évidence des résultats de recherche"
+
+#: relevanssi.php:2390
+#: relevanssi.php:2578
+#@ relevanssi
+msgid "Indexing options"
+msgstr "Options d'indexation"
+
+#: relevanssi.php:2393
+#@ relevanssi
+msgid "Uninstalling"
+msgstr "Désinstaller"
+
+#: relevanssi.php:2396
+#@ relevanssi
+msgid "Quick tools"
+msgstr "Outils rapides"
+
+#: relevanssi.php:2398
+#@ relevanssi
+msgid "Save options"
+msgstr "Sauvegarder les options"
+
+#: relevanssi.php:2399
+#@ relevanssi
+msgid "Build the index"
+msgstr "Construire l'index"
+
+#: relevanssi.php:2402
+#@ relevanssi
+msgid "Use 'Build the index' to build the index with current <a href='#indexing'>indexing options</a>. If you can't finish indexing with one go, use 'Continue indexing' to finish the job. You can change the number of documents to add until you find the largest amount you can add with one go. See 'State of the Index' below to find out how many documents actually go into the index."
+msgstr "Utiliser 'Construire l'index' pour construire l'index avec les <a href='#indexing'>options actuelles</a> d'indexation. Si vous ne pouvez pas terminer l'indexation en une passe, utilisez 'Continuer l'indexation' pour finir le travail. Vous pouvez modifier le nombre de documents à ajouter jusqu'à ce que vous trouviez le maximum que vous pouvez ajouter en une passe. Regardez 'État de l'indexation' ci-dessous pour déterminer le nombre de documents actuellement pris en compte dans l'indexation."
+
+#: relevanssi.php:2413
+#, php-format
+#@ relevanssi
+msgid "Default: %d. 0 means titles are ignored, 1 means no boost, more than 1 gives extra value."
+msgstr "Par défaut: %d. 0 signifie que les titres sont ignorés, 1 signifie aucun bonus, plus de 1 rajoute de l'importance."
+
+#: relevanssi.php:2417
+#, php-format
+#@ relevanssi
+msgid "Default: %d. 0 means tags are ignored, 1 means no boost, more than 1 gives extra value."
+msgstr "Par défaut: %d. 0 signifie que les mots-clef sont ignorés, 1 signifie aucun bonus, plus de 1 ajoute de l'importance."
+
+#: relevanssi.php:2421
+#, php-format
+#@ relevanssi
+msgid "Default: %d. 0 means comments are ignored, 1 means no boost, more than 1 gives extra value."
+msgstr "Par défaut: %d. 0 signifie que les commentaires sont ignorés, 1 signifie aucun bonus, plus de 1 ajoute de l'importance."
+
+#: relevanssi.php:2425
+#@ relevanssi
+msgid "If checked, Relevanssi will be used for searches in the admin interface"
+msgstr "Si coché, Relevanssi sera utilisé pour les recherches dans l'interface d'administration"
+
+#: relevanssi.php:2444
+#@ relevanssi
+msgid "Straight search matches just the term. Fuzzy search matches everything that begins or ends with the search term."
+msgstr "La recherche pure prend en compte juste le terme. La recherche floue prend en comte tout ce qui commence ou finit par le terme recherché."
+
+#: relevanssi.php:2458
+#@ relevanssi
+msgid "If you enable logs, you can see what your users are searching for. Logs are also needed to use the 'Did you mean?' feature. You can prevent your own searches from getting in the logs with the omit feature."
+msgstr "Si vous activez les logs, vous pouvez voir ce que les utilisateurs recherchent. Les logs sont aussi utilisés pour la fonction 'Vous vouliez dire ?'. Vous pouvez empêcher vos propres recherches d'être enregistrées avec la fonction d'exception."
+
+#: relevanssi.php:2464
+#@ relevanssi
+msgid "Enter a comma-separated list of category and tag IDs to restrict search to those categories or tags. You can also use <code>&lt;input type='hidden' name='cat' value='list of cats and tags' /&gt;</code> in your search form. The input field will \toverrun this setting."
+msgstr "Entrez une liste d'ID de catégories et de mots-clefs pour restreindre la recherche à ces catégories et mots-clef. Vous pouvez aussi utiliser <code>&lt;input type='hidden' name='cat' value='liste de cats et mots-clef' /&gt;</code> dans votre formulaire de recherche. Le champ inséré sera prioritaire sur ce réglage."
+
+#: relevanssi.php:2470
+#@ relevanssi
+msgid "Enter a comma-separated list of category and tag IDs that are excluded from search results. This only works here, you can't use the input field option (WordPress doesn't pass custom parameters there)."
+msgstr "Entrez une liste d'ID de catégories et mots-clef à exclure des résultats de recherche. Cela ne fonctionne qu'ici, vous ne pouvez pas utiliser l'option de champ d'insertion (Wordpress ne gèrera pas les paramètres personnalisés dans ce cas)."
+
+#: relevanssi.php:2476
+#@ relevanssi
+msgid "Enter a comma-separated list of post/page IDs that are excluded from search results. This only works here, you can't use the input field option (WordPress doesn't pass custom parameters there)."
+msgstr "Entrez une liste d'ID de billets et de pages à exclure des résultats de recherche. Cela ne fonctionne qu'ici, vous ne pouvez pas utiliser l'option de champ d'insertion (Wordpress ne gèrera pas les paramètres personnalisés dans ce cas)."
+
+#: relevanssi.php:2482
+#@ relevanssi
+msgid "If checked, Relevanssi will create excerpts that contain the search term hits. To make them work, make sure your search result template uses the_excerpt() to display post excerpts."
+msgstr "Si coché, Relevanssi créera des extraits qui contiennent les résultats de la recherche de terme. Pour que cela fonctionne, vérifiez bien que le fichier de thème de résultat de recherche utilise the_excerpt() pour afficher les extraits de billet."
+
+#: relevanssi.php:2498
+#@ relevanssi
+msgid "Check this to show more information on where the search hits were made. Requires custom snippets to work."
+msgstr "Cochez ceci pour afficher plus d'informations sur la répartition des résultats de recherche. Nécessite l'activation des snippets personnalisés pour fonctionner."
+
+#: relevanssi.php:2504
+#, php-format
+#@ relevanssi
+msgid "Use %body%, %title%, %tags% and %comments% to display the number of hits (in different parts of the post), %total% for total hits, %score% to display the document weight and %terms% to show how many hits each search term got. No double quotes (\") allowed!"
+msgstr "Utilisez %body%, %title%, %tags% et %comments% pour afficher le nombre de résultats trouvés (en différents endroits du billet), %total% pour le nombre total de résultats affichés, %score% pour afficher le poids d'importance du document et %terms% pour montrer combien de résultats affichés ont obtenu chacun des termes recherché. Interdit d'utiliser des guillemets (\")!"
+
+#: relevanssi.php:2538
+#@ relevanssi
+msgid "Highlight query terms in comments:"
+msgstr "Surligner les termes recherchés dans les commentaires:"
+
+#: relevanssi.php:2540
+#@ relevanssi
+msgid "Highlights hits in comments when user opens the post from search results."
+msgstr "Surligner les résultats affichés dans les commentaires quand l'utilisateur ouvre le billet à partir des résultats de recherche."
+
+#: relevanssi.php:2563
+#@ relevanssi
+msgid "You can use any CSS styling here, style will be inserted with a &lt;span&gt;"
+msgstr "Vous pouvez utiliser tout habillage CSS ici. Le style sera inséré avec un &lt;span&gt;"
+
+#: relevanssi.php:2569
+#@ relevanssi
+msgid "Name a class here, search results will be wrapped in a &lt;span&gt; with the class"
+msgstr "Nommez une classe ici. Les résultats seront encadrés dans un &lt;span&gt; avec cette classe"
+
+#: relevanssi.php:2587
+#@ relevanssi
+msgid "This determines which post types are included in the index. Choosing 'everything' will include posts, pages and all custom post types. 'All public post types' includes all registered post types that don't have the 'exclude_from_search' set to true. This includes post, page, attachment, and possible custom types. 'All public types' requires at least WP 2.9, otherwise it's the same as 'everything'."
+msgstr "Ceci détermine quels types de billets sont inclus dans l'index. Choisir 'tout' inclura les billets, pages et tous les types personnalisés de billets. 'Tous les types de billets publics' inclura tous les types de billets enregistrés où le 'exclude_from_search' n'est pas activé. Ceci inclue billets, pages, fichiers attachés et types personnalisés existants. 'Tous les types de billets publics' nécessite au moins WP 2.9 sinon la fonction est la même que 'Tout'."
+
+#: relevanssi.php:2593
+#@ relevanssi
+msgid "If you don't want to index all custom post types, list here the custom post types you want to see indexed. List comma-separated post type names (as used in the database). You can also use a hidden field in the search form to restrict the search to a certain post type: <code>&lt;input type='hidden' name='post_type' value='comma-separated list of post types' /&gt;</code>. If you choose 'All public post types' or 'Everything' above, this option has no effect."
+msgstr "Si vous ne désirez pas indexer tous les types de billets personnalisés, listez ici les types de billets personnalisés que vous désirez indexer. Listez les noms des types de billets en les séparant par une virgule (tels qu'ils apparaissent dans la base de données). Vous pouvez aussi utiliser un champ caché dans le formulaire de recherche pour restreindre la recherche à un certain type de billet: <code>&lt;input type='hidden' name='post_type' value='liste de types de billets séparés par une virgule' /&gt;</code>. Si vous avez choisi 'Tous les types de billets personnalisés' ou 'Tout', cette option n'a aucun effet."
+
+#: relevanssi.php:2599
+#@ relevanssi
+msgid "If checked, Relevanssi will expand shortcodes in post content before indexing. Otherwise shortcodes will be stripped. If you use shortcodes to include dynamic content, Relevanssi will not keep the index updated, the index will reflect the status of the shortcode content at the moment of indexing."
+msgstr "Si coché, Relevanssi traduira tous les shortcodes des contenu de billets avec l'indexation. Dans le cas contraire, les shortcodes seront ignorés. Si vous utilisez des shortcodes pour générer du contenu dynamique, Relevanssi ne mettra pas l'index à jour. Ce dernier présentera le statut du contenu du shortcode au moment de l'indexation."
+
+#: relevanssi.php:2605
+#@ relevanssi
+msgid "If checked, Relevanssi will also index and search the tags of your posts. Remember to rebuild the index if you change this option!"
+msgstr "Si coché, Relevanssi indexera aussi et cherchera dans les mots-clef de vos billets. N'oubliez pas de reconstruire l'index si vous modifiez cette option !"
+
+#: relevanssi.php:2611
+#@ relevanssi
+msgid "If checked, Relevanssi will also index and search the categories of your posts. Category titles will pass through 'single_cat_title' filter. Remember to rebuild the index if you change this option!"
+msgstr "Si coché, Relevanssi indexera aussi les catégories de vos billets. Les titres de catégories passeront à travers le filtre 'single_cat_title. N'oubliez pas de reconstruire l'index si vous changez cette option !"
+
+#: relevanssi.php:2617
+#@ relevanssi
+msgid "If checked, Relevanssi will also index and search the authors of your posts. Author display name will be indexed. Remember to rebuild the index if you change this option!"
+msgstr "Si coché, Relevanssi indexera et cherchera aussi dans les auteurs de vos billets. Le nom affiché des auteurs sera indexé. N'oubliez pas de reconstruire l'index si vous modifiez cette option !"
+
+#: relevanssi.php:2623
+#@ relevanssi
+msgid "If checked, Relevanssi will also index and search the excerpts of your posts.Remember to rebuild the index if you change this option!"
+msgstr "Si coché, Relevanssi indexera et cherchera dans les extraits de vos billets. N'oubliez pas de reconstruire l'index si vous modifiez cette option !"
+
+#: relevanssi.php:2633
+#@ relevanssi
+msgid "Relevanssi will index and search ALL (all comments including track- &amp; pingbacks and custom comment types), NONE (no comments) or NORMAL (manually posted comments on your blog).<br />Remember to rebuild the index if you change this option!"
+msgstr "Relevanssi indexera et cherchera dans TOUT (tous les commentaires incluant track- &amp; pingbacks et types de commentaires personnalisés), AUCUN (aucun commentaire) ou NORMAL (commentaires postés manuellement sur votre blog).<br />N'oubliez pas de reconstruire l'index si vous modifiez cette option !"
+
+#: relevanssi.php:2639
+#@ relevanssi
+msgid "A comma-separated list of custom field names to include in the index."
+msgstr "Une liste de noms de champs personnalisés à inclure dans l'index, séparés par une virgule."
+
+#: relevanssi.php:2645
+#@ relevanssi
+msgid "A comma-separated list of custom taxonomies to include in the index."
+msgstr "Une liste de noms de taxonomies personnalisées à inclure dans l'index, séparés par une virgule."
+
+#: relevanssi.php:2665
+#@ relevanssi
+msgid "Uninstalling the plugin"
+msgstr "Désinstaller le plugin"
+
+#: relevanssi.php:2667
+#@ relevanssi
+msgid "If you want to uninstall the plugin, start by clicking the button below to wipe clean the options and tables created by the plugin, then remove it from the plugins list."
+msgstr "Si vous désirez désinstaller le plugin, commencez par cliquer sur le bouton ci-dessous pour effacer les options et tables créées par le plugin puis retirez-le de la liste de plugins."
+
+#: relevanssi.php:2093
+#, php-format
+#@ relevanssi
+msgid "<div id='message' class='updated fade'><p>Term '%s' removed from stopwords! Re-index to get it back to index.</p></div>"
+msgstr "<div id='message' class='updated fade'><p>Terme '%s' retiré des stopwords! Réindexer pour le récupérer dans l'index.</p></div>"
+
+#: relevanssi.php:2096
+#, php-format
+#@ relevanssi
+msgid "<div id='message' class='updated fade'><p>Couldn't remove term '%s' from stopwords!</p></div>"
+msgstr "<div id='message' class='updated fade'><p>Impossible de retirer '%s' des stopwords !</p></div>"
+
+#: relevanssi.php:2392
+#: relevanssi.php:2661
+#@ relevanssi
+msgid "Stopwords"
+msgstr "Stopwords"
+
+#: relevanssi.php:2400
+#@ relevanssi
+msgid "add"
+msgstr "ajouter"
+
+#: relevanssi.php:2400
+#@ relevanssi
+msgid "documents."
+msgstr "documents."
+
+#: relevanssi.php:2450
+#@ relevanssi
+msgid "If checked, Relevanssi will log user queries. The log appears in 'User searches' on the Dashboard admin menu."
+msgstr "Si coché, Relevanssi conservera dans les stats les requêtes d'utilisateur. Les stats apparaissent dans 'Recherches d'utilisateur' dans le menu du tableau de bord de l'administration."
+
+#: relevanssi.php:2682
+#@ relevanssi
+msgid "<p>Enter a word here to add it to the list of stopwords. The word will automatically be removed from the index, so re-indexing is not necessary.</p>"
+msgstr "<p>Entrez un mot pour le rajouter dans la liste des stopwords. Le mot sera automatiquement retiré de l'index, de cette manière, la réindexation n'est pas nécessaire.</p>"
+
+#: relevanssi.php:2684
+#@ relevanssi
+msgid "Stopword to add: "
+msgstr "Stopword à ajouter: "
+
+#: relevanssi.php:2685
+#@ relevanssi
+msgid "Add"
+msgstr "Ajouter"
+
+#: relevanssi.php:2688
+#@ relevanssi
+msgid "<p>Here's a list of stopwords in the database. Click a word to remove it from stopwords. Removing stopwords won't automatically return them to index, so you need to re-index all posts after removing stopwords to get those words back to index."
+msgstr "<p>Voici une liste des stopwords de la base de données. Cliquez sur un mot pour le retirer des stopwords. Retirer de la liste des stopwords ne les réinjectera pas automatiquement dans l'index aussi vous devez réindexer tous les billet après retrait de stopwords pour les réinjecter dans l'index."
+
