@@ -4,7 +4,7 @@ Donate link: https://www.relevanssi.com/buy-premium/
 Tags: search, relevance, better search
 Requires at least: 4.0
 Tested up to: 4.7.4
-Stable tag: 3.5.9
+Stable tag: 3.5.9.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -267,6 +267,9 @@ Each document database is full of useless words. All the little words that appea
 * Mohib Ebrahim for relentless bug hunting.
 
 == Changelog ==
+
+= 3.5.9.1 =
+* WP.org plugin repo didn't like 3.5.9 for some reason, hoping to have better luck with this.
 
 = 3.5.9 =
 * Improved the way highlighting handles HTML tags, especially when highlighting on post pages.
@@ -1041,6 +1044,9 @@ Each document database is full of useless words. All the little words that appea
 * First published version.
 
 == Upgrade notice ==
+
+= 3.5.9.1 =
+* Improvements in highlighting and taxonomy searches.
 
 = 3.5.9 =
 * Improvements in highlighting and taxonomy searches.

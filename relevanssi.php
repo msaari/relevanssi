@@ -3,7 +3,7 @@
 Plugin Name: Relevanssi
 Plugin URI: http://www.relevanssi.com/
 Description: This plugin replaces WordPress search with a relevance-sorting search.
-Version: 3.5.9
+Version: 3.5.9.1
 Author: Mikko Saari
 Author URI: http://www.mikkosaari.fi/
 */
@@ -370,38 +370,49 @@ function relevanssi_sidebar() {
 	<div class="metabox-holder">	
 		<div class="meta-box-sortables" style="min-height: 0">
 			<div id="relevanssi_buy" class="postbox">
-			<h3 class="hndle"><span>Buy Relevanssi Premium!</span></h3>
+EOH;
+	printf('<h3 class="hndle"><span>%s!</span></h3>', __('Buy Relevanssi Premium', 'relevanssi')); 
+	echo <<<EOH
 			<div class="inside">
-<p>Do you want more features? Support Relevanssi development? Get a
-better search experience for your users?</p>
+<p>
+EOH;
+	_e('Do you want more features? Support Relevanssi development? Get a better search experience for your users?', 'relevanssi');
+	echo "</p>";
 
-<p><strong>Go Premium!</strong> Buy Relevanssi Premium. See <a href="https://www.relevanssi.com/features/?utm_source=plugin&utm_medium=link&utm_campaign=features">feature
-comparison</a> and <a href="https://www.relevanssi.com/buy-premium/?utm_source=plugin&utm_medium=link&utm_campaign=license">license prices</a>.</p>
+	printf('<p><strong>%s</strong> ', __('Go Premium!', 'relevanssi'));
+	printf(__('Buy Relevanssi Premium. See <a href="%s">feature comparison</a> and <a href="%s">license prices</a>.', 'relevanssi'), 'https://www.relevanssi.com/features/?utm_source=plugin&utm_medium=link&utm_campaign=features', 'https://www.relevanssi.com/buy-premium/?utm_source=plugin&utm_medium=link&utm_campaign=license');
+	echo "</p>";
 
-<p><strong><a href="https://www.relevanssi.com/buy-premium/?utm_source=plugin&utm_medium=link&utm_campaign=license">Buy Premium now &raquo;</a></strong></p>
+	printf('<p><strong><a href="https://www.relevanssi.com/buy-premium/?utm_source=plugin&utm_medium=link&utm_campaign=license">%s &raquo;</a></strong></p>', __('Buy Premium now', 'relevanssi'));
 
-<p>Use the coupon <strong>FREE2017</strong> to get 20% off the price (valid through 2017).</p>
+	printf('<p>' . __('Use the coupon %s to get 20%% off the price (valid through 2017).', 'relevanssi') . '</p>', '<strong>FREE2017</strong>');
+	echo <<<EOH
 			</div>
 		</div>
 	</div>
 
 		<div class="meta-box-sortables" style="min-height: 0">
 			<div id="relevanssi_premium" class="postbox">
-			<h3 class="hndle"><span>Some Premium features</span></h3>
+EOH;
+	printf('<h3 class="hndle"><span>%s</span></h3>', __('Some Premium features', 'relevanssi'));
+	echo <<<EOH
 			<div class="inside">
-<p>With Relevanssi Premium, you would have more options:</p>
+EOH;
+	printf('<p>%s</p>', __('With Relevanssi Premium, you would have more options:', 'relevanssi'));
 
-<p>- Internal link anchors are search terms for the target posts, if you wish<br />
-- Hiding Relevanssi branding from the User Searches page on a client installation<br />
-- Adjust weights separately for each post type and taxonomy<br />
-- Give extra weight to recent posts<br />
-- Make Relevanssi understand thousand separators to handle big numbers better<br />
-- Index and search any columns in the wp_posts database<br />
-- Index and search user profile pages<br />
-- Index and search taxonomy term pages<br />
-- Import and export options<br />
-- WP CLI commands<br />
-- And more!
+	printf('– %s<br />', __('Internal link anchors are search terms for the target posts, if you wish', 'relevanssi'));
+	printf('– %s<br />', __('Hiding Relevanssi branding from the User Searches page on a client installation', 'relevanssi'));
+	printf('– %s<br />', __('Adjust weights separately for each post type and taxonomy', 'relevanssi'));
+	printf('– %s<br />', __('Give extra weight to recent posts', 'relevanssi'));
+	printf('– %s<br />', __('Make Relevanssi understand thousand separators to handle big numbers better', 'relevanssi'));
+	printf('– %s<br />', __('Index and search any columns in the wp_posts database', 'relevanssi'));
+	printf('– %s<br />', __('Index and search user profile pages', 'relevanssi'));
+	printf('– %s<br />', __('Index and search taxonomy term pages', 'relevanssi'));
+	printf('– %s<br />', __('Import and export options', 'relevanssi'));
+	printf('– %s<br />', __('WP CLI commands', 'relevanssi'));
+	printf('– %s<br />', __('And more!', 'relevanssi'));
+
+	echo <<<EOH
 </p>
 			</div>
 		</div>
@@ -409,23 +420,27 @@ comparison</a> and <a href="https://www.relevanssi.com/buy-premium/?utm_source=p
 		
 		<div class="meta-box-sortables" style="min-height: 0">
 			<div id="relevanssi_facebook" class="postbox">
-			<h3 class="hndle"><span>Relevanssi on Facebook</span></h3>
+EOH;
+	printf('<h3 class="hndle"><span>%s</span></h3>', __('Relevanssi on Facebook', 'relevanssi'));
+	echo <<<EOH
 			<div class="inside">
 			<div style="float: left; margin-right: 5px"><img src="$facebooklogo" width="45" height="43" alt="Facebook" /></div>
-			<p><a href="https://www.facebook.com/relevanssi">Check
-			out the Relevanssi page on Facebook</a> for news and updates about your favourite plugin.</p>
+EOH;
+	printf('<p>' . __('<a href="%s">Check out the Relevanssi page on Facebook</a> for news and updates about Relevanssi.', 'relevanssi') . '</p>', 'https://www.facebook.com/relevanssi');	
+	echo <<<EOH
 			</div>
 		</div>
 	</div>
 
 		<div class="meta-box-sortables" style="min-height: 0">
 			<div id="relevanssi_help" class="postbox">
-			<h3 class="hndle"><span>Help and support</span></h3>
-			<div class="inside">
-			<p>For Relevanssi support, see:</p>
-			
-			<p>- <a href="http://wordpress.org/tags/relevanssi?forum_id=10">WordPress.org forum</a><br />
-			- <a href="https://www.relevanssi.com/category/knowledge-base/?utm_source=plugin&utm_medium=link&utm_campaign=kb">Knowledge base</a></p>
+EOH;
+	printf('<h3 class="hndle"><span>%s</span></h3>', __('Help and support', 'relevanssi'));
+	echo '<div class="inside">';
+	printf('<p>%s</p>', __('For Relevanssi support, see:', 'relevanssi'));
+	printf('<p>– <a href="http://wordpress.org/tags/relevanssi?forum_id=10">%s</a><br />', __('WordPress.org forum', 'relevanssi'));
+	printf('– <a href="https://www.relevanssi.com/category/knowledge-base/?utm_source=plugin&utm_medium=link&utm_campaign=kb">%s</a></p>', __('Knowledge base', 'relevanssi'));
+	echo <<<EOH
 			</div>
 		</div>
 	</div>
