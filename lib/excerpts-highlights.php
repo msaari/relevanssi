@@ -77,7 +77,7 @@ function relevanssi_do_excerpt($t_post, $query) {
 
 	$highlight = get_option('relevanssi_highlight');
 	if ("none" != $highlight) {
-		if ( !is_admin() || ( defined( 'DOING_AJAX' ) || DOING_AJAX ) ) {
+		if ( !is_admin() || ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
 			$query = relevanssi_add_synonyms($query);
 			$excerpt = relevanssi_highlight_terms($excerpt, $query);
 		}
