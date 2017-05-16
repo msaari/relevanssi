@@ -28,7 +28,7 @@ Author URI: http://www.mikkosaari.fi/
 
 // For debugging purposes
 //error_reporting(E_ALL);
-//ini_set("display_errors", 1); 
+//ini_set("display_errors", 1);
 //define('WP-DEBUG', true);
 global $wpdb;
 //$wpdb->show_errors();
@@ -60,9 +60,9 @@ require_once('lib/common.php');
 
 function relevanssi_didyoumean($query, $pre, $post, $n = 5, $echo = true) {
 	global $wpdb, $relevanssi_variables, $wp_query;
-	
-	$total_results = $wp_query->found_posts;	
-	
+
+	$total_results = $wp_query->found_posts;
+
 	if ($total_results > $n) return;
 
 	$q = "SELECT query, count(query) as c, AVG(hits) as a FROM " . $relevanssi_variables['log_table'] . " WHERE hits > 1 GROUP BY query ORDER BY count(query) DESC";
@@ -72,11 +72,11 @@ function relevanssi_didyoumean($query, $pre, $post, $n = 5, $echo = true) {
 
 	$distance = -1;
 	$closest = "";
-	
+
 	foreach ($data as $row) {
 		if ($row->c < 2) break;
 		$lev = levenshtein($query, $row->query);
-		
+
 		if ($lev < $distance || $distance < 0) {
 			if ($row->a > 0) {
 				$distance = $lev;
@@ -85,7 +85,7 @@ function relevanssi_didyoumean($query, $pre, $post, $n = 5, $echo = true) {
 			}
 		}
 	}
-	
+
 	$result = null;
 	if ($distance > 0) {
  		$url = get_bloginfo('url');
@@ -98,14 +98,18 @@ function relevanssi_didyoumean($query, $pre, $post, $n = 5, $echo = true) {
 		$result = apply_filters('relevanssi_didyoumean_suggestion', "$pre<a href='$url'>$closest</a>$post");
 		if ($echo) echo $result;
  	}
- 
+
  	return $result;
 }
 
 function relevanssi_check_old_data() {
 	if (function_exists('get_current_screen')) {
 		$screen = get_current_screen();
-		if ($screen->base != 'settings_page_relevanssi-premium/relevanssi') return;
+		if ($screen->base != 'settings_page_relevanssi/relevanssi') return;
+	}
+	else {
+		// Can't tell if we're on Relevanssi settings page, so we're not.
+		return;
 	}
 
 	if (is_admin()) {
@@ -122,8 +126,8 @@ function relevanssi_check_old_data() {
 			delete_option('relevanssi_enable_cache');
 			delete_option('relevanssi_cache_seconds');
 			wp_clear_scheduled_hook('relevanssi_truncate_cache');
-		}	
-	
+		}
+
 		// Version 3.1.4 combined taxonomy indexing options
 		$inctags = get_option('relevanssi_include_tags', 'nothing');
 		if ($inctags == 'on') {
@@ -153,7 +157,7 @@ function relevanssi_check_old_data() {
 			update_option('relevanssi_index_taxonomies_list', $taxonomies);
 			delete_option('relevanssi_custom_taxonomies');
 		}
-		
+
 		$limit = get_option('relevanssi_throttle_limit');
 		if (empty($limit)) update_option('relevanssi_throttle_limit', 500);
 
@@ -175,14 +179,14 @@ function relevanssi_check_old_data() {
 			delete_option('relevanssi_tag_boost');
 			update_option('relevanssi_post_type_weights', $post_type_weights);
 		}
-	
+
 		$index_type = get_option('relevanssi_index_type', 'nothing');
 		if ($index_type != 'nothing') {
 			// Delete unused options from versions < 3
 			$post_types = get_option('relevanssi_index_post_types');
-			
+
 			if (!is_array($post_types)) $post_types = array();
-			
+
 			switch ($index_type) {
 				case "posts":
 					array_push($post_types, 'post');
@@ -195,21 +199,21 @@ function relevanssi_check_old_data() {
 						$pt_1 = get_post_types(array('exclude_from_search' => '0'));
 						$pt_2 = get_post_types(array('exclude_from_search' => false));
 						foreach (array_merge($pt_1, $pt_2) as $type) {
-							array_push($post_types, $type);				
+							array_push($post_types, $type);
 						}
 					}
 					break;
 				case "both": 								// really should be "everything"
 					$pt = get_post_types();
 					foreach ($pt as $type) {
-						array_push($post_types, $type);				
+						array_push($post_types, $type);
 					}
 					break;
 			}
-			
+
 			$attachments = get_option('relevanssi_index_attachments');
 			if ('on' == $attachments) array_push($post_types, 'attachment');
-			
+
 			$custom_types = get_option('relevanssi_custom_types');
 			$custom_types = explode(',', $custom_types);
 			if (is_array($custom_types)) {
@@ -220,9 +224,9 @@ function relevanssi_check_old_data() {
 					}
 				}
 			}
-			
+
 			update_option('relevanssi_index_post_types', $post_types);
-			
+
 			delete_option('relevanssi_index_type');
 			delete_option('relevanssi_index_attachments');
 			delete_option('relevanssi_custom_types');
@@ -232,7 +236,7 @@ function relevanssi_check_old_data() {
 
 function _relevanssi_install() {
 	global $relevanssi_variables;
-	
+
 	add_option('relevanssi_title_boost', $relevanssi_variables['title_boost_default']);
 	add_option('relevanssi_comment_boost', $relevanssi_variables['comment_boost_default']);
 	add_option('relevanssi_admin_search', 'off');
@@ -252,7 +256,7 @@ function _relevanssi_install() {
 	add_option('relevanssi_extag', '0');
 	add_option('relevanssi_index_fields', '');
 	add_option('relevanssi_exclude_posts', ''); 		//added by OdditY
-	add_option('relevanssi_hilite_title', ''); 			//added by OdditY	
+	add_option('relevanssi_hilite_title', ''); 			//added by OdditY
 	add_option('relevanssi_highlight_docs', 'off');
 	add_option('relevanssi_highlight_comments', 'off');
 	add_option('relevanssi_index_comments', 'none');	//added by OdditY
@@ -280,7 +284,7 @@ function _relevanssi_install() {
 	add_option('relevanssi_throttle_limit', '500');
 	add_option('relevanssi_index_post_types', $relevanssi_variables['post_type_index_defaults']);
 	add_option('relevanssi_index_taxonomies_list', array());
-	
+
 	relevanssi_create_database_tables($relevanssi_variables['database_version']);
 }
 
@@ -291,7 +295,7 @@ if (function_exists('register_uninstall_hook')) {
 
 function relevanssi_get_post($id) {
 	global $relevanssi_post_array;
-	
+
 	if (isset($relevanssi_post_array[$id])) {
 		$post = $relevanssi_post_array[$id];
 	}
@@ -303,7 +307,7 @@ function relevanssi_get_post($id) {
 
 function relevanssi_remove_doc($id) {
 	global $wpdb, $relevanssi_variables;
-	
+
 	$D = get_option( 'relevanssi_doc_count');
 
  	$q = "DELETE FROM " . $relevanssi_variables['relevanssi_table'] . " WHERE doc=$id";
@@ -318,7 +322,7 @@ function relevanssi_remove_doc($id) {
 /*****
  * Interface functions
  */
- 
+
 function relevanssi_form_tag_weight($post_type_weights) {
 	$label = __("Tag weight:", 'relevanssi');
 	$value = $post_type_weights['post_tag'];
@@ -326,7 +330,7 @@ function relevanssi_form_tag_weight($post_type_weights) {
 	echo <<<EOH
 	<tr>
 		<td>
-			$label 
+			$label
 		</td>
 		<td>
 			<input type='text' name='relevanssi_weight_post_tag' id='relevanssi_weight_post_tag' size='4' value='$value' />
@@ -341,7 +345,7 @@ EOH;
 	echo <<<EOH
 	<tr>
 		<td>
-			$label 
+			$label
 		</td>
 		<td>
 			<input type='text' id='relevanssi_weight_category' name='relevanssi_weight_category' size='4' value='$value' />
@@ -369,11 +373,11 @@ function relevanssi_sidebar() {
 
 	echo <<<EOH
 <div class="postbox-container" style="width:20%; margin-top: 35px; margin-left: 15px;">
-	<div class="metabox-holder">	
+	<div class="metabox-holder">
 		<div class="meta-box-sortables" style="min-height: 0">
 			<div id="relevanssi_buy" class="postbox">
 EOH;
-	printf('<h3 class="hndle"><span>%s!</span></h3>', __('Buy Relevanssi Premium', 'relevanssi')); 
+	printf('<h3 class="hndle"><span>%s!</span></h3>', __('Buy Relevanssi Premium', 'relevanssi'));
 	echo <<<EOH
 			<div class="inside">
 <p>
@@ -419,7 +423,7 @@ EOH;
 			</div>
 		</div>
 	</div>
-		
+
 		<div class="meta-box-sortables" style="min-height: 0">
 			<div id="relevanssi_facebook" class="postbox">
 EOH;
@@ -428,7 +432,7 @@ EOH;
 			<div class="inside">
 			<div style="float: left; margin-right: 5px"><img src="$facebooklogo" width="45" height="43" alt="Facebook" /></div>
 EOH;
-	printf('<p>' . __('<a href="%s">Check out the Relevanssi page on Facebook</a> for news and updates about Relevanssi.', 'relevanssi') . '</p>', 'https://www.facebook.com/relevanssi');	
+	printf('<p>' . __('<a href="%s">Check out the Relevanssi page on Facebook</a> for news and updates about Relevanssi.', 'relevanssi') . '</p>', 'https://www.facebook.com/relevanssi');
 	echo <<<EOH
 			</div>
 		</div>
@@ -446,7 +450,7 @@ EOH;
 			</div>
 		</div>
 	</div>
-	
+
 </div>
 </div>
 EOH;
