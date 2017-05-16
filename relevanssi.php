@@ -103,8 +103,10 @@ function relevanssi_didyoumean($query, $pre, $post, $n = 5, $echo = true) {
 }
 
 function relevanssi_check_old_data() {
-	$screen = get_current_screen();
-	if ($screen->base != 'settings_page_relevanssi-premium/relevanssi') return;
+	if (function_exists('get_current_screen')) {
+		$screen = get_current_screen();
+		if ($screen->base != 'settings_page_relevanssi-premium/relevanssi') return;
+	}
 
 	if (is_admin()) {
 		// Version 3.3 removes the cache feature
