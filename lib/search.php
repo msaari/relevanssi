@@ -1238,7 +1238,7 @@ function relevanssi_do_query(&$query) {
 			$operator = strtoupper($operator);	// just in case
 		}
 		if ($operator != "OR" && $operator != "AND") $operator = get_option("relevanssi_implicit_operator");
-		$query->set("operator", $operator);
+		$query->query_vars["operator"] = $operator;
 
 		isset($query->query_vars['orderby']) ? $orderby = $query->query_vars['orderby'] : $orderby = null;
 		isset($query->query_vars['order']) ? $order = $query->query_vars['order'] : $order = null;
