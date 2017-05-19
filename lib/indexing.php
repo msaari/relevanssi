@@ -117,16 +117,16 @@ function relevanssi_build_index($extend = false, $verbose = true, $post_limit = 
 	do_action('relevanssi_pre_indexing_query');
 	$content = $wpdb->get_results($q);
 
-	if ( defined( 'WP_CLI' ) && WP_CLI ) $progress = \WP_CLI\Utils\make_progress_bar( 'Indexing posts', count($content) );
+	if ( defined( 'WP_CLI' ) && WP_CLI && function_exists('relevanssi_generate_progress_bar') ) $progress = relevanssi_generate_progress_bar( 'Indexing posts', count($content) );
 	foreach ($content as $post) {
 		$result = relevanssi_index_doc($post->ID, false, $custom_fields, true);
 		if (is_numeric($result) && $result > 0) $n++;
 		// n calculates the number of posts indexed
 		// $bypassglobalpost set to true, because at this point global $post should be NULL, but in some cases it is not
 
-		if ( defined( 'WP_CLI' ) && WP_CLI ) $progress->tick();
+		if ( defined( 'WP_CLI' ) && WP_CLI && $progress ) $progress->tick();
 	}
-	if ( defined( 'WP_CLI' ) && WP_CLI ) $progress->finish();
+	if ( defined( 'WP_CLI' ) && WP_CLI && $progress ) $progress->finish();
 
 	$wpdb->query("ANALYZE TABLE $relevanssi_table");
 	// To prevent empty indices
