@@ -3,8 +3,8 @@ Contributors: msaari
 Donate link: https://www.relevanssi.com/buy-premium/
 Tags: search, relevance, better search
 Requires at least: 4.0
-Tested up to: 4.7.4
-Stable tag: 3.5.9.1
+Tested up to: 4.7.5
+Stable tag: 3.5.10
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -267,6 +267,12 @@ Each document database is full of useless words. All the little words that appea
 * Mohib Ebrahim for relentless bug hunting.
 
 == Changelog ==
+
+= 3.5.10 =
+* Some users got a fatal parse error. That shouldn't happen anymore.
+* FacetWP users ran into trouble, as `relevanssi_do_query()` started to explicitly expect a WP_Query object in version 1.15.0. That expectation is removed; it's still highly recommended for future compatibility that you use WP_Query objects.
+* Small bug fix: `get_current_screen()` is now only used when it's available to avoid occasional fatal errors.
+* Error messages from `DOING_AJAX` being undefined should be removed.
 
 = 3.5.9.1 =
 * WP.org plugin repo didn't like 3.5.9 for some reason, hoping to have better luck with this.
@@ -1044,6 +1050,9 @@ Each document database is full of useless words. All the little words that appea
 * First published version.
 
 == Upgrade notice ==
+
+= 3.5.10 =
+* Prevented a fatal error for some users, small bug fixes.
 
 = 3.5.9.1 =
 * Improvements in highlighting and taxonomy searches.
