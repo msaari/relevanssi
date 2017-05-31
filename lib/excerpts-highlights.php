@@ -26,6 +26,7 @@ function relevanssi_do_excerpt($t_post, $query) {
 	remove_shortcode('responsive-flipbook');
     remove_shortcode('breadcrumb');
     remove_shortcode('maxmegamenu');
+    remove_shortcode('robogallery');
 
 	$content = apply_filters('relevanssi_pre_excerpt_content', $post->post_content, $post, $query);
 	$content = apply_filters('the_content', $content);
