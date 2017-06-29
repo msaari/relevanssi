@@ -150,7 +150,7 @@ function relevanssi_create_database_tables($relevanssi_db_version) {
 		taxonomy_detail longtext NOT NULL,
 		customfield_detail longtext NOT NULL,
 		mysqlcolumn_detail longtext NOT NULL,
-		type varchar(210) NOT NULL DEFAULT 'post', 
+		type varchar(210) NOT NULL DEFAULT 'post',
 		item bigint(20) NOT NULL DEFAULT '0',
 	    UNIQUE KEY doctermitem (doc, term, item)) $charset_collate";
 
@@ -246,4 +246,17 @@ function relevanssi_create_database_tables($relevanssi_db_version) {
 		relevanssi_populate_stopwords();
 	}
 }
+
+function relevanssi_action_links ($links) {
+	$root = "relevanssi";
+	if (RELEVANSSI_PREMIUM) $root = "relevanssi-premium";
+	$relevanssi_links = array(
+ 		'<a href="' . admin_url( 'options-general.php?page=' . $root . '/relevanssi.php' ) . '">' . __('Settings', 'relevanssi') . '</a>',
+ 	);
+	if (!RELEVANSSI_PREMIUM) {
+		$relevanssi_links[] = '<a href="https://www.relevanssi.com/buy-premium/">' . __('Go Premium!', 'relevanssi') . '</a>';
+	}
+	return array_merge($links, $relevanssi_links);
+}
+
 ?>

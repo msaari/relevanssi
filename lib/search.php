@@ -374,23 +374,36 @@ function relevanssi_search($args) {
 		}
 	}
 
-	if (!$post_type && get_option('relevanssi_respect_exclude') == 'on') {
-		if (function_exists('get_post_types')) {
-			$pt_1 = get_post_types(array('exclude_from_search' => '0'));
-			$pt_2 = get_post_types(array('exclude_from_search' => false));
-			$post_type = implode(',', array_merge($pt_1, $pt_2));
-		}
+	// If $post_type is not set, see if there are post types to exclude from the search.
+	// If $post_type is set, there's no need to exclude, as we only include.
+	!$post_type ? $negative_post_type = relevanssi_get_negative_post_type() : $negative_post_type = NULL;
+
+	$non_post_post_types_array = array();
+	if (function_exists('relevanssi_get_non_post_post_types')) {
+		$non_post_post_types_array = relevanssi_get_non_post_post_types();
 	}
 
 	if ($post_type) {
 		if ($post_type == -1) $post_type = null; // Facetious sets post_type to -1 if not selected
 		if (!is_array($post_type)) {
-			$post_types = esc_sql(explode(',', $post_type));
+			$post_types = explode(',', $post_type);
 		}
 		else {
-			$post_types = esc_sql($post_type);
+			$post_types = $post_type;
 		}
-		$post_type = count($post_types) ? "'" . implode( "', '", $post_types) . "'" : 'NULL';
+		// This array will contain all regular post types involved in the search parameters.
+		$post_post_types = array_diff($post_types, $non_post_post_types_array);
+
+		// This array has the non-post post types involved.
+		$non_post_post_types = array_intersect($post_types, $non_post_post_types_array);
+
+		// Escape both for SQL queries, just in case.
+		$non_post_post_types = esc_sql($non_post_post_types);
+		$post_types = esc_sql($post_post_types);
+
+		// Implode to a parameter string, or set to NULL if empty.
+		$non_post_post_type = count($non_post_post_types) ? "'" . implode( "', '", $non_post_post_types) . "'" : NULL;
+		$post_type = count($post_types) ? "'" . implode( "', '", $post_types) . "'" : NULL;
 	}
 
 	if ($post_status) {
@@ -401,7 +414,7 @@ function relevanssi_search($args) {
 			$post_statuses = esc_sql($post_status);
 		}
 
-		$post_status = count($post_statuses) ? "'" . implode( "', '", $post_statuses) . "'" : 'NULL';
+		$post_status = count($post_statuses) ? "'" . implode( "', '", $post_statuses) . "'" : NULL;
 	}
 
 	//Added by OdditY:
@@ -516,17 +529,39 @@ function relevanssi_search($args) {
 	}
 
 	if ($post_type) {
-		global $wp_query;
-		if ($wp_query->is_admin) {
-			$query_restrictions .= " AND ((relevanssi.doc IN (SELECT DISTINCT(posts.ID) FROM $wpdb->posts AS posts
-				WHERE posts.post_type IN ($post_type))))";
-		}
-		else {
-			$query_restrictions .= " AND ((relevanssi.doc IN (SELECT DISTINCT(posts.ID) FROM $wpdb->posts AS posts
-				WHERE posts.post_type IN ($post_type))) OR (doc = -1))";
-			// the -1 is there to get user profiles and category pages
-		}
+		// A post type is set: add a restriction
+		$restriction = " AND (
+			relevanssi.doc IN (
+				SELECT DISTINCT(posts.ID) FROM $wpdb->posts AS posts
+				WHERE posts.post_type IN ($post_type)
+			) *np*
+		)";
 		// Clean: $post_type is escaped
+
+		// There are post types involved that are taxonomies or users, so can't
+		// match to wp_posts. Add a relevanssi.type restriction.
+		if ($non_post_post_type) {
+			$restriction = str_replace('*np*', "OR (relevanssi.type IN ($non_post_post_type))", $restriction);
+			// Clean: $non_post_post_types is escaped
+		} else {
+			// No non-post post types, so remove the placeholder.
+			$restriction = str_replace('*np*', '', $restriction);
+		}
+		$query_restrictions .= $restriction;
+	}
+	else {
+		// No regular post types
+		if ($non_post_post_type) {
+			// But there is a non-post post type restriction.
+			$query_restrictions .= " AND (relevanssi.type IN ($non_post_post_type))";
+			// Clean: $non_post_post_types is escaped
+		}
+	}
+
+	if ($negative_post_type) {
+		$query_restrictions .= " AND ((relevanssi.doc IN (SELECT DISTINCT(posts.ID) FROM $wpdb->posts AS posts
+			WHERE posts.post_type NOT IN ($negative_post_type))) OR (doc = -1))";
+		// Clean: $negative_post_type is escaped
 	}
 
 	if ($post_status) {
@@ -619,6 +654,7 @@ function relevanssi_search($args) {
 	do {
 		foreach ($terms as $term) {
 			$term = trim($term);	// numeric search terms will start with a space
+			if (relevanssi_strlen($term) < 2) continue;
 			$term = esc_sql($term);
 
 			if (strpos($o_term_cond, 'LIKE') !== false) {
@@ -1287,7 +1323,9 @@ function relevanssi_do_query(&$query) {
 
 	$filter_data = array($hits, $q);
 	$hits_filters_applied = apply_filters('relevanssi_hits_filter', $filter_data);
-	$hits = $hits_filters_applied[0];
+	$hits = array_values($hits_filters_applied[0]);
+	// array_values() to make sure the $hits array is indexed in numerical order
+	// Manipulating the array with array_unique() for example may mess with that.
 
 	$query->found_posts = sizeof($hits);
 	if (!isset($query->query_vars["posts_per_page"]) || $query->query_vars["posts_per_page"] == 0) {
@@ -1399,4 +1437,30 @@ function relevanssi_limit_filter($query) {
 	}
 }
 
+function relevanssi_get_negative_post_type() {
+	$negative_post_type = NULL;
+
+	if (get_option('relevanssi_respect_exclude') == 'on') {
+		// If Relevanssi is set to respect exclude_from_search, find out which
+		// post types should be excluded from search.
+		if (function_exists('get_post_types')) {
+			$pt_1 = get_post_types(array('exclude_from_search' => '1'));
+			$pt_2 = get_post_types(array('exclude_from_search' => true));
+			$negative_post_type_list = implode(',', array_merge($pt_1, $pt_2));
+		}
+
+		// Post types to exclude.
+		if ($negative_post_type_list) {
+			if (!is_array($negative_post_type)) {
+				$negative_post_types = esc_sql(explode(',', $negative_post_type));
+			}
+			else {
+				$negative_post_types = esc_sql($negative_post_type);
+			}
+			$negative_post_type = count($negative_post_types) ? "'" . implode( "', '", $negative_post_types) . "'" : NULL;
+		}
+	}
+
+	return $negative_post_type;
+}
 ?>

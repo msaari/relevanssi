@@ -133,9 +133,13 @@ function relevanssi_build_index($extend = false, $verbose = true, $post_limit = 
 
 	$complete = false;
 	if ($verbose) {
-	    echo '<div id="message" class="updated fade"><p>'
-			. __((($size == 0) || (count($content) < $size)) ? "Indexing complete!" : "More to index...", "relevanssi")
-			. '</p></div>';
+			if (($size == 0) || (count($content) < $size)) {
+				$message = __("Indexing complete!", "relevanssi");
+			}
+			else {
+				$message = __("More to index...", "relevanssi");
+			}
+	    echo '<div id="message" class="updated fade"><p>' . $message . '</p></div>';
 	}
 	else {
 		if (($size == 0) || (count($content) < $size)) $complete = true;
@@ -315,6 +319,10 @@ function relevanssi_index_doc($indexpost, $remove_first = false, $custom_fields 
 		if (is_array($custom_fields)) {
 			if ($debug) relevanssi_debug_echo("Custom fields to index: " . implode(", ", $custom_fields));
 			$custom_fields = array_unique($custom_fields);	// no reason to index duplicates
+
+			$repeater_fields = array();
+			if (function_exists('relevanssi_add_repeater_fields')) relevanssi_add_repeater_fields($custom_fields, $post->ID);
+
 			foreach ($custom_fields as $field) {
 				if ($remove_underscore_fields) {
 					if (substr($field, 0, 1) == '_') continue;
@@ -557,7 +565,7 @@ function relevanssi_index_taxonomy_terms($post = null, $taxonomy = "", $insert_d
 				$tagstr .= $ptag->name . ' ';
 			}
 		}
-		$tagstr = trim($tagstr);
+		$tagstr = apply_filters('relevanssi_tag_before_tokenize', trim($tagstr));
 		$ptags = relevanssi_tokenize($tagstr, true, $min_word_length);
 		if (count($ptags) > 0) {
 			foreach ($ptags as $ptag => $count) {
@@ -786,17 +794,19 @@ function relevanssi_get_comments($postID) {
  * Droz Raphaël, June 2016
  */
 function relevanssi_index_acf(&$insert_data, $post_id, $field_name, $field_value) {
-	if (! is_admin() ) include_once( ABSPATH . 'wp-admin/includes/plugin.php' ); // otherwise is_plugin_active will cause a fatal error
-	if (! is_plugin_active('advanced-custom-fields/acf.php') &&
-		! is_plugin_active('advanced-custom-fields-pro/acf.php')) return;
+	if (!is_admin() ) include_once( ABSPATH . 'wp-admin/includes/plugin.php' ); // otherwise is_plugin_active will cause a fatal error
+	if (!is_plugin_active('advanced-custom-fields/acf.php') &&
+		!is_plugin_active('advanced-custom-fields-pro/acf.php')) return;
+
+	if (!function_exists('get_field_object')) return; // ACF is active, but not loaded.
 
 	$field_object = get_field_object($field_name, $post_id);
-	if (! isset($field_object['choices'])) return; // not a "select" field
+	if (!isset($field_object['choices'])) return; // not a "select" field
 	if (is_array($field_value)) return; // not handled (currently)
-	if (! isset($field_object['choices'][$field_value])) return; // value does not exist
+	if (!isset($field_object['choices'][$field_value])) return; // value does not exist
 
 	if ( ($value = $field_object['choices'][$field_value]) ) {
-		if (! isset($insert_data[$value]['customfield']) ) $insert_data[$value]['customfield'] = 0;
+		if (!isset($insert_data[$value]['customfield']) ) $insert_data[$value]['customfield'] = 0;
 		$insert_data[$value]['customfield']++;
 	}
 }

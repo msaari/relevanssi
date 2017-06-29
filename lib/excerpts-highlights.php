@@ -22,11 +22,12 @@ function relevanssi_do_excerpt($t_post, $query) {
 	$terms = relevanssi_tokenize($query, $remove_stopwords, -1);
 
 	// These shortcodes cause problems with Relevanssi excerpts
-	remove_shortcode('layerslider');
-	remove_shortcode('responsive-flipbook');
-    remove_shortcode('breadcrumb');
-    remove_shortcode('maxmegamenu');
-    remove_shortcode('robogallery');
+    $problem_shortcodes = apply_filters('relevanssi_disable_shortcodes_excerpt',
+        array('layerslider', 'responsive-flipbook', 'breadcrumb', 'maxmegamenu', 'robogallery')
+    );
+    foreach ($problem_shortcodes as $shortcode) {
+        remove_shortcode($shortcode);
+    }
 
 	$content = apply_filters('relevanssi_pre_excerpt_content', $post->post_content, $post, $query);
 	$content = apply_filters('the_content', $content);
@@ -265,7 +266,8 @@ function relevanssi_highlight_terms($excerpt, $query, $in_docs = false) {
 		mb_internal_encoding("UTF-8");
 
 	do_action('relevanssi_highlight_tokenize');
-	$terms = array_keys(relevanssi_tokenize($query, $remove_stopwords = true, $min_word_length = -1));
+	$terms = array_keys(relevanssi_tokenize($query, $remove_stopwords = true, $min_word_length = 2));
+    // Setting min_word_length to 2, in order to avoid 1-letter highlights.
 
 	if (is_array($query)) $query = implode(' ', $query); // just in case
 	$phrases = relevanssi_extract_phrases(stripslashes($query));
@@ -291,7 +293,7 @@ function relevanssi_highlight_terms($excerpt, $query, $in_docs = false) {
 		$pr_term = relevanssi_add_accent_variations($pr_term);
 
 		$undecoded_excerpt = $excerpt;
-		$excerpt = html_entity_decode($excerpt);
+		$excerpt = html_entity_decode($excerpt, ENT_QUOTES, 'UTF-8');
 
 		if ($word_boundaries) {
 //			get_option('relevanssi_fuzzy') != 'none' ? $regex = "/($pr_term)(?!(^&+)?(;))/iu" : $regex = "/(\b$pr_term|$pr_term\b)(?!(^&+)?(;))/iu";
@@ -361,18 +363,49 @@ function relevanssi_replace_punctuation($a) {
 function relevanssi_fix_entities($excerpt, $in_docs) {
 	if (!$in_docs) {
 		// For excerpts, use htmlentities()
-		$excerpt = htmlentities($excerpt, ENT_QUOTES, 'UTF-8');
+		$excerpt = htmlentities($excerpt, ENT_NOQUOTES, 'UTF-8'); // ENT_QUOTES or ENT_NOQUOTES?
 
 		// Except for allowed tags, which are turned back into tags.
 		$tags = get_option('relevanssi_excerpt_allowable_tags', '');
 		$tags = trim(str_replace("<", " <", $tags));
-		$tags = explode(" ", $tags);
-		$tags = relevanssi_generate_closing_tags($tags);
+        $tags = explode(" ", $tags);
+		$closing_tags = relevanssi_generate_closing_tags($tags);
 
-		$tags_entitied = htmlentities(implode(" ", $tags), ENT_QUOTES, 'UTF-8');
+		$tags_entitied = htmlentities(implode(" ", $tags), ENT_NOQUOTES, 'UTF-8');  // ENT_QUOTES or ENT_NOQUOTES?
 		$tags_entitied = explode(" ", $tags_entitied);
 
-		$excerpt = str_replace($tags_entitied, $tags, $excerpt);
+        $closing_tags_entitied = htmlentities(implode(" ", $closing_tags), ENT_NOQUOTES, 'UTF-8');  // ENT_QUOTES or ENT_NOQUOTES?
+		$closing_tags_entitied = explode(" ", $closing_tags_entitied);
+
+        $tags_entitied_regexped = array();
+        $i = 0;
+        foreach ($tags_entitied as $tag) {
+            $tag = str_replace("&gt;", "(.*?)&gt;", $tag);
+            $pattern = "~$tag~";
+            $tags_entitied_regexped[] = $pattern;
+
+            $matching_tag = $tags[$i];
+            $matching_tag = str_replace(">", '\1>', $matching_tag);
+            $tags[$i] = $matching_tag;
+            $i++;
+        }
+
+        $closing_tags_entitied_regexped = array();
+        foreach ($closing_tags_entitied as $tag) {
+            $pattern = "~" . preg_quote($tag) . "~";
+            $closing_tags_entitied_regexped[] = $pattern;
+        }
+
+        $tags = array_merge($tags, $closing_tags);
+        $tags_entitied = array_merge($tags_entitied_regexped, $closing_tags_entitied_regexped);
+
+		$excerpt = preg_replace($tags_entitied, $tags, $excerpt);
+
+        // In case there are attributes. This is the easiest solution, as
+        // using quotes and apostrophes un-entitied can't really break
+        // anything.
+        $excerpt = str_replace('&quot;', '"', $excerpt);
+        $excerpt = str_replace('&#039;', "'", $excerpt);
 	}
 	else {
 		// Running htmlentities() for whole posts tends to ruin things.
@@ -410,7 +443,7 @@ function relevanssi_generate_closing_tags($tags) {
 		$closing_tags[] = $a;
 		$closing_tags[] = $b;
 	}
-	return array_merge($tags, $closing_tags);
+	return $closing_tags;
 }
 
 function relevanssi_remove_nested_highlights($s, $a, $b) {

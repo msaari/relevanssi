@@ -1335,7 +1335,7 @@ EOH;
 
 	<label for='relevanssi_index_excerpt'><?php _e('Index and search post excerpts:', 'relevanssi'); ?>
 	<input type='checkbox' name='relevanssi_index_excerpt' id='relevanssi_index_excerpt' <?php echo $index_excerpt ?> /></label><br />
-	<small><?php _e("If checked, Relevanssi will also index and search the excerpts of your posts.Remember to rebuild the index if you change this option!", 'relevanssi'); ?></small>
+	<small><?php _e("If checked, Relevanssi will also index and search the excerpts of your posts. Remember to rebuild the index if you change this option!", 'relevanssi'); ?></small>
 
 	<br /><br />
 
@@ -1351,7 +1351,7 @@ EOH;
 
 	<label for='relevanssi_index_fields'><?php _e("Custom fields to index:", "relevanssi"); ?>
 	<input type='text' name='relevanssi_index_fields' id='relevanssi_index_fields' size='30' value='<?php echo esc_attr($index_fields) ?>' /></label><br />
-	<small><?php _e("A comma-separated list of custom fields to include in the index. Set to 'visible' to index all visible custom fields and to 'all' to index all custom fields, also those starting with a '_' character.", "relevanssi"); ?></small>
+	<small><?php _e("A comma-separated list of custom fields to include in the index. Set to 'visible' to index all visible custom fields and to 'all' to index all custom fields, also those starting with a '_' character. With Relevanssi Premium, you can also use 'fieldname_%_subfieldname' notation for ACF repeater fields. You can use 'relevanssi_index_custom_fields' filter hook to adjust which custom fields are indexed.", "relevanssi"); ?></small>
 
 	<br /><br />
 
