@@ -268,6 +268,11 @@ Each document database is full of useless words. All the little words that appea
 
 == Changelog ==
 
+= 3.5.11.1 =
+* New filter: `relevanssi_allow_one_letter_highlights` lets you allow one-letter highlights. Just make the filter function return `true`.
+* New filter: `relevanssi_block_one_letter_searches` by default blocks one-letter searches. If you want to enable them, add a filter function that always returns `false`.
+* Fixed an undefined variable notice.
+
 = 3.5.11 =
 * Synonym indexing failed if synonyms contained a forward slash.
 * Highlighting HTML tags has been improved further.

@@ -379,6 +379,7 @@ function relevanssi_search($args) {
 	!$post_type ? $negative_post_type = relevanssi_get_negative_post_type() : $negative_post_type = NULL;
 
 	$non_post_post_types_array = array();
+	$non_post_post_type = NULL;
 	if (function_exists('relevanssi_get_non_post_post_types')) {
 		$non_post_post_types_array = relevanssi_get_non_post_post_types();
 	}
