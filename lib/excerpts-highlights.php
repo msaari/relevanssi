@@ -266,8 +266,12 @@ function relevanssi_highlight_terms($excerpt, $query, $in_docs = false) {
 		mb_internal_encoding("UTF-8");
 
 	do_action('relevanssi_highlight_tokenize');
-	$terms = array_keys(relevanssi_tokenize($query, $remove_stopwords = true, $min_word_length = 2));
+
     // Setting min_word_length to 2, in order to avoid 1-letter highlights.
+	$min_word_length = 2;
+	if (apply_filters('relevanssi_allow_one_letter_highlights', false)) $min_word_length = 1;
+
+	$terms = array_keys(relevanssi_tokenize($query, $remove_stopwords = true, $min_word_length));
 
 	if (is_array($query)) $query = implode(' ', $query); // just in case
 	$phrases = relevanssi_extract_phrases(stripslashes($query));
