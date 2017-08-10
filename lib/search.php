@@ -87,195 +87,24 @@ function relevanssi_search($args) {
 	$and_term_tax_ids = array();
 
 	if (is_array($tax_query)) {
+		$is_sub_row = false;
 		foreach ($tax_query as $row) {
-			$using_term_tax_id = false;
-			if ($row['field'] == 'slug') {
-				$slug = $row['terms'];
-				$numeric_slugs = array();
-				$slug_in = null;
-				if (is_array($slug)) {
-					$slugs = array();
-					$term_id = array();
-					foreach ($slug as $t_slug) {
-						$term = get_term_by('slug', $t_slug, $row['taxonomy']);
-						if (!$term && is_numeric($t_slug)) {
-							$numeric_slugs[] = "'$t_slug'";
-						}
-						else {
-							$t_slug = sanitize_title($t_slug);
-							$term_id[] = $term->term_id;
-							$slugs[] = "'$t_slug'";
-						}
-					}
-					if (!empty($slugs)) $slug_in = implode(',', $slugs);
-				}
-				else {
-					$term = get_term_by('slug', $slug, $row['taxonomy']);
-					if (!$term && is_numeric($slug)) {
-						$numeric_slugs[] = $slug;
-					}
-					else {
-						$slug = sanitize_title($slug);
-						$term_id = $term->term_id;
-						$slug_in = "'$slug'";
-					}
-				}
-				if (!empty($slug_in)) {
-					$row_taxonomy = sanitize_text_field($row['taxonomy']);
-					$tt_q = "SELECT tt.term_taxonomy_id
-						  	FROM $wpdb->term_taxonomy AS tt
-						  	LEFT JOIN $wpdb->terms AS t ON (tt.term_id=t.term_id)
-						  	WHERE tt.taxonomy = '$row_taxonomy' AND t.slug IN ($slug_in)";
-					// Clean: $row_taxonomy is sanitized, each slug in $slug_in is sanitized
-					$term_tax_id = $wpdb->get_col($tt_q);
-				}
-				if (!empty($numeric_slugs)) $row['field'] = 'id';
-			}
-			if ($row['field'] == 'name') {
-				$name = $row['terms'];
-				$numeric_names = array();
-				$name_in = null;
-				if (is_array($name)) {
-					$names = array();
-					$term_id = array();
-					foreach ($name as $t_name) {
-						$term = get_term_by('name', $t_name, $row['taxonomy']);
-						if (!$term && is_numeric($t_names)) {
-							$numeric_names[] = "'$t_name'";
-						}
-						else {
-							$t_name = sanitize_title($t_name);
-							$term_id[] = $term->term_id;
-							$names[] = "'$t_name'";
-						}
-					}
-					if (!empty($names)) $name_in = implode(',', $names);
-				}
-				else {
-					$term = get_term_by('name', $name, $row['taxonomy']);
-					if (!$term && is_numeric($name)) {
-						$numeric_slugs[] = $name;
-					}
-					else {
-						if (isset($term->term_id)) {
-							$name = sanitize_title($name);
-							$term_id = $term->term_id;
-							$name_in = "'$name'";
-						}
-					}
-				}
-				if (!empty($name_in)) {
-					$row_taxonomy = sanitize_text_field($row['taxonomy']);
-					$tt_q = "SELECT tt.term_taxonomy_id
-						  	FROM $wpdb->term_taxonomy AS tt
-						  	LEFT JOIN $wpdb->terms AS t ON (tt.term_id=t.term_id)
-						  	WHERE tt.taxonomy = '$row_taxonomy' AND t.name IN ($name_in)";
-					// Clean: $row_taxonomy is sanitized, each name in $name_in is sanitized
-					$term_tax_id = $wpdb->get_col($tt_q);
-				}
-				if (!empty($numeric_names)) $row['field'] = 'id';
-			}
-			if ($row['field'] == 'id' || $row['field'] == 'term_id') {
-				$id = $row['terms'];
-				$term_id = $id;
-				if (is_array($id)) {
-					$numeric_values = array();
-					foreach ($id as $t_id) {
-						if (is_numeric($t_id)) $numeric_values[] = $t_id;
-					}
-					$id = implode(',', $numeric_values);
-				}
-				$row_taxonomy = sanitize_text_field($row['taxonomy']);
-				$tt_q = "SELECT tt.term_taxonomy_id
-				  	FROM $wpdb->term_taxonomy AS tt
-				  	LEFT JOIN $wpdb->terms AS t ON (tt.term_id=t.term_id)
-				  	WHERE tt.taxonomy = '$row_taxonomy' AND t.term_id IN ($id)";
-				// Clean: $row_taxonomy is sanitized, $id is checked to be numeric
-				$id_term_tax_id = $wpdb->get_col($tt_q);
-				if (!empty($term_tax_id) && is_array($term_tax_id)) {
-					$term_tax_id = array_unique(array_merge($term_tax_id, $id_term_tax_id));
-				}
-				else {
-					$term_tax_id = $id_term_tax_id;
-				}
-			}
-			if ($row['field'] == 'term_taxonomy_id') {
-				$using_term_tax_id = true;
-				$id = $row['terms'];
-				$term_tax_id = $id;
-				if (is_array($id)) {
-					$numeric_values = array();
-					foreach ($id as $t_id) {
-						if (is_numeric($t_id)) $numeric_values[] = $t_id;
-					}
-					$term_tax_id = implode(',', $numeric_values);
-				}
-			}
-
-			if (!isset($row['include_children']) || $row['include_children'] == true) {
-				if (!$using_term_tax_id && isset($term_id)) {
-					if (!is_array($term_id)) {
-						$term_id = array($term_id);
-					}
-				}
-				else {
-					if (!is_array($term_tax_id)) {
-						$term_tax_id = array($term_tax_id);
-						$term_id = $term_tax_id;
-					}
-				}
-				if (isset($term_id) && is_array($term_id)) {
-					foreach ($term_id as $t_id) {
-						if ($using_term_tax_id) {
-							$t_term = get_term_by('term_taxonomy_id', $t_id, $row['taxonomy']);
-							$t_id = $t_term->ID;
-						}
-						$kids = get_term_children($t_id, $row['taxonomy']);
-						foreach ($kids as $kid) {
-							$term = get_term_by('id', $kid, $row['taxonomy']);
-							$term_tax_id[] = relevanssi_get_term_tax_id('id', $kid, $row['taxonomy']);
-						}
-					}
-				}
-			}
-
-			$term_tax_id = array_unique($term_tax_id);
-			if (!empty($term_tax_id)) {
-				$n = count($term_tax_id);
-				$term_tax_id = implode(',', $term_tax_id);
-
-				$tq_operator = 'IN';
-				if (isset($row['operator'])) $tq_operator = strtoupper($row['operator']);
-				if ($tq_operator != 'IN' && $tq_operator != 'NOT IN' && $tq_operator != 'AND') $tq_operator = 'IN';
-				if ($tax_query_relation == 'and') {
-					if ($tq_operator == 'AND') {
-						$query_restrictions .= " AND relevanssi.doc IN (
-							SELECT ID FROM $wpdb->posts WHERE 1=1
-							AND (
-								SELECT COUNT(1)
-								FROM $wpdb->term_relationships AS tr
-								WHERE tr.term_taxonomy_id IN ($term_tax_id)
-								AND tr.object_id = $wpdb->posts.ID ) = $n
-							)";
-						// Clean: $term_tax_id and $n are Relevanssi-generated
-					}
-					else {
-						$query_restrictions .= " AND relevanssi.doc $tq_operator (SELECT DISTINCT(tr.object_id) FROM $wpdb->term_relationships AS tr
-						WHERE tr.term_taxonomy_id IN ($term_tax_id))";
-						// Clean: all variables are Relevanssi-generated
-					}
-				}
-				else {
-					if ($tq_operator == 'IN') $term_tax_ids[] = $term_tax_id;
-					if ($tq_operator == 'NOT IN') $not_term_tax_ids[] = $term_tax_id;
-					if ($tq_operator == 'AND') $and_term_tax_ids[] = $term_tax_id;
-				}
+			if (isset($row['terms'])) {
+				list($query_restrictions, $term_tax_ids, $not_term_tax_ids, $and_term_tax_ids) = relevanssi_process_tax_query_row($row, $is_sub_row, $tax_query_relation, $query_restrictions, $tax_query_relation, $term_tax_ids, $not_term_tax_ids, $and_term_tax_ids);
 			}
 			else {
-				global $wp_query;
-				$wp_query->is_category = false;
+				$row_tax_query_relation = $tax_query_relation;
+				if (isset($row['relation'])) $row_tax_query_relation = strtolower($row['relation']);
+				foreach ($row as $subrow) {
+					$is_sub_row = true;
+					if (isset($subrow['terms'])) {
+						list($query_restrictions, $term_tax_ids, $not_term_tax_ids, $and_term_tax_ids) = relevanssi_process_tax_query_row($subrow, $is_sub_row, $tax_query_relation, $query_restrictions, $tax_query_relation, $term_tax_ids, $not_term_tax_ids, $and_term_tax_ids);
+						// For subrows, we only want the query_restrictions
+					}
+				}
 			}
 		}
+
 		if ($tax_query_relation == 'or') {
 			$term_tax_ids = array_unique($term_tax_ids);
 			if (count($term_tax_ids) > 0) {
@@ -378,8 +207,8 @@ function relevanssi_search($args) {
 	// If $post_type is set, there's no need to exclude, as we only include.
 	!$post_type ? $negative_post_type = relevanssi_get_negative_post_type() : $negative_post_type = NULL;
 
-	$non_post_post_types_array = array();
 	$non_post_post_type = NULL;
+	$non_post_post_types_array = array();
 	if (function_exists('relevanssi_get_non_post_post_types')) {
 		$non_post_post_types_array = relevanssi_get_non_post_post_types();
 	}
@@ -655,7 +484,7 @@ function relevanssi_search($args) {
 	do {
 		foreach ($terms as $term) {
 			$term = trim($term);	// numeric search terms will start with a space
-			if (relevanssi_strlen($term) < 2) continue;
+			if (apply_filters('relevanssi_block_one_letter_searches', relevanssi_strlen($term) < 2)) continue;
 			$term = esc_sql($term);
 
 			if (strpos($o_term_cond, 'LIKE') !== false) {
@@ -1452,11 +1281,11 @@ function relevanssi_get_negative_post_type() {
 
 		// Post types to exclude.
 		if ($negative_post_type_list) {
-			if (!is_array($negative_post_type)) {
-				$negative_post_types = esc_sql(explode(',', $negative_post_type));
+			if (!is_array($negative_post_type_list)) {
+				$negative_post_types = esc_sql(explode(',', $negative_post_type_list));
 			}
 			else {
-				$negative_post_types = esc_sql($negative_post_type);
+				$negative_post_types = esc_sql($negative_post_type_list);
 			}
 			$negative_post_type = count($negative_post_types) ? "'" . implode( "', '", $negative_post_types) . "'" : NULL;
 		}
@@ -1464,4 +1293,249 @@ function relevanssi_get_negative_post_type() {
 
 	return $negative_post_type;
 }
+
+function relevanssi_process_tax_query_row($row, $is_sub_row, $global_relation, $query_restrictions, $tax_query_relation, $term_tax_ids, $not_term_tax_ids, $and_term_tax_ids) {
+	global $wpdb;
+
+	$local_term_tax_ids = array();
+	$local_not_term_tax_ids = array();
+	$local_and_term_tax_ids = array();
+
+	$using_term_tax_id = false;
+	if (!isset($row['field'])) $row['field'] = 'term_id'; 	// in case 'field' is not set, go with the WP default of "term_id"
+	if ($row['field'] == 'slug') {
+		$slug = $row['terms'];
+		$numeric_slugs = array();
+		$slug_in = null;
+		if (is_array($slug)) {
+			$slugs = array();
+			$term_id = array();
+			foreach ($slug as $t_slug) {
+				$term = get_term_by('slug', $t_slug, $row['taxonomy']);
+				if (!$term && is_numeric($t_slug)) {
+					$numeric_slugs[] = "'$t_slug'";
+				}
+				else {
+					$t_slug = sanitize_title($t_slug);
+					$term_id[] = $term->term_id;
+					$slugs[] = "'$t_slug'";
+				}
+			}
+			if (!empty($slugs)) $slug_in = implode(',', $slugs);
+		}
+		else {
+			$term = get_term_by('slug', $slug, $row['taxonomy']);
+			if (!$term && is_numeric($slug)) {
+				$numeric_slugs[] = $slug;
+			}
+			else {
+				$slug = sanitize_title($slug);
+				$term_id = $term->term_id;
+				$slug_in = "'$slug'";
+			}
+		}
+		if (!empty($slug_in)) {
+			$row_taxonomy = sanitize_text_field($row['taxonomy']);
+			$tt_q = "SELECT tt.term_taxonomy_id
+				  	FROM $wpdb->term_taxonomy AS tt
+				  	LEFT JOIN $wpdb->terms AS t ON (tt.term_id=t.term_id)
+				  	WHERE tt.taxonomy = '$row_taxonomy' AND t.slug IN ($slug_in)";
+			// Clean: $row_taxonomy is sanitized, each slug in $slug_in is sanitized
+			$term_tax_id = $wpdb->get_col($tt_q);
+		}
+		if (!empty($numeric_slugs)) $row['field'] = 'term_id';
+	}
+	if ($row['field'] == 'name') {
+		$name = $row['terms'];
+		$numeric_names = array();
+		$name_in = null;
+		if (is_array($name)) {
+			$names = array();
+			$term_id = array();
+			foreach ($name as $t_name) {
+				$term = get_term_by('name', $t_name, $row['taxonomy']);
+				if (!$term && is_numeric($t_names)) {
+					$numeric_names[] = "'$t_name'";
+				}
+				else {
+					$t_name = sanitize_title($t_name);
+					$term_id[] = $term->term_id;
+					$names[] = "'$t_name'";
+				}
+			}
+			if (!empty($names)) $name_in = implode(',', $names);
+		}
+		else {
+			$term = get_term_by('name', $name, $row['taxonomy']);
+			if (!$term && is_numeric($name)) {
+				$numeric_slugs[] = $name;
+			}
+			else {
+				if (isset($term->term_id)) {
+					$name = sanitize_title($name);
+					$term_id = $term->term_id;
+					$name_in = "'$name'";
+				}
+			}
+		}
+		if (!empty($name_in)) {
+			$row_taxonomy = sanitize_text_field($row['taxonomy']);
+			$tt_q = "SELECT tt.term_taxonomy_id
+				  	FROM $wpdb->term_taxonomy AS tt
+				  	LEFT JOIN $wpdb->terms AS t ON (tt.term_id=t.term_id)
+				  	WHERE tt.taxonomy = '$row_taxonomy' AND t.name IN ($name_in)";
+			// Clean: $row_taxonomy is sanitized, each name in $name_in is sanitized
+			$term_tax_id = $wpdb->get_col($tt_q);
+		}
+		if (!empty($numeric_names)) $row['field'] = 'term_id';
+	}
+	if ($row['field'] == 'id' || $row['field'] == 'term_id') {
+		$id = $row['terms'];
+		$term_id = $id;
+		if (is_array($id)) {
+			$numeric_values = array();
+			foreach ($id as $t_id) {
+				if (is_numeric($t_id)) $numeric_values[] = $t_id;
+			}
+			$id = implode(',', $numeric_values);
+		}
+		$row_taxonomy = sanitize_text_field($row['taxonomy']);
+		$tt_q = "SELECT tt.term_taxonomy_id
+		  	FROM $wpdb->term_taxonomy AS tt
+		  	LEFT JOIN $wpdb->terms AS t ON (tt.term_id=t.term_id)
+		  	WHERE tt.taxonomy = '$row_taxonomy' AND t.term_id IN ($id)";
+		// Clean: $row_taxonomy is sanitized, $id is checked to be numeric
+		$id_term_tax_id = $wpdb->get_col($tt_q);
+		if (!empty($term_tax_id) && is_array($term_tax_id)) {
+			$term_tax_id = array_unique(array_merge($term_tax_id, $id_term_tax_id));
+		}
+		else {
+			$term_tax_id = $id_term_tax_id;
+		}
+	}
+	if ($row['field'] == 'term_taxonomy_id') {
+		$using_term_tax_id = true;
+		$id = $row['terms'];
+		$term_tax_id = $id;
+		if (is_array($id)) {
+			$numeric_values = array();
+			foreach ($id as $t_id) {
+				if (is_numeric($t_id)) $numeric_values[] = $t_id;
+			}
+			$term_tax_id = implode(',', $numeric_values);
+		}
+	}
+
+	if (!isset($row['include_children']) || $row['include_children'] == true) {
+		if (!$using_term_tax_id && isset($term_id)) {
+			if (!is_array($term_id)) {
+				$term_id = array($term_id);
+			}
+		}
+		else {
+			if (!is_array($term_tax_id)) {
+				$term_tax_id = array($term_tax_id);
+				$term_id = $term_tax_id;
+			}
+		}
+		if (empty($term_tax_id)) $term_tax_id = array();
+		if (!is_array($term_tax_id)) $term_tax_id = array($term_tax_id);
+		if (isset($term_id) && is_array($term_id)) {
+			foreach ($term_id as $t_id) {
+				if ($using_term_tax_id) {
+					$t_term = get_term_by('term_taxonomy_id', $t_id, $row['taxonomy']);
+					$t_id = $t_term->ID;
+				}
+				$kids = get_term_children($t_id, $row['taxonomy']);
+				foreach ($kids as $kid) {
+					$term = get_term_by('id', $kid, $row['taxonomy']);
+					$kid_term_tax_id = relevanssi_get_term_tax_id('id', $kid, $row['taxonomy']);
+					$term_tax_id[] = $kid_term_tax_id;
+				}
+			}
+		}
+	}
+
+	$term_tax_id = array_unique($term_tax_id);
+	if (!empty($term_tax_id)) {
+		$n = count($term_tax_id);
+		$term_tax_id = implode(',', $term_tax_id);
+
+		$tq_operator = 'IN';	// Assuming the default operator "IN", unless something else is provided.
+		if (isset($row['operator'])) $tq_operator = strtoupper($row['operator']);
+		if ($tq_operator != 'IN' && $tq_operator != 'NOT IN' && $tq_operator != 'AND') $tq_operator = 'IN';
+		if ($tax_query_relation == 'and') {
+			if ($tq_operator == 'AND') {
+				$query_restrictions .= " AND relevanssi.doc IN (
+					SELECT ID FROM $wpdb->posts WHERE 1=1
+					AND (
+						SELECT COUNT(1)
+						FROM $wpdb->term_relationships AS tr
+						WHERE tr.term_taxonomy_id IN ($term_tax_id)
+						AND tr.object_id = $wpdb->posts.ID ) = $n
+					)";
+				// Clean: $term_tax_id and $n are Relevanssi-generated
+			}
+			else {
+				$query_restrictions .= " AND relevanssi.doc $tq_operator (SELECT DISTINCT(tr.object_id) FROM $wpdb->term_relationships AS tr
+				WHERE tr.term_taxonomy_id IN ($term_tax_id))";
+				// Clean: all variables are Relevanssi-generated
+			}
+		}
+		else {
+			if ($tq_operator == 'IN') $local_term_tax_ids[] = $term_tax_id;
+			if ($tq_operator == 'NOT IN') $local_not_term_tax_ids[] = $term_tax_id;
+			if ($tq_operator == 'AND') $local_and_term_tax_ids[] = $term_tax_id;
+		}
+	}
+	else {
+		global $wp_query;
+		$wp_query->is_category = false;
+	}
+	
+	if ($is_sub_row && $global_relation == 'and' && $tax_query_relation == 'or') {
+		$local_term_tax_ids = array_unique($local_term_tax_ids);
+		$local_not_term_tax_ids = array_unique($local_not_term_tax_ids);
+		$local_and_term_tax_ids = array_unique($local_and_term_tax_ids);
+		if (count($local_term_tax_ids) > 0) {
+			$local_term_tax_ids = implode(',', $local_term_tax_ids);
+			$query_restrictions .= " AND relevanssi.doc IN (SELECT DISTINCT(tr.object_id) FROM $wpdb->term_relationships AS tr
+		    	WHERE tr.term_taxonomy_id IN ($local_term_tax_ids))";
+		    // Clean: all variables are Relevanssi-generated
+		}
+		if (count($local_not_term_tax_ids) > 0) {
+			$local_not_term_tax_ids = implode(',', $local_not_term_tax_ids);
+			$query_restrictions .= " AND relevanssi.doc NOT IN (SELECT DISTINCT(tr.object_id) FROM $wpdb->term_relationships AS tr
+		    	WHERE tr.term_taxonomy_id IN ($local_not_term_tax_ids))";
+		    // Clean: all variables are Relevanssi-generated
+		}
+		if (count($local_and_term_tax_ids) > 0) {
+			$local_and_term_tax_ids = implode(',', $local_and_term_tax_ids);
+			$n = count(explode(',', $local_and_term_tax_ids));
+			$query_restrictions .= " AND relevanssi.doc IN (
+				SELECT ID FROM $wpdb->posts WHERE 1=1
+				AND (
+					SELECT COUNT(1)
+					FROM $wpdb->term_relationships AS tr
+					WHERE tr.term_taxonomy_id IN ($local_and_term_tax_ids)
+					AND tr.object_id = $wpdb->posts.ID ) = $n
+				)";
+		    // Clean: all variables are Relevanssi-generated
+		}
+	}
+	
+	$copy_term_tax_ids = false;
+	if (!$is_sub_row) $copy_term_tax_ids = true;
+	if ($is_sub_row && $global_relation == 'or') $copy_term_tax_ids = true;
+
+	if ($copy_term_tax_ids) {
+		$term_tax_ids = array_merge($term_tax_ids, $local_term_tax_ids);
+		$not_term_tax_ids = array_merge($not_term_tax_ids, $local_not_term_tax_ids);
+		$and_term_tax_ids = array_merge($and_term_tax_ids, $local_and_term_tax_ids);
+	}
+
+	return array($query_restrictions, $term_tax_ids, $not_term_tax_ids, $and_term_tax_ids);
+}
+
+
 ?>
