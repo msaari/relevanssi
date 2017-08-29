@@ -5,35 +5,32 @@ function relevanssi_query($posts, $query = false) {
 	($admin_search == 'on') ? $admin_search = true : $admin_search = false;
 
 	global $relevanssi_active;
-	global $wp_query;
 
-	if (!$wp_query) return $posts;
+	if (!$query) return $posts;
 
 	$search_ok = true; 							// we will search!
-	if (!is_search()) {
+	if (!$query->is_search()) {
+		$search_ok = false;						// no, we can't
+	}
+	if (!$query->is_main_query()) {
 		$search_ok = false;						// no, we can't
 	}
 
 	// Uses $wp_query->is_admin instead of is_admin() to help with Ajax queries that
 	// use 'admin_ajax' hook (which sets is_admin() to true whether it's an admin search
 	// or not.
-	if (is_search() && $wp_query->is_admin) {
+	if ($query->is_search() && $query->is_admin) {
 		$search_ok = false; 					// but if this is an admin search, reconsider
 		if ($admin_search) $search_ok = true; 	// yes, we can search!
 	}
 
-	if ($wp_query->is_admin && empty($wp_query->query_vars['s'])) {
-		$search_ok = false;
-	}
-
-	// Required so that the admin dashboard page search works.
-	if ($wp_query->is_admin && $wp_query->query_vars['post_type'] == 'page') {
+	if ($query->is_admin && empty($query->query_vars['s'])) {
 		$search_ok = false;
 	}
 
 	// Disable search in media library search
 	if ($search_ok) {
-		if ($wp_query->query_vars['post_type'] == 'attachment' && $wp_query->query_vars['post_status'] == 'inherit,private') {
+		if ($query->query_vars['post_type'] == 'attachment' && $query->query_vars['post_status'] == 'inherit,private') {
 			$search_ok = false;
 		}
 	}
@@ -45,12 +42,13 @@ function relevanssi_query($posts, $query = false) {
 	}
 
 	if ($search_ok) {
-		$wp_query = apply_filters('relevanssi_modify_wp_query', $wp_query);
-		$posts = relevanssi_do_query($wp_query);
+		$query = apply_filters('relevanssi_modify_wp_query', $query);
+		$posts = relevanssi_do_query($query);
 	}
-
+	
 	return $posts;
 }
+
 
 // This is my own magic working.
 function relevanssi_search($args) {
@@ -503,7 +501,7 @@ function relevanssi_search($args) {
 			!empty($post_type_weights['post_tag']) ? $tag = $post_type_weights['post_tag'] : $tag = $relevanssi_variables['post_type_weight_defaults']['post_tag'];
 			!empty($post_type_weights['category']) ? $cat = $post_type_weights['category'] : $cat = $relevanssi_variables['post_type_weight_defaults']['category'];
 
-			$query = "SELECT relevanssi.*, relevanssi.title * $title_boost +
+			$query = "SELECT DISTINCT(relevanssi.doc), relevanssi.*, relevanssi.title * $title_boost +
 				relevanssi.content + relevanssi.comment * $comment_boost +
 				relevanssi.tag * $tag + relevanssi.link * $link_boost +
 				relevanssi.author + relevanssi.category * $cat + relevanssi.excerpt +
@@ -1316,22 +1314,26 @@ function relevanssi_process_tax_query_row($row, $is_sub_row, $global_relation, $
 					$numeric_slugs[] = "'$t_slug'";
 				}
 				else {
-					$t_slug = sanitize_title($t_slug);
-					$term_id[] = $term->term_id;
-					$slugs[] = "'$t_slug'";
+					if (isset($term->term_id)) {
+						$t_slug = sanitize_title($t_slug);
+						$term_id[] = $term->term_id;
+						$slugs[] = "'$t_slug'";
+					}
 				}
 			}
 			if (!empty($slugs)) $slug_in = implode(',', $slugs);
 		}
 		else {
-			$term = get_term_by('slug', $slug, $row['taxonomy']);
+			$term = get_term_by('slug', $slug, $row['taxonomy'], OBJECT);
 			if (!$term && is_numeric($slug)) {
 				$numeric_slugs[] = $slug;
 			}
 			else {
-				$slug = sanitize_title($slug);
-				$term_id = $term->term_id;
-				$slug_in = "'$slug'";
+				if (isset($term->term_id)) {
+					$slug = sanitize_title($slug);
+					$term_id = $term->term_id;
+					$slug_in = "'$slug'";
+				}
 			}
 		}
 		if (!empty($slug_in)) {
@@ -1358,9 +1360,11 @@ function relevanssi_process_tax_query_row($row, $is_sub_row, $global_relation, $
 					$numeric_names[] = "'$t_name'";
 				}
 				else {
-					$t_name = sanitize_title($t_name);
-					$term_id[] = $term->term_id;
-					$names[] = "'$t_name'";
+					if (isset($term->term_id)) {
+						$t_name = sanitize_title($t_name);
+						$term_id[] = $term->term_id;
+						$names[] = "'$t_name'";
+					}
 				}
 			}
 			if (!empty($names)) $name_in = implode(',', $names);

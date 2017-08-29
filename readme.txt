@@ -4,7 +4,8 @@ Donate link: https://www.relevanssi.com/buy-premium/
 Tags: search, relevance, better search
 Requires at least: 4.0
 Tested up to: 4.9
-Stable tag: 3.5.12
+Requires PHP: 5.6
+Stable tag: 3.6.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -267,6 +268,11 @@ Each document database is full of useless words. All the little words that appea
 * Mohib Ebrahim for relentless bug hunting.
 
 == Changelog ==
+
+= 3.6.0 =
+* Changed a bit how Relevanssi attaches itself to queries. Instead of the global $wp_query, Relevanssi now uses the query passed as the parameter to `the_posts` filter hook. This should improve compatibility in some cases, but may cause problems in some fringe cases. If you're doing something unusual with Relevanssi, try this out before deploying to public use.
+* Some meta queries caused major problems with the Relevanssi weighting algorithm. This has now been fixed.
+* Error notices caused by trying to use a non-existing taxonomy term have been removed.
 
 = 3.5.12 =
 * Post type exclusion didn't work as expected.
@@ -1066,6 +1072,9 @@ Each document database is full of useless words. All the little words that appea
 * First published version.
 
 == Upgrade notice ==
+
+= 3.6.0 =
+* A big change in how Relevanssi works with queries. This should reduce compatibility issues, but may cause unexpected results.
 
 = 3.5.11 =
 * Improvements in excerpts, new filters.
