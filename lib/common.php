@@ -183,6 +183,11 @@ function relevanssi_default_post_ok($post_ok, $doc) {
 			$current_user = wp_get_current_user();
 			$post_ok = awp_user_can('read_post', $doc, $current_user->ID);
 		}
+		else if (defined('GROUPS_CORE_VERSION')) {
+			// Groups
+			$current_user = wp_get_current_user();
+			$access = Groups_Post_Access::user_can_read_post($doc, $current_user->ID);
+		}
 		else {
 			// Basic WordPress version
 			$type = relevanssi_get_post_type($doc);

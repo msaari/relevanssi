@@ -307,40 +307,39 @@ function relevanssi_index_doc($indexpost, $remove_first = false, $custom_fields 
 		}
 	}
 
-	if ($custom_fields) {
-		$remove_underscore_fields = false;
-		if ($custom_fields == 'all')
-			$custom_fields = get_post_custom_keys($post->ID);
-		if ($custom_fields == 'visible') {
-			$custom_fields = get_post_custom_keys($post->ID);
-			$remove_underscore_fields = true;
-		}
-		$custom_fields = apply_filters('relevanssi_index_custom_fields', $custom_fields);
-		if (is_array($custom_fields)) {
-			if ($debug) relevanssi_debug_echo("Custom fields to index: " . implode(", ", $custom_fields));
-			$custom_fields = array_unique($custom_fields);	// no reason to index duplicates
+	$remove_underscore_fields = false;
+	if (isset($custom_fields) && $custom_fields == 'all')
+		$custom_fields = get_post_custom_keys($post->ID);
+	if (isset($custom_fields) && $custom_fields == 'visible') {
+		$custom_fields = get_post_custom_keys($post->ID);
+		$remove_underscore_fields = true;
+	}
+	$custom_fields = apply_filters('relevanssi_index_custom_fields', $custom_fields);
 
-			$repeater_fields = array();
-			if (function_exists('relevanssi_add_repeater_fields')) relevanssi_add_repeater_fields($custom_fields, $post->ID);
+	if (is_array($custom_fields)) {
+		if ($debug) relevanssi_debug_echo("Custom fields to index: " . implode(", ", $custom_fields));
+		$custom_fields = array_unique($custom_fields);	// no reason to index duplicates
 
-			foreach ($custom_fields as $field) {
-				if ($remove_underscore_fields) {
-					if (substr($field, 0, 1) == '_') continue;
-				}
-				$values = get_post_meta($post->ID, $field, false);
-				if ("" == $values) continue;
-				foreach ($values as $value) {
-					// Quick hack : allow indexing of PODS relationship custom fields // TMV
-					if (is_array($value) && isset($value['post_title'])) $value = $value['post_title'];
-					relevanssi_index_acf($insert_data, $post->ID, $field, $value);
-					if ($debug) relevanssi_debug_echo("\tKey: " . $field . " – value: " . $value);
+		$repeater_fields = array();
+		if (function_exists('relevanssi_add_repeater_fields')) relevanssi_add_repeater_fields($custom_fields, $post->ID);
 
-					$value_tokens = relevanssi_tokenize($value, true, $min_word_length);
-					foreach ($value_tokens as $token => $count) {
-						isset($insert_data[$token]['customfield']) ? $insert_data[$token]['customfield'] += $count : $insert_data[$token]['customfield'] = $count;
-						if (function_exists('relevanssi_customfield_detail')) {
-							$insert_data = relevanssi_customfield_detail($insert_data, $token, $count, $field);
-						}
+		foreach ($custom_fields as $field) {
+			if ($remove_underscore_fields) {
+				if (substr($field, 0, 1) == '_') continue;
+			}
+			$values = get_post_meta($post->ID, $field, false);
+			if ("" == $values) continue;
+			foreach ($values as $value) {
+				// Quick hack : allow indexing of PODS relationship custom fields // TMV
+				if (is_array($value) && isset($value['post_title'])) $value = $value['post_title'];
+				relevanssi_index_acf($insert_data, $post->ID, $field, $value);
+				if ($debug) relevanssi_debug_echo("\tKey: " . $field . " – value: " . $value);
+
+				$value_tokens = relevanssi_tokenize($value, true, $min_word_length);
+				foreach ($value_tokens as $token => $count) {
+					isset($insert_data[$token]['customfield']) ? $insert_data[$token]['customfield'] += $count : $insert_data[$token]['customfield'] = $count;
+					if (function_exists('relevanssi_customfield_detail')) {
+						$insert_data = relevanssi_customfield_detail($insert_data, $token, $count, $field);
 					}
 				}
 			}
