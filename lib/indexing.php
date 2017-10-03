@@ -263,7 +263,8 @@ function relevanssi_index_doc($indexpost, $remove_first = false, $custom_fields 
 
 	$n = 0;
 
-	$post = apply_filters('relevanssi_post_to_index', $post);
+	// The second parameter is useless here, but used elsewhere
+	$post = apply_filters('relevanssi_post_to_index', $post, $post);
 
 	$min_word_length = get_option('relevanssi_min_word_length', 3);
 	$insert_data = array();
@@ -446,6 +447,7 @@ function relevanssi_index_doc($indexpost, $remove_first = false, $custom_fields 
 				remove_shortcode('woocommerce_edit_address');
 				remove_shortcode('tc_process_payment');
 				remove_shortcode('maxmegamenu');			// Max Mega Menu
+				remove_shortcode('searchandfilter');		// Search and Filter
 
 				$post_before_shortcode = $post;
 				$contents = do_shortcode($contents);

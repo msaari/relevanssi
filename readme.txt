@@ -5,7 +5,7 @@ Tags: search, relevance, better search
 Requires at least: 4.0
 Tested up to: 4.9
 Requires PHP: 5.6
-Stable tag: 3.6.0
+Stable tag: 3.6.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -268,6 +268,13 @@ Each document database is full of useless words. All the little words that appea
 * Mohib Ebrahim for relentless bug hunting.
 
 == Changelog ==
+
+= 3.6.1 =
+* SECURITY: This version fixes a SQL injection vulnerability, where a site admin could theoretically inject SQL code into Relevanssi search queries. Doing this required access to Relevanssi settings page and in my tests, I couldn't do any damage, just break the Relevanssi search, but in any case, this vulnerability is now fixed.
+* Search and Filter shortcode is added to the blacklist.
+* Groups plugin is now supported automatically to restrict access to posts.
+* The filter `relevanssi_index_custom_fields` now works even if the custom field setting is empty.
+* The filter `relevanssi_post_to_index` now has a second parameter. For posts, it simply repeats the post object, but for taxonomy terms, it has the term object.
 
 = 3.6.0 =
 * Changed a bit how Relevanssi attaches itself to queries. Instead of the global $wp_query, Relevanssi now uses the query passed as the parameter to `the_posts` filter hook. This should improve compatibility in some cases, but may cause problems in some fringe cases. If you're doing something unusual with Relevanssi, try this out before deploying to public use.
@@ -1072,6 +1079,9 @@ Each document database is full of useless words. All the little words that appea
 * First published version.
 
 == Upgrade notice ==
+
+= 3.6.1 =
+* Fix for a security vulnerability where a site admin could inject SQL code into search queries.
 
 = 3.6.0 =
 * A big change in how Relevanssi works with queries. This should reduce compatibility issues, but may cause unexpected results.

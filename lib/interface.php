@@ -245,7 +245,7 @@ function update_relevanssi_options() {
 	foreach ($_REQUEST as $key => $value) {
 		if (substr($key, 0, strlen('relevanssi_weight_')) == 'relevanssi_weight_') {
 			$type = substr($key, strlen('relevanssi_weight_'));
-			$post_type_weights[$type] = $value;
+			$post_type_weights[$type] = floatval($value);
 		}
 		if (substr($key, 0, strlen('relevanssi_index_type_')) == 'relevanssi_index_type_') {
 			$type = substr($key, strlen('relevanssi_index_type_'));
