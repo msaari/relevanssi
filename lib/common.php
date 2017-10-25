@@ -52,51 +52,117 @@ function relevanssi_wpml_filter($data) {
 }
 
 /**
- * Function by Matthew Hood http://my.php.net/manual/en/function.sort.php#75036
+ * Sort the objects based on the given comparison methods.
+ *
+ * @param stdClass[]   $data A reference to the array to sort.
+ * @param string|array $key Either a string of the fields to sort by or an array
+ *                          of fields to sort by. If an array, the index should be
+ *                          the field name and value should be the direction to sort.
+ * @param string       $dir If the $key is a string, this is the direction to sort.
+ *                          If $key is an array, this is ignored.
  */
- function relevanssi_object_sort(&$data, $key, $dir = 'desc') {
- 	 if ('title' == $key) $key = 'post_title';
- 	 if ('date' == $key) $key = 'post_date';
- 	 if (!isset($data[0]->$key)) return;			// trying to sort by a non-existent key
- 	 $dir = strtolower($dir);
-     function_exists('mb_strtolower') ? $strtolower = 'mb_strtolower' : $strtolower = 'strtolower';
-     for ($i = count($data) - 1; $i >= 0; $i--) {
-         $swapped = false;
-       	 for ($j = 0; $j < $i; $j++) {
-             $key1 = "";
-             $key2 = "";
-             if (isset($data[$j]->$key)) {
-                 $key1 = call_user_func($strtolower, $data[$j]->$key);
-             }
-             else {
-                 $key1 = apply_filters('relevanssi_missing_sort_key', $key1, $key);
-             }
-             if (isset($data[$j + 1]->$key)) {
-                 $key2 = call_user_func($strtolower, $data[$j + 1]->$key);
-             }
-             else {
-                 $key2 = apply_filters('relevanssi_missing_sort_key', $key2, $key);
-             }
-             if ('asc' == $dir) {
-                 if ($key1 > $key2) {
-                     $tmp = $data[$j];
-                     $data[$j] = $data[$j + 1];
-                     $data[$j + 1] = $tmp;
-                     $swapped = true;
-                 }
-             }
-             else {
-                 if ($key1 < $key2) {
-                     $tmp = $data[$j];
-                     $data[$j] = $data[$j + 1];
-                     $data[$j + 1] = $tmp;
-                     $swapped = true;
-                 }
-             }
-         }
-         if (!$swapped) return;
-     }
- }
+function relevanssi_object_sort( &$data, $key, $dir = 'desc' ) {
+	// Assume the input is an array.
+	$tmp_sort_args = $key;
+
+	// If it's not an array, convert it into one.
+	if ( ! is_array( $key ) ) {
+		$tmp_sort_args = array();
+
+		// Handle cases where $key is a string of fields separated by a space in addition to just a single field.
+		$keys = explode( ' ', $key );
+		foreach ( $keys as $the_key ) {
+			$tmp_sort_args[ $the_key ] = $dir;
+		}
+	}
+
+	$sort_args = array();
+
+	// Set up our $sort_args array to rename fields and set a compare method for those
+	// fields to be used in the sorting function.
+	foreach ( $tmp_sort_args as $arg => $value ) {
+		$compare = 'string';
+		switch ( $arg ) {
+			case 'title':
+				$arg = 'post_title';
+				break;
+			case 'date':
+				$arg = 'post_date';
+			case 'post_modified':
+			case 'post_modified_gmt':
+			case 'post_date_gmt':
+				$compare = 'date';
+				break;
+			case 'ID':
+			case 'menu_order':
+			case 'post_author':
+			case 'post_parent':
+			case 'comment_count':
+			case 'relevance_score':
+				$compare = 'number';
+				break;
+		}
+
+		$sort_args[ $arg ] = array( 'direction' => strtolower( $value ), 'compare' => $compare );
+	}
+
+	// Do the actual sort.
+	usort( $data, function ( $a, $b ) use ( $sort_args ) {
+
+		// If we're sorting on multiple fields, loop through them. First item has highest sort priority.
+		foreach ( $sort_args as $prop => $arg_data ) {
+
+			// Default these to the current property.
+			$a_prop = $prop;
+			$b_prop = $prop;
+
+			// Support filter from old sort function.
+			if ( ! isset( $a->$prop ) ) {
+				$a_prop = apply_filters( 'relevanssi_missing_sort_key', $a_prop, $prop );
+			} else if ( ! isset( $b->$prop ) ) {
+				$b_prop = apply_filters( 'relevanssi_missing_sort_key', $b_prop, $prop );
+			}
+
+			// We can't compare empty or non-existent fields.
+			if ( empty( $a_prop ) || empty( $b_prop ) || ! isset( $a->$a_prop ) || ! isset( $b->$b_prop ) ) {
+				continue;
+			}
+
+			$val = 0;
+			if ( 'date' == $arg_data['compare'] ) {
+				// Date compare.
+				if ( strtotime( $a->$a_prop ) > strtotime( $b->$b_prop ) ) {
+					$val = 1;
+				} else if ( strtotime( $a->$a_prop ) < strtotime( $b->$b_prop ) ) {
+					$val = - 1;
+				}
+			} else if ( 'number' == $arg_data['compare'] ) {
+				// Number compare.
+				if ( $a->$a_prop > $b->$b_prop ) {
+					$val = 1;
+				} else if ( $a->$a_prop < $b->$b_prop ) {
+					$val = - 1;
+				}
+			} else {
+				// String compare.
+				$val = strcasecmp( $a->$a_prop, $b->$b_prop );
+			}
+
+			// If the current comparison property is not equal, return a value based on if
+			// it's supposed to be ascending or descending.
+			if ( 0 !== $val ) {
+				if ( 'asc' == $arg_data['direction'] ) {
+					return $val;
+				} else {
+					return $val * - 1;
+				}
+			}
+		}
+
+		// Hey, these items are equal based on the compared fields.
+		return 0;
+	} );
+}
 
 function relevanssi_show_matches($data, $hit) {
 	isset($data['body_matches'][$hit]) ? $body = $data['body_matches'][$hit] : $body = 0;
