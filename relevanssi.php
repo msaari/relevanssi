@@ -3,7 +3,7 @@
 Plugin Name: Relevanssi
 Plugin URI: http://www.relevanssi.com/
 Description: This plugin replaces WordPress search with a relevance-sorting search.
-Version: 3.6.1
+Version: 3.6.2
 Author: Mikko Saari
 Author URI: http://www.mikkosaari.fi/
 */
@@ -287,6 +287,8 @@ function _relevanssi_install() {
 	add_option('relevanssi_index_post_types', $relevanssi_variables['post_type_index_defaults']);
 	add_option('relevanssi_index_taxonomies_list', array());
 
+	do_action('relevanssi_update_options');
+
 	relevanssi_create_database_tables($relevanssi_variables['database_version']);
 }
 
@@ -359,19 +361,7 @@ EOH;
 
 function relevanssi_sidebar() {
 	$tweet = 'http://twitter.com/home?status=' . urlencode("I'm using Relevanssi, a better search for WordPress. http://wordpress.org/extend/plugins/relevanssi/ #relevanssi #wordpress");
-	if (function_exists("plugins_url")) {
-		global $wp_version;
-		if (version_compare($wp_version, '2.8dev', '>' )) {
-			$facebooklogo = plugins_url('facebooklogo.jpg', __FILE__);
-		}
-		else {
-			$facebooklogo = plugins_url('relevanssi/facebooklogo.jpg');
-		}
-	}
-	else {
-		// We can't check, so let's assume something sensible
-		$facebooklogo = '/wp-content/plugins/relevanssi/facebooklogo.jpg';
-	}
+	$facebooklogo = plugins_url('facebooklogo.jpg', __FILE__);
 
 	echo <<<EOH
 <div class="postbox-container" style="width:20%; margin-top: 35px; margin-left: 15px;">

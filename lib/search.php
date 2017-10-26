@@ -729,16 +729,25 @@ function relevanssi_search($args) {
 	if (empty($orderby)) $orderby = $default_order;
 	// the sorting function checks for non-existing keys, cannot whitelist here
 
-	if (empty($order)) $order = 'desc';
-	$order = strtolower($order);
-	$order_accepted_values = array('asc', 'desc');
-	if (!in_array($order, $order_accepted_values)) $order = 'desc';
+	if (is_array($orderby)) {
+		$orderby = apply_filters('relevanssi_orderby', $orderby);
+		
+		relevanssi_object_sort($hits, $orderby);
+	}
+	else {
+		if (empty($order)) $order = 'desc';
+		$order = strtolower($order);
+		$order_accepted_values = array('asc', 'desc');
+		if (!in_array($order, $order_accepted_values)) $order = 'desc';
 
-	$orderby = apply_filters('relevanssi_orderby', $orderby);
-	$order   = apply_filters('relevanssi_order', $order);
+		$orderby = apply_filters('relevanssi_orderby', $orderby);
+		$order   = apply_filters('relevanssi_order', $order);
 
-	if ($orderby != 'relevance')
-		relevanssi_object_sort($hits, $orderby, $order);
+		if ($orderby != 'relevance') {
+			$orderby_array = array($orderby => $order);
+			relevanssi_object_sort($hits, $orderby_array);
+		}
+	}
 
 	$return = array('hits' => $hits, 'body_matches' => $body_matches, 'title_matches' => $title_matches,
 		'tag_matches' => $tag_matches, 'category_matches' => $category_matches, 'taxonomy_matches' => $taxonomy_matches,
@@ -1210,7 +1219,7 @@ function relevanssi_do_query(&$query) {
 		}
 
 		//Added by OdditY - Highlight Result Title too ->
-		if("on" == get_option('relevanssi_hilite_title')){
+		if("on" == get_option('relevanssi_hilite_title') && empty($fields)){
 			if (function_exists('qtrans_useCurrentLanguageIfNotFoundUseDefaultLanguage')) {
 				$post->post_highlighted_title = strip_tags(qtrans_useCurrentLanguageIfNotFoundUseDefaultLanguage($post->post_title));
 			}

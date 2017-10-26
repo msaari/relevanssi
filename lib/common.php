@@ -23,20 +23,6 @@ function relevanssi_wpml_filter($data) {
 					$filtered_hits[] = $hit;
 				}
 			}
-			elseif (function_exists('icl_object_id') && function_exists('pll_is_translated_post_type')) {
-				if (pll_is_translated_post_type($hit->post_type)) {
-					if (PLL()->model->post->get_language($hit->ID)->slug == ICL_LANGUAGE_CODE) {
-						$filtered_hits[] = $hit;
-					}
-					else if ($hit->ID == icl_object_id($hit->ID, $hit->post_type, false, ICL_LANGUAGE_CODE)) {
-						$filtered_hits[] = $hit;
-					}
-				}
-				else {
-					$filtered_hits[] = $hit;
-				}
-			}
-
 			// if there is no WPML but the target blog has identical language with current blog,
 			// we use the hits. Note en-US is not identical to en-GB!
 			elseif (get_bloginfo('language') == $lang) {
@@ -51,52 +37,186 @@ function relevanssi_wpml_filter($data) {
 	return $data;
 }
 
+/*
+ * Fetches a key-direction pair from the orderby array. Converts key names to match the post object parameters
+ * when necessary and seeds the random generator, if required.
+*/
+function relevanssi_get_next_key(&$orderby) {
+	if (!is_array($orderby) || count($orderby) < 1) return array(null, null);
+	
+ 	list($key) = array_keys($orderby);
+	$dir = $orderby[$key];
+	unset($orderby[$key]);
+
+	$compare = "string";
+
+	if (strtolower($dir) == "rand") $key = "rand";
+	
+	if ('title' == $key) $key = 'post_title';
+	if ('date' == $key) $key = 'post_date';
+	if ('modified' == $key) $key = 'post_modified';
+	if ('parent' == $key) $key = 'post_parent';
+	if ('type' == $key) $key = 'post_type';
+	if ('name' == $key) $key = 'post_name';
+	if ('author' == $key) $key = 'post_author';
+	if ('relevance' == $key) $key = 'relevance_score';
+
+	$numeric_keys = array('menu_order', 'ID', 'post_parent', 'post_author', 'comment_count', 'relevance_score');
+	$date_keys = array('post_date', 'post_date_gmt', 'post_modified', 'post_modified_gmt');
+
+	if (in_array($key, $numeric_keys)) $compare = "number";
+	if (in_array($key, $date_keys)) $compare = "date";
+
+	if ('rand' == $key) {
+		if (is_numeric($dir)) srand($dir);
+	}
+	else {
+		$dir = strtolower($dir);
+		if ($dir != "asc") $dir = "desc";
+	}
+	
+	return array($key, $dir, $compare);
+}
+
+/*
+ * Fetches the key values for the item pair. If random order is required, will randomize the order.
+ */
+function relevanssi_get_compare_keys($key, $item_1, $item_2) {
+    function_exists('mb_strtolower') ? $strtolower = 'mb_strtolower' : $strtolower = 'strtolower';
+
+	if ($key == "rand") {
+		do {
+			$key1 = rand();
+			$key2 = rand();
+		} while ($key1 == $key2);
+		return array($key1, $key2);
+	}
+
+	$key1 = "";
+	$key2 = "";
+
+	if ($key == "meta_value" || $key == "meta_value_num") {
+		global $wp_query;
+		$key = $wp_query->query_vars['meta_key'];
+		if (!isset($key)) return array("", "");
+
+		$key1 = get_post_meta($item_1->ID, $key, true);
+		if (empty($key1)) $key1 = apply_filters('relevanssi_missing_sort_key', $key1, $key);
+
+		$key2 = get_post_meta($item_2->ID, $key, true);
+		if (empty($key2)) $key2 = apply_filters('relevanssi_missing_sort_key', $key2, $key);
+	}
+	else {
+		if (isset($item_1->$key)) {
+			$key1 = call_user_func($strtolower, $item_1->$key);
+		}
+		else {
+			$key1 = apply_filters('relevanssi_missing_sort_key', $key1, $key);
+		}
+		if (isset($item_2->$key)) {
+			$key2 = call_user_func($strtolower, $item_2->$key);
+		}
+		else {
+			$key2 = apply_filters('relevanssi_missing_sort_key', $key2, $key);
+		}
+	}
+	return array($key1, $key2);
+}
+
+function relevanssi_compare_keys($key1, $key2, $compare) {
+	$val = 0;
+	if ($compare == "date") {
+		if (strtotime($key1) > strtotime($key2)) {
+			$val = 1;
+		}
+		else if (strtotime($key1) < strtome($key2)) {
+			$val = -1;
+		}
+	}
+	else if ($compare == "string") {
+		$val = relevanssi_mb_strcasecmp($key1, $key2);
+	}
+	else {
+		if ($key1 > $key2) {
+			$val = 1;
+		}
+		else if ($key1 < $key2) {
+			$val = -1;
+		}
+	}
+	return $val;
+}
+
+function relevanssi_mb_strcasecmp($str1, $str2, $encoding = null) {
+	if (!function_exists('mb_internal_encoding')) {
+		return strcasecmp($str1, $str2);
+	}
+	else {
+		if (null === $encoding) $encoding = mb_internal_encoding();
+		return strcmp(mb_strtoupper($str1, $encoding), mb_strtoupper($str2, $encoding));
+	}
+}
+
 /**
  * Function by Matthew Hood http://my.php.net/manual/en/function.sort.php#75036
  */
- function relevanssi_object_sort(&$data, $key, $dir = 'desc') {
- 	 if ('title' == $key) $key = 'post_title';
- 	 if ('date' == $key) $key = 'post_date';
- 	 if (!isset($data[0]->$key)) return;			// trying to sort by a non-existent key
- 	 $dir = strtolower($dir);
-     function_exists('mb_strtolower') ? $strtolower = 'mb_strtolower' : $strtolower = 'strtolower';
-     for ($i = count($data) - 1; $i >= 0; $i--) {
-         $swapped = false;
-       	 for ($j = 0; $j < $i; $j++) {
-             $key1 = "";
-             $key2 = "";
-             if (isset($data[$j]->$key)) {
-                 $key1 = call_user_func($strtolower, $data[$j]->$key);
-             }
-             else {
-                 $key1 = apply_filters('relevanssi_missing_sort_key', $key1, $key);
-             }
-             if (isset($data[$j + 1]->$key)) {
-                 $key2 = call_user_func($strtolower, $data[$j + 1]->$key);
-             }
-             else {
-                 $key2 = apply_filters('relevanssi_missing_sort_key', $key2, $key);
-             }
-             if ('asc' == $dir) {
-                 if ($key1 > $key2) {
-                     $tmp = $data[$j];
-                     $data[$j] = $data[$j + 1];
-                     $data[$j + 1] = $tmp;
-                     $swapped = true;
-                 }
-             }
-             else {
-                 if ($key1 < $key2) {
-                     $tmp = $data[$j];
-                     $data[$j] = $data[$j + 1];
-                     $data[$j + 1] = $tmp;
-                     $swapped = true;
-                 }
-             }
-         }
-         if (!$swapped) return;
-     }
- }
+function relevanssi_object_sort(&$data, $orderby) {
+	$keys = array();
+	$dirs = array();
+	$compares = array();
+	do {
+		list($key, $dir, $compare) = relevanssi_get_next_key($orderby);
+		if ($key != null) {
+			$keys[] = $key;
+			$dirs[] = $dir;
+			$compares[] = $compare;
+		}
+	} while ($key != null);
+	
+	$primary_key = $keys[0];
+	if (!isset($data[0]->$primary_key)) return;			// trying to sort by a non-existent key
+
+	for ($i = count($data) - 1; $i >= 0; $i--) {
+        $swapped = false;
+       	for ($j = 0; $j < $i; $j++) {
+            $key1 = "";
+            $key2 = "";
+
+		    $level = -1;
+		
+			$compare = $compares[$level];
+			$val = relevanssi_compare_keys($key1, $key2, $compare);
+
+            while ($val == 0) {
+            	$level++;
+            	if (!isset($keys[$level])) {
+            		$level--;
+            		break; // give up – we can't sort these two
+            	}
+				list($key1, $key2) = relevanssi_get_compare_keys($keys[$level], $data[$j], $data[$j + 1]);
+				$val = relevanssi_compare_keys($key1, $key2, $compare);
+	        }
+            
+            if ('asc' == $dirs[$level]) {
+                if ($val == 1) {
+                    $tmp = $data[$j];
+                    $data[$j] = $data[$j + 1];
+                    $data[$j + 1] = $tmp;
+                    $swapped = true;
+                }
+            }
+            else {
+                if ($val == -1) {
+                    $tmp = $data[$j];
+                    $data[$j] = $data[$j + 1];
+                    $data[$j + 1] = $tmp;
+                    $swapped = true;
+                }
+            }
+        }
+        if (!$swapped) return;
+    }
+}
 
 function relevanssi_show_matches($data, $hit) {
 	isset($data['body_matches'][$hit]) ? $body = $data['body_matches'][$hit] : $body = 0;
@@ -115,7 +235,7 @@ function relevanssi_show_matches($data, $hit) {
 		$total_hits += $hits;
 	}
 
-	$text = get_option('relevanssi_show_matches_text');
+	$text = stripslashes(get_option('relevanssi_show_matches_text'));
 	$replace_these = array("%body%", "%title%", "%tags%", "%categories%", "%taxonomies%", "%comments%", "%score%", "%terms%", "%total%");
 	$replacements = array($body, $title, $tag, $category, $taxonomy, $comment, $score, $term_hits, $total_hits);
 
@@ -187,6 +307,11 @@ function relevanssi_default_post_ok($post_ok, $doc) {
 			// Groups
 			$current_user = wp_get_current_user();
 			$access = Groups_Post_Access::user_can_read_post($doc, $current_user->ID);
+		}
+		else if (defined('SIMPLE_WP_MEMBERSHIP_VER')) {
+			// Simple Membership
+			$access_ctrl = SwpmAccessControl::get_instance();
+			$access = $access_ctrl->can_i_read_post($post);
 		}
 		else {
 			// Basic WordPress version
@@ -756,5 +881,3 @@ function relevanssi_debug_echo($s) {
 		echo $s . "\n";
 	}
 }
-
-?>

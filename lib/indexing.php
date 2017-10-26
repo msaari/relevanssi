@@ -448,6 +448,16 @@ function relevanssi_index_doc($indexpost, $remove_first = false, $custom_fields 
 				remove_shortcode('tc_process_payment');
 				remove_shortcode('maxmegamenu');			// Max Mega Menu
 				remove_shortcode('searchandfilter');		// Search and Filter
+				remove_shortcode('downloads');				// Easy Digital Downloads
+				remove_shortcode('download_history');
+				remove_shortcode('purchase_history');
+				remove_shortcode('download_checkout');
+				remove_shortcode('purchase_link');
+				remove_shortcode('download_cart');
+				remove_shortcode('edd_profile_editor');
+				remove_shortcode('edd_login');
+				remove_shortcode('edd_register');
+				remove_shortcode('swpm_protected');			// Simple Membership Partially Protected content
 
 				$post_before_shortcode = $post;
 				$contents = do_shortcode($contents);
@@ -462,10 +472,7 @@ function relevanssi_index_doc($indexpost, $remove_first = false, $custom_fields 
 			}
 		}
 		else {
-			if (function_exists("strip_shortcodes")) {
-				// WP 2.5 doesn't have the function
-				$contents = strip_shortcodes($contents);
-			}
+			$contents = strip_shortcodes($contents);
 		}
 
 		remove_shortcode('noindex');

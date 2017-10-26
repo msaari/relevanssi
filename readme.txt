@@ -5,7 +5,7 @@ Tags: search, relevance, better search
 Requires at least: 4.0
 Tested up to: 4.9
 Requires PHP: 5.6
-Stable tag: 3.6.1
+Stable tag: 3.6.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -268,6 +268,14 @@ Each document database is full of useless words. All the little words that appea
 * Mohib Ebrahim for relentless bug hunting.
 
 == Changelog ==
+
+= 3.6.2 =
+* Simple Membership plugin is now supported automatically to restrict access to posts.
+* Relevanssi can now handle orderby parameter in array format.
+* Relevanssi now blocks Easy Digital Downloads shortcodes when indexing to improve compatibility with EDD.
+* When using `fields` to only fetch post IDs, Relevanssi doesn't try to highlight post titles.
+* New action: `relevanssi_update_options` lets you adjust Relevanssi options immediately after the defaults are set.
+* Remove notices about duplicated database columns when installing the plugin.
 
 = 3.6.1 =
 * SECURITY: This version fixes a SQL injection vulnerability, where a site admin could theoretically inject SQL code into Relevanssi search queries. Doing this required access to Relevanssi settings page and in my tests, I couldn't do any damage, just break the Relevanssi search, but in any case, this vulnerability is now fixed.
