@@ -5,7 +5,7 @@ Tags: search, relevance, better search
 Requires at least: 4.0
 Tested up to: 4.9
 Requires PHP: 5.6
-Stable tag: 3.6.2
+Stable tag: 3.6.2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -268,6 +268,9 @@ Each document database is full of useless words. All the little words that appea
 * Mohib Ebrahim for relentless bug hunting.
 
 == Changelog ==
+
+= 3.6.2.1 =
+* A bug was left in the post ordering code. That bug is now squashed.
 
 = 3.6.2 =
 * Simple Membership plugin is now supported automatically to restrict access to posts.
@@ -1087,6 +1090,12 @@ Each document database is full of useless words. All the little words that appea
 * First published version.
 
 == Upgrade notice ==
+
+= 3.6.2.1 =
+* Fixes a bug in the post sorting algorithm.
+
+= 3.6.2 =
+* Support for array orderby and other fine features.
 
 = 3.6.1 =
 * Fix for a security vulnerability where a site admin could inject SQL code into search queries.
