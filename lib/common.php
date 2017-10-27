@@ -42,7 +42,7 @@ function relevanssi_wpml_filter($data) {
  * when necessary and seeds the random generator, if required.
 */
 function relevanssi_get_next_key(&$orderby) {
-	if (!is_array($orderby) || count($orderby) < 1) return array(null, null);
+	if (!is_array($orderby) || count($orderby) < 1) return array('key' => null, 'dir' => null, 'compare' => null);
 	
  	list($key) = array_keys($orderby);
 	$dir = $orderby[$key];
@@ -75,13 +75,18 @@ function relevanssi_get_next_key(&$orderby) {
 		if ($dir != "asc") $dir = "desc";
 	}
 	
-	return array($key, $dir, $compare);
+	$values = array(
+		'key' => $key,
+		'dir' => $dir,
+		'compare' => $compare
+	);
+	return $values;
 }
 
 /*
  * Fetches the key values for the item pair. If random order is required, will randomize the order.
  */
-function relevanssi_get_compare_keys($key, $item_1, $item_2) {
+function relevanssi_get_compare_values($key, $item_1, $item_2) {
     function_exists('mb_strtolower') ? $strtolower = 'mb_strtolower' : $strtolower = 'strtolower';
 
 	if ($key == "rand") {
@@ -89,7 +94,11 @@ function relevanssi_get_compare_keys($key, $item_1, $item_2) {
 			$key1 = rand();
 			$key2 = rand();
 		} while ($key1 == $key2);
-		return array($key1, $key2);
+		$keys = array(
+			'key1' => $key1,
+			'key2' => $key2,
+		);
+		return $keys;
 	}
 
 	$key1 = "";
@@ -120,16 +129,21 @@ function relevanssi_get_compare_keys($key, $item_1, $item_2) {
 			$key2 = apply_filters('relevanssi_missing_sort_key', $key2, $key);
 		}
 	}
-	return array($key1, $key2);
+
+	$keys = array(
+		'key1' => $key1,
+		'key2' => $key2,
+	);
+	return $keys;
 }
 
-function relevanssi_compare_keys($key1, $key2, $compare) {
+function relevanssi_compare_values($key1, $key2, $compare) {
 	$val = 0;
 	if ($compare == "date") {
 		if (strtotime($key1) > strtotime($key2)) {
 			$val = 1;
 		}
-		else if (strtotime($key1) < strtome($key2)) {
+		else if (strtotime($key1) < strtotime($key2)) {
 			$val = -1;
 		}
 	}
@@ -165,13 +179,13 @@ function relevanssi_object_sort(&$data, $orderby) {
 	$dirs = array();
 	$compares = array();
 	do {
-		list($key, $dir, $compare) = relevanssi_get_next_key($orderby);
-		if ($key != null) {
-			$keys[] = $key;
-			$dirs[] = $dir;
-			$compares[] = $compare;
+		$values = relevanssi_get_next_key($orderby);
+		if (!empty($values['key'])) {
+			$keys[] = $values['key'];
+			$dirs[] = $values['dir'];
+			$compares[] = $values['compare'];
 		}
-	} while ($key != null);
+	} while (!empty($values['key']));
 	
 	$primary_key = $keys[0];
 	if (!isset($data[0]->$primary_key)) return;			// trying to sort by a non-existent key
@@ -183,20 +197,19 @@ function relevanssi_object_sort(&$data, $orderby) {
             $key2 = "";
 
 		    $level = -1;
-		
-			$compare = $compares[$level];
-			$val = relevanssi_compare_keys($key1, $key2, $compare);
+			$val = 0;
 
             while ($val == 0) {
-            	$level++;
-            	if (!isset($keys[$level])) {
+				$level++;
+				if (!isset($keys[$level])) {
             		$level--;
             		break; // give up – we can't sort these two
             	}
-				list($key1, $key2) = relevanssi_get_compare_keys($keys[$level], $data[$j], $data[$j + 1]);
-				$val = relevanssi_compare_keys($key1, $key2, $compare);
+				$compare = $compares[$level];
+				$compare_values = relevanssi_get_compare_values($keys[$level], $data[$j], $data[$j + 1]);
+				$val = relevanssi_compare_values($compare_values['key1'], $compare_values['key2'], $compare);
 	        }
-            
+
             if ('asc' == $dirs[$level]) {
                 if ($val == 1) {
                     $tmp = $data[$j];
