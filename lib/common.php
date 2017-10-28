@@ -211,7 +211,7 @@ function relevanssi_object_sort(&$data, $orderby) {
 	        }
 
             if ('asc' == $dirs[$level]) {
-                if ($val == 1) {
+                if ($val > 0) {
                     $tmp = $data[$j];
                     $data[$j] = $data[$j + 1];
                     $data[$j + 1] = $tmp;
@@ -219,7 +219,7 @@ function relevanssi_object_sort(&$data, $orderby) {
                 }
             }
             else {
-                if ($val == -1) {
+                if ($val < 1) {
                     $tmp = $data[$j];
                     $data[$j] = $data[$j + 1];
                     $data[$j + 1] = $tmp;
