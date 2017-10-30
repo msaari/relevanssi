@@ -34,7 +34,7 @@ function relevanssi_init() {
 	load_plugin_textdomain('relevanssi', false, $plugin_dir);
 
 	isset($_POST['index']) ? $index = true : $index = false;
-	if (!get_option('relevanssi_indexed') && !$index) {
+	if (get_option('relevanssi_indexed') != "done" && !$index) {
 		function relevanssi_warning() {
 			RELEVANSSI_PREMIUM ? $plugin = 'relevanssi-premium' : $plugin = 'relevanssi';
 			echo "<div id='relevanssi-warning' class='update-nag'><p><strong>"
@@ -124,15 +124,9 @@ function relevanssi_create_database_tables($relevanssi_db_version) {
 	$relevanssi_stopword_table = $wpdb->prefix . "relevanssi_stopwords";
 	$relevanssi_log_table = $wpdb->prefix . "relevanssi_log";
 
-	if(get_option('relevanssi_db_version') != $relevanssi_db_version) {
-		if ($relevanssi_db_version == 1) {
-			if($wpdb->get_var("SHOW TABLES LIKE '$relevanssi_table'") == $relevanssi_table) {
-				$sql = "DROP TABLE $relevanssi_table";
-				$wpdb->query($sql);
-			}
-			delete_option('relevanssi_indexed');
-		}
-
+	$current_db_version = get_option('relevanssi_db_version');
+	
+	if($current_db_version != $relevanssi_db_version) {
 		$sql = "CREATE TABLE " . $relevanssi_table . " (doc bigint(20) NOT NULL DEFAULT '0',
 		term varchar(50) NOT NULL DEFAULT '0',
 		term_reverse varchar(50) NOT NULL DEFAULT '0',
@@ -205,7 +199,7 @@ function relevanssi_create_database_tables($relevanssi_db_version) {
 
 		dbDelta($sql);
 
-		if (RELEVANSSI_PREMIUM && get_option('relevanssi_db_version') < 12) {
+		if (RELEVANSSI_PREMIUM && $current_db_version > 0 && $current_db_version < 12) {
 			$charset_collate_bin_column = '';
 			$charset_collate = '';
 
@@ -230,7 +224,7 @@ function relevanssi_create_database_tables($relevanssi_db_version) {
 			$wpdb->query($sql);
 		}
 
-		if (get_option('relevanssi_db_version') < 16) {
+		if ($current_db_version > 0 && $current_db_version < 16) {
 			$sql = "ALTER TABLE $relevanssi_table ADD COLUMN term_reverse VARCHAR(50);";
 			$wpdb->query($sql);
 			$sql = "UPDATE $relevanssi_table SET term_reverse = REVERSE(term);";
