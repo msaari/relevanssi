@@ -3,7 +3,7 @@ Contributors: msaari
 Donate link: https://www.relevanssi.com/buy-premium/
 Tags: search, relevance, better search
 Requires at least: 4.0
-Tested up to: 4.9
+Tested up to: 4.9.1
 Requires PHP: 5.6
 Stable tag: 4.0
 License: GPLv2 or later
@@ -64,7 +64,15 @@ Relevanssi owes a lot to [wpSearch](https://wordpress.org/extend/plugins/wpsearc
 
 Search Unleashed is a popular search plugin, but it hasn't been updated since 2010. Relevanssi is in active development and does what Search Unleashed does.
 
+== Screenshots ==
 
+1. Overview page
+2. Indexing settings
+3. Searching settings
+4. Logging settings
+5. Excerpts and highlights
+6. Synonym settings
+7. Stopword settings
 
 == Installation ==
 
@@ -273,7 +281,7 @@ Each document database is full of useless words. All the little words that appea
 == Changelog ==
 
 = 4.0 =
-* Legacy code has been removed. If you have a version older than 1.16, update first to 1.16.x to guarantee smooth upgrade process.
+* Legacy code has been removed. If you have a version older than 3.6, update first to 3.6.2.2 to guarantee smooth upgrade process.
 * Improved indexing: no more clicking "Continue indexing" again and again!
 * Settings pages have been completely rewritten.
 * There's documentation in the WordPress contextual help: just click Help on the top right corner.

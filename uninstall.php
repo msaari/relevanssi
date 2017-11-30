@@ -4,8 +4,6 @@ if (!defined('WP_UNINSTALL_PLUGIN'))
 	exit();
 
 global $wpdb;
-define('RELEVANSSI_PREMIUM', true);
-require_once('premium/uninstall.php');
 
 if (function_exists('is_multisite') && is_multisite()) {
 	$blogids = $wpdb->get_col($wpdb->prepare("SELECT blog_id FROM $wpdb->blogs"));
@@ -15,8 +13,6 @@ if (function_exists('is_multisite') && is_multisite()) {
 		_relevanssi_uninstall();
 	}
 	switch_to_blog($old_blogid);
-
-	delete_site_option('relevanssi_api_key');
 }
 else {
 	_relevanssi_uninstall();
@@ -24,7 +20,6 @@ else {
 
 function _relevanssi_uninstall() {
 	delete_option('relevanssi_admin_search');
-	delete_option('relevanssi_api_key');
 	delete_option('relevanssi_bg_col');
 	delete_option('relevanssi_cache_seconds');
 	delete_option('relevanssi_cat');
@@ -63,19 +58,13 @@ function _relevanssi_uninstall() {
 	delete_option('relevanssi_index_excerpt');
 	delete_option('relevanssi_index_fields');
 	delete_option('relevanssi_index_limit');
-	delete_option('relevanssi_index_pdf_parent');
 	delete_option('relevanssi_index_post_types');
-	delete_option('relevanssi_index_subscribers');
 	delete_option('relevanssi_index_synonyms');
 	delete_option('relevanssi_index_taxonomies');
 	delete_option('relevanssi_index_taxonomies_list');
 	delete_option('relevanssi_index_terms');
-	delete_option('relevanssi_index_users');
-	delete_option('relevanssi_index_user_fields');
 	delete_option('relevanssi_indexed');
-	delete_option('relevanssi_internal_links');
 	delete_option('relevanssi_link_boost');
-	delete_option('relevanssi_link_pdf_files');
 	delete_option('relevanssi_log_queries');
 	delete_option('relevanssi_log_queries_with_ip');
 	delete_option('relevanssi_min_word_length');
@@ -86,7 +75,6 @@ function _relevanssi_uninstall() {
 	delete_option('relevanssi_punctuation');
 	delete_option('relevanssi_recency_bonus');
 	delete_option('relevanssi_respect_exclude');
-	delete_option('relevanssi_send_pdf_files');
 	delete_option('relevanssi_show_matches_text');
 	delete_option('relevanssi_show_matches');
 	delete_option('relevanssi_synonyms');
