@@ -23,13 +23,16 @@ function relevanssi_do_excerpt($t_post, $query) {
 
 	// These shortcodes cause problems with Relevanssi excerpts
     $problem_shortcodes = apply_filters('relevanssi_disable_shortcodes_excerpt',
-        array('layerslider', 'responsive-flipbook', 'breadcrumb', 'maxmegamenu', 'robogallery')
+        array('layerslider', 'responsive-flipbook', 'breadcrumb', 'maxmegamenu', 'robogallery', 'gravityview')
     );
     foreach ($problem_shortcodes as $shortcode) {
         remove_shortcode($shortcode);
     }
 
 	$content = apply_filters('relevanssi_pre_excerpt_content', $post->post_content, $post, $query);
+	if (get_option('relevanssi_excerpt_custom_fields') === "on") {
+		$content .= relevanssi_get_custom_field_content($post->ID);
+	}
 	$content = apply_filters('the_content', $content);
 	$content = apply_filters('relevanssi_excerpt_content', $content, $post, $query);
 
@@ -40,7 +43,9 @@ function relevanssi_do_excerpt($t_post, $query) {
 	$content = preg_replace("/\n\r|\r\n|\n|\r/", " ", $content);
 //	$content = trim(preg_replace("/\s\s+/", " ", $content));
 
-	$query = relevanssi_add_synonyms($query);
+	if (get_option('relevanssi_implicit_operator') === "OR" || get_option('relevanssi_index_synonyms') === "on") {
+		$query = relevanssi_add_synonyms($query);
+	}
 
 	$excerpt_data = relevanssi_create_excerpt($content, $terms, $query);
 
@@ -73,14 +78,13 @@ function relevanssi_do_excerpt($t_post, $query) {
 	$excerpt = apply_filters('relevanssi_excerpt', $excerpt);
 
 	if (empty($excerpt) && !empty($post->post_excerpt)) $excerpt = $post->post_excerpt;
-	$excerpt == $post->post_content ? $whole_post_excerpted = true : $whole_post_excerpted = false;
+	$excerpt === $post->post_content ? $whole_post_excerpted = true : $whole_post_excerpted = false;
 
 	$ellipsis = apply_filters('relevanssi_ellipsis', '...');
 
 	$highlight = get_option('relevanssi_highlight');
 	if ("none" != $highlight) {
 		if ( !is_admin() || ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
-			$query = relevanssi_add_synonyms($query);
 			$excerpt = relevanssi_highlight_terms($excerpt, $query);
 		}
 	}
@@ -97,7 +101,7 @@ function relevanssi_do_excerpt($t_post, $query) {
 			$excerpt = $excerpt . $ellipsis;
 	}
 
-	if (relevanssi_s2member_level($post->ID) == 1) $excerpt = $post->post_excerpt;
+	if (relevanssi_s2member_level($post->ID) === 1) $excerpt = $post->post_excerpt;
 
 	if ($old_global_post != NULL) $post = $old_global_post;
 
@@ -140,7 +144,7 @@ function relevanssi_create_excerpt($content, $terms, $query) {
 	uksort($terms, 'relevanssi_strlen_sort');
 
 	$start = false;
-	if ("chars" == $type) {
+	if ("chars" === $type) {
 		$prev_count = floor($excerpt_length / 2);
 		list($excerpt, $best_excerpt_term_hits, $start) = relevanssi_extract_relevant(array_keys($terms), $content, $excerpt_length, $prev_count);
 	}
@@ -148,6 +152,7 @@ function relevanssi_create_excerpt($content, $terms, $query) {
 		$words = explode(' ', $content);
 		$i = 0;
 
+		$tries = 0;
 		while ($i < count($words)) {
 			if ($i + $excerpt_length > count($words)) {
 				$i = count($words) - $excerpt_length;
@@ -160,16 +165,23 @@ function relevanssi_create_excerpt($content, $terms, $query) {
 			$excerpt_slice = " $excerpt_slice";
 			$term_hits = 0;
 			$count = relevanssi_count_matches(array_keys($terms), $excerpt_slice);
-
+			if ($count > 0) {
+				$tries++;
+			}
 			if ($count > 0 && $count > $best_excerpt_term_hits) {
 				$best_excerpt_term_hits = $count;
 				$excerpt = $excerpt_slice;
 			}
 
+			if (apply_filters('relevanssi_optimize_excerpts', false)) {
+				if ($tries > 50) break;
+				// An optimization trick.
+			}
+
 			$i += $excerpt_length;
 		}
 
-		if ("" == $excerpt) {
+		if ("" === $excerpt) {
 			$excerpt = explode(' ', $content, $excerpt_length);
 			array_pop($excerpt);
 			$excerpt = implode(' ', $excerpt);
@@ -184,28 +196,18 @@ function relevanssi_create_excerpt($content, $terms, $query) {
 
 function relevanssi_highlight_in_docs($content) {
 	global $wp_query;
-	if (is_singular() && in_the_loop()) {
-		if (isset($_SERVER['HTTP_REFERER'])) {
-			$referrer = preg_replace('@(http|https)://@', '', stripslashes(urldecode($_SERVER['HTTP_REFERER'])));
-			$args     = explode('?', $referrer);
-			$query    = array();
+	if (is_singular() && is_main_query()) {
+		if (isset($wp_query->query_vars['highlight'])) {
+			// Local search
+			$q = relevanssi_add_synonyms($wp_query->query_vars['highlight']);
+			$in_docs = true;
+			$highlighted_content = relevanssi_highlight_terms($content, $q, $in_docs);
+			if (!empty($highlighted_content)) $content = $highlighted_content;
+			// Sometimes the content comes back empty; until I figure out why, this tries to be a solution.
+		}
 
-			if ( count( $args ) > 1 )
-				parse_str( $args[1], $query );
-
-			if (stripos($referrer, $_SERVER['SERVER_NAME']) !== false) {
-				// Local search
-				if (isset($query['s'])) {
-					$q = relevanssi_add_synonyms($query['s']);
-					$in_docs = true;
-					$highlighted_content = relevanssi_highlight_terms($content, $q, $in_docs);
-					if (!empty($highlighted_content)) $content = $highlighted_content;
-					// Sometimes the content comes back empty; until I figure out why, this tries to be a solution.
-				}
-			}
-			if (function_exists('relevanssi_nonlocal_highlighting')) {
-				$content = relevanssi_nonlocal_highlighting($referrer, $content, $query);
-			}
+		if (function_exists('relevanssi_nonlocal_highlighting')) {
+			$content = relevanssi_nonlocal_highlighting($content);
 		}
 	}
 
@@ -214,7 +216,7 @@ function relevanssi_highlight_in_docs($content) {
 
 function relevanssi_highlight_terms($excerpt, $query, $in_docs = false) {
 	$type = get_option("relevanssi_highlight");
-	if ("none" == $type) {
+	if ("none" === $type) {
 		return $excerpt;
 	}
 
@@ -290,7 +292,7 @@ function relevanssi_highlight_terms($excerpt, $query, $in_docs = false) {
 
 	uksort($terms, 'relevanssi_strlen_sort');
 
-	get_option('relevanssi_word_boundaries', 'on') == 'on' ? $word_boundaries = true : $word_boundaries = false;
+	get_option('relevanssi_word_boundaries', 'on') === 'on' ? $word_boundaries = true : $word_boundaries = false;
 	foreach ($terms as $term) {
 //		$pr_term = relevanssi_replace_punctuation(preg_quote($term, '/'));
 		$pr_term = preg_quote($term, '/');
@@ -457,7 +459,7 @@ function relevanssi_remove_nested_highlights($s, $a, $b) {
 	$new_bits = array($bits[0]);
 	$in = false;
 	for ($i = 1; $i < count($bits); $i++) {
-		if ($bits[$i] == '') continue;
+		if ($bits[$i] === '') continue;
 
 		if (!$in) {
 			array_push($new_bits, $a);
@@ -473,7 +475,7 @@ function relevanssi_remove_nested_highlights($s, $a, $b) {
 			$whole_bit = "";
 			foreach ($more_bits as $bit) {
 				$whole_bit .= $bit;
-				if ($j == $k) $whole_bit .= $b;
+				if ($j === $k) $whole_bit .= $b;
 				$j++;
 			}
 			$bits[$i] = $whole_bit;
@@ -494,27 +496,33 @@ function relevanssi_remove_nested_highlights($s, $a, $b) {
 // Nothing exciting here. The array_unique is required
 // unless you decide to make the words unique before passing in
 function relevanssi_extract_locations($words, $fulltext) {
-    $locations = array();
+	$locations = array();
     foreach($words as $word) {
+		$count_locations = 0;
         $wordlen = relevanssi_strlen($word);
         $loc = relevanssi_stripos($fulltext, $word, 0);
         while($loc !== FALSE) {
             $locations[] = $loc;
-            $loc = relevanssi_stripos($fulltext, $word, $loc + $wordlen);
+			$loc = relevanssi_stripos($fulltext, $word, $loc + $wordlen);
+			$count_locations++;
+			if (apply_filters('relevanssi_optimize_excerpts', false)) {
+				if ($count_locations > 10) break;
+				// If more than ten locations are found, quit: there's probably a good one in there, and this saves plenty of time
+			}
         }
     }
     $locations = array_unique($locations);
-    sort($locations);
-
+	sort($locations);
+	
     return $locations;
 }
 
 function relevanssi_count_matches($words, $fulltext) {
-	$count = 0;
+    $count = 0;
 	foreach( $words as $word ) {
 		$word = relevanssi_add_accent_variations($word);
 
-		if (get_option('relevanssi_fuzzy') == 'never') {
+		if (get_option('relevanssi_fuzzy') === 'never') {
 			$pattern = '/([\s,\.:;\?!\']'.$word.'[\s,\.:;\?!\'])/i';
 			if (preg_match($pattern, $fulltext, $matches, PREG_OFFSET_CAPTURE)) {
 				$count += count($matches) - 1;
@@ -531,6 +539,7 @@ function relevanssi_count_matches($words, $fulltext) {
 			}
 		}
 	}
+	
 	return $count;
 }
 
@@ -552,7 +561,7 @@ function relevanssi_determine_snip_location($locations, $prevcount) {
     if(count($locations) > 2) {
         // skip the first as we check 1 behind
         for($i=1; $i < $loccount; $i++) {
-            if($i == $loccount-1) { // at the end
+            if($i === $loccount-1) { // at the end
                 $diff = $locations[$i] - $locations[$i-1];
             }
             else {
@@ -567,7 +576,8 @@ function relevanssi_determine_snip_location($locations, $prevcount) {
     }
 
     $startpos = $startpos > $prevcount ? $startpos - $prevcount : 0;
-    return $startpos;
+
+	return $startpos;
 }
 
 // 1/6 ratio on prevcount tends to work pretty well and puts the terms
@@ -598,7 +608,7 @@ function relevanssi_extract_relevant($words, $fulltext, $rellength=300, $prevcou
     }
 
 	$start = false;
-    if($startpos == 0) $start = true;
+    if($startpos === 0) $start = true;
 
 	$besthits = count(relevanssi_extract_locations($words, $reltext));
 
@@ -614,6 +624,56 @@ function relevanssi_add_accent_variations($word) {
 	$word = str_ireplace($replacement_arrays['from'], $replacement_arrays['to'], $word);
 
    	return $word;
+}
+
+function relevanssi_get_custom_field_content($post_id) {
+	$custom_field_content = "";
+	$remove_underscore_fields = false;
+
+	$custom_fields = relevanssi_get_custom_fields();
+	if (isset($custom_fields) && $custom_fields === 'all')
+		$custom_fields = get_post_custom_keys($post_id);
+	if (isset($custom_fields) && $custom_fields === 'visible') {
+		$custom_fields = get_post_custom_keys($post_id);
+		$remove_underscore_fields = true;
+	}
+	$custom_fields = apply_filters('relevanssi_index_custom_fields', $custom_fields);
+
+	if (function_exists('relevanssi_get_child_pdf_content')) $custom_field_content .= " " . relevanssi_get_child_pdf_content($post_id);
+
+	if (is_array($custom_fields)) {
+		$custom_fields = array_unique($custom_fields);	// no reason to index duplicates
+
+		$repeater_fields = array();
+		if (function_exists('relevanssi_add_repeater_fields')) relevanssi_add_repeater_fields($custom_fields, $post_id);
+
+		foreach ($custom_fields as $field) {
+			if ($remove_underscore_fields) {
+				if (substr($field, 0, 1) === '_') continue;
+			}
+			$values = get_post_meta($post_id, $field, false);
+			if ("" === $values) continue;
+			foreach ($values as $value) {
+				// Quick hack : allow indexing of PODS relationship custom fields // TMV
+				if (is_array($value) && isset($value['post_title'])) $value = $value['post_title'];
+				$custom_field_content .= " " . $value;
+			}
+		}
+	}
+	return apply_filters('relevanssi_excerpt_custom_field_content', $custom_field_content);
+}
+
+function relevanssi_remove_page_builder_shortcodes($content) {
+	$search_array = apply_filters('relevanssi_page_builder_shortcodes', array(
+		'/\[et_pb_code.*?\].*\[\/et_pb_code\]/',		// Code and sidebars:
+		'/\[et_pb_sidebar.*?\].*\[\/et_pb_sidebar\]/',	// remove contents and tags
+		'/\[\/?et_pb.*?\]/',							// Everything else: keep content
+		'/\[vc_raw_html.*?\].*\[\/vc_raw_html\]/',		// Raw HTML: remove contents
+		'/\[\/?vc.*?\]/',
+		'/\[\/?mk.*?\]/',
+	));
+	$content = preg_replace($search_array, '', $content);
+	return $content;
 }
 
 ?>

@@ -5,7 +5,7 @@ Tags: search, relevance, better search
 Requires at least: 4.0
 Tested up to: 4.9
 Requires PHP: 5.6
-Stable tag: 3.6.2.2
+Stable tag: 4.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -25,6 +25,7 @@ This is the free version of Relevanssi. There's also Relevanssi Premium, which h
 * Create custom excerpts that show where the hit was made, with the search terms highlighted.
 * Highlight search terms in the documents when user clicks through search results.
 * Search comments, tags, categories and custom fields.
+* Multisite friendly.
 
 = Advanced features =
 * Adjust the weighting for titles, tags and comments.
@@ -42,8 +43,9 @@ This is the free version of Relevanssi. There's also Relevanssi Premium, which h
 Relevanssi is available in two versions, regular and Premium. Regular Relevanssi is and will remain free to download and use. Relevanssi Premium comes with a cost, but will get all the new features. Standard Relevanssi will be updated to fix bugs, but new features will mostly appear in Premium. Also, support for standard Relevanssi depends very much on my mood and available time. Premium pricing includes support.
 
 = Premium features (only in Relevanssi Premium) =
+* Indexing PDF content.
 * Improved spelling correction in "Did you mean?" suggestions.
-* Multisite support.
+* Searching across multiple sites in the same multisite installation.
 * Search and index user profiles.
 * Search and index taxonomy term pages (categories, tags, custom taxonomies).
 * Search and index arbitrary columns in wp_posts MySQL table.
@@ -266,8 +268,33 @@ Each document database is full of useless words. All the little words that appea
 * Marcus Dalgren for UTF-8 fixing.
 * Warren Tape for 2.5.5 fixes.
 * Mohib Ebrahim for relentless bug hunting.
+* John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+
+= 4.0 =
+* Legacy code has been removed. If you have a version older than 1.16, update first to 1.16.x to guarantee smooth upgrade process.
+* Improved indexing: no more clicking "Continue indexing" again and again!
+* Settings pages have been completely rewritten.
+* There's documentation in the WordPress contextual help: just click Help on the top right corner.
+* Better Polylang support. A new option to remove the Polylang language filter.
+* Logs can be automatically trimmed. Old log entries are removed to save space.
+* Finally a setting to adjust content weight!
+* Excerpts can use the custom field content.
+* Highlighting in documents is changed: it now requires a `highlight` query parameter. This helps getting pass caching and makes the highlighting more reliable. To get the query parameter active, use `relevanssi_get_permalink()` to print out the permalinks on the search results templates.
+* Relevanssi added synonyms to highlighting even if synonyms were not used for searching. In some cases, synonyms were added twice.
+* The User Searches page got a makeover, too.
+* Relevanssi is automatically disabled in REST API searches.
+* Groups and Simple Membership support has been improved.
+* Sorting search results is now up to 300 times faster than before.
+* Lots of improvements all over the place.
+* New filter: `relevanssi_excerpt_custom_field_content` lets you modify custom field content that is used for excerpts.
+* New filter: `relevanssi_punctuation_filter` allows for easy modification of punctuation handling.
+* New filter: `relevanssi_default_punctuation_replacement` changes the default way to handle the rest of the punctuation.
+* New filter: `relevanssi_search_again` lets you run the search again if no results are found and to modify the parameters between search runs.
+* New filter: `relevanssi_fallback` allows you to do fallback searches.
+* New filter: `relevanssi_page_builder_shortcodes` lets you control which page builder shortcodes Relevanssi removes before building the excerpts.
+* New filter: `relevanssi_optimize_excerpts` makes excerpt-building faster, if you make the filter return `true`.
 
 = 3.6.2.2 =
 * A bug in post sorting broke string sorting (mostly post title sorting).
@@ -1093,6 +1120,9 @@ Each document database is full of useless words. All the little words that appea
 * First published version.
 
 == Upgrade notice ==
+
+= 4.0 =
+* Major new release. Testing at staging is recommended. Deactivate and reactivate after upgrade!
 
 = 3.6.2.2 =
 * Fixes a bug in string sorting (for example post title ordering).

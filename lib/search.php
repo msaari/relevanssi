@@ -472,7 +472,10 @@ function relevanssi_search($args) {
 	}
 	$min_length = get_option('relevanssi_min_word_length');
 	$search_again = false;
-
+	
+	$content_option = get_option('relevanssi_content_boost');
+	if (empty($content_option)) $content_option = 1;
+	$content_boost = floatval($content_option);
 	$title_boost = floatval(get_option('relevanssi_title_boost'));
 	$link_boost = floatval(get_option('relevanssi_link_boost'));
 	$comment_boost = floatval(get_option('relevanssi_comment_boost'));
@@ -502,7 +505,7 @@ function relevanssi_search($args) {
 			!empty($post_type_weights['category']) ? $cat = $post_type_weights['category'] : $cat = $relevanssi_variables['post_type_weight_defaults']['category'];
 
 			$query = "SELECT DISTINCT(relevanssi.doc), relevanssi.*, relevanssi.title * $title_boost +
-				relevanssi.content + relevanssi.comment * $comment_boost +
+				relevanssi.content * $content_boost + relevanssi.comment * $comment_boost +
 				relevanssi.tag * $tag + relevanssi.link * $link_boost +
 				relevanssi.author + relevanssi.category * $cat + relevanssi.excerpt +
 				relevanssi.taxonomy + relevanssi.customfield + relevanssi.mysqlcolumn AS tf
@@ -511,7 +514,7 @@ function relevanssi_search($args) {
 
 			$query = apply_filters('relevanssi_query_filter', $query);
 			$matches = $wpdb->get_results($query);
-
+			
 			if (count($matches) < 1) {
 				continue;
 			}
@@ -589,7 +592,7 @@ function relevanssi_search($args) {
 
 				$match->tf =
 					$match->title * $title_boost +
-					$match->content +
+					$match->content * $content_boost +
 					$match->comment * $comment_boost +
 					$match->link * $link_boost +
 					$match->author +
@@ -651,7 +654,10 @@ function relevanssi_search($args) {
 			}
 		}
 
-		if (!isset($doc_weight)) $no_matches = true;
+		if (!isset($doc_weight)) {
+			$doc_weight = array();
+			$no_matches = true;
+		}
 		if ($no_matches) {
 			if ($search_again) {
 				// no hits even with fuzzy search!
@@ -667,6 +673,19 @@ function relevanssi_search($args) {
 		else {
 			$search_again = false;
 		}
+		$params = array(
+			'no_matches' => $no_matches,
+			'doc_weight' => $doc_weight,
+			'terms' => $terms,
+			'o_term_cond' => $o_term_cond,
+			'search_again' => $search_again,
+		);
+		$params = apply_filters('relevanssi_search_again', $params);
+		$search_again = $params['search_again'];
+		$terms = $params['terms'];
+		$o_term_cond = $params['o_term_cond'];
+		$doc_weight = $params['doc_weight'];
+		$no_matches = $params['no_matches'];
 	} while ($search_again);
 
 	$strip_stops = true;
@@ -720,6 +739,13 @@ function relevanssi_search($args) {
 
 			$or_args['q'] = relevanssi_add_synonyms($q);
 			$return = relevanssi_search($or_args);
+			extract($return);
+		}
+		$params = array('args' => $args);
+		$params = apply_filters('relevanssi_fallback', $params);
+		$args = $params['args'];
+		if (isset($params['return'])) {
+			$return = $params['return'];
 			extract($return);
 		}
 	}
@@ -1276,6 +1302,13 @@ function relevanssi_limit_filter($query) {
 
 function relevanssi_get_negative_post_type() {
 	$negative_post_type = NULL;
+	global $wp_query;
+
+	$negative_post_type_list = array();
+
+	if (isset($wp_query->query_vars['include_attachments']) && in_array($wp_query->query_vars['include_attachments'], array("0", "off", "false"))) {
+		$negative_post_type_list[] = "attachment";
+	}
 
 	if (get_option('relevanssi_respect_exclude') == 'on') {
 		// If Relevanssi is set to respect exclude_from_search, find out which
@@ -1283,19 +1316,14 @@ function relevanssi_get_negative_post_type() {
 		if (function_exists('get_post_types')) {
 			$pt_1 = get_post_types(array('exclude_from_search' => '1'));
 			$pt_2 = get_post_types(array('exclude_from_search' => true));
-			$negative_post_type_list = implode(',', array_merge($pt_1, $pt_2));
+			$negative_post_type_list = array_merge($negative_post_type_list, $pt_1, $pt_2);
 		}
+	}
 
-		// Post types to exclude.
-		if ($negative_post_type_list) {
-			if (!is_array($negative_post_type_list)) {
-				$negative_post_types = esc_sql(explode(',', $negative_post_type_list));
-			}
-			else {
-				$negative_post_types = esc_sql($negative_post_type_list);
-			}
-			$negative_post_type = count($negative_post_types) ? "'" . implode( "', '", $negative_post_types) . "'" : NULL;
-		}
+	// Post types to exclude.
+	if (count($negative_post_type_list) > 0) {
+		$negative_post_types = esc_sql(array_unique($negative_post_type_list));
+		$negative_post_type = count($negative_post_types) ? "'" . implode( "', '", $negative_post_types) . "'" : NULL;
 	}
 
 	return $negative_post_type;

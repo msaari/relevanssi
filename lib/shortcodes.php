@@ -2,6 +2,7 @@
 
 add_shortcode('search', 'relevanssi_shortcode');
 add_shortcode('noindex', 'relevanssi_noindex_shortcode');
+add_shortcode('searchform', 'relevanssi_search_form'); 
 
 function relevanssi_shortcode($atts, $content, $name) {
 	global $wpdb;
@@ -35,6 +36,10 @@ function relevanssi_noindex_shortcode($atts, $content) {
 function relevanssi_noindex_shortcode_indexing($atts, $content) {
 	// When indexing, make the text disappear.
 	return '';
+}
+
+function relevanssi_search_form() {
+	return get_search_form();
 }
 
 ?>

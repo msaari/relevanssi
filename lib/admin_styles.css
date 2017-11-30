@@ -1,0 +1,103 @@
+p.important {
+    color: #dd3300;
+}
+
+table.form-table table.widefat th {
+    padding-left: 8px;
+}
+
+#relevanssi_min_word_length {
+    width: 3em;
+}
+
+#relevanssi_trim_logs {
+    width: 4em;
+}
+
+#index_field_input {
+    margin-top: 1em;
+}
+
+#indexing_tab #results {
+    display: none;
+    width: 100%;
+}
+
+#relevanssi-progress {
+    display: none;
+    margin-bottom: 2em;
+    width: 100%;
+    height: 20px;
+    background-color: white;
+}
+
+.rpi-indicator {
+    width: 0;
+    height: 20px;
+    background-color: #afe240;
+}
+
+.relevanssi-weights-table {
+    min-width: 400px;
+}
+
+.relevanssi-weights-table td {
+    padding: 0;
+}
+
+.relevanssi-weights-table td.col-2, .relevanssi-weights-table th.col-2 {
+    width: 25%;
+}
+
+.rpi-progress {
+    display: none;
+    margin: 0.5em 0 2em 0;
+    width: 100%;
+    height: 20px;
+    background-color: white;
+}
+
+.rpi-progress div {
+    width: 0;
+    height: 20px;
+    background-color: #afe240;
+}
+
+#relevanssi_results {
+    display: none;
+    width: 100%;
+}
+
+#relevanssi_show_pdf_errors {
+    text-decoration: underline;
+    cursor: pointer;
+    color: #0073aa;
+}
+
+#relevanssi_pdf_errors {
+    display: none;
+}
+
+.visually_hidden {
+    margin: -1px;
+    padding: 0;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip: rect(0,0,0,0);
+    position: absolute;
+}
+
+.relevanssi_disabled, .relevanssi_disabled td, .relevanssi_disabled th, .relevanssi_disabled p {
+    color: #999;
+}
+
+#relevanssi-timer {
+    display: none;
+}
+
+.relevanssi_ul {
+    list-style-type: square;
+    margin-left: 2em;
+}

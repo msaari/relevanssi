@@ -16,14 +16,17 @@ add_action('edit_attachment', 'relevanssi_edit');
 add_action('transition_post_status', 'relevanssi_update_child_posts',99,3);
 // END added by renaissancehack
 add_action('init', 'relevanssi_init');
-add_action('admin_head', 'relevanssi_check_old_data', 99);
+add_action('relevanssi_trim_logs', 'relevanssi_trim_logs');
 add_filter('relevanssi_hits_filter', 'relevanssi_wpml_filter');
+add_filter('relevanssi_modify_wp_query', 'relevanssi_polylang_filter');
 add_filter('posts_request', 'relevanssi_prevent_default_request', 10, 2 );
 add_filter('relevanssi_remove_punctuation', 'relevanssi_remove_punct');
 add_filter('relevanssi_post_ok', 'relevanssi_default_post_ok', 9, 2);
 add_filter('relevanssi_query_filter', 'relevanssi_limit_filter');
 add_filter('query_vars', 'relevanssi_query_vars');
 add_filter('relevanssi_indexing_values', 'relevanssi_update_doc_count', 98, 2);
+add_filter('relevanssi_pre_excerpt_content', 'relevanssi_remove_page_builder_shortcodes', 9);
+add_filter('rest_api_init', 'relevanssi_rest_api_disable');
 
 global $relevanssi_variables;
 register_activation_hook($relevanssi_variables['file'], 'relevanssi_install');
@@ -31,7 +34,7 @@ register_activation_hook($relevanssi_variables['file'], 'relevanssi_install');
 function relevanssi_init() {
 	global $pagenow, $relevanssi_variables, $wpdb;
 	$plugin_dir = dirname(plugin_basename($relevanssi_variables['file']));
-	load_plugin_textdomain('relevanssi', false, $plugin_dir);
+	load_plugin_textdomain('relevanssi', false, $plugin_dir . '/languages');
 
 	isset($_POST['index']) ? $index = true : $index = false;
 	if (get_option('relevanssi_indexed') != "done" && !$index) {
@@ -68,13 +71,24 @@ function relevanssi_init() {
 		add_filter('comment_text', 'relevanssi_highlight_in_docs', 11);
 	}
 
+	if (get_option('relevanssi_trim_logs') > 0) {
+		if (! wp_next_scheduled ( 'relevanssi_trim_logs' )) {
+			wp_schedule_event(time(), 'daily', 'relevanssi_trim_logs');
+    	}
+    }
+	else {
+		if (wp_next_scheduled ( 'relevanssi_trim_logs' )) {
+			wp_clear_scheduled_hook('relevanssi_trim_logs');
+    	}
+	}
+
 	return;
 }
 
 function relevanssi_menu() {
 	global $relevanssi_variables;
 	RELEVANSSI_PREMIUM ? $name = "Relevanssi Premium" : $name = "Relevanssi";
-	add_options_page(
+	$plugin_page = add_options_page(
 		$name,
 		$name,
 		apply_filters('relevanssi_options_capability', 'manage_options'),
@@ -88,6 +102,8 @@ function relevanssi_menu() {
 		$relevanssi_variables['file'],
 		'relevanssi_search_stats'
 	);
+	add_action( 'load-' . $plugin_page, 'relevanssi_admin_help' );
+	if (function_exists('relevanssi_premium_plugin_page_actions')) relevanssi_premium_plugin_page_actions($plugin_page);
 }
 
 function relevanssi_query_vars($qv) {
@@ -95,6 +111,7 @@ function relevanssi_query_vars($qv) {
 	$qv[] = 'tags';
 	$qv[] = 'post_types';
 	$qv[] = 'by_date';
+	$qv[] = 'highlight';
 
 	return $qv;
 }
@@ -199,40 +216,6 @@ function relevanssi_create_database_tables($relevanssi_db_version) {
 
 		dbDelta($sql);
 
-		if (RELEVANSSI_PREMIUM && $current_db_version > 0 && $current_db_version < 12) {
-			$charset_collate_bin_column = '';
-			$charset_collate = '';
-
-			if (!empty($wpdb->charset)) {
-				$charset_collate_bin_column = "CHARACTER SET $wpdb->charset";
-				$charset_collate = "DEFAULT $charset_collate_bin_column";
-			}
-			if (strpos($wpdb->collate, "_") > 0) {
-				$charset_collate_bin_column .= " COLLATE " . substr($wpdb->collate, 0, strpos($wpdb->collate, '_')) . "_bin";
-				$charset_collate .= " COLLATE $wpdb->collate";
-			} else {
-				if ($wpdb->collate == '' && $wpdb->charset == "utf8") {
-					$charset_collate_bin_column .= " COLLATE utf8_bin";
-				}
-			}
-
-			$sql = "ALTER TABLE $relevanssi_stopword_table MODIFY COLUMN stopword varchar(50) $charset_collate_bin_column NOT NULL";
-			$wpdb->query($sql);
-			$sql = "ALTER TABLE $relevanssi_log_table ADD COLUMN user_id bigint(20) NOT NULL DEFAULT '0'";
-			$wpdb->query($sql);
-			$sql = "ALTER TABLE $relevanssi_log_table ADD COLUMN ip varchar(40) NOT NULL DEFAULT ''";
-			$wpdb->query($sql);
-		}
-
-		if ($current_db_version > 0 && $current_db_version < 16) {
-			$sql = "ALTER TABLE $relevanssi_table ADD COLUMN term_reverse VARCHAR(50);";
-			$wpdb->query($sql);
-			$sql = "UPDATE $relevanssi_table SET term_reverse = REVERSE(term);";
-			$wpdb->query($sql);
-			$sql = "CREATE INDEX relevanssi_term_reverse_idx ON $relevanssi_table (term_reverse(10));";
-			$wpdb->query($sql);
-		}
-
 		update_option('relevanssi_db_version', $relevanssi_db_version);
 	}
 
@@ -253,4 +236,8 @@ function relevanssi_action_links ($links) {
 	return array_merge($links, $relevanssi_links);
 }
 
-?>
+/** Disable Relevanssi in REST API searches */
+function relevanssi_rest_api_disable() {
+	remove_filter('posts_request', 'relevanssi_prevent_default_request'); 
+	remove_filter('the_posts', 'relevanssi_query', 99);
+}
