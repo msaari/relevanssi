@@ -5,7 +5,7 @@ Tags: search, relevance, better search
 Requires at least: 4.0
 Tested up to: 4.9.1
 Requires PHP: 5.6
-Stable tag: 4.0
+Stable tag: 4.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -279,6 +279,9 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+
+= 4.0.1 =
+* The plugin can now be uninstalled.
 
 = 4.0 =
 * Legacy code has been removed. If you have a version older than 3.6, update first to 3.6.2.2 to guarantee smooth upgrade process.
@@ -1128,6 +1131,9 @@ Each document database is full of useless words. All the little words that appea
 * First published version.
 
 == Upgrade notice ==
+
+= 4.0.1 =
+* Fixes a bug in uninstalling the plugin.
 
 = 4.0 =
 * Major new release. Testing at staging is recommended. Deactivate and reactivate after upgrade!
