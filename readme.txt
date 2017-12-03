@@ -280,6 +280,11 @@ Each document database is full of useless words. All the little words that appea
 
 == Changelog ==
 
+= 4.0.2 =
+* Removed couple of error notices in the code.
+* Improved the support for page builders.
+
+
 = 4.0.1 =
 * The plugin can now be uninstalled.
 
@@ -1131,6 +1136,9 @@ Each document database is full of useless words. All the little words that appea
 * First published version.
 
 == Upgrade notice ==
+
+= 4.0.2 =
+* Minor bugfixes.
 
 = 4.0.1 =
 * Fixes a bug in uninstalling the plugin.

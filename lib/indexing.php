@@ -197,6 +197,7 @@ function relevanssi_build_index($extend_offset = false, $verbose = true, $post_l
 			$limit = "";
 		}
 
+		$extend = true;
 		$q = relevanssi_generate_indexing_query($valid_status, $extend, $restriction, $limit);
 	}
 
@@ -904,6 +905,7 @@ function relevanssi_get_comments($postID) {
  */
 function relevanssi_index_acf(&$insert_data, $post_id, $field_name, $field_value) {
 	if (!is_admin() ) include_once( ABSPATH . 'wp-admin/includes/plugin.php' ); // otherwise is_plugin_active will cause a fatal error
+	if (!function_exists('is_plugin_active')) return;
 	if (!is_plugin_active('advanced-custom-fields/acf.php') &&
 		!is_plugin_active('advanced-custom-fields-pro/acf.php')) return;
 

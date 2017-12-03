@@ -671,6 +671,7 @@ function relevanssi_remove_page_builder_shortcodes($content) {
 		'/\[vc_raw_html.*?\].*\[\/vc_raw_html\]/',		// Raw HTML: remove contents
 		'/\[\/?vc.*?\]/',
 		'/\[\/?mk.*?\]/',
+		'/\[\/?cs_.*?\]/',
 	));
 	$content = preg_replace($search_array, '', $content);
 	return $content;
