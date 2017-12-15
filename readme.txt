@@ -5,7 +5,7 @@ Tags: search, relevance, better search
 Requires at least: 4.0
 Tested up to: 4.9.1
 Requires PHP: 5.6
-Stable tag: 4.0.2
+Stable tag: 4.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -279,6 +279,13 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+
+= 4.0.3 =
+* Relevanssi didn't index all posts with one go. It does now.
+* © and ® symbols caused problems in indexing; they are now included in the default punctuation removal.
+* In some cases excerpt-building could take ages because of autoembed link discovery. Relevanssi now blocks the autoembed procedure in link-building.
+* New filter: `relevanssi_custom_field_value` is used to filter custom field values both before indexing and before excerpt-building. Parameters include the field name and the post ID.
+* Updated filter: `relevanssi_index_custom_fields` now gets a second parameter that contains the post ID.
 
 = 4.0.2 =
 * Removed couple of error notices in the code.
@@ -1136,6 +1143,9 @@ Each document database is full of useless words. All the little words that appea
 * First published version.
 
 == Upgrade notice ==
+
+= 4.0.3 =
+* Small bugfixes, correction to indexing procedure.
 
 = 4.0.2 =
 * Minor bugfixes.

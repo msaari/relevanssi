@@ -490,13 +490,14 @@ function relevanssi_recognize_phrases($q) {
 	if (count($phrases) > 0) {
 		foreach ($phrases as $phrase) {
 			$queries = array();
-			$phrase = str_replace(“‘”, ‘_’, $phrase);
-			$phrase = str_replace(“’”, ‘_’, $phrase);
-			$phrase = str_replace(“‘”, ‘_’, $phrase);
-			$phrase = str_replace(“””, ‘_’, $phrase);
-			$phrase = str_replace(““”, ‘_’, $phrase);
-			$phrase = str_replace(“„”, ‘_’, $phrase);
-			$phrase = str_replace(“´”, ‘_’, $phrase);
+			$phrase = str_replace("‘", '_', $phrase);
+			$phrase = str_replace("’", '_', $phrase);
+			$phrase = str_replace("'", '_', $phrase);
+			$phrase = str_replace('"', '_', $phrase);
+			$phrase = str_replace("”", '_', $phrase);
+			$phrase = str_replace("“", '_', $phrase);
+			$phrase = str_replace("„", '_', $phrase);
+			$phrase = str_replace("´", '_', $phrase);
 			$phrase = $wpdb->esc_like($phrase);
 			$phrase = esc_sql($phrase);
 			"on" == get_option("relevanssi_index_excerpt") ? $excerpt = " OR post_excerpt LIKE '%$phrase%'" : $excerpt = "";
@@ -622,6 +623,8 @@ function relevanssi_remove_punct($a) {
 		"·" => '',
 		"…" => '',
 		"€" => '',
+		"®" => '',
+		"©" => '',
 		"&shy;" => '',
 		"&nbsp;" => ' ',
 		'&#8217;' => ' ',
@@ -1061,7 +1064,6 @@ function relevanssi_permalink($content, $link_post = NULL) {
 		if (isset($post->link))
 			$content = $post->link;
 	}
-	$query = get_search_query();
 	return $content;
 }
 

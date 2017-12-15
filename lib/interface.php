@@ -1028,6 +1028,7 @@ function relevanssi_options_form() {
 		$serialize_options['relevanssi_index_pdf_parent'] = get_option('relevanssi_index_pdf_parent');
 		
 		$serialize_options['relevanssi_send_pdf_files'] = get_option('relevanssi_send_pdf_files');
+		$serialize_options['relevanssi_read_new_files'] = get_option('relevanssi_read_new_files');
 		$serialize_options['relevanssi_link_pdf_files'] = get_option('relevanssi_link_pdf_files');
 
 		$serialized_options = json_encode($serialize_options);
@@ -1035,15 +1036,9 @@ function relevanssi_options_form() {
 
 	echo "<div class='postbox-container'>";
 
-	$this_page = "?page=relevanssi/relevanssi.php";
-	if (RELEVANSSI_PREMIUM) {
-		echo "<form method='post' action='options-general.php?page=relevanssi-premium/relevanssi.php'>";
-		$this_page = "?page=relevanssi-premium/relevanssi.php";
-	}
-	else {
-		echo "<form method='post'>";
-	}
-
+	$this_page = "?page=" . plugin_basename($relevanssi_variables['file']);
+	echo "<form method='post'>";
+	
 	wp_nonce_field(plugin_basename($relevanssi_variables['file']), 'relevanssi_options');
 
 	$display_save_button = true;
@@ -1510,12 +1505,12 @@ function relevanssi_options_form() {
 	<table class="form-table">
 	<tr>
 		<th scope="row">
-			<label for='relevanssi_excerpts'><?php _e("Custom search result snippets", "relevanssi"); ?>
+			<label for='relevanssi_excerpts'><?php _e("Custom search result snippets", "relevanssi"); ?></label>
 		</th>
 		<td>
 		<fieldset>
-			<legend class="screen-reader-text"><?php _e("Create custom search results snippets", "relevanssi"); ?></legend>
-			<label for='relevanssi_excerpts'>
+			<legend class="screen-reader-text"><?php _e("Create custom search result snippets", "relevanssi"); ?></legend>
+			<label >
 				<input type='checkbox' name='relevanssi_excerpts' id='relevanssi_excerpts' <?php echo $excerpts ?> />
 				<?php _e("Create custom search result snippets", "relevanssi"); ?>
 			</label>
@@ -1545,26 +1540,28 @@ function relevanssi_options_form() {
 			<p class="description"><?php _e("List all tags you want to allow in excerpts. For example: &lt;p&gt;&lt;a&gt;&lt;strong&gt;.", "relevanssi"); ?></p>
 		</td>
 	</tr>
-	<tr id="tr_excerpt_custom_fields" <?php if (empty($excerpts) || empty($original_index_fields)) echo "class='relevanssi_disabled'"; ?>>
+	<tr id="tr_excerpt_custom_fields" <?php if (empty($excerpts)) echo "class='relevanssi_disabled'"; ?>>
 		<th scope="row">
-			<label for='relevanssi_excerpt_custom_fields'><?php _e("Use custom fields for excerpts", "relevanssi"); ?>
+			<label for='relevanssi_excerpt_custom_fields'><?php _e("Use custom fields for excerpts", "relevanssi"); ?></label>
 		</th>
 		<td>
 		<fieldset>
 			<legend class="screen-reader-text"><?php _e("Use custom field content for building excerpts", "relevanssi"); ?></legend>
-			<label for='relevanssi_excerpts'>
+			<label>
 				<input type='checkbox' name='relevanssi_excerpt_custom_fields' id='relevanssi_excerpt_custom_fields' <?php echo $excerpt_custom_fields ?> <?php if (empty($excerpts) || empty($original_index_fields)) echo "disabled='disabled'"; ?>/>
 				<?php _e("Use custom field content for building excerpts", "relevanssi"); ?>
 			</label>
 		</fieldset>
-		<p class="description"><?php _e("Use the custom fields setting for indexing for excerpt-making as well. Enabling this option will show custom field content in Relevanssi-generated excerpts.", "relevanssi"); ?></p>
+		<p class="description"><?php _e("Use the custom fields setting for indexing for excerpt-making as well. Enabling this option will show custom field content in Relevanssi-generated excerpts.", "relevanssi"); ?>
+		<?php if (RELEVANSSI_PREMIUM) { _e("Enable this option to use PDF content for excerpts.", "relevanssi"); } ?>
+		</p>
 
 		<p class="description"><?php _e("Current custom field setting", 'relevanssi'); ?>: 
 		<?php
 			if ($original_index_fields === "visible") _e("all visible custom fields", 'relevanssi');
 			else if ($original_index_fields === "all") _e("all custom fields", 'relevanssi');
 			else if (!empty($original_index_fields)) echo "<code>$original_index_fields</code>";
-			else _e('None selected', 'relevanssi');
+			else if (RELEVANSSI_PREMIUM) { _e('Just PDF content', 'relevanssi'); } else { _e('None selected', 'relevanssi'); }
 		?></p>
 		</td>
 	</tr>
@@ -1957,7 +1954,7 @@ EOH;
 			<legend class="screen-reader-text"><?php _e("Index the post excerpt", "relevanssi"); ?></legend>
 			<label for='relevanssi_index_excerpt'>
 				<input type='checkbox' name='relevanssi_index_excerpt' id='relevanssi_index_excerpt' <?php echo $index_excerpt ?> />
-				<?php _e("Index the post excerpt") ?>
+				<?php _e("Index the post excerpt", "relevanssi") ?>
 			</label>
 			<p class="description"><?php _e("Relevanssi will find posts by the content in the excerpt.", 'relevanssi'); ?></p>
 			<?php if ( is_plugin_active( 'woocommerce/woocommerce.php' ) ) : ?>
@@ -2287,7 +2284,7 @@ function rlv_index_filter($block, $post_id) {
 			"<li>" . __('Building custom excerpts can be slow. If you are not actually using the excerpts, make sure you disable the option.', 'relevanssi') . "</li>" .
 			"<li>" . sprintf(__('Custom snippets require that the search results template uses %s to print out the excerpts.', 'relevanssi'), "<code>the_excerpt()</code>") . "</li>" .
 			"<li>" . __("Generally, Relevanssi generates the excerpts from post content. If you want to include custom field content in the excerpt-building, this can be done with a simple setting from the excerpt settings.", "relevanssi") . "</li>" .
-			"<li>" . sprintf(__("If you want more control over what content Relevanssi uses to create the excerpts, you can use the %s and %s filter hooks to adjust the content.", "relevanssi"), "<code>relevanssi_pre_excerpt_content</code>", "<code>relevanssi_pre_excerpt_content</code>") . "</li>" .
+			"<li>" . sprintf(__("If you want more control over what content Relevanssi uses to create the excerpts, you can use the %s and %s filter hooks to adjust the content.", "relevanssi"), "<code>relevanssi_pre_excerpt_content</code>", "<code>relevanssi_excerpt_content</code>") . "</li>" .
 			"<li>" . sprintf(__("Some shortcode do not work well with Relevanssi excerpt-generation. Relevanssi disables some shortcodes automatically to prevent problems. This can be adjusted with the %s filter hook.", "relevanssi"), "<code>relevanssi_disable_shortcodes_excerpt</code>") . "</li>" .
 			"<li>" . sprintf(__("If you want Relevanssi to build excerpts faster and don't mind that they may be less than perfect in quality, add a filter that returns true on hook %s.", "relevanssi"), '<code>relevanssi_optimize_excerpts</code>') .
 			"<pre>add_filter('relevanssi_optimize_excerpts', '__return_true');</pre></li>" .

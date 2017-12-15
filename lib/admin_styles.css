@@ -96,8 +96,3 @@ table.form-table table.widefat th {
 #relevanssi-timer {
     display: none;
 }
-
-.relevanssi_ul {
-    list-style-type: square;
-    margin-left: 2em;
-}

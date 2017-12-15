@@ -489,14 +489,7 @@ function relevanssi_search($args) {
 			$term = esc_sql($term);
 
 			if (strpos($o_term_cond, 'LIKE') !== false) {
-				// only like_escape() if necessary, otherwise _ in search terms will not work
-				if (method_exists($wpdb, 'esc_like')) {
-					$term = $wpdb->esc_like($term);
-				}
-				else {
-					// Compatibility for pre-4.0 WordPress
-					$term = like_escape($term);
-				}
+				$term = $wpdb->esc_like($term);
 			}
 
 			$term_cond = str_replace('#term#', $term, $o_term_cond);

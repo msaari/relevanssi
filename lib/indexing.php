@@ -412,8 +412,7 @@ function relevanssi_index_doc($indexpost, $remove_first = false, $custom_fields 
 		$custom_fields = get_post_custom_keys($post->ID);
 		$remove_underscore_fields = true;
 	}
-	$custom_fields = apply_filters('relevanssi_index_custom_fields', $custom_fields);
-
+	$custom_fields = apply_filters('relevanssi_index_custom_fields', $custom_fields, $post->ID);
 	if (is_array($custom_fields)) {
 		if ($debug) relevanssi_debug_echo("Custom fields to index: " . implode(", ", $custom_fields));
 		$custom_fields = array_unique($custom_fields);	// no reason to index duplicates
@@ -423,9 +422,11 @@ function relevanssi_index_doc($indexpost, $remove_first = false, $custom_fields 
 
 		foreach ($custom_fields as $field) {
 			if ($remove_underscore_fields) {
-				if (substr($field, 0, 1) == '_') continue;
+				if ($field !== '_relevanssi_pdf_content' && substr($field, 0, 1) === '_') continue;
 			}
-			$values = get_post_meta($post->ID, $field, false);
+			
+			$values = apply_filters('relevanssi_custom_field_value', get_post_meta($post->ID, $field, false), $field, $post->ID);
+			
 			if ("" == $values) continue;
 			foreach ($values as $value) {
 				// Quick hack : allow indexing of PODS relationship custom fields // TMV
@@ -795,7 +796,7 @@ function relevanssi_insert_edit($post_id) {
 	if ( 'auto-draft' == $post_status ) return;
 
     if ( $post_status == 'inherit' ) {
-        $post_type = $wpdb->get_var( "SELECT post_type FROM $wpdb->posts WHERE ID=$post_id" );
+        // $post_type = $wpdb->get_var( "SELECT post_type FROM $wpdb->posts WHERE ID=$post_id" );
 	    $post_status = $wpdb->get_var( "SELECT p.post_status FROM $wpdb->posts p, $wpdb->posts c WHERE c.ID=$post_id AND c.post_parent=p.ID" );
     }
 

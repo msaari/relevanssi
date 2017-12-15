@@ -33,6 +33,9 @@ function relevanssi_do_excerpt($t_post, $query) {
 	if (get_option('relevanssi_excerpt_custom_fields') === "on") {
 		$content .= relevanssi_get_custom_field_content($post->ID);
 	}
+
+	relevanssi_kill_autoembed();
+
 	$content = apply_filters('the_content', $content);
 	$content = apply_filters('relevanssi_excerpt_content', $content, $post, $query);
 
@@ -651,11 +654,14 @@ function relevanssi_get_custom_field_content($post_id) {
 			if ($remove_underscore_fields) {
 				if (substr($field, 0, 1) === '_') continue;
 			}
-			$values = get_post_meta($post_id, $field, false);
+			$values = apply_filters('relevanssi_custom_field_value', get_post_meta($post_id, $field, false), $field, $post->ID);
 			if ("" === $values) continue;
 			foreach ($values as $value) {
 				// Quick hack : allow indexing of PODS relationship custom fields // TMV
 				if (is_array($value) && isset($value['post_title'])) $value = $value['post_title'];
+				
+				// Flatten other array data
+				if (is_array($value)) $value = implode(" ", $value);
 				$custom_field_content .= " " . $value;
 			}
 		}
@@ -672,9 +678,28 @@ function relevanssi_remove_page_builder_shortcodes($content) {
 		'/\[\/?vc.*?\]/',
 		'/\[\/?mk.*?\]/',
 		'/\[\/?cs_.*?\]/',
+		'/\[\/?av_.*?\]/',
 	));
 	$content = preg_replace($search_array, '', $content);
 	return $content;
+}
+
+/**
+ * Kills the autoembed filter hook on the_content. It's an object hook, so this isn't as simple as doing remove_filter().
+ * This needs to be done, because autoembed can take a very, very long time.
+ */
+function relevanssi_kill_autoembed() {
+	global $wp_filter;
+	if (isset($wp_filter['the_content']->callbacks)) {
+		foreach ($wp_filter['the_content']->callbacks as $priority => $bucket) {
+			foreach ($bucket as $key => $value) {
+				if (substr($key, -9) === "autoembed") {
+					unset($wp_filter['the_content']->callbacks[$priority][$key]);
+				}
+			}
+		}
+		
+	}
 }
 
 ?>

@@ -27,7 +27,7 @@ function relevanssi_install($network_wide = false) {
 			_relevanssi_install();
 			restore_current_blog();
 		}
-		
+
 	} else {
 		_relevanssi_install();
 	}
@@ -81,14 +81,12 @@ function _relevanssi_install() {
 	add_option('relevanssi_db_version', '0');
 	add_option('relevanssi_wpml_only_current', 'on');
 	add_option('relevanssi_polylang_all_languages', 'off');
-	add_option('relevanssi_post_type_weights', '');
-	add_option('relevanssi_index_taxonomies_list', array());
 	add_option('relevanssi_word_boundaries', 'on');
 	add_option('relevanssi_default_orderby', 'relevance');
-	add_option('relevanssi_index_post_types', array('post', 'page'));
+	add_option('relevanssi_punctuation', array('quotes' => 'replace', 'hyphens' => 'replace', 'ampersands' => 'replace'));
 
-	if (function_exists('relevanssi_premium_install')) relevanssi_premium_install(); 
-	
+	if (function_exists('relevanssi_premium_install')) relevanssi_premium_install();
+
 	do_action('relevanssi_update_options');
 
 	relevanssi_create_database_tables($relevanssi_variables['database_version']);

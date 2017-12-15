@@ -10,7 +10,7 @@ add_action('wp_insert_post', 'relevanssi_insert_edit', 99, 1 ); // added by lump
 // BEGIN added by renaissancehack
 // *_page and *_post hooks do not trigger on attachments
 add_action('delete_attachment', 'relevanssi_delete');
-add_action('add_attachment', 'relevanssi_publish');
+add_action('add_attachment', 'relevanssi_publish', 12);
 add_action('edit_attachment', 'relevanssi_edit');
 // When a post status changes, check child posts that inherit their status from parent
 add_action('transition_post_status', 'relevanssi_update_child_posts',99,3);
@@ -215,6 +215,19 @@ function relevanssi_create_database_tables($relevanssi_db_version) {
 	    UNIQUE KEY id (id)) $charset_collate;";
 
 		dbDelta($sql);
+
+		$sql = "SHOW INDEX FROM $relevanssi_log_table";
+		$indices = $wpdb->get_results($sql);
+
+		$query_exists = false;
+		foreach ($indices as $index) {
+			if ($index->Key_name == 'query') $query_exists = true;
+		}
+		
+		if (!$query_exists) {
+			$sql = "CREATE INDEX query ON $relevanssi_log_table (query)";
+			$wpdb->query($sql);
+		}
 
 		update_option('relevanssi_db_version', $relevanssi_db_version);
 	}
