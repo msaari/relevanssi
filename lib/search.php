@@ -573,7 +573,7 @@ function relevanssi_search($args) {
 							if ($tax == 'post_tag') {
 								$match->tag = $count;
 							}
-							if (empty($post_type_weights[$tax])) {
+							if (!isset($post_type_weights[$tax])) {
 								$match->taxonomy_score += $count * 1;
 							}
 							else {
@@ -622,12 +622,12 @@ function relevanssi_search($args) {
 				isset($category_matches[$match->doc]) ? $category_matches[$match->doc] += $match->category : $category_matches[$match->doc] = $match->category;
 				isset($taxonomy_matches[$match->doc]) ? $taxonomy_matches[$match->doc] += $match->taxonomy : $taxonomy_matches[$match->doc] = $match->taxonomy;
 				isset($comment_matches[$match->doc]) ? $comment_matches[$match->doc] += $match->comment : $comment_matches[$match->doc] = $match->comment;
-
+				
 				isset($relevanssi_post_types[$match->doc]) ? $type = $relevanssi_post_types[$match->doc] : $type = null;
-				if (!empty($post_type_weights[$type])) {
+				if (isset($post_type_weights[$type])) {
 					$match->weight = $match->weight * $post_type_weights[$type];
 				}
-
+			
 				$match = apply_filters('relevanssi_match', $match, $idf, $term);
 
 				if ($match->weight == 0) continue; // the filters killed the match

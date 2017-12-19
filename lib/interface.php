@@ -781,12 +781,12 @@ function relevanssi_options_form() {
 
 	$txt_col = get_option('relevanssi_txt_col');
 	if (substr($txt_col, 0, 1) != "#") $txt_col = "#" . $txt_col;
-	$txt_col = sanitize_hex_color($txt_col);
+	$txt_col = relevanssi_sanitize_hex_color($txt_col);
 	$serialize_options['relevanssi_txt_col'] = $txt_col;
 	
 	$bg_col = get_option('relevanssi_bg_col');
 	if (substr($bg_col, 0, 1) != "#") $bg_col = "#" . $bg_col;
-	$bg_col = sanitize_hex_color($bg_col);
+	$bg_col = relevanssi_sanitize_hex_color($bg_col);
 	$serialize_options['relevanssi_bg_col'] = $bg_col;
 
 	$css = get_option('relevanssi_css');
@@ -2380,4 +2380,17 @@ function relevanssi_add_admin_scripts($hook) {
 	);
 
 	wp_localize_script( 'relevanssi_admin_js', 'relevanssi', $translation );
+}
+
+/* Copy of sanitize_hex_color(), because that isn't always available
+*/
+function relevanssi_sanitize_hex_color($color) {
+	if ( '' === $color ) {
+		return '';
+	}
+	 
+	// 3 or 6 hex digits, or the empty string.
+	if ( preg_match('|^#([A-Fa-f0-9]{3}){1,2}$|', $color ) ) {
+		return $color;
+	}
 }
