@@ -1047,7 +1047,7 @@ function relevanssi_switch_blog($new_blog, $prev_blog) {
 function relevanssi_get_permalink() {
 	$permalink = apply_filters('relevanssi_permalink', get_permalink());
 	$highlight_docs = get_option('relevanssi_highlight_docs');
-	if (isset($highlight_docs) && $highlight_docs != "off" && !is_empty(get_search_query())) {
+	if (isset($highlight_docs) && $highlight_docs != "off" && !empty(get_search_query())) {
 		$permalink = esc_attr(add_query_arg(array(
 			'highlight' => urlencode(get_search_query())
 			), $permalink )
