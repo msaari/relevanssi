@@ -3,9 +3,9 @@ Contributors: msaari
 Donate link: https://www.relevanssi.com/buy-premium/
 Tags: search, relevance, better search
 Requires at least: 4.0
-Tested up to: 4.9.1
+Tested up to: 4.9.2
 Requires PHP: 5.6
-Stable tag: 4.0.3
+Stable tag: 4.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -279,6 +279,18 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+
+= 4.0.4 =
+* Fixed shortcode: `searchform` shortcode didn't work properly.
+* Setting post type or post content weight to 0 didn't work.
+* Gravity Forms shortcode is now disabled in Relevanssi indexing.
+* New filter: `relevanssi_excerpt_query` filters the search query before building excerpts.
+* HTML tags are stripped from post excerpts when using the excerpt to build Relevanssi excerpts.
+* Fixed filter: `relevanssi_custom_field_value` didn't have the correct post ID parameter.
+* `relevanssi_get_permalink` doesn't add the `highlight` parameter to URLs outside search results pages anymore, and won't add the parameter to front page links either.
+* Relevanssi used `sanitize_hex_color`, which isn't actually reliably available.
+* Did you mean suggestions have been improved.
+* Single-word phrases are not allowed anymore, as they do no good. They are silently converted to non-phrases now.
 
 = 4.0.3 =
 * Relevanssi didn't index all posts with one go. It does now.
@@ -1143,6 +1155,9 @@ Each document database is full of useless words. All the little words that appea
 * First published version.
 
 == Upgrade notice ==
+
+= 4.0.4 =
+* Small improvements, prevents couple of possibly fatal problems.
 
 = 4.0.3 =
 * Small bugfixes, correction to indexing procedure.

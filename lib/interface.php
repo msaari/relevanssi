@@ -1015,6 +1015,8 @@ function relevanssi_options_form() {
 
 		$hide_post_controls = ('on' === get_option('relevanssi_hide_post_controls') ? 'checked="checked"' : '');
 		$serialize_options['relevanssi_hide_post_controls'] = get_option('relevanssi_hide_post_controls');
+		$show_post_controls = ('on' === get_option('relevanssi_show_post_controls') ? 'checked="checked"' : '');
+		$serialize_options['relevanssi_show_post_controls'] = get_option('relevanssi_show_post_controls');
 
 		$recency_bonus_array = get_option('relevanssi_recency_bonus');
 		$serialize_options['recency_bonus'] = $recency_bonus_array;
@@ -1101,7 +1103,7 @@ function relevanssi_options_form() {
 	if (!is_multisite() && function_exists('relevanssi_form_api_key')) relevanssi_form_api_key($api_key);
 ?>
 <?php
-	if (function_exists('relevanssi_form_hide_post_controls')) relevanssi_form_hide_post_controls($hide_post_controls);
+	if (function_exists('relevanssi_form_hide_post_controls')) relevanssi_form_hide_post_controls($hide_post_controls, $show_post_controls);
 ?>
 	<tr>
 		<th scope="row"><?php _e("Getting started", "relevanssi"); ?></th>
@@ -1109,7 +1111,7 @@ function relevanssi_options_form() {
 			<p><?php _e("You've already installed Relevanssi. That's a great first step towards good search experience!", "relevanssi"); ?></p>
 			<ol>
 				<?php if (get_option('relevanssi_indexed') !== 'done') : ?>
-				<li><p><?php printf(__("Now, you need an index. Head over to the %s%s%s tab to set up the basic indexing options and to build the index.", "relevanssi"), "<a href='{$this_page}&amp;tab=indexing'>", "Indexing", "</a>"); ?></p>
+				<li><p><?php printf(__("Now, you need an index. Head over to the %s%s%s tab to set up the basic indexing options and to build the index.", "relevanssi"), "<a href='{$this_page}&amp;tab=indexing'>", __("Indexing", "relevanssi"), "</a>"); ?></p>
 					<p><?php _e("You need to check at least the following options:", "relevanssi"); ?><br />
 				– <?php _e("Make sure the post types you want to include in the index are indexed.", "relevanssi"); ?><br />
 				– <?php printf(__("Do you use custom fields to store content you want included? If so, add those too. WooCommerce user? You probably want to include %s.", "relevanssi"), "<code>_sku</code>"); ?></p>
@@ -1119,10 +1121,10 @@ function relevanssi_options_form() {
 				<li><p><?php _e("Great, you already have an index!", "relevanssi"); ?></p></li>
 				<?php endif; ?>
 				<li>
-					<p><?php printf(__("On the %s%s%s tab, choose whether you want the default operator to be AND (less results, but more precise) or OR (more results, less precise).", "relevanssi"), "<a href='{$this_page}&amp;tab=searching'>", "Searching", "</a>"); ?></p>
+					<p><?php printf(__("On the %s%s%s tab, choose whether you want the default operator to be AND (less results, but more precise) or OR (more results, less precise).", "relevanssi"), "<a href='{$this_page}&amp;tab=searching'>", __("Searching", "relevanssi"), "</a>"); ?></p>
 				</li>
 				<li>
-					<p><?php printf(__("The next step is the %s%s%s tab, where you can enable the custom excerpts that show the relevant part of post in the search results pages.", "relevanssi"), "<a href='{$this_page}&amp;tab=excerpts'>", "Excerpts", "</a>"); ?></p>
+					<p><?php printf(__("The next step is the %s%s%s tab, where you can enable the custom excerpts that show the relevant part of post in the search results pages.", "relevanssi"), "<a href='{$this_page}&amp;tab=excerpts'>", __("Excerpts and highlights", "relevanssi"), "</a>"); ?></p>
 					<p><?php _e("There are couple of options related to that, so if you want highlighting in the results, you can adjust the styles for that to suit the look of your site.", "relevanssi"); ?></p>
 				</li>
 				<li>
@@ -1308,7 +1310,7 @@ function relevanssi_options_form() {
 			</thead>
 			<tr>
 				<td>
-					<?php _e('Post content', 'relevanssi'); ?>
+					<?php _e('Content', 'relevanssi'); ?>
 				</td>
 				<td class="col-2">
 					<input type='text' name='relevanssi_content_boost' id='relevanssi_content_boost' size='4' value='<?php echo $content_boost ?>' />
@@ -1316,7 +1318,7 @@ function relevanssi_options_form() {
 			</tr>
 			<tr>
 				<td>
-					<?php _e('Post titles', 'relevanssi'); ?>
+					<?php _e('Titles', 'relevanssi'); ?>
 				</td>
 				<td class="col-2">
 					<input type='text' name='relevanssi_title_boost' id='relevanssi_title_boost' size='4' value='<?php echo $title_boost ?>' />
@@ -2358,9 +2360,12 @@ function relevanssi_add_admin_scripts($hook) {
 		'indexing_taxonomies' => __('Indexing the following taxonomies:', 'relevanssi'),
 		'counting_posts' => __('Counting posts...', 'relevanssi'),
 		'counting_terms' => __('Counting taxonomy terms...', 'relevanssi'),
+		'counting_users' => __('Counting users...', 'relevanssi'),
 		'posts_found' => __('posts found.', 'relevanssi'),
 		'terms_found' => __('taxonomy terms found.', 'relevanssi'),
+		'users_found' => __('users found.', 'relevanssi'),
 		'taxonomy_disabled' => __('Taxonomy term indexing is disabled.', "relevanssi"),
+		'user_disabled' => __('User indexing is disabled.', "relevanssi"),
 		'indexing_complete' => __('Indexing complete.', 'relevanssi'),
 		'excluded_posts' => __('posts excluded.', 'relevanssi'),
 		'options_changed' => __("Settings have changed, please save the options before indexing.", 'relevanssi'),

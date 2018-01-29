@@ -39,7 +39,7 @@ function relevanssi_noindex_shortcode_indexing($atts, $content) {
 }
 
 function relevanssi_search_form() {
-	return get_search_form();
+	return get_search_form(false);
 }
 
 ?>

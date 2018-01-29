@@ -561,6 +561,7 @@ function relevanssi_index_doc($indexpost, $remove_first = false, $custom_fields 
 				remove_shortcode('edd_login');
 				remove_shortcode('edd_register');
 				remove_shortcode('swpm_protected');			// Simple Membership Partially Protected content
+				remove_shortcode('gravityform');			// Gravity Forms
 
 				$post_before_shortcode = $post;
 				$contents = do_shortcode($contents);

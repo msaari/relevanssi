@@ -19,11 +19,14 @@ function relevanssi_do_excerpt($t_post, $query) {
 	$post = $t_post;
 
 	$remove_stopwords = true;
+
+	$query = apply_filters('relevanssi_excerpt_query', $query);
+	
 	$terms = relevanssi_tokenize($query, $remove_stopwords, -1);
 
 	// These shortcodes cause problems with Relevanssi excerpts
     $problem_shortcodes = apply_filters('relevanssi_disable_shortcodes_excerpt',
-        array('layerslider', 'responsive-flipbook', 'breadcrumb', 'maxmegamenu', 'robogallery', 'gravityview')
+        array('layerslider', 'responsive-flipbook', 'breadcrumb', 'robogallery', 'gravityview')
     );
     foreach ($problem_shortcodes as $shortcode) {
         remove_shortcode($shortcode);
@@ -66,6 +69,8 @@ function relevanssi_do_excerpt($t_post, $query) {
 
 	if (get_option("relevanssi_index_excerpt") != 'off') {
 		$excerpt_content = $post->post_excerpt;
+		$excerpt_content = strip_tags($excerpt_content, get_option('relevanssi_excerpt_allowable_tags', '')); // this removes the tags, but leaves the content
+		
 		if (!empty($excerpt_content)) {
 			$excerpt_excerpts = relevanssi_create_excerpt($excerpt_content, $terms, $query);
 			if ($excerpt_excerpts[1] > $excerpt_data[1]) {
@@ -80,8 +85,11 @@ function relevanssi_do_excerpt($t_post, $query) {
 	$excerpt = trim($excerpt);
 	$excerpt = apply_filters('relevanssi_excerpt', $excerpt);
 
-	if (empty($excerpt) && !empty($post->post_excerpt)) $excerpt = $post->post_excerpt;
 	$excerpt === $post->post_content ? $whole_post_excerpted = true : $whole_post_excerpted = false;
+	if (empty($excerpt) && !empty($post->post_excerpt)) {
+		$excerpt = $post->post_excerpt;
+		$excerpt = strip_tags($excerpt, get_option('relevanssi_excerpt_allowable_tags', '')); // this removes the tags, but leaves the content
+	} 
 
 	$ellipsis = apply_filters('relevanssi_ellipsis', '...');
 
@@ -654,7 +662,7 @@ function relevanssi_get_custom_field_content($post_id) {
 			if ($remove_underscore_fields) {
 				if (substr($field, 0, 1) === '_') continue;
 			}
-			$values = apply_filters('relevanssi_custom_field_value', get_post_meta($post_id, $field, false), $field, $post->ID);
+			$values = apply_filters('relevanssi_custom_field_value', get_post_meta($post_id, $field, false), $field, $post_id);
 			if ("" === $values) continue;
 			foreach ($values as $value) {
 				// Quick hack : allow indexing of PODS relationship custom fields // TMV
@@ -679,6 +687,7 @@ function relevanssi_remove_page_builder_shortcodes($content) {
 		'/\[\/?mk.*?\]/',
 		'/\[\/?cs_.*?\]/',
 		'/\[\/?av_.*?\]/',
+		'/\[maxmegamenu.*?\]/',							// Max Mega Menu doesn't work in excerpts
 	));
 	$content = preg_replace($search_array, '', $content);
 	return $content;

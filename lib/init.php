@@ -197,7 +197,7 @@ function relevanssi_create_database_tables($relevanssi_db_version) {
 		}
 
 		if (!$typeitem_exists) {
-			$sql = "CREATE INDEX typeitem ON $relevanssi_table (type, item)";
+			$sql = "CREATE INDEX typeitem ON $relevanssi_table (type(190), item)";
 			$wpdb->query($sql);
 		}
 
@@ -225,7 +225,7 @@ function relevanssi_create_database_tables($relevanssi_db_version) {
 		}
 		
 		if (!$query_exists) {
-			$sql = "CREATE INDEX query ON $relevanssi_log_table (query)";
+			$sql = "CREATE INDEX query ON $relevanssi_log_table (query(190))";
 			$wpdb->query($sql);
 		}
 

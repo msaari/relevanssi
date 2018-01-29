@@ -287,7 +287,7 @@ function relevanssi_search($args) {
 	else {
 		$positive_terms = false;
 	}
-
+	
 	$terms = relevanssi_tokenize($q, $remove_stopwords);
 
 	if (count($terms) < 1) {
@@ -573,7 +573,7 @@ function relevanssi_search($args) {
 							if ($tax == 'post_tag') {
 								$match->tag = $count;
 							}
-							if (!isset($post_type_weights[$tax])) {
+							if (empty($post_type_weights[$tax])) {
 								$match->taxonomy_score += $count * 1;
 							}
 							else {
@@ -622,12 +622,12 @@ function relevanssi_search($args) {
 				isset($category_matches[$match->doc]) ? $category_matches[$match->doc] += $match->category : $category_matches[$match->doc] = $match->category;
 				isset($taxonomy_matches[$match->doc]) ? $taxonomy_matches[$match->doc] += $match->taxonomy : $taxonomy_matches[$match->doc] = $match->taxonomy;
 				isset($comment_matches[$match->doc]) ? $comment_matches[$match->doc] += $match->comment : $comment_matches[$match->doc] = $match->comment;
-				
+
 				isset($relevanssi_post_types[$match->doc]) ? $type = $relevanssi_post_types[$match->doc] : $type = null;
-				if (isset($post_type_weights[$type])) {
+				if (!empty($post_type_weights[$type])) {
 					$match->weight = $match->weight * $post_type_weights[$type];
 				}
-			
+
 				$match = apply_filters('relevanssi_match', $match, $idf, $term);
 
 				if ($match->weight == 0) continue; // the filters killed the match
@@ -805,6 +805,9 @@ function relevanssi_do_query(&$query) {
 		if (isset($query->query_vars["post_types"]) && $query->query_vars["post_types"] != 'any') {
 			$multi_args['post_type'] = $query->query_vars["post_types"];
 		}
+
+		if (isset($query->query_vars['order'])) $multi_args['order'] = $query->query_vars['order'];
+		if (isset($query->query_vars['orderby'])) $multi_args['orderby'] = $query->query_vars['orderby'];
 
 		$operator = "";
 		if (function_exists('relevanssi_set_operator')) {
@@ -1517,9 +1520,9 @@ function relevanssi_process_tax_query_row($row, $is_sub_row, $global_relation, $
 			}
 		}
 		else {
-			if ($tq_operator == 'IN') $local_term_tax_ids[] = $term_tax_id;
-			if ($tq_operator == 'NOT IN') $local_not_term_tax_ids[] = $term_tax_id;
-			if ($tq_operator == 'AND') $local_and_term_tax_ids[] = $term_tax_id;
+			if ($tq_operator === 'IN') $local_term_tax_ids[] = $term_tax_id;
+			if ($tq_operator === 'NOT IN') $local_not_term_tax_ids[] = $term_tax_id;
+			if ($tq_operator === 'AND') $local_and_term_tax_ids[] = $term_tax_id;
 		}
 	}
 	else {
@@ -1527,7 +1530,7 @@ function relevanssi_process_tax_query_row($row, $is_sub_row, $global_relation, $
 		$wp_query->is_category = false;
 	}
 	
-	if ($is_sub_row && $global_relation == 'and' && $tax_query_relation == 'or') {
+	if ($is_sub_row && $global_relation === 'and' && $tax_query_relation === 'or') {
 		$local_term_tax_ids = array_unique($local_term_tax_ids);
 		$local_not_term_tax_ids = array_unique($local_not_term_tax_ids);
 		$local_and_term_tax_ids = array_unique($local_and_term_tax_ids);
@@ -1560,7 +1563,7 @@ function relevanssi_process_tax_query_row($row, $is_sub_row, $global_relation, $
 	
 	$copy_term_tax_ids = false;
 	if (!$is_sub_row) $copy_term_tax_ids = true;
-	if ($is_sub_row && $global_relation == 'or') $copy_term_tax_ids = true;
+	if ($is_sub_row && $global_relation === 'or') $copy_term_tax_ids = true;
 
 	if ($copy_term_tax_ids) {
 		$term_tax_ids = array_merge($term_tax_ids, $local_term_tax_ids);
@@ -1570,6 +1573,3 @@ function relevanssi_process_tax_query_row($row, $is_sub_row, $global_relation, $
 
 	return array($query_restrictions, $term_tax_ids, $not_term_tax_ids, $and_term_tax_ids);
 }
-
-
-?>

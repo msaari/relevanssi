@@ -39,6 +39,7 @@ function _relevanssi_install() {
 	add_option('relevanssi_content_boost', $relevanssi_variables['content_boost_default']);
 	add_option('relevanssi_title_boost', $relevanssi_variables['title_boost_default']);
 	add_option('relevanssi_comment_boost', $relevanssi_variables['comment_boost_default']);
+	add_option('relevanssi_index_post_types', array('post', 'page'));
 	add_option('relevanssi_admin_search', 'off');
 	add_option('relevanssi_highlight', 'strong');
 	add_option('relevanssi_txt_col', '#ff0000');
