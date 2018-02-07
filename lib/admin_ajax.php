@@ -29,7 +29,7 @@ function relevanssi_index_posts_ajax_wrapper() {
     //$limit = apply_filters('relevanssi_ajax_indexing_limit', 50);
     if ($extend) $offset = true;
     
-    $indexing_response = relevanssi_build_index(true, $verbose, $limit, $is_ajax);
+    $indexing_response = relevanssi_build_index($offset, $verbose, $limit, $is_ajax);
     
     if ($indexing_response['indexing_complete']) {
         $response['completed'] = "done";

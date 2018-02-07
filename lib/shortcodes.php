@@ -10,10 +10,10 @@ function relevanssi_shortcode($atts, $content, $name) {
 	extract(shortcode_atts(array('term' => false, 'phrase' => 'not'), $atts));
 	
 	if ($term != false) {
-		$term = urlencode(strtolower($term));
+		$term = urlencode(relevanssi_strtolower($term));
 	}
 	else {
-		$term = urlencode(strip_tags(strtolower($content)));
+		$term = urlencode(strip_tags(relevanssi_strtolower($content)));
 	}
 	
 	if ($phrase != 'not') {
@@ -38,8 +38,18 @@ function relevanssi_noindex_shortcode_indexing($atts, $content) {
 	return '';
 }
 
-function relevanssi_search_form() {
-	return get_search_form(false);
+function relevanssi_search_form($atts) {
+	$form = get_search_form(false); 
+	if (is_array($atts)) {
+		$additional_fields = array();
+		foreach ($atts as $key => $value) {
+			$key = esc_attr($key);
+			$value = esc_attr($value);
+			$additional_fields[] = "<input type='hidden' name='$key' value='$value' />";
+		}
+		$form = str_replace("</form>", implode("\n", $additional_fields) . "</form>", $form);
+	}
+	return $form;
 }
 
 ?>

@@ -685,7 +685,7 @@ function relevanssi_search($args) {
 	$temp_terms_without_stops = array_keys(relevanssi_tokenize(implode(' ', $terms), $strip_stops));
 	$terms_without_stops = array();
 	foreach ($temp_terms_without_stops as $temp_term) {
-		if (strlen($temp_term) >= $min_length)
+		if (relevanssi_strlen($temp_term) >= $min_length)
 			array_push($terms_without_stops, $temp_term);
 	}
 	$total_terms = count($terms_without_stops);
@@ -789,93 +789,117 @@ function relevanssi_do_query(&$query) {
 	else
 		$q = trim(stripslashes(strtolower($query->query_vars["s"])));
 
-	$search_multisite = false;
-	if (isset($query->query_vars['searchblogs']) && (string) get_current_blog_id() != $query->query_vars['searchblogs']) {
-		$search_multisite =	true;
+	$did_multisite_search = false;
+	if (is_multisite()) {
+		$search_multisite = false;
+		if (isset($query->query_vars['searchblogs']) && (string) get_current_blog_id() != $query->query_vars['searchblogs']) {
+			$search_multisite =	true;
+		}
+	
+		// Is searching all blogs enabled?
+		$searchblogs_all = get_option('relevanssi_searchblogs_all');
+		if ($searchblogs_all === "off") $searchblogs_all = false;
+		if (!$search_multisite && $searchblogs_all) {
+			$search_multisite = true;
+			$searchblogs = "all";
+		}
+		
+		// Searchblogs is not set from the query variables, check the option:
+		$searchblogs_setting = get_option('relevanssi_searchblogs');
+		if (!$search_multisite && $searchblogs_setting) {
+			$search_multisite = true;
+			$searchblogs = $searchblogs_setting;
+		}
+	
+		if ($search_multisite) {
+			if (isset($query->query_vars['searchblogs'])) {
+				$multi_args['search_blogs'] = $query->query_vars['searchblogs'];
+			}
+			else {
+				$multi_args['search_blogs'] = $searchblogs;
+			}
+			$multi_args['q'] = $q;
+	
+			$post_type = false;
+			if (isset($query->query_vars["post_type"]) && $query->query_vars["post_type"] != 'any') {
+				$multi_args['post_type'] = $query->query_vars["post_type"];
+			}
+			if (isset($query->query_vars["post_types"]) && $query->query_vars["post_types"] != 'any') {
+				$multi_args['post_type'] = $query->query_vars["post_types"];
+			}
+	
+			if (isset($query->query_vars['order'])) $multi_args['order'] = $query->query_vars['order'];
+			if (isset($query->query_vars['orderby'])) $multi_args['orderby'] = $query->query_vars['orderby'];
+	
+			$operator = "";
+			if (function_exists('relevanssi_set_operator')) {
+				$operator = relevanssi_set_operator($query);
+				$operator = strtoupper($operator);	// just in case
+			}
+			if ($operator != "OR" && $operator != "AND") $operator = get_option("relevanssi_implicit_operator");
+			$multi_args['operator'] = $operator;
+	
+			$meta_query = array();
+			if ( ! empty( $query->query_vars["meta_query"] ) ) {
+				 $meta_query = $query->query_vars["meta_query"];
+			 }
+	
+			if ( isset( $query->query_vars["customfield_key"] ) ) {
+				$build_meta_query = array();
+	
+				// Use meta key
+				$build_meta_query['key'] = $query->query_vars["customfield_key"];
+	
+				/**
+				 * Check the value is not empty for ordering purpose,
+				 * Set it or not for the current meta query
+				 */
+				if ( ! empty( $query->query_vars["customfield_value"] ) ) {
+					$build_meta_query['value'] = $query->query_vars["customfield_value"];
+				}
+	
+				// Set the compare
+				$build_meta_query['compare'] = '=';
+	
+				$meta_query[] = $build_meta_query;
+			 }
+	
+			if ( ! empty($query->query_vars["meta_key"] ) || ! empty($query->query_vars["meta_value"] ) || ! empty( $query->query_vars["meta_value_num"] ) ) {
+	
+				$build_meta_query = array();
+	
+				// Use meta key
+				$build_meta_query['key'] = $query->query_vars["meta_key"];
+	
+				 $value = null;
+				if ( ! empty( $query->query_vars["meta_value"] ) ) {
+					$value = $query->query_vars["meta_value"];
+				} elseif ( ! empty( $query->query_vars["meta_value_num"] ) ) {
+					$value = $query->query_vars["meta_value_num"];
+				}
+	
+				/**
+				 * Check the meta value, as it could be not set for ordering purpose
+				 * set it or not for the current meta query
+				 */
+				if ( ! empty( $value ) ) {
+					$build_meta_query['value'] = $value;
+				}
+	
+				// Set meta compare
+				$build_meta_query['compare'] = ! empty( $query->query_vars["meta_compare"] ) ? $query->query_vars["meta_compare"] : '=';
+	
+				$meta_query[] = $build_meta_query;
+			 }
+	
+			$multi_args['meta_query'] = $meta_query;
+			if (function_exists('relevanssi_search_multi')) {
+				$return = relevanssi_search_multi($multi_args);
+			}
+			$did_multisite_search = true;
+		}
 	}
-
-	if (isset($query->query_vars['searchblogs']) && $search_multisite) {
-		$multi_args['search_blogs'] = $query->query_vars['searchblogs'];
-		$multi_args['q'] = $q;
-
-		$post_type = false;
-		if (isset($query->query_vars["post_type"]) && $query->query_vars["post_type"] != 'any') {
-			$multi_args['post_type'] = $query->query_vars["post_type"];
-		}
-		if (isset($query->query_vars["post_types"]) && $query->query_vars["post_types"] != 'any') {
-			$multi_args['post_type'] = $query->query_vars["post_types"];
-		}
-
-		if (isset($query->query_vars['order'])) $multi_args['order'] = $query->query_vars['order'];
-		if (isset($query->query_vars['orderby'])) $multi_args['orderby'] = $query->query_vars['orderby'];
-
-		$operator = "";
-		if (function_exists('relevanssi_set_operator')) {
-			$operator = relevanssi_set_operator($query);
-			$operator = strtoupper($operator);	// just in case
-		}
-		if ($operator != "OR" && $operator != "AND") $operator = get_option("relevanssi_implicit_operator");
-		$multi_args['operator'] = $operator;
-
-		$meta_query = array();
-		if ( ! empty( $query->query_vars["meta_query"] ) ) {
- 			$meta_query = $query->query_vars["meta_query"];
- 		}
-
-		if ( isset( $query->query_vars["customfield_key"] ) ) {
-			$build_meta_query = array();
-
-			// Use meta key
-			$build_meta_query['key'] = $query->query_vars["customfield_key"];
-
-			/**
-			 * Check the value is not empty for ordering purpose,
-			 * Set it or not for the current meta query
-			 */
-			if ( ! empty( $query->query_vars["customfield_value"] ) ) {
-				$build_meta_query['value'] = $query->query_vars["customfield_value"];
-			}
-
-			// Set the compare
-			$build_meta_query['compare'] = '=';
-
-			$meta_query[] = $build_meta_query;
- 		}
-
-		if ( ! empty($query->query_vars["meta_key"] ) || ! empty($query->query_vars["meta_value"] ) || ! empty( $query->query_vars["meta_value_num"] ) ) {
-
-			$build_meta_query = array();
-
-			// Use meta key
-			$build_meta_query['key'] = $query->query_vars["meta_key"];
-
- 			$value = null;
-			if ( ! empty( $query->query_vars["meta_value"] ) ) {
-				$value = $query->query_vars["meta_value"];
-			} elseif ( ! empty( $query->query_vars["meta_value_num"] ) ) {
-				$value = $query->query_vars["meta_value_num"];
-			}
-
-			/**
-			 * Check the meta value, as it could be not set for ordering purpose
-			 * set it or not for the current meta query
-			 */
-			if ( ! empty( $value ) ) {
-				$build_meta_query['value'] = $value;
-			}
-
-			// Set meta compare
-			$build_meta_query['compare'] = ! empty( $query->query_vars["meta_compare"] ) ? $query->query_vars["meta_compare"] : '=';
-
-			$meta_query[] = $build_meta_query;
- 		}
-
-		$multi_args['meta_query'] = $meta_query;
-		if (function_exists('relevanssi_search_multi')) {
-			$return = relevanssi_search_multi($multi_args);
-		}
-	}
-	else {
+	if (!$did_multisite_search) {
 		$tax_query = array();
 		$tax_query_relation = apply_filters('relevanssi_default_tax_query_relation', 'OR');
 		if (isset($query->tax_query) && empty($query->tax_query->queries)) {

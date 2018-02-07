@@ -253,6 +253,7 @@ function update_relevanssi_options() {
 	if (isset($_REQUEST['relevanssi_punct_quotes'])) $relevanssi_punct['quotes'] = $_REQUEST['relevanssi_punct_quotes'];
 	if (isset($_REQUEST['relevanssi_punct_hyphens'])) $relevanssi_punct['hyphens'] = $_REQUEST['relevanssi_punct_hyphens'];
 	if (isset($_REQUEST['relevanssi_punct_ampersands'])) $relevanssi_punct['ampersands'] = $_REQUEST['relevanssi_punct_ampersands'];
+	if (isset($_REQUEST['relevanssi_punct_decimals'])) $relevanssi_punct['decimals'] = $_REQUEST['relevanssi_punct_decimals'];
 	if (!empty($relevanssi_punct)) update_option('relevanssi_punctuation', $relevanssi_punct);
 
 	$post_type_weights = array();
@@ -908,43 +909,51 @@ function relevanssi_options_form() {
 	$punct_hyphens_keep = "";
 	$punct_hyphens_remove = "";
 	$punct_hyphens_replace = "";
+	$punct_decimals_keep = "";
+	$punct_decimals_remove = "";
+	$punct_decimals_replace = "";
 	if (isset($punctuation['quotes'])) {
 		$quotes = $punctuation['quotes'];
 		switch ($quotes) {
 			case 'replace':
-				$punct_quotes_remove = "";
 				$punct_quotes_replace = 'selected="selected"';
 				break;
 			case 'remove':
 				$punct_quotes_remove = 'selected="selected"';
-				$punct_quotes_replace = "";
 				break;
 			default:
 				$punct_quotes_remove = 'selected="selected"';
-				$punct_quotes_replace = "";
+		}
+	}
+	if (isset($punctuation['decimals'])) {
+		$decimals = $punctuation['decimals'];
+		switch ($decimals) {
+			case 'replace':
+				$punct_decimals_replace = 'selected="selected"';
+				break;
+			case 'remove':
+				$punct_decimals_remove = 'selected="selected"';
+				break;
+			case 'keep':
+				$punct_decimals_keep = 'selected="selected"';
+				break;
+			default:
+				$punct_decimals_replace = 'selected="selected"';
 		}
 	}
 	if (isset($punctuation['ampersands'])) {
 		$ampersands = $punctuation['ampersands'];
 		switch ($ampersands) {
 			case 'replace':
-				$punct_ampersands_keep = "";
-				$punct_ampersands_remove = "";
 				$punct_ampersands_replace = 'selected="selected"';
 				break;
 			case 'remove':
-				$punct_ampersands_keep = "";
 				$punct_ampersands_remove = 'selected="selected"';
-				$punct_ampersands_replace = "";
 				break;
 			case 'keep':
 				$punct_ampersands_keep = 'selected="selected"';
-				$punct_ampersands_remove = "";
-				$punct_ampersands_replace = "";
 				break;
 			default:
-				$punct_ampersands_keep = "";
-				$punct_ampersands_remove = "";
 				$punct_ampersands_replace = 'selected="selected"';
 		}
 	}
@@ -952,23 +961,15 @@ function relevanssi_options_form() {
 		$hyphens = $punctuation['hyphens'];
 		switch ($hyphens) {
 			case 'replace':
-				$punct_hyphens_keep = "";
-				$punct_hyphens_remove = "";
 				$punct_hyphens_replace = 'selected="selected"';
 				break;
 			case 'remove':
-				$punct_hyphens_keep = "";
 				$punct_hyphens_remove = 'selected="selected"';
-				$punct_hyphens_replace = "";
 				break;
 			case 'keep':
 				$punct_hyphens_keep = 'selected="selected"';
-				$punct_hyphens_remove = "";
-				$punct_hyphens_replace = "";
 				break;
 			default:
-				$punct_hyphens_keep = "";
-				$punct_hyphens_remove = "";
 				$punct_hyphens_replace = 'selected="selected"';
 		}
 	}
@@ -1022,6 +1023,11 @@ function relevanssi_options_form() {
 		$serialize_options['recency_bonus'] = $recency_bonus_array;
 		$recency_bonus = $recency_bonus_array['bonus'];
 		$recency_bonus_days = $recency_bonus_array['days'];
+
+		$searchblogs = get_option('relevanssi_searchblogs');
+		$serialize_options['relevanssi_searchblogs'] = $searchblogs;
+		$searchblogs_all = ('on' === get_option('relevanssi_searchblogs_all') ? 'checked="checked"' : '');
+		$serialize_options['relevanssi_searchblogs_all'] = get_option('searchblogs_all');
 
 		$mysql_columns = get_option('relevanssi_mysql_columns');
 		$serialize_options['relevanssi_mysql_columns'] = $mysql_columns;
@@ -1146,7 +1152,7 @@ function relevanssi_options_form() {
 			<?php _e('Relevanssi on Facebook', 'relevanssi');?>
 		</th>
 		<td>
-			<p><a href="http://www.facebook.com/relevanssi"><?php _e('Check out the Relevanssi page on Facebook for news and updates about Relevanssi.', 'relevanssi'); ?></a></p>
+			<p><a href="https://www.facebook.com/relevanssi"><?php _e('Check out the Relevanssi page on Facebook for news and updates about Relevanssi.', 'relevanssi'); ?></a></p>
 		</td>
 	</tr>
 	<?php if (!RELEVANSSI_PREMIUM) : ?>
@@ -1496,6 +1502,7 @@ function relevanssi_options_form() {
 			<?php endif; ?>
 		</td>
 	</tr>
+	<?php if (function_exists('relevanssi_form_searchblogs_setting')) relevanssi_form_searchblogs_setting($searchblogs_all, $searchblogs); ?>
 	</table>
 
 	<?php endif; // active tab: searching ?>
@@ -2015,6 +2022,7 @@ EOH;
 		<td>
 			<input type='number' name='relevanssi_min_word_length' id='relevanssi_min_word_length' value='<?php echo esc_attr($min_word_length); ?>' />
 			<p class="description"><?php _e("Words shorter than this many letters will not be indexed.", "relevanssi"); ?></p>
+			<p class="description"><?php printf(__("To enable one-letter searches, you need to add a filter function on the filter hook %s that returns %s.", "relevanssi"), '<code>relevanssi_block_one_letter_searches</code>', '<code>false</code>'); ?></p>
 		</td>
 	</tr>
 	<tr>
@@ -2062,7 +2070,20 @@ EOH;
 
 		</td>
 	</tr>
+	<tr>
+		<th scope="row">
+			<label for='relevanssi_punct_decimals'><?php _e("Decimal separators", "relevanssi"); ?></label>
+		</th>
+		<td>
+			<select name='relevanssi_punct_decimals' id='relevanssi_punct_decimals'>
+				<option value='keep' <?php echo $punct_decimals_keep ?>><?php _e("Keep", "relevanssi"); ?></option>
+				<option value='replace' <?php echo $punct_decimals_replace ?>><?php _e("Replace with spaces", "relevanssi"); ?></option>
+				<option value='remove' <?php echo $punct_decimals_remove ?>><?php _e("Remove", "relevanssi"); ?></option>
+			</select>
+			<p class="description"><?php _e("How Relevanssi should handle periods between decimals? Replacing with spaces is the default option, but that often leads to the numbers being removed completely. If you need to search decimal numbers a lot, keep the periods.", "relevanssi"); ?></p>
 
+		</td>
+	</tr>
 	<?php if (function_exists('relevanssi_form_thousep')) relevanssi_form_thousep($thousand_separator); ?>
 
 	<?php if (function_exists('relevanssi_form_mysql_columns')) relevanssi_form_mysql_columns($mysql_columns); ?>
@@ -2315,6 +2336,7 @@ function rlv_index_filter($block, $post_id) {
 		'content'  => 	"<ul>" . 
 			"<li>" . sprintf(__("If you have content that you don't want indexed, you can wrap that content in a %s shortcode.", 'relevanssi'), '<code>[noindex]</code>') . "</li>" .
 			"<li>" . sprintf(__("If you need a search form on some page on your site, you can use the %s shortcode to print out a basic search form.", "relevanssi"), '<code>[searchform]</code>') . "</li>" .
+			"<li>" . sprintf(__("If you need to add query variables to the search form, the shortcode takes parameters, which are then printed out as hidden input fields. To get a search form with a post type restriction, you can use %s. To restrict the search to categories 10, 14 and 17, you can use %s and so on.", "relevanssi"), '<code>[searchform post_types="page"]</code>', '<code>[searchform cats="10,14,17"]</code>') . "</li>" .
 			"</ul>",
 	));
 	$screen->add_help_tab( array(
@@ -2327,8 +2349,8 @@ function rlv_index_filter($block, $post_id) {
 	));
 	$screen->set_help_sidebar(
 		'<p><strong>' . __( 'For more information:', 'relevanssi' ) . '</strong></p>' .
-		'<p><a href="http://www.relevanssi.com/knowledge-base/" target="_blank">' . __( 'Plugin knowledge base', 'relevanssi' ) . '</a></p>' .
-		'<p><a href="http://wordpress.org/tags/relevanssi?forum_id=10" target="_blank">' . __( 'WordPress.org forum', 'relevanssi' ) . '</a></p>'
+		'<p><a href="https://www.relevanssi.com/knowledge-base/" target="_blank">' . __( 'Plugin knowledge base', 'relevanssi' ) . '</a></p>' .
+		'<p><a href="https://wordpress.org/tags/relevanssi?forum_id=10" target="_blank">' . __( 'WordPress.org forum', 'relevanssi' ) . '</a></p>'
 	);
 }
 

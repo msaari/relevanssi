@@ -197,7 +197,7 @@ function relevanssi_build_index($extend_offset = false, $verbose = true, $post_l
 			$limit = "";
 		}
 
-		$extend = true;
+		$extend = false;
 		$q = relevanssi_generate_indexing_query($valid_status, $extend, $restriction, $limit);
 	}
 
@@ -205,7 +205,7 @@ function relevanssi_build_index($extend_offset = false, $verbose = true, $post_l
 
 	do_action('relevanssi_pre_indexing_query');
 	$content = $wpdb->get_results($q);
-
+	
 	if ( defined( 'WP_CLI' ) && WP_CLI && function_exists('relevanssi_generate_progress_bar') ) $progress = relevanssi_generate_progress_bar( 'Indexing posts', count($content) );
 	foreach ($content as $post) {
 		$result = relevanssi_index_doc($post->ID, false, $custom_fields, true);
@@ -562,6 +562,7 @@ function relevanssi_index_doc($indexpost, $remove_first = false, $custom_fields 
 				remove_shortcode('edd_register');
 				remove_shortcode('swpm_protected');			// Simple Membership Partially Protected content
 				remove_shortcode('gravityform');			// Gravity Forms
+				remove_shortcode('pms-restrict');			// Paid Member Subscription restricted content
 
 				$post_before_shortcode = $post;
 				$contents = do_shortcode($contents);

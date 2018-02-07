@@ -528,29 +528,29 @@ function relevanssi_extract_locations($words, $fulltext) {
     return $locations;
 }
 
-function relevanssi_count_matches($words, $fulltext) {
+function relevanssi_count_matches($words, $complete_text) {
     $count = 0;
-	foreach( $words as $word ) {
-		$word = relevanssi_add_accent_variations($word);
+	$lowercase_text = relevanssi_strtolower($complete_text, 'UTF-8');
+    $text = "";
+    for ($t = 0; $t < count($words); $t++) {
+        $word_slice = relevanssi_strtolower($words[$t], 'UTF-8');
+		$lines = explode ($word_slice, $lowercase_text);
+        if (count($lines) > 1) {
+            for ($tt = 0; $tt < count($lines); $tt++) {
+                if ($tt < (count($lines) - 1)) {
+                    $text = $text . $lines[$tt] . "=***=";
+                } else {
+                    $text = $text . $lines[$tt];
+                }
+                
+            }
+        }
+    }
 
-		if (get_option('relevanssi_fuzzy') === 'never') {
-			$pattern = '/([\s,\.:;\?!\']'.$word.'[\s,\.:;\?!\'])/i';
-			if (preg_match($pattern, $fulltext, $matches, PREG_OFFSET_CAPTURE)) {
-				$count += count($matches) - 1;
-			}
-		}
-		else {
-			$pattern = '/([\s,\.:;\?!\']'.$word.')/i';
-			if (preg_match($pattern, $fulltext, $matches, PREG_OFFSET_CAPTURE)) {
-				$count += count($matches) - 1;
-			}
-			$pattern = '/('.$word.'[\s,\.:;\?!\'])/i';
-			if (preg_match($pattern, $fulltext, $matches, PREG_OFFSET_CAPTURE)) {
-				$count += count($matches) - 1;
-			}
-		}
-	}
-	
+    $lines = explode ("=***=", $text);
+    $count = count($lines) - 1;
+    if ($count < 0) $count = 0;
+
 	return $count;
 }
 

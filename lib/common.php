@@ -117,8 +117,6 @@ function relevanssi_get_next_key(&$orderby) {
  * Fetches the key values for the item pair. If random order is required, will randomize the order.
  */
 function relevanssi_get_compare_values($key, $item_1, $item_2) {
-    function_exists('mb_strtolower') ? $strtolower = 'mb_strtolower' : $strtolower = 'strtolower';
-
 	if ($key === "rand") {
 		do {
 			$key1 = rand();
@@ -147,13 +145,13 @@ function relevanssi_get_compare_values($key, $item_1, $item_2) {
 	}
 	else {
 		if (isset($item_1->$key)) {
-			$key1 = call_user_func($strtolower, $item_1->$key);
+			$key1 = relevanssi_strtolower($item_1->$key);
 		}
 		else {
 			$key1 = apply_filters('relevanssi_missing_sort_key', $key1, $key);
 		}
 		if (isset($item_2->$key)) {
-			$key2 = call_user_func($strtolower, $item_2->$key);
+			$key2 = relevanssi_strtolower($item_2->$key);
 		}
 		else {
 			$key2 = apply_filters('relevanssi_missing_sort_key', $key2, $key);
@@ -200,6 +198,16 @@ function relevanssi_mb_strcasecmp($str1, $str2, $encoding = null) {
 		return strcmp(mb_strtoupper($str1, $encoding), mb_strtoupper($str2, $encoding));
 	}
 }
+
+function relevanssi_strtolower($string) {
+	if (!function_exists('mb_strtolower')) {
+		return strtolower($string);
+	}
+	else {
+		return mb_strtolower($string);
+	}
+}
+
 
 function relevanssi_cmp_function($a, $b) {
 	global $relevanssi_keys, $relevanssi_dirs, $relevanssi_compares;
@@ -622,6 +630,14 @@ function relevanssi_remove_punct($a) {
 		$ampersand_replacement = "AMPERSANDTAIKASANA";
 	}
 
+	$decimal_replacement = " ";
+	if (isset($punct_options['decimals']) && $punct_options['decimals'] === "remove") {
+		$decimal_replacement = "";
+	}
+	if (isset($punct_options['decimals']) && $punct_options['decimals'] === "keep") {
+		$decimal_replacement = "DESIMAALITAIKASANA";
+	}
+
 	$replacement_array = array(
 		"ß" => 'ss',
 		"·" => '',
@@ -644,12 +660,15 @@ function relevanssi_remove_punct($a) {
 		"-" => $hyphen_replacement,
 		"–" => $endash_replacement,
 		"—" => $emdash_replacement,
+		"&#038;" => $ampersand_replacement,
 		"&amp;" => $ampersand_replacement,
 		"&" => $ampersand_replacement,
 	);
 
 	$replacement_array = apply_filters('relevanssi_punctuation_filter', $replacement_array);
 
+	$a = preg_replace('/\.(\d)/', $decimal_replacement . '\1', $a);
+ 
 	$a = str_replace("\r", ' ', $a);    // --- replace with empty space
 	$a = str_replace("\n", ' ', $a);   // --- replace with space
 	$a = str_replace("\t", ' ', $a);   // --- replace with space
@@ -657,8 +676,7 @@ function relevanssi_remove_punct($a) {
 	$a = stripslashes($a);
 
 	$a = str_replace(array_keys($replacement_array), array_values($replacement_array), $a);
-	
-    $a = preg_replace('/[[:punct:]]+/u', apply_filters('relevanssi_default_punctuation_replacement', ' '), $a);
+	$a = preg_replace('/[[:punct:]]+/u', apply_filters('relevanssi_default_punctuation_replacement', ' '), $a);
 
     $a = preg_replace('/[[:space:]]+/', ' ', $a);
 
@@ -666,8 +684,10 @@ function relevanssi_remove_punct($a) {
 	$a = str_replace('HYPHENTAIKASANA', '-', $a);
 	$a = str_replace('ENDASHTAIKASANA', '–', $a);
 	$a = str_replace('EMDASHTAIKASANA', '—', $a);
+	$a = str_replace('DESIMAALITAIKASANA', '.', $a);
 	
 	$a = trim($a);
+
     return $a;
 }
 
@@ -747,10 +767,7 @@ function relevanssi_tokenize($str, $remove_stops = true, $min_word_length = -1) 
 
 	$str = apply_filters('relevanssi_remove_punctuation', $str);
 	
-	if ( function_exists('mb_strtolower') )
-		$str = mb_strtolower($str);
-	else
-		$str = strtolower($str);
+	$str = relevanssi_strtolower($str);
 
 	$t = strtok($str, "\n\t ");
 	while ($t !== false) {
@@ -863,12 +880,7 @@ function relevanssi_add_synonyms($q) {
 	$synonym_data = get_option('relevanssi_synonyms');
 	if ($synonym_data) {
 		$synonyms = array();
-		if (function_exists('mb_strtolower')) {
-			$synonym_data = mb_strtolower($synonym_data);
-		}
-		else {
-			$synonym_data = strtolower($synonym_data);
-		}
+		$synonym_data = relevanssi_strtolower($synonym_data);
 		$pairs = explode(";", $synonym_data);
 		foreach ($pairs as $pair) {
 			if (empty($pair)) continue; 		// skip empty rows
@@ -1046,8 +1058,7 @@ function relevanssi_switch_blog($new_blog, $prev_blog) {
     $relevanssi_variables['log_table'] = $wpdb->prefix . "relevanssi_log";
 }
 
-function relevanssi_get_permalink() {
-	$permalink = apply_filters('relevanssi_permalink', get_permalink());
+function relevanssi_add_highlight($permalink) {
 	$highlight_docs = get_option('relevanssi_highlight_docs');
 	$query = get_search_query();
 	if (isset($highlight_docs) && $highlight_docs != "off" && !empty($query)) {
@@ -1064,17 +1075,23 @@ function relevanssi_get_permalink() {
 	return $permalink;
 }
 
+function relevanssi_get_permalink() {
+	$permalink = apply_filters('relevanssi_permalink', get_permalink());
+	$permalink = relevanssi_add_highlight($permalink);
+	return $permalink;
+}
+
 function relevanssi_the_permalink() {
 	echo relevanssi_get_permalink();
 }
 
-function relevanssi_permalink($content, $link_post = NULL) {
+function relevanssi_permalink($link, $link_post = NULL) {
 	if ($link_post == NULL) {
 		global $post;
-		if (isset($post->link))
-			$content = $post->link;
 	}
-	return $content;
+	if (isset($post->link)) $link = $post->link;
+	$link = relevanssi_add_highlight($link);
+	return $link;
 }
 
 function relevanssi_didyoumean($query, $pre, $post, $n = 5, $echo = true) {

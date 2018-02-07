@@ -27,6 +27,9 @@ add_filter('query_vars', 'relevanssi_query_vars');
 add_filter('relevanssi_indexing_values', 'relevanssi_update_doc_count', 98, 2);
 add_filter('relevanssi_pre_excerpt_content', 'relevanssi_remove_page_builder_shortcodes', 9);
 add_filter('rest_api_init', 'relevanssi_rest_api_disable');
+add_filter('the_permalink', 'relevanssi_permalink');
+add_filter('post_link', 'relevanssi_permalink');
+add_filter('relevanssi_permalink', 'relevanssi_permalink');
 
 global $relevanssi_variables;
 register_activation_hook($relevanssi_variables['file'], 'relevanssi_install');
