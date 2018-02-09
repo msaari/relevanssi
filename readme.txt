@@ -3,7 +3,7 @@ Contributors: msaari
 Donate link: https://www.relevanssi.com/buy-premium/
 Tags: search, relevance, better search
 Requires at least: 4.0
-Tested up to: 4.9.2
+Tested up to: 4.9.4
 Requires PHP: 5.6
 Stable tag: 4.0.4
 License: GPLv2 or later
