@@ -15,7 +15,9 @@ Relevanssi replaces the default search with a partial-match search that sorts re
 
 Relevanssi replaces the standard WordPress search with a better search engine, with lots of features and configurable options. You'll get better results, better presentation of results - your users will thank you.
 
-This is the free version of Relevanssi. There's also Relevanssi Premium, which has added features, including Multisite support. This free version does not work properly on Multisite. For more information about Premium, see [Relevanssi.com](https://www.relevanssi.com/).
+This is the free version of Relevanssi. There's also Relevanssi Premium, which has added features. For more information about Premium, see [Relevanssi.com](https://www.relevanssi.com/).
+
+Do note that using Relevanssi may require large amounts (hundreds of megabytes) of database space. If your hosting setup has a limited amount of space for database tables, using Relevanssi may cause problems. In those cases use of Relevanssi cannot be recommended.
 
 = Key features =
 * Search results sorted in the order of relevance, not by date.
