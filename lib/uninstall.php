@@ -18,7 +18,7 @@
 function relevanssi_drop_database_tables() {
 	global $wpdb;
 
-	if ( defined( 'RELEVANSSI_PREMIUM' ) && ! defined( 'UNINSTALLING_RELEVANSSI_PREMIUM' ) ) {
+	if ( defined( 'RELEVANSSI_PREMIUM' ) && RELEVANSSI_PREMIUM && ! defined( 'UNINSTALLING_RELEVANSSI_PREMIUM' ) ) {
 		// Relevanssi Premium exists, do not drop the tables.
 		return;
 	}
@@ -74,7 +74,6 @@ function relevanssi_uninstall_free() {
 	delete_option( 'relevanssi_expand_shortcodes' );
 	delete_option( 'relevanssi_fuzzy' );
 	delete_option( 'relevanssi_hide_branding' );
-	delete_option( 'relevanssi_hide_post_controls' );
 	delete_option( 'relevanssi_highlight_comments' );
 	delete_option( 'relevanssi_highlight_docs_external' );
 	delete_option( 'relevanssi_highlight_docs' );
@@ -89,12 +88,10 @@ function relevanssi_uninstall_free() {
 	delete_option( 'relevanssi_index_fields' );
 	delete_option( 'relevanssi_index_limit' );
 	delete_option( 'relevanssi_index_post_types' );
-	delete_option( 'relevanssi_index_synonyms' );
 	delete_option( 'relevanssi_index_taxonomies' );
 	delete_option( 'relevanssi_index_taxonomies_list' );
 	delete_option( 'relevanssi_index_terms' );
 	delete_option( 'relevanssi_indexed' );
-	delete_option( 'relevanssi_internal_links' );
 	delete_option( 'relevanssi_link_boost' );
 	delete_option( 'relevanssi_log_queries' );
 	delete_option( 'relevanssi_log_queries_with_ip' );
@@ -103,8 +100,6 @@ function relevanssi_uninstall_free() {
 	delete_option( 'relevanssi_polylang_all_languages' );
 	delete_option( 'relevanssi_post_type_weights' );
 	delete_option( 'relevanssi_punctuation' );
-	delete_option( 'relevanssi_read_new_files' );
-	delete_option( 'relevanssi_recency_bonus' );
 	delete_option( 'relevanssi_respect_exclude' );
 	delete_option( 'relevanssi_show_matches_text' );
 	delete_option( 'relevanssi_show_matches' );
