@@ -1,3 +1,15 @@
+= 4.0.4 =
+* Fixed shortcode: `searchform` shortcode didn't work properly.
+* Setting post type or post content weight to 0 didn't work.
+* Gravity Forms shortcode is now disabled in Relevanssi indexing.
+* New filter: `relevanssi_excerpt_query` filters the search query before building excerpts.
+* HTML tags are stripped from post excerpts when using the excerpt to build Relevanssi excerpts.
+* Fixed filter: `relevanssi_custom_field_value` didn't have the correct post ID parameter.
+* `relevanssi_get_permalink` doesn't add the `highlight` parameter to URLs outside search results pages anymore, and won't add the parameter to front page links either.
+* Relevanssi used `sanitize_hex_color`, which isn't actually reliably available.
+* Did you mean suggestions have been improved.
+* Single-word phrases are not allowed anymore, as they do no good. They are silently converted to non-phrases now.
+
 = 4.0.3 =
 * Relevanssi didn't index all posts with one go. It does now.
 * © and ® symbols caused problems in indexing; they are now included in the default punctuation removal.

@@ -3,9 +3,9 @@ Contributors: msaari
 Donate link: https://www.relevanssi.com/buy-premium/
 Tags: search, relevance, better search
 Requires at least: 4.0
-Tested up to: 4.9.4
+Tested up to: 5.0
 Requires PHP: 5.6
-Stable tag: 4.0.4
+Stable tag: 4.0.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -129,19 +129,16 @@ Each document database is full of useless words. All the little words that appea
 
 == Changelog ==
 
-= 4.0.4 =
-* Fixed shortcode: `searchform` shortcode didn't work properly.
-* Setting post type or post content weight to 0 didn't work.
-* Gravity Forms shortcode is now disabled in Relevanssi indexing.
-* New filter: `relevanssi_excerpt_query` filters the search query before building excerpts.
-* HTML tags are stripped from post excerpts when using the excerpt to build Relevanssi excerpts.
-* Fixed filter: `relevanssi_custom_field_value` didn't have the correct post ID parameter.
-* `relevanssi_get_permalink` doesn't add the `highlight` parameter to URLs outside search results pages anymore, and won't add the parameter to front page links either.
-* Relevanssi used `sanitize_hex_color`, which isn't actually reliably available.
-* Did you mean suggestions have been improved.
-* Single-word phrases are not allowed anymore, as they do no good. They are silently converted to non-phrases now.
+= 4.0.5 =
+* Relevanssi code has been reviewed and modified to follow WordPress coding standards. As a result, there have been minor improvements all around the code to make things more robust and secure.
+* Custom field detail is no longer serialized. It's now JSON. If you use custom field detail, rebuild the index and change your code to use json_decode() instead of unserialize().
+* `relevanssi_the_tags()` and `relevanssi_get_the_tags()` now have different set of parameters, more in line with `the_tags()` and `get_the_tags()`.
+* Taxonomy indexing settings were emptied out if you saved another options tab. That is now fixed.
+* Improvements to WPML support; WPML is now less likely to be confused in multisite searches.
+* Updated filter: `relevanssi_search_ok` now gets the WP_Query object as a parameter, which is helpful if you're not using the global $wp_query.
+* ACF Flexible Content field indexing didn't work properly, possibly due to a change in ACF. That should now work better.
 
 == Upgrade notice ==
 
 = 4.0.4 =
-* Small improvements, prevents couple of possibly fatal problems.
+* Codebase review, lots of small improvements everywhere.

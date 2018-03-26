@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Relevanssi\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-30 11:49+0200\n"
+"POT-Creation-Date: 2018-03-26 20:49+0300\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Mikko Saari <mikko@mikkosaari.fi>\n"
 "Language-Team: \n"
@@ -10,1410 +10,172 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-KeywordsList: _e;__\n"
+"X-Poedit-KeywordsList: _e;__;esc_html__;esc_html_e;_n\n"
 "X-Poedit-Basepath: .\n"
-"X-Generator: Poedit 2.0.4\n"
+"X-Generator: Poedit 2.0.6\n"
 "X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPath-1: lib\n"
 
-#: lib/admin_ajax.php:61
-msgid "User indexing is disabled."
-msgstr ""
-
-#: lib/excerpts-highlights.php:11
-msgid "There is no excerpt because this is a protected post."
-msgstr ""
-
-#: lib/indexing.php:225
+#: lib/indexing.php:349
 msgid "Indexing complete!"
 msgstr ""
 
-#: lib/indexing.php:228
+#: lib/indexing.php:352
 msgid "More to index..."
 msgstr ""
 
-#: lib/init.php:44
-msgid ""
-"You do not have an index! Remember to build the index (click the \"Build the "
-"index\" button), otherwise searching won't work."
-msgstr ""
-
-#: lib/init.php:60
-msgid ""
-"Multibyte string functions are not available. Relevanssi may not work well "
-"without them. Please install (or ask your host to install) the mbstring "
-"extension."
-msgstr ""
-
-#: lib/init.php:99 lib/init.php:100 lib/interface.php:1196
+#: lib/init.php:149 lib/init.php:150
 msgid "User searches"
 msgstr ""
 
-#: lib/init.php:231
+#: lib/init.php:339
 msgid "Settings"
 msgstr ""
 
-#: lib/init.php:234
+#: lib/init.php:342
 msgid "Go Premium!"
 msgstr ""
 
-#: lib/interface.php:6
-msgid "Relevanssi Premium Search Options"
-msgstr ""
-
-#: lib/interface.php:9
+#: lib/interface.php:18
 msgid "Relevanssi Search Options"
 msgstr ""
 
-#: lib/interface.php:78
+#: lib/interface.php:20
+msgid "Relevanssi Premium Search Options"
+msgstr ""
+
+#: lib/interface.php:79
 msgid "User Searches"
 msgstr ""
 
-#: lib/interface.php:80
+#: lib/interface.php:81
 msgid "Relevanssi User Searches"
 msgstr ""
 
-#: lib/interface.php:105
-msgid "Enable query logging to see stats here."
-msgstr ""
-
-#: lib/interface.php:119
-msgid "Logs clear!"
-msgstr ""
-
-#: lib/interface.php:122
-msgid "Clearing the logs failed."
-msgstr ""
-
-#: lib/interface.php:388
-#, php-format
-msgid ""
-"<div id='message' class='updated fade'><p>Successfully added %d/%d terms to "
-"stopwords!</p></div>"
-msgstr ""
-
-#: lib/interface.php:395
-#, php-format
-msgid ""
-"<div id='message' class='updated fade'><p>Term '%s' added to stopwords!</p></"
-"div>"
-msgstr ""
-
-#: lib/interface.php:398
-#, php-format
-msgid ""
-"<div id='message' class='updated fade'><p>Couldn't add term '%s' to "
-"stopwords!</p></div>"
-msgstr ""
-
-#: lib/interface.php:437
-msgid ""
-"<div id='message' class='updated fade'><p>Stopwords removed! Remember to re-"
-"index.</p></div>"
-msgstr ""
-
-#: lib/interface.php:449
-#, php-format
-msgid "Term '%s' removed from stopwords! Re-index to get it back to index."
-msgstr ""
-
-#: lib/interface.php:459
-#, php-format
-msgid "Couldn't remove term '%s' from stopwords!"
-msgstr ""
-
-#: lib/interface.php:479
-msgid "25 most common words in the index"
-msgstr ""
-
-#: lib/interface.php:480
-msgid ""
-"These words are excellent stopword material. A word that appears in most of "
-"the posts in the database is quite pointless when searching. This is also an "
-"easy way to create a completely new stopword list, if one isn't available in "
-"your language. Click the icon after the word to add the word to the stopword "
-"list. The word will also be removed from the index, so rebuilding the index "
-"is not necessary."
-msgstr ""
-
-#: lib/interface.php:486
-msgid "Stopword Candidates"
-msgstr ""
-
-#: lib/interface.php:494
+#: lib/interface.php:654
 msgid "Add to stopwords"
 msgstr ""
 
-#: lib/interface.php:516
-msgid "Total Searches"
-msgstr ""
-
-#: lib/interface.php:519
+#: lib/interface.php:684
 msgid "Totals"
 msgstr ""
 
-#: lib/interface.php:524
-msgid "Common Queries"
-msgstr ""
-
-#: lib/interface.php:528
+#: lib/interface.php:698
 #, php-format
 msgid ""
 "Here you can see the %d most common user search queries, how many times "
 "those queries were made and how many results were found for those queries."
 msgstr ""
 
-#: lib/interface.php:531 lib/interface.php:547 lib/interface.php:579
+#: lib/interface.php:701 lib/interface.php:718 lib/interface.php:759
 msgid "Today and yesterday"
 msgstr ""
 
-#: lib/interface.php:535 lib/interface.php:551 lib/interface.php:580
+#: lib/interface.php:705 lib/interface.php:722 lib/interface.php:760
 msgid "Last 7 days"
 msgstr ""
 
-#: lib/interface.php:539 lib/interface.php:555
+#: lib/interface.php:710 lib/interface.php:727
 #, php-format
 msgid "Last %d days"
 msgstr ""
 
-#: lib/interface.php:544
-msgid "Unsuccessful Queries"
-msgstr ""
-
-#: lib/interface.php:562
-msgid "Reset Logs"
-msgstr ""
-
-#: lib/interface.php:565
+#: lib/interface.php:737
 #, php-format
-msgid "To reset the logs, type \"reset\" into the box here %s and click %s"
+msgid "To reset the logs, type \"reset\" into the box here %1$s and click %2$s"
 msgstr ""
 
-#: lib/interface.php:581
+#: lib/interface.php:761
 msgid "Last 30 days"
 msgstr ""
 
-#: lib/interface.php:582
+#: lib/interface.php:762
 msgid "Forever"
 msgstr ""
 
-#: lib/interface.php:584
-msgid "When"
-msgstr ""
-
-#: lib/interface.php:584
-msgid "Searches"
-msgstr ""
-
-#: lib/interface.php:616
-msgid "Query"
-msgstr ""
-
-#: lib/interface.php:616
-msgid "Hits"
-msgstr ""
-
-#: lib/interface.php:1063
-msgid "Overview"
-msgstr ""
-
-#: lib/interface.php:1064
-msgid "Indexing"
-msgstr ""
-
-#: lib/interface.php:1065
-msgid "Attachments"
-msgstr ""
-
-#: lib/interface.php:1066 lib/interface.php:2233
-msgid "Searching"
-msgstr ""
-
-#: lib/interface.php:1067
-msgid "Logging"
-msgstr ""
-
-#: lib/interface.php:1068
-msgid "Excerpts and highlights"
-msgstr ""
-
-#: lib/interface.php:1069 lib/interface.php:2099 lib/interface.php:2104
-msgid "Synonyms"
-msgstr ""
-
-#: lib/interface.php:1070 lib/interface.php:2130
-msgid "Stopwords"
-msgstr ""
-
-#: lib/interface.php:1072
-msgid "Import / Export options"
-msgstr ""
-
-#: lib/interface.php:1102
-msgid "Welcome to Relevanssi!"
-msgstr ""
-
-#: lib/interface.php:1112
-msgid "Getting started"
-msgstr ""
-
-#: lib/interface.php:1114
-msgid ""
-"You've already installed Relevanssi. That's a great first step towards good "
-"search experience!"
-msgstr ""
-
-#: lib/interface.php:1117
-#, php-format
-msgid ""
-"Now, you need an index. Head over to the %s%s%s tab to set up the basic "
-"indexing options and to build the index."
-msgstr ""
-
-#: lib/interface.php:1118
-msgid "You need to check at least the following options:"
-msgstr ""
-
-#: lib/interface.php:1119
-msgid "Make sure the post types you want to include in the index are indexed."
-msgstr ""
-
-#: lib/interface.php:1120
-#, php-format
-msgid ""
-"Do you use custom fields to store content you want included? If so, add "
-"those too. WooCommerce user? You probably want to include %s."
-msgstr ""
-
-#: lib/interface.php:1121
-msgid ""
-"Then just save the options and build the index. First time you have to do it "
-"manually, but after that, it's fully automatic: all changes are reflected in "
-"the index without reindexing. (That said, it's a good idea to rebuild the "
-"index once a year.)"
-msgstr ""
-
-#: lib/interface.php:1124
-msgid "Great, you already have an index!"
-msgstr ""
-
-#: lib/interface.php:1127
-#, php-format
-msgid ""
-"On the %s%s%s tab, choose whether you want the default operator to be AND "
-"(less results, but more precise) or OR (more results, less precise)."
-msgstr ""
-
-#: lib/interface.php:1130
-#, php-format
-msgid ""
-"The next step is the %s%s%s tab, where you can enable the custom excerpts "
-"that show the relevant part of post in the search results pages."
-msgstr ""
-
-#: lib/interface.php:1131
-msgid ""
-"There are couple of options related to that, so if you want highlighting in "
-"the results, you can adjust the styles for that to suit the look of your "
-"site."
-msgstr ""
-
-#: lib/interface.php:1134
-msgid ""
-"That's about it! Now you should have Relevanssi up and running. The rest of "
-"the options is mostly fine-tuning."
-msgstr ""
-
-#: lib/interface.php:1137
-msgid ""
-"Relevanssi doesn't have a separate search widget. Instead, Relevanssi uses "
-"the default search widget. Any standard search form will do!"
-msgstr ""
-
-#: lib/interface.php:1141
-msgid "For more information"
-msgstr ""
-
-#: lib/interface.php:1143
-msgid ""
-"Relevanssi uses the WordPress contextual help. Click 'Help' on the top right "
-"corner for more information on many Relevanssi topics."
-msgstr ""
-
-#: lib/interface.php:1144
-#, php-format
-msgid ""
-"%sRelevanssi knowledge base%s has lots of information about advanced "
-"Relevanssi use, including plenty of code samples."
-msgstr ""
-
-#: lib/interface.php:1149
-msgid "Relevanssi on Facebook"
-msgstr ""
-
-#: lib/interface.php:1152
-msgid ""
-"Check out the Relevanssi page on Facebook for news and updates about "
-"Relevanssi."
-msgstr ""
-
-#: lib/interface.php:1158
-msgid "Buy Relevanssi Premium"
-msgstr ""
-
-#: lib/interface.php:1161
-msgid "Buy Relevanssi Premium now"
-msgstr ""
-
-#: lib/interface.php:1161
-#, php-format
-msgid ""
-"use coupon code %s for 20%% discount (valid at least until the end of %s)"
-msgstr ""
-
-#: lib/interface.php:1162
-msgid "Here are some improvements Relevanssi Premium offers:"
-msgstr ""
-
-#: lib/interface.php:1164
-msgid "PDF content indexing"
-msgstr ""
-
-#: lib/interface.php:1165
-msgid "Index and search user profile pages"
-msgstr ""
-
-#: lib/interface.php:1166
-msgid "Index and search taxonomy term pages"
-msgstr ""
-
-#: lib/interface.php:1167
-msgid "Multisite searches across many subsites"
-msgstr ""
-
-#: lib/interface.php:1168
-msgid "WP CLI commands"
-msgstr ""
-
-#: lib/interface.php:1169
-msgid "Adjust weights separately for each post type and taxonomy"
-msgstr ""
-
-#: lib/interface.php:1170
-msgid "Internal link anchors can be search terms for the target posts"
-msgstr ""
-
-#: lib/interface.php:1171
-msgid "Index and search any columns in the wp_posts database"
-msgstr ""
-
-#: lib/interface.php:1172
-msgid ""
-"Hide Relevanssi branding from the User Searches page on a client installation"
-msgstr ""
-
-#: lib/interface.php:1186
-msgid "Enable logs"
-msgstr ""
-
-#: lib/interface.php:1190 lib/interface.php:1193
-msgid "Keep a log of user queries."
-msgstr ""
-
-#: lib/interface.php:1196
-#, php-format
-msgid ""
-"If enabled, Relevanssi will log user queries. The logs can be examined under "
-"'%s' on the Dashboard admin menu and are stored in the %s database table."
-msgstr ""
-
-#: lib/interface.php:1201
-msgid "Log user IP"
-msgstr ""
-
-#: lib/interface.php:1205 lib/interface.php:1208
-msgid "Log the user's IP with the queries."
-msgstr ""
-
-#: lib/interface.php:1211
-msgid "If enabled, Relevanssi will log user's IP adress with the queries."
-msgstr ""
-
-#: lib/interface.php:1216
-msgid "Exclude users"
-msgstr ""
-
-#: lib/interface.php:1220
-msgid ""
-"Comma-separated list of numeric user IDs or user login names that will not "
-"be logged."
-msgstr ""
-
-#: lib/interface.php:1226
-msgid "Trim logs"
-msgstr ""
-
-#: lib/interface.php:1230
-msgid "How many days of logs to keep in the database."
-msgstr ""
-
-#: lib/interface.php:1231
-#, php-format
-msgid " Set to %d for no trimming."
-msgstr ""
-
-#: lib/interface.php:1246
-msgid "Default operator"
-msgstr ""
-
-#: lib/interface.php:1250
-msgid "AND - require all terms"
-msgstr ""
-
-#: lib/interface.php:1251
-msgid "OR - any term present is enough"
-msgstr ""
-
-#: lib/interface.php:1253
-msgid "This setting determines the default operator for the search."
-msgstr ""
-
-#: lib/interface.php:1254
-#, php-format
-msgid ""
-"You can override this setting with the %s query parameter, like this: %s"
-msgstr ""
-
-#: lib/interface.php:1259
-msgid "Fallback to OR"
-msgstr ""
-
-#: lib/interface.php:1263 lib/interface.php:1266
-msgid "Disable the OR fallback."
-msgstr ""
-
-#: lib/interface.php:1269
-msgid ""
-"By default, if AND search fails to find any results, Relevanssi will switch "
-"the operator to OR and run the search again. You can prevent that by "
-"checking this option."
-msgstr ""
-
-#: lib/interface.php:1274
-msgid "Default order"
-msgstr ""
-
-#: lib/interface.php:1278
-msgid "Relevance (highly recommended)"
-msgstr ""
-
-#: lib/interface.php:1279
-msgid "Post date"
-msgstr ""
-
-#: lib/interface.php:1281
-#, php-format
-msgid ""
-"If you want to override this or use multi-layered ordering (eg. first order "
-"by relevance, but sort ties by post title), you can use the %s query "
-"variable. See Help for more information."
-msgstr ""
-
-#: lib/interface.php:1283
-msgid ""
-" If you want date-based results, see the recent post bonus in the Weights "
-"section."
-msgstr ""
-
-#: lib/interface.php:1289
-msgid "Keyword matching"
-msgstr ""
-
-#: lib/interface.php:1293
-msgid "Whole words"
-msgstr ""
-
-#: lib/interface.php:1294
-msgid "Partial words"
-msgstr ""
-
-#: lib/interface.php:1295
-msgid "Partial words if no hits for whole words"
-msgstr ""
-
-#: lib/interface.php:1297
-msgid ""
-"Whole words means Relevanssi only finds posts that include the whole search "
-"term."
-msgstr ""
-
-#: lib/interface.php:1298
-msgid ""
-"Partial words also includes cases where the word in the index begins or ends "
-"with the search term (searching for 'ana' will match 'anaconda' or 'banana', "
-"but not 'banal'). See Help, if you want to make Relevanssi match also inside "
-"words."
-msgstr ""
-
-#: lib/interface.php:1303
-msgid "Weights"
-msgstr ""
-
-#: lib/interface.php:1306
-msgid ""
-"All the weights in the table are multipliers. To increase the weight of an "
-"element, use a higher number. To make an element less significant, use a "
-"number lower than 1."
-msgstr ""
-
-#: lib/interface.php:1310
-msgid "Element"
-msgstr ""
-
-#: lib/interface.php:1311
-msgid "Weight"
-msgstr ""
-
-#: lib/interface.php:1316
-msgid "Post content"
-msgstr ""
-
-#: lib/interface.php:1324
-msgid "Post titles"
-msgstr ""
-
-#: lib/interface.php:1333
-msgid "Comment text"
-msgstr ""
-
-#: lib/interface.php:1353
-msgid "WPML"
-msgstr ""
-
-#: lib/interface.php:1357 lib/interface.php:1360
-msgid "Limit results to current language."
-msgstr ""
-
-#: lib/interface.php:1363
-msgid ""
-"Enabling this option will restrict the results to the currently active "
-"language. If the option is disabled, results will include posts in all "
-"languages."
-msgstr ""
-
-#: lib/interface.php:1370
-msgid "Polylang"
-msgstr ""
-
-#: lib/interface.php:1374 lib/interface.php:1377
-msgid "Allow results from all languages."
-msgstr ""
-
-#: lib/interface.php:1380
-msgid ""
-"By default Polylang restricts the search to the current language. Enabling "
-"this option will lift this restriction."
-msgstr ""
-
-#: lib/interface.php:1386
-msgid "Admin search"
-msgstr ""
-
-#: lib/interface.php:1390 lib/interface.php:1393
-msgid "Use Relevanssi for admin searches."
-msgstr ""
-
-#: lib/interface.php:1396
-msgid ""
-"If checked, Relevanssi will be used for searches in the admin interface. The "
-"page search doesn't use Relevanssi, because WordPress works like that."
-msgstr ""
-
-#: lib/interface.php:1401
-#, php-format
-msgid "Respect %s"
-msgstr ""
-
-#: lib/interface.php:1405
-msgid "Respect exclude_from_search for custom post types"
-msgstr ""
-
-#: lib/interface.php:1408
-#, php-format
-msgid "Respect %s for custom post types"
-msgstr ""
-
-#: lib/interface.php:1410
-msgid ""
-"If checked, Relevanssi won't display posts of custom post types that have "
-"'exclude_from_search' set to true."
-msgstr ""
-
-#: lib/interface.php:1418
-msgid ""
-"You probably should uncheck this option, because you've set Relevanssi to "
-"index the following non-public post types:"
-msgstr ""
-
-#: lib/interface.php:1427
-msgid "Throttle searches"
-msgstr ""
-
-#: lib/interface.php:1431
-msgid "Throttling the search does not work when sorting the posts by date."
-msgstr ""
-
-#: lib/interface.php:1435 lib/interface.php:1438
-msgid "Throttle searches."
-msgstr ""
-
-#: lib/interface.php:1442
-msgid "Your database is so small that you don't need to enable this."
-msgstr ""
-
-#: lib/interface.php:1444
-msgid ""
-"If this option is checked, Relevanssi will limit search results to at most "
-"500 results per term. This will improve performance, but may cause some "
-"relevant documents to go unfound. See Help for more details."
-msgstr ""
-
-#: lib/interface.php:1450
-msgid "Category restriction"
-msgstr ""
-
-#: lib/interface.php:1466
-msgid ""
-"You can restrict search results to a category for all searches. For "
-"restricting on a per-search basis and more options (eg. tag restrictions), "
-"see Help."
-msgstr ""
-
-#: lib/interface.php:1471
-msgid "Category exclusion"
-msgstr ""
-
-#: lib/interface.php:1487
-msgid ""
-"Posts in these categories are not included in search results. To exclude the "
-"posts completely from the index, see Help."
-msgstr ""
-
-#: lib/interface.php:1492
-msgid "Post exclusion"
-msgstr ""
-
-#: lib/interface.php:1496
-msgid ""
-"Enter a comma-separated list of post or page ID's to exclude those pages "
-"from the search results."
-msgstr ""
-
-#: lib/interface.php:1498
-msgid ""
-"With Relevanssi Premium, it's better to use the check box on post edit "
-"pages. That will remove the posts completely from the index, and will work "
-"with multisite searches unlike this setting."
-msgstr ""
-
-#: lib/interface.php:1508
-msgid "Custom excerpts/snippets"
-msgstr ""
-
-#: lib/interface.php:1513
-msgid "Custom search result snippets"
-msgstr ""
-
-#: lib/interface.php:1517
-msgid "Create custom search results snippets"
-msgstr ""
-
-#: lib/interface.php:1520
-msgid "Create custom search result snippets"
-msgstr ""
-
-#: lib/interface.php:1523
-msgid "Only enable this if you actually use the custom excerpts."
-msgstr ""
-
-#: lib/interface.php:1528
-msgid "Length of the snippet"
-msgstr ""
-
-#: lib/interface.php:1533
-msgid "characters"
-msgstr ""
-
-#: lib/interface.php:1534
-msgid "words"
-msgstr ""
-
-#: lib/interface.php:1536
-msgid ""
-"Using words is much faster than characters. Don't use characters, unless you "
-"have a really good reason and your posts are short."
-msgstr ""
-
-#: lib/interface.php:1541
-msgid "Allowable tags in excerpts"
-msgstr ""
-
-#: lib/interface.php:1545
-msgid ""
-"List all tags you want to allow in excerpts. For example: &lt;p&gt;&lt;a&gt;"
-"&lt;strong&gt;."
-msgstr ""
-
-#: lib/interface.php:1550
-msgid "Use custom fields for excerpts"
-msgstr ""
-
-#: lib/interface.php:1554 lib/interface.php:1557
-msgid "Use custom field content for building excerpts"
-msgstr ""
-
-#: lib/interface.php:1560
-msgid ""
-"Use the custom fields setting for indexing for excerpt-making as well. "
-"Enabling this option will show custom field content in Relevanssi-generated "
-"excerpts."
-msgstr ""
-
-#: lib/interface.php:1562
-msgid "Current custom field setting"
-msgstr ""
-
-#: lib/interface.php:1564
-msgid "all visible custom fields"
-msgstr ""
-
-#: lib/interface.php:1565
-msgid "all custom fields"
-msgstr ""
-
-#: lib/interface.php:1567
-msgid "None selected"
-msgstr ""
-
-#: lib/interface.php:1573
-msgid "Search hit highlighting"
-msgstr ""
-
-#: lib/interface.php:1578
-msgid "Highlight type"
-msgstr ""
-
-#: lib/interface.php:1582
-msgid "No highlighting"
-msgstr ""
-
-#: lib/interface.php:1586 lib/interface.php:1596
-msgid "Text color"
-msgstr ""
-
-#: lib/interface.php:1587 lib/interface.php:1604
-msgid "Background color"
-msgstr ""
-
-#: lib/interface.php:1588
-msgid "CSS Style"
-msgstr ""
-
-#: lib/interface.php:1589
-msgid "CSS Class"
-msgstr ""
-
-#: lib/interface.php:1591 lib/interface.php:1706
-msgid "Requires custom snippets to work."
-msgstr ""
-
-#: lib/interface.php:1612
-msgid "CSS style for highlights"
-msgstr ""
-
-#: lib/interface.php:1616
-#, php-format
-msgid ""
-"The highlights will be wrapped in a %s with this CSS in the style parameter."
-msgstr ""
-
-#: lib/interface.php:1621
-msgid "CSS class for highlights"
-msgstr ""
-
-#: lib/interface.php:1625
-#, php-format
-msgid "The highlights will be wrapped in a %s with this class."
-msgstr ""
-
-#: lib/interface.php:1630
-msgid "Highlight in titles"
-msgstr ""
-
-#: lib/interface.php:1634 lib/interface.php:1637
-msgid "Highlight query terms in titles"
-msgstr ""
-
-#: lib/interface.php:1640
-#, php-format
-msgid ""
-"Highlights in titles require changes to the search results template. You "
-"need to replace %s in the search results template with %s. For more "
-"information, see the contextual help."
-msgstr ""
-
-#: lib/interface.php:1645
-msgid "Highlight in documents"
-msgstr ""
-
-#: lib/interface.php:1649 lib/interface.php:1652
-msgid "Highlight query terms in documents"
-msgstr ""
-
-#: lib/interface.php:1655
-#, php-format
-msgid ""
-"Highlights hits when user opens the post from search results. This requires "
-"an extra parameter (%s) to the links from the search results pages so in "
-"order to get these highlights, you need to use %s or %s to print out the "
-"permalinks on the search results templates."
-msgstr ""
-
-#: lib/interface.php:1661
-msgid "Highlight in comments"
-msgstr ""
-
-#: lib/interface.php:1665 lib/interface.php:1668
-msgid "Highlight query terms in comments"
-msgstr ""
-
-#: lib/interface.php:1671
-msgid ""
-"Highlights hits in comments when user opens the post from search results."
-msgstr ""
-
-#: lib/interface.php:1676
-msgid "Highlighting problems with non-ASCII alphabet?"
-msgstr ""
-
-#: lib/interface.php:1680 lib/interface.php:1683
-msgid "Uncheck this if you use non-ASCII characters"
-msgstr ""
-
-#: lib/interface.php:1686
-msgid ""
-"If you use non-ASCII characters (like Cyrillic alphabet) and the highlights "
-"don't work, unchecking this option may make the highlights work."
-msgstr ""
-
-#: lib/interface.php:1691
-msgid "Breakdown of search results"
-msgstr ""
-
-#: lib/interface.php:1696
-msgid "Breakdown of search hits in excerpts"
-msgstr ""
-
-#: lib/interface.php:1700
-msgid "Show the breakdown of search hits in the excerpts"
-msgstr ""
-
-#: lib/interface.php:1703
-msgid "Show the breakdown of search hits in the excerpts."
-msgstr ""
-
-#: lib/interface.php:1711
-msgid "The breakdown format"
-msgstr ""
-
-#: lib/interface.php:1715
-msgid ""
-"Use %body%, %title%, %tags% and %comments% to display the number of hits (in "
-"different parts of the post), %total% for total hits, %score% to display the "
-"document weight and %terms% to show how many hits each search term got."
-msgstr ""
-
-#: lib/interface.php:1747
-#, php-format
-msgid "%s empties the existing index and rebuilds it from scratch."
-msgstr ""
-
-#: lib/interface.php:1747
-msgid "Build the index"
-msgstr ""
-
-#: lib/interface.php:1748
-#, php-format
-msgid ""
-"%s doesn't empty the index and only indexes those posts that are not "
-"indexed. You can use it if you have to interrupt building the index."
-msgstr ""
-
-#: lib/interface.php:1748
-msgid "Index unindexed posts"
-msgstr ""
-
-#: lib/interface.php:1749
-msgid "This doesn't index any taxonomy terms or users."
-msgstr ""
-
-#: lib/interface.php:1753
-msgid "Time elapsed"
-msgstr ""
-
-#: lib/interface.php:1753
-msgid "Time remaining"
-msgstr ""
-
-#: lib/interface.php:1753
-msgid "some time"
-msgstr ""
-
-#: lib/interface.php:1758
-msgid "State of the index"
-msgstr ""
-
-#: lib/interface.php:1766
-msgid "is the highest post ID indexed."
-msgstr ""
-
-#: lib/interface.php:1773
-msgid ""
-"WARNING: You've chosen no post types to index. Nothing will be indexed. "
-"Choose some post types to index."
-msgstr ""
-
-#: lib/interface.php:1777
-msgid "Indexing options"
-msgstr ""
-
-#: lib/interface.php:1779
-msgid ""
-"Any changes to the settings on this page require reindexing before they take "
-"effect."
-msgstr ""
-
-#: lib/interface.php:1783
-msgid "Post types"
-msgstr ""
-
-#: lib/interface.php:1789
-msgid "Type"
-msgstr ""
-
-#: lib/interface.php:1790 lib/interface.php:1852
-msgid "Index"
-msgstr ""
-
-#: lib/interface.php:1791
-msgid "Excluded from search?"
-msgstr ""
-
-#: lib/interface.php:1809 lib/interface.php:1869
-msgid "no"
-msgstr ""
-
-#: lib/interface.php:1809 lib/interface.php:1869
+#: lib/interface.php:2187 lib/interface.php:2241
 msgid "yes"
 msgstr ""
 
-#: lib/interface.php:1838
-#, php-format
-msgid ""
-"%s includes all attachment types. If you want to index only some "
-"attachments, see %sControlling attachment types in the Knowledge base%s."
+#: lib/interface.php:2189 lib/interface.php:2239
+msgid "no"
 msgstr ""
 
-#: lib/interface.php:1844
-msgid "Taxonomies"
-msgstr ""
-
-#: lib/interface.php:1851
-msgid "Taxonomy"
-msgstr ""
-
-#: lib/interface.php:1853
-msgid "Public?"
-msgstr ""
-
-#: lib/interface.php:1889
-msgid ""
-"If you check a taxonomy here, the terms for that taxonomy are indexed with "
-"the posts. If you for example choose \"post_tag\", searching for a tag will "
-"find all posts that have the tag."
-msgstr ""
-
-#: lib/interface.php:1896
-msgid "Comments"
-msgstr ""
-
-#: lib/interface.php:1900 lib/interface.php:1914
-msgid "none"
-msgstr ""
-
-#: lib/interface.php:1901
-msgid "comments"
-msgstr ""
-
-#: lib/interface.php:1902
-msgid "comments and pingbacks"
-msgstr ""
-
-#: lib/interface.php:1904
-msgid ""
-"If you choose to index comments, you can choose if you want to index just "
-"comments, or everything including comments and track- and pingbacks."
-msgstr ""
-
-#: lib/interface.php:1910
-msgid "Custom fields"
-msgstr ""
-
-#: lib/interface.php:1915
-msgid "all"
-msgstr ""
-
-#: lib/interface.php:1916
-msgid "visible"
-msgstr ""
-
-#: lib/interface.php:1917 lib/interface.php:1928
+#: lib/interface.php:2302
 msgid "some"
 msgstr ""
 
-#: lib/interface.php:1919
-msgid "'All' indexes all custom fields for posts."
+#: lib/interface.php:2658
+msgid "Searching"
 msgstr ""
 
-#: lib/interface.php:1920
-msgid ""
-"'Visible' only includes the custom fields that are visible in the user "
-"interface (with names that don't start with an underscore)."
-msgstr ""
-
-#: lib/interface.php:1921
-msgid "'Some' lets you choose individual custom fields to index."
-msgstr ""
-
-#: lib/interface.php:1924
-msgid ""
-"Enter a comma-separated list of custom fields to include in the index. With "
-"Relevanssi Premium, you can also use 'fieldname_%_subfieldname' notation for "
-"ACF repeater fields."
-msgstr ""
-
-#: lib/interface.php:1925
-msgid ""
-"You can use 'relevanssi_index_custom_fields' filter hook to adjust which "
-"custom fields are indexed."
-msgstr ""
-
-#: lib/interface.php:1928
+#: lib/interface.php:2661
 #, php-format
 msgid ""
-"If you want the SKU included, choose %s and enter %s. Also see the "
-"contextual help for more details."
+"To adjust the post order, you can use the %1$s query parameter. With %1$s, "
+"you can use multiple layers of different sorting methods. See <a "
+"href='%2$s'>WordPress Codex</a> for more details on using arrays for orderby."
 msgstr ""
 
-#: lib/interface.php:1937
-msgid "Author display names"
-msgstr ""
-
-#: lib/interface.php:1941 lib/interface.php:1944
-msgid "Index the post author display name"
-msgstr ""
-
-#: lib/interface.php:1946
-msgid ""
-"Searching for the post author display name will return posts by that author."
-msgstr ""
-
-#: lib/interface.php:1953 lib/interface.php:2285
-msgid "Excerpts"
-msgstr ""
-
-#: lib/interface.php:1957 lib/interface.php:1960 lib/interface.php:1981
-msgid "Index the post excerpt"
-msgstr ""
-
-#: lib/interface.php:1962
-msgid "Relevanssi will find posts by the content in the excerpt."
-msgstr ""
-
-#: lib/interface.php:1964
-msgid ""
-"WooCommerce stores the product short description in the excerpt, so it's a "
-"good idea to index excerpts."
-msgstr ""
-
-#: lib/interface.php:1972
-msgid "Shortcodes"
-msgstr ""
-
-#: lib/interface.php:1977
-msgid "Expand shortcodes"
-msgstr ""
-
-#: lib/interface.php:1984
-msgid "Expand shortcodes when indexing"
-msgstr ""
-
-#: lib/interface.php:1987
-msgid ""
-"WooCommerce has shortcodes that don't work well with Relevanssi. With "
-"WooCommerce, make sure the option is disabled."
-msgstr ""
-
-#: lib/interface.php:1989
-msgid ""
-"If checked, Relevanssi will expand shortcodes in post content before "
-"indexing. Otherwise shortcodes will be stripped."
-msgstr ""
-
-#: lib/interface.php:1990
-msgid ""
-"If you use shortcodes to include dynamic content, Relevanssi will not keep "
-"the index updated, the index will reflect the status of the shortcode "
-"content at the moment of indexing."
-msgstr ""
-
-#: lib/interface.php:2007
-msgid "Advanced indexing settings"
-msgstr ""
-
-#: lib/interface.php:2009
-msgid "Show advanced settings"
-msgstr ""
-
-#: lib/interface.php:2014
-msgid "Minimum word length"
-msgstr ""
-
-#: lib/interface.php:2018
-msgid "Words shorter than this many letters will not be indexed."
-msgstr ""
-
-#: lib/interface.php:2022
-msgid "Punctuation control"
-msgstr ""
-
-#: lib/interface.php:2023
-msgid ""
-"Here you can adjust how the punctuation is controlled. For more information, "
-"see help. Remember that any changes here require reindexing, otherwise "
-"searches will fail to find posts they should."
-msgstr ""
-
-#: lib/interface.php:2027
-msgid "Hyphens and dashes"
-msgstr ""
-
-#: lib/interface.php:2031 lib/interface.php:2058
-msgid "Keep"
-msgstr ""
-
-#: lib/interface.php:2032 lib/interface.php:2045 lib/interface.php:2059
-msgid "Replace with spaces"
-msgstr ""
-
-#: lib/interface.php:2033 lib/interface.php:2046 lib/interface.php:2060
-msgid "Remove"
-msgstr ""
-
-#: lib/interface.php:2035
-msgid ""
-"How Relevanssi should handle hyphens and dashes (en and em dashes)? "
-"Replacing with spaces is generally the best option, but in some cases "
-"removing completely is the best option. Keeping them is rarely the best "
-"option."
-msgstr ""
-
-#: lib/interface.php:2041
-msgid "Apostrophes and quotes"
-msgstr ""
-
-#: lib/interface.php:2048
-msgid ""
-"How Relevanssi should handle apostrophes and quotes? It's not possible to "
-"keep them; that would lead to problems. Default behaviour is to replace with "
-"spaces, but sometimes removing makes sense."
-msgstr ""
-
-#: lib/interface.php:2054
-msgid "Ampersands"
-msgstr ""
-
-#: lib/interface.php:2062
-msgid ""
-"How Relevanssi should handle ampersands? Replacing with spaces is generally "
-"the best option, but if you talk a lot about D&amp;D, for example, keeping "
-"the ampersands is useful."
-msgstr ""
-
-#: lib/interface.php:2075
-msgid "Hide advanced settings"
-msgstr ""
-
-#: lib/interface.php:2087
-msgid "Indexing attachment content"
-msgstr ""
-
-#: lib/interface.php:2089
-msgid ""
-"With Relevanssi Premium, you can index the text contents of PDF attachments. "
-"The contents of the attachments are processed on an external service, which "
-"makes the feature reliable and light on your own server performance."
-msgstr ""
-
-#: lib/interface.php:2091
-#, php-format
-msgid ""
-"In order to access this and many other delightful Premium features, %s buy "
-"Relevanssi Premium here%s."
-msgstr ""
-
-#: lib/interface.php:2107
-msgid ""
-"Add synonyms here to make the searches find better results. If you notice "
-"your users frequently misspelling a product name, or for other reasons use "
-"many names for one thing, adding synonyms will make the results better."
-msgstr ""
-
-#: lib/interface.php:2109
-msgid ""
-"Do not go overboard, though, as too many synonyms can make the search "
-"confusing: users understand if a search query doesn't match everything, but "
-"they get confused if the searches match to unexpected things."
-msgstr ""
-
-#: lib/interface.php:2113
-msgid ""
-"The format here is <code>key = value</code>. If you add <code>dog = hound</"
-"code> to the list of synonyms, searches for <code>dog</code> automatically "
-"become a search for <code>dog hound</code> and will thus match to posts that "
-"include either <code>dog</code> or <code>hound</code>. This only works in OR "
-"searches: in AND searches the synonyms only restrict the search, as now the "
-"search only finds posts that contain <strong>both</strong> <code>dog</code> "
-"and <code>hound</code>."
-msgstr ""
-
-#: lib/interface.php:2115
-msgid ""
-"The synonyms are one direction only. If you want both directions, add the "
-"synonym again, reversed: <code>hound = dog</code>."
-msgstr ""
-
-#: lib/interface.php:2117
-msgid ""
-"It's possible to use phrases for the value, but not for the key. <code>dog = "
-"\"great dane\"</code> works, but <code>\"great dane\" = dog</code> doesn't."
-msgstr ""
-
-#: lib/interface.php:2120
-msgid ""
-"If you want to use synonyms in AND searches, enable synonym indexing on the "
-"Indexing tab."
-msgstr ""
-
-#: lib/interface.php:2170
-msgid ""
-"Enter a word here to add it to the list of stopwords. The word will "
-"automatically be removed from the index, so re-indexing is not necessary. "
-"You can enter many words at the same time, separate words with commas."
-msgstr ""
-
-#: lib/interface.php:2177
-msgid "Stopword(s) to add"
-msgstr ""
-
-#: lib/interface.php:2186
-msgid ""
-"Here's a list of stopwords in the database. Click a word to remove it from "
-"stopwords. Removing stopwords won't automatically return them to index, so "
-"you need to re-index all posts after removing stopwords to get those words "
-"back to index."
-msgstr ""
-
-#: lib/interface.php:2192
-msgid "Current stopwords"
-msgstr ""
-
-#: lib/interface.php:2214
-msgid "Exportable list of stopwords"
-msgstr ""
-
-#: lib/interface.php:2218
-msgid ""
-"You can copy the list of stopwords here if you want to back up the list, "
-"copy it to a different blog or otherwise need the list."
-msgstr ""
-
-#: lib/interface.php:2235
-#, php-format
-msgid ""
-"To adjust the post order, you can use the %s query parameter. With %s, you "
-"can use multiple layers of different sorting methods. See <a "
-"href='%s'>WordPress Codex</a> for more details on using arrays for orderby."
-msgstr ""
-
-#: lib/interface.php:2236
+#: lib/interface.php:2662
 msgid ""
 "Inside-word matching is disabled by default, because it increases garbage "
 "results that don't really match the search term. If you want to enable it, "
 "add the following function to your theme functions.php:"
 msgstr ""
 
-#: lib/interface.php:2241
+#: lib/interface.php:2668
 #, php-format
 msgid "In order to adjust the throttle limit, you can use the %s filter hook."
 msgstr ""
 
-#: lib/interface.php:2243
+#: lib/interface.php:2670
 msgid ""
 "It's not usually necessary to adjust the limit from 500, but in some cases "
 "performance gains can be achieved by setting a lower limit. We don't suggest "
 "going under 200, as low values will make the results worse."
 msgstr ""
 
-#: lib/interface.php:2248
+#: lib/interface.php:2675
 msgid "Restrictions"
 msgstr ""
 
-#: lib/interface.php:2250
+#: lib/interface.php:2677
 msgid ""
 "If you want the general search to target all posts, but have a single search "
 "form target only certain posts, you can add a hidden input variable to the "
 "search form. "
 msgstr ""
 
-#: lib/interface.php:2251
+#: lib/interface.php:2678
 msgid ""
 "For example in order to restrict the search to categories 10, 14 and 17, you "
 "could add this to the search form:"
 msgstr ""
 
-#: lib/interface.php:2253
+#: lib/interface.php:2680
 msgid ""
 "To restrict the search to posts tagged with alfa AND beta, you could add "
 "this to the search form:"
 msgstr ""
 
-#: lib/interface.php:2255
+#: lib/interface.php:2683
 #, php-format
 msgid "For all the possible options, see the Codex documentation for %s."
 msgstr ""
 
-#: lib/interface.php:2260
+#: lib/interface.php:2688
 msgid "Exclusions"
 msgstr ""
 
-#: lib/interface.php:2262
+#: lib/interface.php:2691
 #, php-format
 msgid ""
 "For more exclusion options, see the Codex documentation for %s. For example, "
 "to exclude tag ID 10, use"
 msgstr ""
 
-#: lib/interface.php:2264
+#: lib/interface.php:2694
 #, php-format
 msgid ""
 "To exclude posts from the index and not just from the search, you can use "
@@ -1421,58 +183,62 @@ msgid ""
 "term:"
 msgstr ""
 
-#: lib/interface.php:2271 lib/interface.php:2310
+#: lib/interface.php:2704 lib/interface.php:2752
 #, php-format
 msgid ""
 "For more examples, see <a href='%s'>the related knowledge base posts</a>."
 msgstr ""
 
-#: lib/interface.php:2276
+#: lib/interface.php:2709
 msgid "Logs"
 msgstr ""
 
-#: lib/interface.php:2278
+#: lib/interface.php:2712
 #, php-format
 msgid ""
 "By default, the User searches page shows 20 most common keywords. In order "
 "to see more, you can adjust the value with the %s filter hook, like this:"
 msgstr ""
 
-#: lib/interface.php:2280
+#: lib/interface.php:2715
 #, php-format
 msgid ""
 "The complete logs are stored in the %s database table, where you can access "
 "them if you need more information than what the User searches page provides."
 msgstr ""
 
-#: lib/interface.php:2287
+#: lib/interface.php:2720
+msgid "Excerpts"
+msgstr ""
+
+#: lib/interface.php:2722
 msgid ""
 "Building custom excerpts can be slow. If you are not actually using the "
 "excerpts, make sure you disable the option."
 msgstr ""
 
-#: lib/interface.php:2288
+#: lib/interface.php:2724
 #, php-format
 msgid ""
 "Custom snippets require that the search results template uses %s to print "
 "out the excerpts."
 msgstr ""
 
-#: lib/interface.php:2289
+#: lib/interface.php:2725
 msgid ""
 "Generally, Relevanssi generates the excerpts from post content. If you want "
 "to include custom field content in the excerpt-building, this can be done "
 "with a simple setting from the excerpt settings."
 msgstr ""
 
-#: lib/interface.php:2290
+#: lib/interface.php:2727
 #, php-format
 msgid ""
 "If you want more control over what content Relevanssi uses to create the "
-"excerpts, you can use the %s and %s filter hooks to adjust the content."
+"excerpts, you can use the %1$s and %2$s filter hooks to adjust the content."
 msgstr ""
 
-#: lib/interface.php:2291
+#: lib/interface.php:2729
 #, php-format
 msgid ""
 "Some shortcode do not work well with Relevanssi excerpt-generation. "
@@ -1480,199 +246,231 @@ msgid ""
 "can be adjusted with the %s filter hook."
 msgstr ""
 
-#: lib/interface.php:2292
+#: lib/interface.php:2731
 #, php-format
 msgid ""
 "If you want Relevanssi to build excerpts faster and don't mind that they may "
 "be less than perfect in quality, add a filter that returns true on hook %s."
 msgstr ""
 
-#: lib/interface.php:2298
+#: lib/interface.php:2737
 msgid "Highlights"
 msgstr ""
 
-#: lib/interface.php:2300
+#: lib/interface.php:2739
 msgid ""
 "Title highlights don't appear automatically, because that led to problems "
 "with highlights appearing in wrong places and messing up navigation menus, "
 "for example."
 msgstr ""
 
-#: lib/interface.php:2301
+#: lib/interface.php:2741
 #, php-format
 msgid ""
-"In order to see title highlights from Relevanssi, replace %s in the search "
-"results template with %s. It does the same thing, but supports Relevanssi "
+"In order to see title highlights from Relevanssi, replace %1$s in the search "
+"results template with %2$s. It does the same thing, but supports Relevanssi "
 "title highlights."
 msgstr ""
 
-#: lib/interface.php:2306
+#: lib/interface.php:2746
 msgid "Punctuation"
 msgstr ""
 
-#: lib/interface.php:2308
+#: lib/interface.php:2748
 msgid ""
 "Relevanssi removes punctuation. Some punctuation is removed, some replaced "
 "with spaces. Advanced indexing settings include some of the more common "
 "settings people want to change."
 msgstr ""
 
-#: lib/interface.php:2309
+#: lib/interface.php:2750
 #, php-format
 msgid ""
-"For more fine-tuned changes, you can use %s filter hook to adjust what is "
-"replaced with what, and %s filter hook to completely override the default "
+"For more fine-tuned changes, you can use %1$s filter hook to adjust what is "
+"replaced with what, and %2$s filter hook to completely override the default "
 "punctuation control."
 msgstr ""
 
-#: lib/interface.php:2315
+#: lib/interface.php:2757
 msgid "Helpful shortcodes"
 msgstr ""
 
-#: lib/interface.php:2317
+#: lib/interface.php:2760
 #, php-format
 msgid ""
 "If you have content that you don't want indexed, you can wrap that content "
 "in a %s shortcode."
 msgstr ""
 
-#: lib/interface.php:2318
+#: lib/interface.php:2762
 #, php-format
 msgid ""
 "If you need a search form on some page on your site, you can use the %s "
 "shortcode to print out a basic search form."
 msgstr ""
 
-#: lib/interface.php:2323
+#: lib/interface.php:2764
+#, php-format
+msgid ""
+"If you need to add query variables to the search form, the shortcode takes "
+"parameters, which are then printed out as hidden input fields. To get a "
+"search form with a post type restriction, you can use %1$s. To restrict the "
+"search to categories 10, 14 and 17, you can use %2$s and so on."
+msgstr ""
+
+#: lib/interface.php:2769
 msgid "WooCommerce"
 msgstr ""
 
-#: lib/interface.php:2325
+#: lib/interface.php:2771
 msgid ""
 "If your SKUs include hyphens or other punctuation, do note that Relevanssi "
 "replaces most punctuation with spaces. That's going to cause issues with SKU "
 "searches."
 msgstr ""
 
-#: lib/interface.php:2326
+#: lib/interface.php:2773
 #, php-format
 msgid ""
 "For more details how to fix that issue, see <a href='%s'>WooCommerce tips in "
 "Relevanssi user manual</a>."
 msgstr ""
 
-#: lib/interface.php:2330
+#: lib/interface.php:2778
+msgid "Exact match bonus"
+msgstr ""
+
+#: lib/interface.php:2781
+#, php-format
+msgid ""
+"To adjust the amount of the exact match bonus, you can use the %s filter "
+"hook. It works like this:"
+msgstr ""
+
+#: lib/interface.php:2790
 msgid "For more information:"
 msgstr ""
 
-#: lib/interface.php:2331
+#: lib/interface.php:2791
 msgid "Plugin knowledge base"
 msgstr ""
 
-#: lib/interface.php:2332
+#: lib/interface.php:2792
 msgid "WordPress.org forum"
 msgstr ""
 
-#: lib/interface.php:2356
+#: lib/interface.php:2832
 msgid "Click OK to copy Relevanssi options to all subsites"
 msgstr ""
 
-#: lib/interface.php:2357
+#: lib/interface.php:2833
 msgid "Are you sure you want to remove all stopwords?"
 msgstr ""
 
-#: lib/interface.php:2358
+#: lib/interface.php:2834
 msgid "Wiping out the index..."
 msgstr ""
 
-#: lib/interface.php:2359
+#: lib/interface.php:2835
 msgid "Done."
 msgstr ""
 
-#: lib/interface.php:2360
+#: lib/interface.php:2836
 msgid "Indexing users..."
 msgstr ""
 
-#: lib/interface.php:2361
+#: lib/interface.php:2837
 msgid "Indexing the following taxonomies:"
 msgstr ""
 
-#: lib/interface.php:2362
+#: lib/interface.php:2838
 msgid "Counting posts..."
 msgstr ""
 
-#: lib/interface.php:2363
+#: lib/interface.php:2839
 msgid "Counting taxonomy terms..."
 msgstr ""
 
-#: lib/interface.php:2364
+#: lib/interface.php:2840
+msgid "Counting users..."
+msgstr ""
+
+#: lib/interface.php:2841
 msgid "posts found."
 msgstr ""
 
-#: lib/interface.php:2365
+#: lib/interface.php:2842
 msgid "taxonomy terms found."
 msgstr ""
 
-#: lib/interface.php:2366
+#: lib/interface.php:2843
+msgid "users found."
+msgstr ""
+
+#: lib/interface.php:2844
 msgid "Taxonomy term indexing is disabled."
 msgstr ""
 
-#: lib/interface.php:2367
+#: lib/interface.php:2845
+msgid "User indexing is disabled."
+msgstr ""
+
+#: lib/interface.php:2846
 msgid "Indexing complete."
 msgstr ""
 
-#: lib/interface.php:2368
+#: lib/interface.php:2847
 msgid "posts excluded."
 msgstr ""
 
-#: lib/interface.php:2369
+#: lib/interface.php:2848
 msgid "Settings have changed, please save the options before indexing."
 msgstr ""
 
-#: lib/interface.php:2370
+#: lib/interface.php:2849
 msgid "Reload the page to refresh the state of the index."
 msgstr ""
 
-#: lib/interface.php:2371
-msgid "Are you sure you want to delete all PDF content from the index?"
+#: lib/interface.php:2850
+msgid "Are you sure you want to delete all attachment content from the index?"
 msgstr ""
 
-#: lib/interface.php:2372
-msgid "Relevanssi PDF data wiped clean. Removed entries: "
+#: lib/interface.php:2851
+msgid "Relevanssi attachment data wiped clean."
 msgstr ""
 
-#: lib/interface.php:2373
+#: lib/interface.php:2852
 msgid "hour"
 msgstr ""
 
-#: lib/interface.php:2374
+#: lib/interface.php:2853
 msgid "hours"
 msgstr ""
 
-#: lib/interface.php:2375
+#: lib/interface.php:2854
 msgid "about"
 msgstr ""
 
-#: lib/interface.php:2376
+#: lib/interface.php:2855
 msgid "about an hour"
 msgstr ""
 
-#: lib/interface.php:2377
+#: lib/interface.php:2856
 msgid "about an hour and a half"
 msgstr ""
 
-#: lib/interface.php:2378
+#: lib/interface.php:2857
 msgid "minute"
 msgstr ""
 
-#: lib/interface.php:2379
+#: lib/interface.php:2858
 msgid "minutes"
 msgstr ""
 
-#: lib/interface.php:2380
+#: lib/interface.php:2859
 msgid "less than a minute"
 msgstr ""
 
-#: lib/interface.php:2381
+#: lib/interface.php:2860
 msgid "we're done!"
 msgstr ""
