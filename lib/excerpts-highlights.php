@@ -97,6 +97,10 @@ function relevanssi_do_excerpt( $t_post, $query ) {
 	// Autoembed discovery can really slow down excerpt-building.
 	relevanssi_kill_autoembed();
 
+	// This will print out the attachment file name in front of the excerpt, and we
+	// don't want that.
+	remove_filter( 'the_content', 'prepend_attachment' );
+
 	/** This filter is documented in wp-includes/post-template.php */
 	$content = apply_filters( 'the_content', $content );
 
@@ -1036,6 +1040,7 @@ function relevanssi_remove_page_builder_shortcodes( $content ) {
 		'/\[\/?mk.*?\]/',
 		'/\[\/?cs_.*?\]/',
 		'/\[\/?av_.*?\]/',
+		'/\[\/?fusion_.*?\]/',
 		// Max Mega Menu doesn't work in excerpts.
 		'/\[maxmegamenu.*?\]/',
 	));

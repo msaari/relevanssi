@@ -76,7 +76,7 @@ function relevanssi_search_stats() {
 	$relevanssi_hide_branding = get_option( 'relevanssi_hide_branding' );
 
 	if ( 'on' === $relevanssi_hide_branding ) {
-		$options_txt = __( 'User Searches', 'relevanssi' );
+		$options_txt = __( 'User searches', 'relevanssi' );
 	} else {
 		$options_txt = __( 'Relevanssi User Searches', 'relevanssi' );
 	}
@@ -2240,7 +2240,7 @@ if ( function_exists( 'relevanssi_form_hide_post_controls' ) ) {
 		if ( $taxonomy->public ) {
 			$public = __( 'yes', 'relevanssi' );
 		}
-		$name_id = 'relevanssi_index_type_' . $taxonomy->name;
+		$name_id = 'relevanssi_index_taxonomy_' . $taxonomy->name;
 		printf( '<tr><td>%1$s</td><td><input type="checkbox" name="%2$s" id="%2$s" %3$s /></td><td>%4$s</td></tr>',
 		esc_html( $label ), esc_attr( $name_id ), esc_html( $checked ), esc_html( $public ) );
 	}
