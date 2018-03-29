@@ -1034,7 +1034,7 @@ function relevanssi_index_taxonomy_terms( $post = null, $taxonomy = '', $insert_
 					$insert_data[ $token ]['taxonomy'] += $count;
 				}
 				if ( isset( $insert_data[ $token ]['taxonomy_detail'] ) ) {
-					$tax_detail = json_decode( $insert_data[ $token ]['taxonomy_detail'] );
+					$tax_detail = json_decode( $insert_data[ $token ]['taxonomy_detail'], true );
 				} else {
 					$tax_detail = array();
 				}

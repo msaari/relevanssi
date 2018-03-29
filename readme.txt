@@ -5,7 +5,7 @@ Tags: search, relevance, better search
 Requires at least: 4.0
 Tested up to: 5.0
 Requires PHP: 5.6
-Stable tag: 4.0.5
+Stable tag: 4.0.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -129,6 +129,14 @@ Each document database is full of useless words. All the little words that appea
 
 == Changelog ==
 
+= 4.0.6 =
+* Indexing bugs squashed.
+* Missing tag and category weight settings returned.
+* Fusion builder shortcodes are removed from excerpts.
+* MemberPress post control was backwards.
+* User searches page reset buttons fixed.
+* WPML language filter fix.
+
 = 4.0.5 =
 * Relevanssi code has been reviewed and modified to follow WordPress coding standards. As a result, there have been minor improvements all around the code to make things more robust and secure.
 * Custom field detail is no longer serialized. It's now JSON. If you use custom field detail, rebuild the index and change your code to use json_decode() instead of unserialize().
@@ -140,5 +148,8 @@ Each document database is full of useless words. All the little words that appea
 
 == Upgrade notice ==
 
-= 4.0.4 =
+= 4.0.6 =
+* Indexing bugs fixed and WPML support corrected.
+
+= 4.0.5 =
 * Codebase review, lots of small improvements everywhere.

@@ -70,68 +70,6 @@ function relevanssi_options() {
 }
 
 /**
- * Prints out the 'User searches' page.
- */
-function relevanssi_search_stats() {
-	$relevanssi_hide_branding = get_option( 'relevanssi_hide_branding' );
-
-	if ( 'on' === $relevanssi_hide_branding ) {
-		$options_txt = __( 'User searches', 'relevanssi' );
-	} else {
-		$options_txt = __( 'Relevanssi User Searches', 'relevanssi' );
-	}
-
-	if ( isset( $_REQUEST['relevanssi_reset'] ) && current_user_can( 'manage_options' ) ) {
-		check_admin_referer( 'relevanssi_reset_logs', '_relresnonce' );
-		if ( isset( $_REQUEST['relevanssi_reset_code'] ) ) {
-			if ( 'reset' === $_REQUEST['relevanssi_reset_code'] ) {
-				$verbose = true;
-				relevanssi_truncate_logs( $verbose );
-			}
-		}
-	}
-
-	wp_enqueue_style( 'dashboard' );
-	wp_print_styles( 'dashboard' );
-	wp_enqueue_script( 'dashboard' );
-	wp_print_scripts( 'dashboard' );
-
-	printf( "<div class='wrap'><h2>%s</h2>", esc_html( $options_txt ) );
-
-	if ( 'on' === get_option( 'relevanssi_log_queries' ) ) {
-		relevanssi_query_log();
-	} else {
-		printf( '<p>%s</p>', esc_html__( 'Enable query logging to see stats here.', 'relevanssi' ) );
-	}
-}
-
-/**
- * Truncates the Relevanssi logs.
- *
- * @global object $wpdb                 The WP database interface.
- * @global array  $relevanssi_variables The global Relevanssi variables array.
- *
- * @param boolean $verbose If true, prints out a notice. Default true.
- *
- * @return boolean True if success, false if failure.
- */
-function relevanssi_truncate_logs( $verbose = true ) {
-	global $wpdb, $relevanssi_variables;
-
-	$result = $wpdb->query( 'TRUNCATE ' . $relevanssi_variables['log_table'] ); // WPCS: unprepared SQL ok.
-
-	if ( $verbose ) {
-		if ( false !== $result ) {
-			printf( "<div id='relevanssi-warning' class='updated fade'>%s</div>", esc_html__( 'Logs clear!', 'relevanssi' ) );
-		} else {
-			printf( "<div id='relevanssi-warning' class='updated fade'>%s</div>", esc_html__( 'Clearing the logs failed.', 'relevanssi' ) );
-		}
-	}
-
-	return $result;
-}
-
-/**
  * Updates Relevanssi options.
  *
  * Checks the option values and updates the options. It's safe to use $_REQUEST here,
@@ -476,6 +414,68 @@ function update_relevanssi_options() {
 }
 
 /**
+ * Prints out the 'User searches' page.
+ */
+function relevanssi_search_stats() {
+	$relevanssi_hide_branding = get_option( 'relevanssi_hide_branding' );
+
+	if ( 'on' === $relevanssi_hide_branding ) {
+		$options_txt = __( 'User searches', 'relevanssi' );
+	} else {
+		$options_txt = __( 'Relevanssi User Searches', 'relevanssi' );
+	}
+
+	if ( isset( $_REQUEST['relevanssi_reset'] ) && current_user_can( 'manage_options' ) ) {
+		check_admin_referer( 'relevanssi_reset_logs', '_relresnonce' );
+		if ( isset( $_REQUEST['relevanssi_reset_code'] ) ) {
+			if ( 'reset' === $_REQUEST['relevanssi_reset_code'] ) {
+				$verbose = true;
+				relevanssi_truncate_logs( $verbose );
+			}
+		}
+	}
+
+	wp_enqueue_style( 'dashboard' );
+	wp_print_styles( 'dashboard' );
+	wp_enqueue_script( 'dashboard' );
+	wp_print_scripts( 'dashboard' );
+
+	printf( "<div class='wrap'><h2>%s</h2>", esc_html( $options_txt ) );
+
+	if ( 'on' === get_option( 'relevanssi_log_queries' ) ) {
+		relevanssi_query_log();
+	} else {
+		printf( '<p>%s</p>', esc_html__( 'Enable query logging to see stats here.', 'relevanssi' ) );
+	}
+}
+
+/**
+ * Truncates the Relevanssi logs.
+ *
+ * @global object $wpdb                 The WP database interface.
+ * @global array  $relevanssi_variables The global Relevanssi variables array.
+ *
+ * @param boolean $verbose If true, prints out a notice. Default true.
+ *
+ * @return boolean True if success, false if failure.
+ */
+function relevanssi_truncate_logs( $verbose = true ) {
+	global $wpdb, $relevanssi_variables;
+
+	$result = $wpdb->query( 'TRUNCATE ' . $relevanssi_variables['log_table'] ); // WPCS: unprepared SQL ok.
+
+	if ( $verbose ) {
+		if ( false !== $result ) {
+			printf( "<div id='relevanssi-warning' class='updated fade'>%s</div>", esc_html__( 'Logs clear!', 'relevanssi' ) );
+		} else {
+			printf( "<div id='relevanssi-warning' class='updated fade'>%s</div>", esc_html__( 'Clearing the logs failed.', 'relevanssi' ) );
+		}
+	}
+
+	return $result;
+}
+
+/**
  * Adds a stopword to the list of stopwords.
  *
  * @global object $wpdb The WP database interface.
@@ -734,7 +734,7 @@ function relevanssi_query_log() {
 		print( "<form method='post'>" );
 		wp_nonce_field( 'relevanssi_reset_logs', '_relresnonce', true, true );
 		// Translators: %1$s is the input field, %2$s is the submit button.
-		printf( '<p>%s</p></form>', esc_html( sprintf( __( 'To reset the logs, type "reset" into the box here %1$s and click %2$s', 'relevanssi' ), ' <input type="text" name="relevanssi_reset_code" />', ' <input type="submit" name="relevanssi_reset" value="Reset" class="button" />' ) ) );
+		printf( '<p>%s</p></form>', sprintf( __( 'To reset the logs, type "reset" into the box here %1$s and click %2$s', 'relevanssi' ), ' <input type="text" name="relevanssi_reset_code" />', ' <input type="submit" name="relevanssi_reset" value="Reset" class="button" />' ) ); // WPCS: XSS ok.
 
 	}
 
@@ -1508,8 +1508,7 @@ if ( function_exists( 'relevanssi_form_hide_post_controls' ) ) {
 			}
 			if ( function_exists( 'relevanssi_form_taxonomy_weights' ) ) {
 				relevanssi_form_taxonomy_weights( $post_type_weights );
-			}
-			if ( function_exists( 'relevanssi_form_tag_weight' ) ) {
+			} elseif ( function_exists( 'relevanssi_form_tag_weight' ) ) {
 				relevanssi_form_tag_weight( $post_type_weights );
 			}
 			if ( function_exists( 'relevanssi_form_recency_weight' ) ) {
@@ -2131,6 +2130,7 @@ if ( function_exists( 'relevanssi_form_hide_post_controls' ) ) {
 			<div id='relevanssi-progress' class='rpi-progress'><div class="rpi-indicator"></div></div>
 			<div id='relevanssi-timer'><?php esc_html_e( 'Time elapsed', 'relevanssi' ); ?>: <span id="relevanssi_elapsed">0:00:00</span> | <?php esc_html_e( 'Time remaining', 'relevanssi' ); ?>: <span id="relevanssi_estimated"><?php esc_html_e( 'some time', 'relevanssi' ); ?></span></div>
 			<textarea id='results' rows='10' cols='80'></textarea>
+			<div id='relevanssi-indexing-instructions' style='display: none'><?php esc_html_e( "Indexing should respond quickly. If nothing happens in couple of minutes, it's probably stuck. The most common reasons for indexing issues are incompatible shortcodes, so try disabling the shortcode expansion setting and try again. Also, if you've just updated Relevanssi, doing a hard refresh in your browser will make sure your browser is not trying to use an outdated version of the Relevanssi scripts.", 'relevanssi' ); ?></div>
 		</td>
 	</tr>
 	<tr>
@@ -2404,7 +2404,7 @@ if ( function_exists( 'relevanssi_form_hide_post_controls' ) ) {
 		</td>
 	</tr>
 	<tr>
-		<th scope="row"><?php esc_html_e( 'Punctuation control' ); ?></th>
+		<th scope="row"><?php esc_html_e( 'Punctuation control', 'relevanssi' ); ?></th>
 		<td><p class="description"><?php esc_html_e( 'Here you can adjust how the punctuation is controlled. For more information, see help. Remember that any changes here require reindexing, otherwise searches will fail to find posts they should.', 'relevanssi' ); ?></p></td>
 	</tr>
 	<tr>
@@ -2493,7 +2493,7 @@ if ( function_exists( 'relevanssi_form_hide_post_controls' ) ) {
 
 	<h2><?php esc_html_e( 'Indexing attachment content', 'relevanssi' ); ?></h2>
 
-	<p><?php esc_html_e( 'With Relevanssi Premium, you can index the text contents of PDF attachments. The contents of the attachments are processed on an external service, which makes the feature reliable and light on your own server performance.', 'relevanssi' ); ?></p>
+	<p><?php esc_html_e( 'With Relevanssi Premium, you can index the text contents of attachments (PDFs, Word documents, Open Office documents and many other types). The contents of the attachments are processed on an external service, which makes the feature reliable and light on your own server performance.', 'relevanssi' ); ?></p>
 	<?php // Translators: %1$s starts the link, %2$s closes it. ?>
 	<p><?php printf( esc_html__( 'In order to access this and many other delightful Premium features, %1$sbuy Relevanssi Premium here%2$s.', 'relevanssi' ), '<a href="https://www.relevanssi.com/buy-premium/">', '</a>' ); ?></p>
 
@@ -2871,23 +2871,35 @@ function relevanssi_add_admin_scripts( $hook ) {
 }
 
 /**
- * Sanitizes hex color strings.
+ * Prints out the form fields for tag and category weights.
  *
- * A copy of sanitize_hex_color(), because that isn't always available.
- *
- * @param string $color A hex color string to sanitize.
- *
- * @return string Sanitized hex string, or an empty string.
+ * @param array $taxonomy_weights The taxonomy weights.
  */
-function relevanssi_sanitize_hex_color( $color ) {
-	if ( '' === $color ) {
-		return '';
+function relevanssi_form_tag_weight( $taxonomy_weights ) {
+	$tag_value = 1;
+	if ( isset( $taxonomy_weights['post_tag'] ) ) {
+		$tag_value = $taxonomy_weights['post_tag'];
 	}
-
-	// 3 or 6 hex digits, or the empty string.
-	if ( preg_match( '|^#([A-Fa-f0-9]{3}){1,2}$|', $color ) ) {
-		return $color;
+	$category_value = 1;
+	if ( isset( $taxonomy_weights['category'] ) ) {
+		$category_value = $taxonomy_weights['category'];
 	}
-
-	return '';
+?>
+<tr>
+	<td>
+		<?php esc_html_e( 'Tag weight', 'relevanssi' ); ?>
+	</td>
+	<td class="col-2">
+		<input type='text' id='relevanssi_weight_post_tag' name='relevanssi_weight_post_tag' size='4' value='<?php echo esc_attr( $tag_value ); ?>' />
+	</td>
+</tr>
+<tr>
+	<td>
+		<?php esc_html_e( 'Category weight', 'relevanssi' ); ?>
+	</td>
+	<td class="col-2">
+		<input type='text' id='relevanssi_weight_category' name='relevanssi_weight_category' size='4' value='<?php echo esc_attr( $category_value ); ?>' />
+	</td>
+</tr>
+<?php
 }
