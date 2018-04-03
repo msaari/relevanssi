@@ -5,7 +5,7 @@ Tags: search, relevance, better search
 Requires at least: 4.0
 Tested up to: 5.0
 Requires PHP: 5.6
-Stable tag: 4.0.6
+Stable tag: 4.0.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -129,6 +129,11 @@ Each document database is full of useless words. All the little words that appea
 
 == Changelog ==
 
+= 4.0.7 =
+* Recent post bonus is now applied to searches.
+* Exact term setting can now be disabled.
+* Users of Members plugin would have drafts appear in search results. This is now fixed.
+
 = 4.0.6 =
 * Indexing bugs squashed.
 * Missing tag and category weight settings returned.
@@ -147,6 +152,9 @@ Each document database is full of useless words. All the little words that appea
 * ACF Flexible Content field indexing didn't work properly, possibly due to a change in ACF. That should now work better.
 
 == Upgrade notice ==
+
+= 4.0.7 =
+* Small bug fixes.
 
 = 4.0.6 =
 * Indexing bugs fixed and WPML support corrected.

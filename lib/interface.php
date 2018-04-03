@@ -138,6 +138,10 @@ function update_relevanssi_options() {
 		if ( ! isset( $_REQUEST['relevanssi_polylang_all_languages'] ) ) {
 			$_REQUEST['relevanssi_polylang_all_languages'] = 'off';
 		}
+
+		if ( ! isset( $_REQUEST['relevanssi_exact_match_bonus'] ) ) {
+			$_REQUEST['relevanssi_exact_match_bonus'] = 'off';
+		}
 	}
 
 	if ( 'logging' === $_REQUEST['tab'] ) {

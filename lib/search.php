@@ -772,7 +772,7 @@ function relevanssi_search( $args ) {
 				if ( $recency_bonus ) {
 					$post = relevanssi_get_post( $match->doc );
 					if ( strtotime( $post->post_date ) > $recency_cutoff_date ) {
-						$match->weight = $match->weight * $recency_bonus['bonus'];
+						$match->weight = $match->weight * $recency_bonus;
 					}
 				}
 
