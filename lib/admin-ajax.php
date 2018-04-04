@@ -40,7 +40,6 @@ function relevanssi_index_posts_ajax_wrapper() {
 	$limit     = absint( $_POST['limit'] );
 	$extend    = strval( $_POST['extend'] );
 
-	$extend = false;
 	if ( 'true' === $extend ) {
 		$extend = true;
 	}
