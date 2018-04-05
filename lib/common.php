@@ -1027,7 +1027,7 @@ function relevanssi_remove_punct( $a ) {
 	}
 
 	$quote_replacement = ' ';
-	if ( isset( $punct_options['quote'] ) && 'remove' === $punct_options['quote'] ) {
+	if ( isset( $punct_options['quotes'] ) && 'remove' === $punct_options['quotes'] ) {
 		$quote_replacement = '';
 	}
 
