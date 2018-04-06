@@ -28,6 +28,7 @@ Do note that using Relevanssi may require large amounts (hundreds of megabytes) 
 * Highlight search terms in the documents when user clicks through search results.
 * Search comments, tags, categories and custom fields.
 * Multisite friendly.
+* bbPress support.
 
 = Advanced features =
 * Adjust the weighting for titles, tags and comments.
