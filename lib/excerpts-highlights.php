@@ -787,8 +787,8 @@ function relevanssi_count_matches( $words, $complete_text ) {
 
 	$count_words = count( $words );
 	for ( $t = 0; $t < $count_words; $t++ ) {
-		$word_slice = relevanssi_strtolower( $words[ $t ], 'UTF-8' );
-		$lines      = explode( $word_slice, $lowercase_text );
+		$word_slice = relevanssi_strtolower( relevanssi_add_accent_variations( $words[ $t ] ), 'UTF-8' );
+		$lines      = preg_split( "/$word_slice/", $lowercase_text );
 		if ( count( $lines ) > 1 ) {
 			$count_lines = count( $lines );
 			for ( $tt = 0; $tt < $count_lines; $tt++ ) {
