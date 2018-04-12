@@ -89,7 +89,6 @@ function _relevanssi_install() {
 	add_option( 'relevanssi_highlight', 'strong' );
 	add_option( 'relevanssi_highlight_comments', 'off' );
 	add_option( 'relevanssi_highlight_docs', 'off' );
-	add_option( 'relevanssi_highlight_docs_external', 'off' );
 	add_option( 'relevanssi_hilite_title', '' );
 	add_option( 'relevanssi_implicit_operator', 'OR' );
 	add_option( 'relevanssi_index_author', '' );

@@ -75,7 +75,6 @@ function relevanssi_uninstall_free() {
 	delete_option( 'relevanssi_fuzzy' );
 	delete_option( 'relevanssi_hide_branding' );
 	delete_option( 'relevanssi_highlight_comments' );
-	delete_option( 'relevanssi_highlight_docs_external' );
 	delete_option( 'relevanssi_highlight_docs' );
 	delete_option( 'relevanssi_highlight' );
 	delete_option( 'relevanssi_hilite_title' );
@@ -126,6 +125,7 @@ function relevanssi_uninstall_free() {
 	delete_option( 'relevanssi_include_tags' );
 	delete_option( 'relevanssi_custom_taxonomies' );
 	delete_option( 'relevanssi_taxonomies_to_index' );
+	delete_option( 'relevanssi_highlight_docs_external' );
 
 	relevanssi_drop_database_tables();
 }

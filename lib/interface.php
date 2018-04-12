@@ -1129,7 +1129,6 @@ function relevanssi_options_form() {
 		$api_key             = get_option( 'relevanssi_api_key' );
 		$link_boost          = get_option( 'relevanssi_link_boost' );
 		$internal_links      = get_option( 'relevanssi_internal_links' );
-		$highlight_docs_ext  = get_option( 'relevanssi_highlight_docs_external' );
 		$thousand_separator  = get_option( 'relevanssi_thousand_separator' );
 		$disable_shortcodes  = get_option( 'relevanssi_disable_shortcodes' );
 		$index_users         = get_option( 'relevanssi_index_users' );
@@ -1151,31 +1150,29 @@ function relevanssi_options_form() {
 			$index_terms = array();
 		}
 
-		$serialize_options['relevanssi_link_boost']              = $link_boost;
-		$serialize_options['relevanssi_api_key']                 = $api_key;
-		$serialize_options['relevanssi_internal_links']          = $internal_links;
-		$serialize_options['relevanssi_highlight_docs_external'] = $highlight_docs_ext;
-		$serialize_options['relevanssi_thousand_separator']      = $thousand_separator;
-		$serialize_options['relevanssi_disable_shortcodes']      = $disable_shortcodes;
-		$serialize_options['relevanssi_index_users']             = $index_users;
-		$serialize_options['relevanssi_index_user_fields']       = $index_user_fields;
-		$serialize_options['relevanssi_index_subscribers']       = $index_subscribers;
-		$serialize_options['relevanssi_index_synonyms']          = $index_synonyms;
-		$serialize_options['relevanssi_index_taxonomies']        = $index_taxonomies;
-		$serialize_options['relevanssi_index_terms']             = $index_terms;
-		$serialize_options['relevanssi_hide_post_controls']      = $hide_post_controls;
-		$serialize_options['relevanssi_show_post_controls']      = $show_post_controls;
-		$serialize_options['recency_bonus']                      = $recency_bonus_array;
-		$serialize_options['relevanssi_searchblogs']             = $searchblogs;
-		$serialize_options['relevanssi_searchblogs_all']         = $searchblogs_all;
-		$serialize_options['relevanssi_mysql_columns']           = $mysql_columns;
-		$serialize_options['relevanssi_index_pdf_parent']        = $index_pdf_parent;
-		$serialize_options['relevanssi_server_location']         = get_option( 'relevanssi_server_location' );
-		$serialize_options['relevanssi_send_pdf_files']          = get_option( 'relevanssi_send_pdf_files' );
-		$serialize_options['relevanssi_read_new_files']          = get_option( 'relevanssi_read_new_files' );
-		$serialize_options['relevanssi_link_pdf_files']          = get_option( 'relevanssi_link_pdf_files' );
+		$serialize_options['relevanssi_link_boost']         = $link_boost;
+		$serialize_options['relevanssi_api_key']            = $api_key;
+		$serialize_options['relevanssi_internal_links']     = $internal_links;
+		$serialize_options['relevanssi_thousand_separator'] = $thousand_separator;
+		$serialize_options['relevanssi_disable_shortcodes'] = $disable_shortcodes;
+		$serialize_options['relevanssi_index_users']        = $index_users;
+		$serialize_options['relevanssi_index_user_fields']  = $index_user_fields;
+		$serialize_options['relevanssi_index_subscribers']  = $index_subscribers;
+		$serialize_options['relevanssi_index_synonyms']     = $index_synonyms;
+		$serialize_options['relevanssi_index_taxonomies']   = $index_taxonomies;
+		$serialize_options['relevanssi_index_terms']        = $index_terms;
+		$serialize_options['relevanssi_hide_post_controls'] = $hide_post_controls;
+		$serialize_options['relevanssi_show_post_controls'] = $show_post_controls;
+		$serialize_options['recency_bonus']                 = $recency_bonus_array;
+		$serialize_options['relevanssi_searchblogs']        = $searchblogs;
+		$serialize_options['relevanssi_searchblogs_all']    = $searchblogs_all;
+		$serialize_options['relevanssi_mysql_columns']      = $mysql_columns;
+		$serialize_options['relevanssi_index_pdf_parent']   = $index_pdf_parent;
+		$serialize_options['relevanssi_server_location']    = get_option( 'relevanssi_server_location' );
+		$serialize_options['relevanssi_send_pdf_files']     = get_option( 'relevanssi_send_pdf_files' );
+		$serialize_options['relevanssi_read_new_files']     = get_option( 'relevanssi_read_new_files' );
+		$serialize_options['relevanssi_link_pdf_files']     = get_option( 'relevanssi_link_pdf_files' );
 
-		$highlight_docs_ext = relevanssi_check( $highlight_docs_ext );
 		$index_users        = relevanssi_check( $index_users );
 		$index_subscribers  = relevanssi_check( $index_subscribers );
 		$index_synonyms     = relevanssi_check( $index_synonyms );
@@ -1996,11 +1993,6 @@ if ( function_exists( 'relevanssi_form_hide_post_controls' ) ) {
 		<p class="description"><?php printf( esc_html__( 'Highlights hits when user opens the post from search results. This requires an extra parameter (%s) to the links from the search results pages, which Relevanssi should add automatically.', 'relevanssi' ), '<code>highlight</code>' ); ?></p>
 		</td>
 	</tr>
-	<?php
-	if ( function_exists( 'relevanssi_form_highlight_external' ) ) {
-		relevanssi_form_highlight_external( $highlight_docs_ext, $excerpts );
-	}
-	?>
 	<tr>
 		<th scope="row">
 			<label for='relevanssi_highlight_comments'><?php esc_html_e( 'Highlight in comments', 'relevanssi' ); ?></label>
@@ -2521,11 +2513,11 @@ if ( function_exists( 'relevanssi_form_hide_post_controls' ) ) {
 			<br />
 			<textarea name='relevanssi_synonyms' id='relevanssi_synonyms' rows='9' cols='60'><?php echo esc_textarea( htmlspecialchars( $synonyms ) ); ?></textarea>
 
-			<p class="description"><?php esc_html_e( 'The format here is <code>key = value</code>. If you add <code>dog = hound</code> to the list of synonyms, searches for <code>dog</code> automatically become a search for <code>dog hound</code> and will thus match to posts that include either <code>dog</code> or <code>hound</code>. This only works in OR searches: in AND searches the synonyms only restrict the search, as now the search only finds posts that contain <strong>both</strong> <code>dog</code> and <code>hound</code>.', 'relevanssi' ); ?></p>
+			<p class="description"><?php _e( 'The format here is <code>key = value</code>. If you add <code>dog = hound</code> to the list of synonyms, searches for <code>dog</code> automatically become a search for <code>dog hound</code> and will thus match to posts that include either <code>dog</code> or <code>hound</code>. This only works in OR searches: in AND searches the synonyms only restrict the search, as now the search only finds posts that contain <strong>both</strong> <code>dog</code> and <code>hound</code>.', 'relevanssi' ); // WPCS: XSS ok. ?></p>
 
-			<p class="description"><?php esc_html_e( 'The synonyms are one direction only. If you want both directions, add the synonym again, reversed: <code>hound = dog</code>.', 'relevanssi' ); ?></p>
+			<p class="description"><?php _e( 'The synonyms are one direction only. If you want both directions, add the synonym again, reversed: <code>hound = dog</code>.', 'relevanssi' ); // WPCS: XSS ok. ?></p>
 
-			<p class="description"><?php esc_html_e( "It's possible to use phrases for the value, but not for the key. <code>dog = \"great dane\"</code> works, but <code>\"great dane\" = dog</code> doesn't.", 'relevanssi' ); ?></p>
+			<p class="description"><?php _e( "It's possible to use phrases for the value, but not for the key. <code>dog = \"great dane\"</code> works, but <code>\"great dane\" = dog</code> doesn't.", 'relevanssi' ); // WPCS: XSS ok. ?></p>
 
 			<?php if ( RELEVANSSI_PREMIUM ) : ?>
 				<p class="description"><?php esc_html_e( 'If you want to use synonyms in AND searches, enable synonym indexing on the Indexing tab.', 'relevanssi' ); ?></p>
@@ -2833,35 +2825,38 @@ function relevanssi_add_admin_scripts( $hook ) {
 	wp_enqueue_style( 'relevanssi_admin_css', $plugin_dir_url . 'lib/admin_styles.css' );
 
 	$localizations = array(
-		'confirm'             => __( 'Click OK to copy Relevanssi options to all subsites', 'relevanssi' ),
-		'confirm_stopwords'   => __( 'Are you sure you want to remove all stopwords?', 'relevanssi' ),
-		'truncating_index'    => __( 'Wiping out the index...', 'relevanssi' ),
-		'done'                => __( 'Done.', 'relevanssi' ),
-		'indexing_users'      => __( 'Indexing users...', 'relevanssi' ),
-		'indexing_taxonomies' => __( 'Indexing the following taxonomies:', 'relevanssi' ),
-		'counting_posts'      => __( 'Counting posts...', 'relevanssi' ),
-		'counting_terms'      => __( 'Counting taxonomy terms...', 'relevanssi' ),
-		'counting_users'      => __( 'Counting users...', 'relevanssi' ),
-		'posts_found'         => __( 'posts found.', 'relevanssi' ),
-		'terms_found'         => __( 'taxonomy terms found.', 'relevanssi' ),
-		'users_found'         => __( 'users found.', 'relevanssi' ),
-		'taxonomy_disabled'   => __( 'Taxonomy term indexing is disabled.', 'relevanssi' ),
-		'user_disabled'       => __( 'User indexing is disabled.', 'relevanssi' ),
-		'indexing_complete'   => __( 'Indexing complete.', 'relevanssi' ),
-		'excluded_posts'      => __( 'posts excluded.', 'relevanssi' ),
-		'options_changed'     => __( 'Settings have changed, please save the options before indexing.', 'relevanssi' ),
-		'reload_state'        => __( 'Reload the page to refresh the state of the index.', 'relevanssi' ),
-		'pdf_reset_confirm'   => __( 'Are you sure you want to delete all attachment content from the index?', 'relevanssi' ),
-		'pdf_reset_done'      => __( 'Relevanssi attachment data wiped clean.', 'relevanssi' ),
-		'hour'                => __( 'hour', 'relevanssi' ),
-		'hours'               => __( 'hours', 'relevanssi' ),
-		'about'               => __( 'about', 'relevanssi' ),
-		'sixty_min'           => __( 'about an hour', 'relevanssi' ),
-		'ninety_min'          => __( 'about an hour and a half', 'relevanssi' ),
-		'minute'              => __( 'minute', 'relevanssi' ),
-		'minutes'             => __( 'minutes', 'relevanssi' ),
-		'underminute'         => __( 'less than a minute', 'relevanssi' ),
-		'notimeremaining'     => __( "we're done!", 'relevanssi' ),
+		'confirm'              => __( 'Click OK to copy Relevanssi options to all subsites', 'relevanssi' ),
+		'confirm_stopwords'    => __( 'Are you sure you want to remove all stopwords?', 'relevanssi' ),
+		'truncating_index'     => __( 'Wiping out the index...', 'relevanssi' ),
+		'done'                 => __( 'Done.', 'relevanssi' ),
+		'indexing_users'       => __( 'Indexing users...', 'relevanssi' ),
+		'indexing_taxonomies'  => __( 'Indexing the following taxonomies:', 'relevanssi' ),
+		'indexing_attachments' => __( 'Indexing attachments...', 'relevanssi' ),
+		'counting_posts'       => __( 'Counting posts...', 'relevanssi' ),
+		'counting_terms'       => __( 'Counting taxonomy terms...', 'relevanssi' ),
+		'counting_users'       => __( 'Counting users...', 'relevanssi' ),
+		'counting_attachments' => __( 'Counting attachments...', 'relevanssi' ),
+		'posts_found'          => __( 'posts found.', 'relevanssi' ),
+		'terms_found'          => __( 'taxonomy terms found.', 'relevanssi' ),
+		'users_found'          => __( 'users found.', 'relevanssi' ),
+		'attachments_found'    => __( 'attachments found.', 'relevanssi' ),
+		'taxonomy_disabled'    => __( 'Taxonomy term indexing is disabled.', 'relevanssi' ),
+		'user_disabled'        => __( 'User indexing is disabled.', 'relevanssi' ),
+		'indexing_complete'    => __( 'Indexing complete.', 'relevanssi' ),
+		'excluded_posts'       => __( 'posts excluded.', 'relevanssi' ),
+		'options_changed'      => __( 'Settings have changed, please save the options before indexing.', 'relevanssi' ),
+		'reload_state'         => __( 'Reload the page to refresh the state of the index.', 'relevanssi' ),
+		'pdf_reset_confirm'    => __( 'Are you sure you want to delete all attachment content from the index?', 'relevanssi' ),
+		'pdf_reset_done'       => __( 'Relevanssi attachment data wiped clean.', 'relevanssi' ),
+		'hour'                 => __( 'hour', 'relevanssi' ),
+		'hours'                => __( 'hours', 'relevanssi' ),
+		'about'                => __( 'about', 'relevanssi' ),
+		'sixty_min'            => __( 'about an hour', 'relevanssi' ),
+		'ninety_min'           => __( 'about an hour and a half', 'relevanssi' ),
+		'minute'               => __( 'minute', 'relevanssi' ),
+		'minutes'              => __( 'minutes', 'relevanssi' ),
+		'underminute'          => __( 'less than a minute', 'relevanssi' ),
+		'notimeremaining'      => __( "we're done!", 'relevanssi' ),
 	);
 
 	wp_localize_script( 'relevanssi_admin_js', 'relevanssi', $localizations );
