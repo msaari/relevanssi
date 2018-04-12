@@ -345,7 +345,7 @@ function relevanssi_search( $args ) {
 	if ( ! empty( $expost ) ) {
 		$excluded_post_ids = explode( ',', $expost );
 		foreach ( $excluded_post_ids as $excluded_post_id ) {
-			$exid              = intval( trim( $excluded_post_id, ' -' ) );
+			$excluded_post_id  = intval( trim( $excluded_post_id, ' -' ) );
 			$posts_to_exclude .= " AND relevanssi.doc != $excluded_post_id";
 			// Clean: escaped.
 		}
@@ -660,7 +660,6 @@ function relevanssi_search( $args ) {
 			 */
 			$query   = apply_filters( 'relevanssi_query_filter', $query );
 			$matches = $wpdb->get_results( $query ); // WPCS: unprepared SQL ok, the query is thoroughly escaped.
-
 			if ( count( $matches ) < 1 ) {
 				continue;
 			} else {
@@ -854,7 +853,6 @@ function relevanssi_search( $args ) {
 				 * @param int     The post ID.
 				 */
 				$post_ok = apply_filters( 'relevanssi_post_ok', $post_ok, $match->doc );
-
 				if ( $post_ok ) {
 					$doc_terms[ $match->doc ][ $term ] = true; // Count how many terms are matched to a doc.
 					if ( ! isset( $doc_weight[ $match->doc ] ) ) {
