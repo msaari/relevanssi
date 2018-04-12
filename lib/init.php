@@ -54,6 +54,7 @@ add_filter( 'relevanssi_search_ok', 'relevanssi_acf_relationship_fields' );
 // Permalink handling.
 add_filter( 'the_permalink', 'relevanssi_permalink' );
 add_filter( 'post_link', 'relevanssi_permalink' );
+add_filter( 'page_link', 'relevanssi_permalink' );
 add_filter( 'relevanssi_permalink', 'relevanssi_permalink' );
 
 global $relevanssi_variables;
