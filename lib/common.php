@@ -978,7 +978,7 @@ function relevanssi_get_custom_fields() {
 /**
  * Trims multibyte strings.
  *
- * Removes the 194+160 non-breakable spaces and removes whitespace.
+ * Removes the 194+160 non-breakable spaces, removes null bytes and removes whitespace.
  *
  * @param string $string The source string.
  *
@@ -986,8 +986,23 @@ function relevanssi_get_custom_fields() {
  */
 function relevanssi_mb_trim( $string ) {
 	$string = str_replace( chr( 194 ) . chr( 160 ), '', $string );
+	$string = str_replace( "\0", '', $string );
 	$string = preg_replace( '/(^\s+)|(\s+$)/us', '', $string );
 	return $string;
+}
+
+/**
+ * Wraps the relevanssi_mb_trim() function so that it can be used as a callback for
+ * array_walk().
+ *
+ * @since 2.1.4
+ *
+ * @see relevanssi_mb_trim.
+ *
+ * @param string $string String to trim.
+ */
+function relevanssi_array_walk_trim( &$string ) {
+	$string = relevanssi_mb_trim( $string );
 }
 
 /**
@@ -1056,9 +1071,9 @@ function relevanssi_remove_punct( $a ) {
 		'©'                     => '',
 		'&shy;'                 => '',
 		'&nbsp;'                => ' ',
-		'&#8217;'               => ' ',
 		chr( 194 ) . chr( 160 ) => ' ',
 		'×'                     => ' ',
+		'&#8217;'               => $quote_replacement,
 		"'"                     => $quote_replacement,
 		'’'                     => $quote_replacement,
 		'‘'                     => $quote_replacement,
@@ -1475,6 +1490,9 @@ function relevanssi_add_synonyms( $query ) {
 			$key   = strval( trim( $parts[0] ) );
 			$value = trim( $parts[1] );
 
+			if ( is_numeric( $key ) ) {
+				$key = " $key";
+			}
 			$synonyms[ $key ][ $value ] = true;
 		}
 
@@ -1488,19 +1506,24 @@ function relevanssi_add_synonyms( $query ) {
 
 			foreach ( $terms as $term ) {
 				$term = trim( $term );
-				if ( in_array( strval( $term ), array_keys( $synonyms ), true ) ) { // Strval(), otherwise numbers cause problems.
+				if ( is_numeric( $term ) ) {
+					$term = " $term";
+				}
+				if ( in_array( $term, array_keys( $synonyms ), true ) ) { // Strval(), otherwise numbers cause problems.
 					if ( isset( $synonyms[ strval( $term ) ] ) ) { // Necessary, otherwise terms like "02" can cause problems.
 						$new_terms = array_merge( $new_terms, array_keys( $synonyms[ strval( $term ) ] ) );
 					}
 				}
 			}
 			if ( count( $new_terms ) > 0 ) {
+				$new_terms = array_unique( $new_terms );
 				foreach ( $new_terms as $new_term ) {
 					$query .= " $new_term";
 				}
 			}
 		}
 	}
+
 	return $query;
 }
 
