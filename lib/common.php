@@ -1802,7 +1802,9 @@ function relevanssi_permalink( $link, $link_post = null ) {
 	if ( is_object( $post ) && property_exists( $post, 'relevanssi_link' ) ) {
 		$link = $post->relevanssi_link;
 	}
-	$link = relevanssi_add_highlight( $link );
+	if ( is_search() ) {
+		$link = relevanssi_add_highlight( $link );
+	}
 	return $link;
 }
 

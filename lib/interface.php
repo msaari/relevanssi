@@ -2661,8 +2661,8 @@ function rlv_partial_inside_words( $query ) {
     return "(term LIKE \'%#term#%\')"; 
 }</pre></li>' .
 			// Translators: %s is 'relevanssi_throttle_limit'.
-			'<li>' . sprintf( __( 'In order to adjust the throttle limit, you can use the %s filter hook.', 'relevanssi' ), '<code>relevanssi_throttle_limit</code>' ) .
-			'<pre>add_filter("relevanssi_throttle_limit", function( $limit ) { return 200; } );</pre>' .
+			'<li>' . sprintf( __( 'In order to adjust the throttle limit, you can use the %s filter hook.', 'relevanssi' ), '<code>pre_option_relevanssi_throttle_limit</code>' ) .
+			'<pre>add_filter( \'pre_option_relevanssi_throttle_limit\', function( $limit ) { return 200; } );</pre>' .
 			'<li>' . __( "It's not usually necessary to adjust the limit from 500, but in some cases performance gains can be achieved by setting a lower limit. We don't suggest going under 200, as low values will make the results worse.", 'relevanssi' ) . '</li>' .
 			'</ul>',
 	));
