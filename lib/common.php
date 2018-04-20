@@ -2042,6 +2042,10 @@ function relevanssi_sanitize_hex_color( $color ) {
 		return '';
 	}
 
+	if ( '#' !== substr( $color, 0, 1 ) ) {
+		$color = '#' . $color;
+	}
+
 	// 3 or 6 hex digits, or the empty string.
 	if ( preg_match( '|^#([A-Fa-f0-9]{3}){1,2}$|', $color ) ) {
 		return $color;

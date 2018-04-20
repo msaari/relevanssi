@@ -611,6 +611,15 @@ function relevanssi_search( $args ) {
 	$link_boost    = floatval( get_option( 'relevanssi_link_boost' ) );
 	$comment_boost = floatval( get_option( 'relevanssi_comment_boost' ) );
 
+	$tag = $relevanssi_variables['post_type_weight_defaults']['post_tag'];
+	$cat = $relevanssi_variables['post_type_weight_defaults']['category'];
+	if ( ! empty( $post_type_weights['post_tag'] ) ) {
+		$tag = $post_type_weights['post_tag'];
+	}
+	if ( ! empty( $post_type_weights['category'] ) ) {
+		$cat = $post_type_weights['category'];
+	}
+
 	$include_these_posts = array();
 	$df_counts           = array();
 
@@ -652,19 +661,10 @@ function relevanssi_search( $args ) {
 		// rare search terms.
 		asort( $df_counts );
 
-		foreach ( array_keys( $df_counts ) as $term ) {
+		foreach ( $df_counts as $term => $df ) {
 			$term_cond = relevanssi_generate_term_cond( $term, $o_term_cond );
 			if ( null === $term_cond ) {
 				continue;
-			}
-
-			$tag = $relevanssi_variables['post_type_weight_defaults']['post_tag'];
-			$cat = $relevanssi_variables['post_type_weight_defaults']['category'];
-			if ( ! empty( $post_type_weights['post_tag'] ) ) {
-				$tag = $post_type_weights['post_tag'];
-			}
-			if ( ! empty( $post_type_weights['category'] ) ) {
-				$cat = $post_type_weights['category'];
 			}
 
 			$query = "SELECT DISTINCT(relevanssi.doc), relevanssi.*, relevanssi.title * $title_boost +
@@ -696,7 +696,7 @@ function relevanssi_search( $args ) {
 					}
 					$existing_ids = implode( ',', $existing_ids );
 					$query        = "SELECT relevanssi.*, relevanssi.title * $title_boost +
-					relevanssi.content + relevanssi.comment * $comment_boost +
+					relevanssi.content * $content_boost + relevanssi.comment * $comment_boost +
 					relevanssi.tag * $tag + relevanssi.link * $link_boost +
 					relevanssi.author + relevanssi.category * $cat + relevanssi.excerpt +
 					relevanssi.taxonomy + relevanssi.customfield + relevanssi.mysqlcolumn AS tf
