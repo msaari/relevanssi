@@ -856,6 +856,7 @@ function relevanssi_index_doc( $index_post, $remove_first = false, $custom_field
 				remove_shortcode( 'edd_register' );
 				remove_shortcode( 'swpm_protected' ); // Simple Membership Partially Protected content.
 				remove_shortcode( 'gravityform' ); // Gravity Forms.
+				remove_shortcode( 'sdm_latest_downloads' ); // SDM Simple Download Monitor.
 
 				$post_before_shortcode = $post;
 				$contents              = do_shortcode( $contents );

@@ -978,7 +978,10 @@ if ( function_exists( 'relevanssi_form_hide_post_controls' ) ) {
 	}
 	?>
 
-	<?php if ( 'excerpts' === $active_tab ) : ?>
+	<?php
+	if ( 'excerpts' === $active_tab ) :
+		$index_fields = get_option( 'relevanssi_index_fields' );
+	?>
 
 	<h2 id="excerpts"><?php esc_html_e( 'Custom excerpts/snippets', 'relevanssi' ); ?></h2>
 
@@ -1066,7 +1069,7 @@ if ( function_exists( 'relevanssi_form_hide_post_controls' ) ) {
 			<label>
 				<input type='checkbox' name='relevanssi_excerpt_custom_fields' id='relevanssi_excerpt_custom_fields' <?php echo esc_html( $excerpt_custom_fields ); ?>
 				<?php
-				if ( empty( $excerpts ) || empty( $original_index_fields ) ) {
+				if ( empty( $excerpts ) || empty( $index_fields ) ) {
 					echo "disabled='disabled'";
 				}
 				?>
@@ -1084,12 +1087,12 @@ if ( function_exists( 'relevanssi_form_hide_post_controls' ) ) {
 
 		<p class="description"><?php esc_html_e( 'Current custom field setting', 'relevanssi' ); ?>: 
 		<?php
-		if ( 'visible' === $original_index_fields ) {
+		if ( 'visible' === $index_fields ) {
 			esc_html_e( 'all visible custom fields', 'relevanssi' );
-		} elseif ( 'all' === $original_index_fields ) {
+		} elseif ( 'all' === $index_fields ) {
 			esc_html_e( 'all custom fields', 'relevanssi' );
-		} elseif ( ! empty( $original_index_fields ) ) {
-			printf( '<code>%s</code>', esc_html( $original_index_fields ) );
+		} elseif ( ! empty( $index_fields ) ) {
+			printf( '<code>%s</code>', esc_html( $index_fields ) );
 		} elseif ( RELEVANSSI_PREMIUM ) {
 			esc_html_e( 'Just PDF content', 'relevanssi' );
 		} else {
@@ -1342,7 +1345,7 @@ if ( function_exists( 'relevanssi_form_hide_post_controls' ) ) {
 
 	<?php
 	if ( function_exists( 'relevanssi_form_attachments' ) ) {
-		relevanssi_form_attachments( $index_post_types, $index_pdf_parent );
+		relevanssi_form_attachments();
 	} else {
 		$display_save_button = false;
 	?>

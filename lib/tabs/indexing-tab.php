@@ -90,7 +90,7 @@ function relevanssi_indexing_tab() {
 
 	$docs_count  = $wpdb->get_var( 'SELECT COUNT(DISTINCT doc) FROM ' . $relevanssi_variables['relevanssi_table'] . ' WHERE doc != -1' ); // WPCS: unprepared SQL ok, Relevanssi table name.
 	$terms_count = $wpdb->get_var( 'SELECT COUNT(*) FROM ' . $relevanssi_variables['relevanssi_table'] ); // WPCS: unprepared SQL ok, Relevanssi table name.
-	$biggest_doc = $wpdb->get_var( 'SELECT doc FROM ' . $relevanssi_variables['relevanssi_table'] . ' ORDER BY doc DESC LIMIT 1' ); // WPCS: unprepared SQL ok, Relevanssi table name.
+	$lowest_doc  = $wpdb->get_var( 'SELECT doc FROM ' . $relevanssi_variables['relevanssi_table'] . ' WHERE doc > 0 ORDER BY doc ASC LIMIT 1' ); // WPCS: unprepared SQL ok, Relevanssi table name.
 
 	if ( RELEVANSSI_PREMIUM ) {
 		$user_count    = $wpdb->get_var( 'SELECT COUNT(DISTINCT item) FROM ' . $relevanssi_variables['relevanssi_table'] . " WHERE type = 'user'" ); // WPCS: unprepared SQL ok, Relevanssi table name.
@@ -136,7 +136,7 @@ function relevanssi_indexing_tab() {
 	<?php endif; ?>	
 		</p>
 		<p><?php echo esc_html( $terms_count ); ?> <?php echo esc_html( _n( 'term in the index.', 'terms in the index.', $terms_count, 'relevanssi' ) ); ?><br />
-		<?php echo esc_html( $biggest_doc ); ?> <?php esc_html_e( 'is the highest post ID indexed.', 'relevanssi' ); ?></p>
+		<?php echo esc_html( $lowest_doc ); ?> <?php esc_html_e( 'is the lowest post ID indexed.', 'relevanssi' ); ?></p>
 		</td>
 	</tr>
 	</table>
@@ -360,7 +360,7 @@ function relevanssi_indexing_tab() {
 
 	<?php
 	if ( function_exists( 'relevanssi_form_disable_shortcodes' ) ) {
-		relevanssi_form_disable_shortcodes( $disable_shortcodes );
+		relevanssi_form_disable_shortcodes();
 	}
 	?>
 

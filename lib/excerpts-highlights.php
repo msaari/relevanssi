@@ -278,18 +278,18 @@ function relevanssi_create_excerpt( $content, $terms, $query ) {
 		 * takes slices.
 		 */
 		$words       = array_filter( explode( ' ', $content ) );
-		$i           = 0;
+		$offset      = 0;
 		$tries       = 0;
 		$count_words = count( $words );
-		while ( $i < $count_words ) {
-			if ( $i + $excerpt_length > $count_words ) {
-				$i = $count_words - $excerpt_length;
-				if ( $i < 0 ) {
-					$i = 0;
+		while ( $offset < $count_words ) {
+			if ( $offset + $excerpt_length > $count_words ) {
+				$offset = $count_words - $excerpt_length;
+				if ( $offset < 0 ) {
+					$offset = 0;
 				}
 			}
 
-			$excerpt_slice = array_slice( $words, $i, $excerpt_length );
+			$excerpt_slice = array_slice( $words, $offset, $excerpt_length );
 			$excerpt_slice = ' ' . implode( ' ', $excerpt_slice );
 
 			$term_hits     = 0;
@@ -297,7 +297,7 @@ function relevanssi_create_excerpt( $content, $terms, $query ) {
 			if ( $count_matches > 0 && $count_matches > $best_excerpt_term_hits ) {
 				$best_excerpt_term_hits = $count_matches;
 				$excerpt                = $excerpt_slice;
-				if ( 0 === $tries ) {
+				if ( 0 === $offset ) {
 					$start = true;
 				}
 			}
@@ -321,7 +321,7 @@ function relevanssi_create_excerpt( $content, $terms, $query ) {
 				}
 			}
 
-			$i += $excerpt_length;
+			$offset += $excerpt_length;
 		}
 
 		if ( '' === $excerpt ) {
