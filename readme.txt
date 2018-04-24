@@ -5,7 +5,7 @@ Tags: search, relevance, better search
 Requires at least: 4.0
 Tested up to: 5.0
 Requires PHP: 5.6
-Stable tag: 4.0.7
+Stable tag: 4.0.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -130,6 +130,13 @@ Each document database is full of useless words. All the little words that appea
 
 == Changelog ==
 
+= 4.0.8 =
+* Fixed cases where Relevanssi added an ellipsis even if the excerpt was from the start of the post.
+* Highlighting now works with numeric search strings.
+* Improved highlighting for accented words. Thanks to Paul Ryan.
+* A surplus comma at the end of post exclusion setting won't break the search anymore.
+* Fixed instructions for adjusting the throttle limit.
+
 = 4.0.7 =
 * Recent post bonus is now applied to searches.
 * Exact term setting can now be disabled.
@@ -153,6 +160,9 @@ Each document database is full of useless words. All the little words that appea
 * ACF Flexible Content field indexing didn't work properly, possibly due to a change in ACF. That should now work better.
 
 == Upgrade notice ==
+
+= 4.0.8 =
+* Improvements to highlighting and excerpts.
 
 = 4.0.7 =
 * Small bug fixes.
