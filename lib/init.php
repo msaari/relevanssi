@@ -20,10 +20,6 @@ add_action( 'admin_enqueue_scripts', 'relevanssi_add_admin_scripts' );
 add_filter( 'the_posts', 'relevanssi_query', 99, 2 );
 add_filter( 'posts_request', 'relevanssi_prevent_default_request', 10, 2 );
 
-// Multilingual plugin support.
-add_filter( 'relevanssi_hits_filter', 'relevanssi_wpml_filter' );
-add_filter( 'relevanssi_modify_wp_query', 'relevanssi_polylang_filter' );
-
 // Post indexing.
 add_action( 'wp_insert_post', 'relevanssi_insert_edit', 99, 1 );
 add_action( 'delete_post', 'relevanssi_remove_doc' );
@@ -120,6 +116,16 @@ function relevanssi_init() {
 		if ( wp_next_scheduled( 'relevanssi_trim_logs' ) ) {
 			wp_clear_scheduled_hook( 'relevanssi_trim_logs' );
 		}
+	}
+
+	if ( function_exists( 'icl_object_id' ) && ! function_exists( 'pll_is_translated_post_type' ) ) {
+		// WPML support is required.
+		require_once 'compatibility/wpml.php';
+	}
+
+	if ( function_exists( 'pll_get_post' ) ) {
+		// Polylang support is required.
+		require_once 'compatibility/polylang.php';
 	}
 }
 
