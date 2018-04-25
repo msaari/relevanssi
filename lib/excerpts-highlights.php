@@ -62,7 +62,7 @@ function relevanssi_do_excerpt( $t_post, $query ) {
 	$terms = relevanssi_tokenize( $query, $remove_stopwords, -1 );
 
 	// These shortcodes cause problems with Relevanssi excerpts.
-	$problem_shortcodes = array( 'layerslider', 'responsive-flipbook', 'breadcrumb', 'robogallery', 'gravityview' );
+	$problem_shortcodes = array( 'layerslider', 'responsive-flipbook', 'breadcrumb', 'robogallery', 'gravityview', 'wp_show_posts' );
 	/**
 	 * Filters the excerpt-building problem shortcodes.
 	 *
