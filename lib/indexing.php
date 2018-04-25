@@ -1024,7 +1024,7 @@ function relevanssi_index_taxonomy_terms( $post = null, $taxonomy = '', $insert_
 			foreach ( $tag_tokens as $token => $count ) {
 				$n++;
 
-				if ( 'post_tags' === $taxonomy ) {
+				if ( 'post_tag' === $taxonomy ) {
 					$insert_data[ $token ]['tag'] = $count;
 				} elseif ( 'category' === $taxonomy ) {
 					$insert_data[ $token ]['category'] = $count;

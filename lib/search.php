@@ -725,21 +725,29 @@ function relevanssi_search( $args ) {
 					$match->doc = '**' . $match->type . '**' . $match->item;
 				}
 
-				if ( isset( $match->taxonomy_detail ) ) {
-					$match->taxonomy_score  = 0;
-					$match->taxonomy_detail = json_decode( $match->taxonomy_detail );
-					if ( is_object( $match->taxonomy_detail ) ) {
-						foreach ( $match->taxonomy_detail as $tax => $count ) {
-							if ( 'post_tag' === $tax ) {
-								$match->tag = $count;
-							}
-							if ( empty( $post_type_weights[ $tax ] ) ) {
-								$match->taxonomy_score += $count * 1;
-							} else {
-								$match->taxonomy_score += $count * $post_type_weights[ $tax ];
-							}
-						}
+				if ( ! empty( $match->taxonomy_detail ) ) {
+					if ( function_exists( 'relevanssi_taxonomy_score' ) ) {
+						relevanssi_taxonomy_score( $match, $post_type_weights );
 					}
+				}
+
+				if ( ! isset( $match->taxonomy_score ) ) {
+					$tag_weight = 1;
+					if ( isset( $post_type_weights['post_tag'] ) ) {
+						$tag_weight = $post_type_weights['post_tag'];
+					}
+
+					$category_weight = 1;
+					if ( isset( $post_type_weights['category'] ) ) {
+						$category_weight = $post_type_weights['category'];
+					}
+
+					$taxonomy_weight = 1;
+
+					$match->taxonomy_score =
+						$match->tag * $tag_weight +
+						$match->category * $category_weight +
+						$match->taxonomy * $taxonomy_weight;
 				}
 
 				$match->tf =
