@@ -100,6 +100,13 @@ function relevanssi_generate_indexing_query( $valid_status, $extend = false, $re
 	global $wpdb, $relevanssi_variables;
 	$relevanssi_table = $relevanssi_variables['relevanssi_table'];
 
+	if ( is_plugin_active( 'woocommerce/woocommerce.php' ) ) {
+		include_once 'compatibility/woocommerce.php';
+		if ( function_exists( 'woocommerce_indexing_filter' ) ) {
+			$restriction .= woocommerce_indexing_filter();
+		}
+	}
+
 	if ( ! $extend ) {
 		$q = "SELECT post.ID
 		FROM $wpdb->posts post
