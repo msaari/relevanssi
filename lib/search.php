@@ -726,12 +726,9 @@ function relevanssi_search( $args ) {
 				}
 
 				if ( ! empty( $match->taxonomy_detail ) ) {
-					if ( function_exists( 'relevanssi_taxonomy_score' ) ) {
-						relevanssi_taxonomy_score( $match, $post_type_weights );
-					}
-				}
-
-				if ( ! isset( $match->taxonomy_score ) ) {
+					relevanssi_taxonomy_score( $match, $post_type_weights );
+				} else {
+					// This shouldn't really happen, but let's still have a backup.
 					$tag_weight = 1;
 					if ( isset( $post_type_weights['post_tag'] ) ) {
 						$tag_weight = $post_type_weights['post_tag'];
@@ -2143,4 +2140,30 @@ function relevanssi_generate_term_cond( $term, $o_term_cond ) {
 	$term_cond = str_replace( '#term#', $term, $o_term_cond );
 
 	return $term_cond;
+}
+
+/**
+ * Counts the taxonomy score for a match.
+ *
+ * Uses the taxonomy_detail object to count the taxonomy score for a match.
+ * If there's a taxonomy weight in $post_type_weights, that is used, otherwise
+ * assume weight 1.
+ *
+ * @since 2.1.5
+ *
+ * @param object $match             The match object, used as a reference.
+ * @param array  $post_type_weights The post type and taxonomy weights array.
+ */
+function relevanssi_taxonomy_score( &$match, $post_type_weights ) {
+	$match->taxonomy_score  = 0;
+	$match->taxonomy_detail = json_decode( $match->taxonomy_detail );
+	if ( is_object( $match->taxonomy_detail ) ) {
+		foreach ( $match->taxonomy_detail as $tax => $count ) {
+			if ( empty( $post_type_weights[ $tax ] ) ) {
+				$match->taxonomy_score += $count * 1;
+			} else {
+				$match->taxonomy_score += $count * $post_type_weights[ $tax ];
+			}
+		}
+	}
 }
