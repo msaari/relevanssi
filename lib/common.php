@@ -1620,9 +1620,10 @@ function relevanssi_add_highlight( $permalink ) {
 	if ( isset( $highlight_docs ) && 'off' !== $highlight_docs && ! empty( $query ) ) {
 		global $post;
 		$frontpage_id = get_option( 'page_on_front' );
+		// We won't add the highlight parameter for the front page, as that will break the link.
 		if ( is_object( $post ) && $post->ID !== $frontpage_id ) {
-			// We won't add the highlight parameter for the front page, as that will break the link.
-			$permalink = esc_attr( add_query_arg( array( 'highlight' => rawurlencode( get_search_query() ) ), $permalink )
+			$query     = str_replace( '&quot;', '"', $query );
+			$permalink = esc_attr( add_query_arg( array( 'highlight' => rawurlencode( $query ) ), $permalink )
 			);
 		}
 	}
