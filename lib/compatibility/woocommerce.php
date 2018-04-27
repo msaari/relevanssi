@@ -10,6 +10,20 @@
  * @see     https://www.relevanssi.com/
  */
 
+add_filter( 'relevanssi_indexing_restriction', 'relevanssi_woocommerce_restriction' );
+
+/**
+ * Applies the WooCommerce product visibility filter.
+ *
+ * @param string $restriction The restriction clause.
+ *
+ * @return string The restriction clause with the WC filter added, if necessary.
+ */
+function relevanssi_woocommerce_restriction( $restriction ) {
+	$restriction .= relevanssi_woocommerce_indexing_filter();
+	return $restriction;
+}
+
 /**
  * WooCommerce product visibility filtering for indexing.
  *
@@ -21,7 +35,7 @@
  *
  * @return string $restriction The query restriction for the WooCommerce filtering.
  */
-function woocommerce_indexing_filter() {
+function relevanssi_woocommerce_indexing_filter() {
 	global $wpdb;
 
 	$restriction        = '';

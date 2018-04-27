@@ -119,13 +119,15 @@ function relevanssi_init() {
 	}
 
 	if ( function_exists( 'icl_object_id' ) && ! function_exists( 'pll_is_translated_post_type' ) ) {
-		// WPML support is required.
 		require_once 'compatibility/wpml.php';
 	}
 
 	if ( function_exists( 'pll_get_post' ) ) {
-		// Polylang support is required.
 		require_once 'compatibility/polylang.php';
+	}
+
+	if ( is_plugin_active( 'woocommerce/woocommerce.php' ) ) {
+		require_once 'compatibility/woocommerce.php';
 	}
 }
 
