@@ -920,6 +920,7 @@ function rlv_index_filter( $block, $post_id ) {
 			'<li>' . __( "If your SKUs include hyphens or other punctuation, do note that Relevanssi replaces most punctuation with spaces. That's going to cause issues with SKU searches.", 'relevanssi' ) . '</li>' .
 			// Translators: %s is the Knowledge Base URL.
 			'<li>' . sprintf( __( "For more details how to fix that issue, see <a href='%s'>WooCommerce tips in Relevanssi user manual</a>.", 'relevanssi' ), 'https://www.relevanssi.com/user-manual/woocommerce/' ) . '</li>' .
+			'<li>' . __( "If you don't want to index products that are out of stock, excluded from the catalog or excluded from the search, there's a product visibility filtering method that is described in the user manual (see link above).", 'relevanssi' ) . '</li>' .
 			'</ul>',
 	));
 	$screen->add_help_tab( array(

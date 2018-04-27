@@ -126,7 +126,7 @@ function relevanssi_init() {
 		require_once 'compatibility/polylang.php';
 	}
 
-	if ( is_plugin_active( 'woocommerce/woocommerce.php' ) ) {
+	if ( class_exists( 'WooCommerce' ) ) {
 		require_once 'compatibility/woocommerce.php';
 	}
 }
