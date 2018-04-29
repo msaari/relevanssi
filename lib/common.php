@@ -583,8 +583,10 @@ function relevanssi_default_post_ok( $post_ok, $post_id ) {
 	}
 	if ( class_exists( 'MeprUpdateCtrl' ) && MeprUpdateCtrl::is_activated() ) {
 		// Memberpress.
-		$post    = get_post( $post_id );
-		$post_ok = ! MeprRule::is_locked( $post );
+		$post = get_post( $post_id );
+		if ( MeprRule::is_locked( $post ) ) {
+			$post_ok = false;
+		}
 	}
 	if ( defined( 'SIMPLE_WP_MEMBERSHIP_VER' ) ) {
 		// Simple Membership.
