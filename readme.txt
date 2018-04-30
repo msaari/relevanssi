@@ -5,7 +5,7 @@ Tags: search, relevance, better search
 Requires at least: 4.0
 Tested up to: 5.0
 Requires PHP: 5.6
-Stable tag: 4.0.8
+Stable tag: 4.0.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -130,6 +130,15 @@ Each document database is full of useless words. All the little words that appea
 
 == Changelog ==
 
+= 4.0.9 =
+* Fixes broken tag and category indexing and searching. If you use tags and categories, rebuild the index after updating.
+* Fixes phrase highlighting in documents.
+* New filter: `relevanssi_indexing_restriction` allows filtering posts before indexing.
+* New WooCommerce product visibility filtering tool makes WooCommerce product indexing faster.
+* MemberPress post controls were loose and showed drafts to searchers. That is now fixed.
+* Highlighting was too loose, even if matching was set to whole words.
+* Highlighting now works better in cases where there's a hyphen or an apostrophe inside a word.
+
 = 4.0.8 =
 * Fixed cases where Relevanssi added an ellipsis even if the excerpt was from the start of the post.
 * Highlighting now works with numeric search strings.
@@ -160,6 +169,9 @@ Each document database is full of useless words. All the little words that appea
 * ACF Flexible Content field indexing didn't work properly, possibly due to a change in ACF. That should now work better.
 
 == Upgrade notice ==
+
+= 4.0.9 =
+* Fixes broken tag and category searching and indexing. Reindex after the update!
 
 = 4.0.8 =
 * Improvements to highlighting and excerpts.
