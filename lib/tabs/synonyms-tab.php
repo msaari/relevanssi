@@ -34,7 +34,7 @@ function relevanssi_synonyms_tab() {
 
 		<p class="description"><?php esc_html_e( "Do not go overboard, though, as too many synonyms can make the search confusing: users understand if a search query doesn't match everything, but they get confused if the searches match to unexpected things.", 'relevanssi' ); ?></p>
 		<br />
-		<textarea name='relevanssi_synonyms' id='relevanssi_synonyms' rows='9' cols='60'><?php echo esc_textarea( htmlspecialchars( $synonyms ) ); ?></textarea>
+		<textarea name='relevanssi_synonyms' id='relevanssi_synonyms' rows='9' cols='60'><?php echo esc_textarea( $synonyms ); ?></textarea>
 
 		<p class="description"><?php _e( 'The format here is <code>key = value</code>. If you add <code>dog = hound</code> to the list of synonyms, searches for <code>dog</code> automatically become a search for <code>dog hound</code> and will thus match to posts that include either <code>dog</code> or <code>hound</code>. This only works in OR searches: in AND searches the synonyms only restrict the search, as now the search only finds posts that contain <strong>both</strong> <code>dog</code> and <code>hound</code>.', 'relevanssi' ); // WPCS: XSS ok. ?></p>
 
