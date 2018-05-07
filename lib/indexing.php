@@ -100,6 +100,18 @@ function relevanssi_generate_indexing_query( $valid_status, $extend = false, $re
 	global $wpdb, $relevanssi_variables;
 	$relevanssi_table = $relevanssi_variables['relevanssi_table'];
 
+	/**
+	 * Filters the WHERE restriction for indexing queries.
+	 *
+	 * This filter hook can be used to exclude posts from indexing as early as is
+	 * possible.
+	 *
+	 * @since 4.0.9 / 2.1.5
+	 *
+	 * @param string The WHERE restriction.
+	 *
+	 * @return string The modified WHERE restriction.
+	 */
 	$restriction = apply_filters( 'relevanssi_indexing_restriction', $restriction );
 
 	if ( ! $extend ) {
@@ -197,12 +209,8 @@ function relevanssi_valid_status_array() {
 	$valid_status       = array();
 
 	if ( is_array( $valid_status_array ) && count( $valid_status_array ) > 0 ) {
-		$post_stati = get_post_stati( array(), 'names' );
 		foreach ( $valid_status_array as $status ) {
-			if ( in_array( $status, $post_stati, true ) ) {
-				// Only include post statuses that actually exist.
-				$valid_status[] = "'$status'";
-			}
+			$valid_status[] = "'" . esc_sql( $status ) . "'";
 		}
 		$valid_status = implode( ',', $valid_status );
 	} else {
@@ -210,7 +218,6 @@ function relevanssi_valid_status_array() {
 		// default values.
 		$valid_status = "'publish', 'draft', 'private', 'pending', 'future'";
 	}
-
 	return $valid_status;
 }
 
@@ -650,8 +657,10 @@ function relevanssi_index_doc( $index_post, $remove_first = false, $custom_field
 					$value = $value['post_title'];
 				}
 
-				// Handle ACF fields.
-				relevanssi_index_acf( $insert_data, $post->ID, $field, $value );
+				if ( function_exists( 'relevanssi_index_acf' ) ) {
+					// Handle ACF fields. Only defined when ACF is active.
+					relevanssi_index_acf( $insert_data, $post->ID, $field, $value );
+				}
 
 				// Flatten other arrays.
 				if ( is_array( $value ) ) {
@@ -1317,50 +1326,6 @@ function relevanssi_get_comments( $post_id ) {
 	}
 
 	return $comment_string;
-}
-
-/**
- * Indexes the human-readable value of "choice" options list from ACF.
- *
- * @author Droz Raphaël
- *
- * @param array  $insert_data The insert data array.
- * @param int    $post_id     The post ID.
- * @param string $field_name  Name of the field.
- * @param string $field_value The field value.
- */
-function relevanssi_index_acf( &$insert_data, $post_id, $field_name, $field_value ) {
-	if ( ! is_admin() ) {
-		include_once ABSPATH . 'wp-admin/includes/plugin.php'; // Otherwise is_plugin_active() will cause a fatal error.
-	}
-	if ( ! function_exists( 'is_plugin_active' ) ) {
-		return;
-	}
-	if ( ! is_plugin_active( 'advanced-custom-fields/acf.php' ) && ! is_plugin_active( 'advanced-custom-fields-pro/acf.php' ) ) {
-		return;
-	}
-	if ( ! function_exists( 'get_field_object' ) ) {
-		return; // ACF is active, but not loaded.
-	}
-
-	$field_object = get_field_object( $field_name, $post_id );
-	if ( ! isset( $field_object['choices'] ) ) {
-		return; // Not a "select" field.
-	}
-	if ( is_array( $field_value ) ) {
-		return; // Not handled (currently).
-	}
-	if ( ! isset( $field_object['choices'][ $field_value ] ) ) {
-		return; // Value does not exist.
-	}
-
-	$value = $field_object['choices'][ $field_value ];
-	if ( $value ) {
-		if ( ! isset( $insert_data[ $value ]['customfield'] ) ) {
-			$insert_data[ $value ]['customfield'] = 0;
-		}
-		$insert_data[ $value ]['customfield']++;
-	}
 }
 
 /**
