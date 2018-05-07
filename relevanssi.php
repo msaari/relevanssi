@@ -39,8 +39,6 @@
 
 define( 'RELEVANSSI_PREMIUM', false );
 
-add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'relevanssi_action_links' );
-
 global $relevanssi_variables;
 global $wpdb;
 
@@ -58,13 +56,15 @@ $relevanssi_variables['database_version']                      = 5;
 $relevanssi_variables['file']                                  = __FILE__;
 $relevanssi_variables['plugin_dir']                            = plugin_dir_path( __FILE__ );
 
-require_once 'lib/install.php';
-require_once 'lib/init.php';
-require_once 'lib/interface.php';
-require_once 'lib/indexing.php';
-require_once 'lib/stopwords.php';
-require_once 'lib/search.php';
-require_once 'lib/excerpts-highlights.php';
-require_once 'lib/shortcodes.php';
 require_once 'lib/common.php';
-require_once 'lib/admin-ajax.php';
+require_once 'lib/excerpts-highlights.php';
+require_once 'lib/indexing.php';
+require_once 'lib/init.php';
+require_once 'lib/install.php';
+require_once 'lib/interface.php';
+require_once 'lib/log.php';
+require_once 'lib/search.php';
+require_once 'lib/shortcodes.php';
+require_once 'lib/stopwords.php';
+require_once 'lib/sorting.php';
+require_once 'lib/uninstall.php';
