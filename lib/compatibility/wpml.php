@@ -78,3 +78,21 @@ function relevanssi_wpml_filter( $data ) {
 
 	return $data;
 }
+
+// add_action( 'wp_ajax_relevanssi_index_posts', 'relevanssi_wpml_remove_filters', 5 );
+// add_action( 'wp_ajax_relevanssi_index_taxonomies', 'relevanssi_wpml_remove_filters', 5 );
+/**
+ * Removes WPML filters from get_term().
+ *
+ * Relevanssi indexes WooCommerce terms in current language. Indexed term should
+ * have translated entry. Term title is filtered by WPML and value in current
+ * language is always returned. Removing this filter fixes the problem.
+ *
+ * @author Srdjan Jocić
+ */
+function relevanssi_wpml_remove_filters() {
+	if ( did_action( 'wpml_loaded' ) ) {
+		global $sitepress;
+		remove_filter( 'get_term', array( $sitepress, 'get_term_adjust_id' ), 1, 1 );
+	}
+}
