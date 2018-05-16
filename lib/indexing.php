@@ -1162,13 +1162,30 @@ function relevanssi_insert_edit( $post_id ) {
 		$post_status = get_post_status( $parent_id );
 	}
 
+	$index_this_post = true;
+
+	/* Documented in lib/indexing.php. */
+	$restriction = apply_filters( 'relevanssi_indexing_restriction', '' );
+	if ( ! empty( $restriction ) ) {
+		// Check the indexing restriction filter: if the post passes the filter, this
+		// should return the post ID.
+		$is_unrestricted = $wpdb->get_var( "SELECT ID FROM $wpdb->posts AS post WHERE ID = $post_id $restriction" ); // WPCS: unprepared SQL ok.
+		if ( ! $is_unrestricted ) {
+			$index_this_post = false;
+		}
+	}
+
 	$index_statuses = apply_filters( 'relevanssi_valid_status', array( 'publish', 'private', 'draft', 'future', 'pending' ) );
 	if ( ! in_array( $post_status, $index_statuses, true ) ) {
-		// The post isn't supposed to be indexed anymore, remove it from index.
-		relevanssi_remove_doc( $post_id );
-	} else {
+		$index_this_post = false;
+	}
+
+	if ( $index_this_post ) {
 		$bypass_global_post = true;
 		relevanssi_publish( $post_id, $bypass_global_post );
+	} else {
+		// The post isn't supposed to be indexed anymore, remove it from index.
+		relevanssi_remove_doc( $post_id );
 	}
 
 	relevanssi_update_doc_count();
