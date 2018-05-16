@@ -36,6 +36,8 @@ function relevanssi_get_next_key( &$orderby ) {
 	$dir         = $orderby[ $key ];
 	unset( $orderby[ $key ] );
 
+	$key = strtolower( $key );
+
 	if ( 'rand' === strtolower( $dir ) ) {
 		$key = 'rand';
 	}
@@ -78,6 +80,11 @@ function relevanssi_get_next_key( &$orderby ) {
 		$compare = 'date';
 	}
 
+	if ( 'rand(' === substr( $key, 0, 5 ) ) {
+		$parts = explode( '(', $key );
+		$dir   = intval( trim( str_replace( ')', '', $parts[1] ) ) );
+		$key   = 'rand';
+	}
 	if ( 'rand' === $key ) {
 		if ( is_numeric( $dir ) ) {
 			// A specific random seed is requested.
@@ -294,7 +301,7 @@ function relevanssi_object_sort( &$data, $orderby ) {
 	} while ( ! empty( $values['key'] ) );
 
 	$primary_key = $relevanssi_keys[0];
-	if ( ! isset( $data[0]->$primary_key ) ) {
+	if ( 'rand' !== $primary_key && ! isset( $data[0]->$primary_key ) ) {
 		// Trying to sort by a non-existent key.
 		return;
 	}
