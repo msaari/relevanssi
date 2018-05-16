@@ -189,13 +189,9 @@ function relevanssi_default_post_ok( $post_ok, $post_id ) {
 	}
 	if ( defined( 'SIMPLE_WP_MEMBERSHIP_VER' ) ) {
 		// Simple Membership.
-		$logged_in = SwpmMemberUtils::is_member_logged_in();
-		if ( ! $logged_in ) {
-			$post_ok = false;
-		} else {
-			$access_ctrl = SwpmAccessControl::get_instance();
-			$post_ok     = $access_ctrl->can_i_read_post( $post_id );
-		}
+		$access_ctrl = SwpmAccessControl::get_instance();
+		$post        = get_post( $post_id );
+		$post_ok     = $access_ctrl->can_i_read_post( $post );
 	}
 
 	/**
