@@ -170,7 +170,7 @@ function relevanssi_indexing_tab() {
 	$public_types = array_merge( $pt_1, $pt_2 );
 	$post_types   = get_post_types();
 	foreach ( $post_types as $type ) {
-		if ( in_array( $type, array( 'nav_menu_item', 'revision' ), true ) ) {
+		if ( in_array( $type, array( 'nav_menu_item', 'revision', 'acf-field', 'acf-field-group', 'oembed_cache', 'customize_changeset', 'custom_css' ), true ) ) {
 			continue;
 		}
 		$checked = '';
