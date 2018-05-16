@@ -1674,7 +1674,7 @@ function relevanssi_do_query( &$query ) {
 	}
 
 	$make_excerpts = get_option( 'relevanssi_excerpts' );
-	if ( $query->is_admin ) {
+	if ( $query->is_admin && ! defined( 'DOING_AJAX' ) ) {
 		$make_excerpts = false;
 	}
 
