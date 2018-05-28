@@ -1249,6 +1249,7 @@ function relevanssi_permalink( $link, $link_post = null ) {
 	if ( is_object( $link_post ) && property_exists( $link_post, 'relevanssi_link' ) ) {
 		$link = $link_post->relevanssi_link;
 	}
+
 	if ( is_search() ) {
 		$link = relevanssi_add_highlight( $link );
 	}
@@ -1368,7 +1369,7 @@ function relevanssi_simple_generate_suggestion( $query ) {
 		wp_cache_set( 'relevanssi_didyoumean_query', $data );
 	}
 
-	$query            = htmlspecialchars_decode( $query );
+	$query            = htmlspecialchars_decode( $query, ENT_QUOTES );
 	$tokens           = relevanssi_tokenize( $query );
 	$suggestions_made = false;
 	$suggestion       = '';
