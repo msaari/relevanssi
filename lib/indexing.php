@@ -909,7 +909,7 @@ function relevanssi_index_doc( $index_post, $remove_first = false, $custom_field
 		$content_tokens = relevanssi_tokenize( $contents, true, $min_word_length );
 
 		if ( $debug ) {
-			relevanssi_debug_echo( "\tContent, tokenized:\n" . implode( ' ', array_keys( $contents ) ) );
+			relevanssi_debug_echo( "\tContent, tokenized:\n" . implode( ' ', array_keys( $content_tokens ) ) );
 		}
 
 		if ( count( $content_tokens ) > 0 ) {
