@@ -116,3 +116,120 @@ function relevanssi_trim_logs() {
 		$interval )
 	); // WPCS: unprepared SQL ok, Relevanssi database table name.
 }
+
+/**
+ * Generates the user export data.
+ *
+ * @since 4.0.10
+ *
+ * @param int $user_id The user ID to export.
+ * @param int $page    Paging to avoid time outs.
+ *
+ * @return array Two-item array: 'done' is a Boolean that tells if the exporter is
+ * done, 'data' contains the actual data.
+ */
+function relevanssi_export_log_data( $user_id, $page ) {
+	global $wpdb, $relevanssi_variables;
+
+	$page = (int) $page;
+	if ( $page < 1 ) {
+		$page = 1;
+	}
+	$limit    = 500;
+	$offset   = $limit * ( $page - 1 );
+	$log_data = $wpdb->get_results(
+		$wpdb->prepare( 'SELECT * FROM ' . $relevanssi_variables['log_table'] . ' WHERE user_id = %d LIMIT %d OFFSET %d',
+		$user_id, $limit, $offset )
+	); // WPCS: unprepared SQL ok, Relevanssi database table name.
+
+	$export_items = array();
+
+	foreach ( $log_data as $row ) {
+		$time  = $row->time;
+		$query = $row->query;
+		$id    = $row->id;
+		$ip    = $row->ip;
+		$hits  = $row->hits;
+
+		$item_id     = "relevanssi_logged_search-{$id}";
+		$group_id    = 'relevanssi_logged_searches';
+		$group_label = __( 'Logged seaches', 'relevanssi' );
+		$data        = array(
+			array(
+				'name'  => __( 'Time', 'relevanssi' ),
+				'value' => $time,
+			),
+			array(
+				'name'  => __( 'Query', 'relevanssi' ),
+				'value' => $query,
+			),
+			array(
+				'name'  => __( 'Hits found', 'relevanssi' ),
+				'value' => $hits,
+			),
+			array(
+				'name'  => __( 'IP address', 'relevanssi' ),
+				'value' => $ip,
+			),
+		);
+
+		$export_items[] = array(
+			'group_id'    => $group_id,
+			'group_label' => $group_label,
+			'item_id'     => $item_id,
+			'data'        => $data,
+		);
+	}
+
+	$done = false;
+	if ( count( $log_data ) < $limit ) {
+		$done = true;
+	}
+
+	return array(
+		'done' => $done,
+		'data' => $export_items,
+	);
+}
+
+/**
+ * Erases the user log data.
+ *
+ * @since 4.0.10
+ *
+ * @param int $user_id The user ID to erase.
+ * @param int $page    Paging to avoid time outs.
+ *
+ * @return array Four-item array: 'items_removed' is a Boolean that tells if
+ * something was removed, 'done' is a Boolean that tells if the eraser is done,
+ * 'items_retained' is always false, 'messages' is always an empty array.
+ */
+function relevanssi_erase_log_data( $user_id, $page ) {
+	global $wpdb, $relevanssi_variables;
+
+	$page = (int) $page;
+	if ( $page < 1 ) {
+		$page = 1;
+	}
+	$limit        = 500;
+	$rows_removed = $wpdb->query(
+		$wpdb->prepare( 'DELETE FROM ' . $relevanssi_variables['log_table'] . ' WHERE user_id = %d LIMIT %d',
+		$user_id, $limit )
+	); // WPCS: unprepared SQL ok, Relevanssi database table name.
+
+	$done = false;
+	if ( $rows_removed < $limit ) {
+		$done = true;
+	}
+	$items_removed = false;
+	if ( $rows_removed > 0 ) {
+		$items_removed = true;
+	}
+
+	return array(
+		'items_removed'  => $items_removed,
+		'items_retained' => false,
+		'messages'       => array(),
+		'done'           => $done,
+	);
+}
