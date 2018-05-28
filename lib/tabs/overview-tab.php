@@ -65,6 +65,13 @@ function relevanssi_overview_tab() {
 		</td>
 	</tr>
 	<tr>
+		<th scope="row"><?php esc_html_e( 'Privacy and GDPR compliance', 'relevanssi' ); ?></th>
+		<td>
+			<?php // Translators: %1$s opens the link, %2$s closes the link. ?>
+			<p><?php printf( esc_html__( '%1$sGDPR Compliance at Relevanssi knowledge base%2$s explains how using Relevanssi affects the GDPR compliance and the privacy policies of your site. Relevanssi also supports the %3$sprivacy policy tool%2$s and the WordPress user data export and erase tools.', 'relevanssi' ), "<a href='https://www.relevanssi.com/knowledge-base/gdpr-compliance/'>", '</a>', "<a href='privacy.php'>" ); ?></p>
+		</td>
+	</tr>
+	<tr>
 		<th scope="row"><?php esc_html_e( 'For more information', 'relevanssi' ); ?></th>
 		<td>
 			<p><?php esc_html_e( "Relevanssi uses the WordPress contextual help. Click 'Help' on the top right corner for more information on many Relevanssi topics.", 'relevanssi' ); ?></p>
