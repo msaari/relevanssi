@@ -5,7 +5,7 @@ Tags: search, relevance, better search
 Requires at least: 4.0
 Tested up to: 5.0
 Requires PHP: 5.6
-Stable tag: 4.0.9
+Stable tag: 4.0.10
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -130,9 +130,18 @@ Each document database is full of useless words. All the little words that appea
 
 == Changelog ==
 
+= 4.0.10 =
+* Privacy: If you log search queries, Relevanssi will suggest some additional content to your privacy policy page.
+* Privacy: Relevanssi now supports the new Privacy Policy and Personal Data tools in WordPress 4.9.6.
+* Saving synonyms with quotes worked, but the synonyms showed up wrong.
+* Relevanssi could in some situations override navigation menu links with links to the user profiles or taxonomy terms found in the search. This update fixes that behaviour.
+* Random order works again; using orderby `rand` didn't work properly. The `rand(seed)` format is also supported now.
+* Fixed quotes and apostrophes in Did you mean suggestions.
+
 = 4.0.9 =
 * Fixes broken tag and category indexing and searching. If you use tags and categories, rebuild the index after updating.
-* Fixes phrase highlighting in documents.
+* Phrases were not highlighted correctly on documents. This is now fixed.
+* Shortcode fix: 'wp_show_posts' shouldn't cause problems anymore.
 * New filter: `relevanssi_indexing_restriction` allows filtering posts before indexing.
 * New WooCommerce product visibility filtering tool makes WooCommerce product indexing faster.
 * MemberPress post controls were loose and showed drafts to searchers. That is now fixed.
@@ -159,16 +168,10 @@ Each document database is full of useless words. All the little words that appea
 * User searches page reset buttons fixed.
 * WPML language filter fix.
 
-= 4.0.5 =
-* Relevanssi code has been reviewed and modified to follow WordPress coding standards. As a result, there have been minor improvements all around the code to make things more robust and secure.
-* Custom field detail is no longer serialized. It's now JSON. If you use custom field detail, rebuild the index and change your code to use json_decode() instead of unserialize().
-* `relevanssi_the_tags()` and `relevanssi_get_the_tags()` now have different set of parameters, more in line with `the_tags()` and `get_the_tags()`.
-* Taxonomy indexing settings were emptied out if you saved another options tab. That is now fixed.
-* Improvements to WPML support; WPML is now less likely to be confused in multisite searches.
-* Updated filter: `relevanssi_search_ok` now gets the WP_Query object as a parameter, which is helpful if you're not using the global $wp_query.
-* ACF Flexible Content field indexing didn't work properly, possibly due to a change in ACF. That should now work better.
-
 == Upgrade notice ==
+
+= 4.0.10 =
+* Privacy update, with some bug fixes.
 
 = 4.0.9 =
 * Fixes broken tag and category searching and indexing. Reindex after the update!
@@ -181,6 +184,3 @@ Each document database is full of useless words. All the little words that appea
 
 = 4.0.6 =
 * Indexing bugs fixed and WPML support corrected.
-
-= 4.0.5 =
-* Codebase review, lots of small improvements everywhere.
