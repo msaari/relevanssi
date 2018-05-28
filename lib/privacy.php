@@ -26,6 +26,7 @@ function relevanssi_register_privacy_policy() {
 	if ( RELEVANSSI_PREMIUM ) {
 		$name .= ' Premium';
 	}
+	$content = '';
 	if ( 'on' === get_option( 'relevanssi_log_queries' ) ) {
 		$content = '<h2>' . __( 'What personal data we collect and why we collect it' ) . '</h2>';
 		if ( 'on' === get_option( 'relevanssi_log_queries_with_ip' ) ) {
