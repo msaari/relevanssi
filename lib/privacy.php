@@ -22,6 +22,9 @@ add_filter( 'wp_privacy_personal_data_erasers', 'relevanssi_register_eraser', 10
  * @since 4.0.10
  */
 function relevanssi_register_privacy_policy() {
+	if ( ! function_exists( 'wp_add_privacy_policy_content' ) ) {
+		return;
+	}
 	$name = 'Relevanssi';
 	if ( RELEVANSSI_PREMIUM ) {
 		$name .= ' Premium';
@@ -41,7 +44,7 @@ function relevanssi_register_privacy_policy() {
 			// Translators: %d is the number of days.
 			$content .= '<p>' . sprintf( __( 'The search logs are stored for %d days before they are automatically removed.', 'relevanssi' ), $interval ) . '</p>';
 		} else {
-			$content .= '<p>' . sprintf( __( 'The search logs are stored indefinitely.', 'relevanssi' ), $interval ) . '</p>';
+			$content .= '<p>' . __( 'The search logs are stored indefinitely.', 'relevanssi' ) . '</p>';
 		}
 	}
 	wp_add_privacy_policy_content( $name, $content );
