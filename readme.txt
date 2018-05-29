@@ -5,7 +5,7 @@ Tags: search, relevance, better search
 Requires at least: 4.0
 Tested up to: 5.0
 Requires PHP: 5.6
-Stable tag: 4.0.10
+Stable tag: 4.0.10.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -130,6 +130,9 @@ Each document database is full of useless words. All the little words that appea
 
 == Changelog ==
 
+= 4.0.10.1 =
+* The privacy features caused an error notice with certain Relevanssi configurations, and the plugin required WP 4.9.6.
+
 = 4.0.10 =
 * Privacy: If you log search queries, Relevanssi will suggest some additional content to your privacy policy page.
 * Privacy: Relevanssi now supports the new Privacy Policy and Personal Data tools in WordPress 4.9.6.
@@ -169,6 +172,9 @@ Each document database is full of useless words. All the little words that appea
 * WPML language filter fix.
 
 == Upgrade notice ==
+
+= 4.0.10.1 =
+* Privacy feature bug fix.
 
 = 4.0.10 =
 * Privacy update, with some bug fixes.
