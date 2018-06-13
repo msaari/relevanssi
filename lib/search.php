@@ -1729,7 +1729,6 @@ function relevanssi_do_query( &$query ) {
 			$post->original_excerpt = $post->post_excerpt;
 			$post->post_excerpt     = relevanssi_do_excerpt( $post, $q );
 		}
-
 		if ( 'on' === get_option( 'relevanssi_show_matches' ) && empty( $fields ) ) {
 			$post_id = $post->ID;
 			if ( 'user' === $post->post_type ) {
@@ -2007,9 +2006,11 @@ function relevanssi_process_tax_query_row( $row, $is_sub_row, $global_relation, 
 				}
 				$kids = get_term_children( $t_id, $row['taxonomy'] );
 				foreach ( $kids as $kid ) {
-					$term            = get_term_by( 'id', $kid, $row['taxonomy'] );
 					$kid_term_tax_id = relevanssi_get_term_tax_id( $kid, $row['taxonomy'] );
-					$term_tax_id[]   = $kid_term_tax_id;
+					if ( $kid_term_tax_id ) {
+						// In some weird cases, this may be null. See: https://wordpress.org/support/topic/childrens-of-chosen-product_cat-not-showing-up/.
+						$term_tax_id[] = $kid_term_tax_id;
+					}
 				}
 			}
 		}
