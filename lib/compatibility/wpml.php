@@ -73,7 +73,12 @@ function relevanssi_wpml_filter( $data ) {
 			}
 		}
 
-		return array( $filtered_hits, $data[1] );
+		// A bit of foolproofing, avoid a warning if someone passes this filter bad data.
+		$query = '';
+		if ( isset( $data[1] ) ) {
+			$query = $data[1];
+		}
+		return array( $filtered_hits, $query );
 	}
 
 	return $data;
