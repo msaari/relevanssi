@@ -229,6 +229,9 @@ function update_relevanssi_options() {
 	$index_taxonomies_list = array();
 	$index_terms_list      = array();
 	foreach ( $_REQUEST as $key => $value ) {
+		if ( empty( $value ) ) {
+			$value = 0;
+		}
 		if ( 'relevanssi_weight_' === substr( $key, 0, strlen( 'relevanssi_weight_' ) ) ) {
 			$type                       = substr( $key, strlen( 'relevanssi_weight_' ) );
 			$post_type_weights[ $type ] = $value;

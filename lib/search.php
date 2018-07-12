@@ -619,7 +619,6 @@ function relevanssi_search( $args ) {
 	if ( ! empty( $post_type_weights['category'] ) ) {
 		$cat = $post_type_weights['category'];
 	}
-
 	$include_these_posts = array();
 	$df_counts           = array();
 
@@ -728,14 +727,13 @@ function relevanssi_search( $args ) {
 				if ( ! empty( $match->taxonomy_detail ) ) {
 					relevanssi_taxonomy_score( $match, $post_type_weights );
 				} else {
-					// This shouldn't really happen, but let's still have a backup.
 					$tag_weight = 1;
-					if ( isset( $post_type_weights['post_tag'] ) ) {
+					if ( isset( $post_type_weights['post_tag'] ) && is_numeric( $post_type_weights['post_tag'] ) ) {
 						$tag_weight = $post_type_weights['post_tag'];
 					}
 
 					$category_weight = 1;
-					if ( isset( $post_type_weights['category'] ) ) {
+					if ( isset( $post_type_weights['category'] ) && is_numeric( $post_type_weights['category'] ) ) {
 						$category_weight = $post_type_weights['category'];
 					}
 
