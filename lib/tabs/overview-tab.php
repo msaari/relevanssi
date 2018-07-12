@@ -80,6 +80,14 @@ function relevanssi_overview_tab() {
 		</td>
 	</tr>
 	<tr>
+		<th scope="row"><?php esc_html_e( 'Do you like Relevanssi?', 'relevanssi' ); ?></th>
+		<td>
+			<p><?php esc_html_e( 'If you do, the best way to show your appreciation is to spread the word and perhaps give us a good review on WordPress.org.', 'relevanssi' ); ?></p>
+			<?php // Translators: %1$s opens the link, %2$s closes the link. ?>
+			<p><?php printf( esc_html__( 'If you like Relevanssi, leaving a five-star review on WordPress.org will help others discover Relevanssi. %1$sYou can add your review here%2$s.', 'relevanssi' ), "<a href='https://wordpress.org/support/plugin/relevanssi/reviews/#new-post'>", '</a>' ); ?></p>
+		</td>
+	</tr>
+	<tr>
 		<th scope="row">
 			<?php esc_html_e( 'Relevanssi on Facebook', 'relevanssi' ); ?>
 		</th>
