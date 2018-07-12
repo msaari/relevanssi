@@ -193,6 +193,10 @@ function relevanssi_default_post_ok( $post_ok, $post_id ) {
 		$post        = get_post( $post_id );
 		$post_ok     = $access_ctrl->can_i_read_post( $post );
 	}
+	if ( function_exists( 'wp_jv_prg_user_can_see_a_post' ) ) {
+		// WP JV Post Reading Groups.
+		$post_ok = wp_jv_prg_user_can_see_a_post( get_current_user_id(), $post_id );
+	}
 
 	/**
 	 * Filters statuses allowed in admin searches.
@@ -484,6 +488,7 @@ function relevanssi_remove_punct( $a ) {
 		return '';
 	}
 
+	$a = html_entity_decode( $a, ENT_QUOTES );
 	$a = preg_replace( '/<[^>]*>/', ' ', $a );
 
 	$punct_options = get_option( 'relevanssi_punctuation' );
