@@ -535,6 +535,7 @@ function relevanssi_remove_punct( $a ) {
 		'€'                     => '',
 		'®'                     => '',
 		'©'                     => '',
+		'™'                     => '',
 		'&shy;'                 => '',
 		'&nbsp;'                => ' ',
 		chr( 194 ) . chr( 160 ) => ' ',
@@ -1234,7 +1235,7 @@ function relevanssi_get_permalink() {
  * if necessary using relevanssi_add_highlight(), then echoes it out.
  */
 function relevanssi_the_permalink() {
-	echo esc_attr( relevanssi_get_permalink() );
+	echo esc_url( relevanssi_get_permalink() );
 }
 
 /**
