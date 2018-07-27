@@ -535,8 +535,8 @@ function relevanssi_highlight_terms( $content, $query, $in_docs = false ) {
 			}
 		}
 
-		if ( preg_match_all( '/<(style|script|object|embed)>.*<\/(style|script|object|embed)>/U', $content, $matches ) > 0 ) {
-			// Remove highlights in style, object, embed and script tags.
+		if ( preg_match_all( '/<(style|script|object|embed|pre|code)>.*<\/(style|script|object|embed|pre|code)>/U', $content, $matches ) > 0 ) {
+			// Remove highlights in style, object, embed, script and pre tags.
 			foreach ( $matches as $match ) {
 				$new_match = str_replace( $start_emp_token, '', $match );
 				$new_match = str_replace( $end_emp_token, '', $new_match );
@@ -547,6 +547,21 @@ function relevanssi_highlight_terms( $content, $query, $in_docs = false ) {
 
 	$content = relevanssi_remove_nested_highlights( $content, $start_emp_token, $end_emp_token );
 	$content = relevanssi_fix_entities( $content, $in_docs );
+
+	/**
+	 * Allows cleaning unwanted highlights.
+	 *
+	 * This filter lets you clean unwanted highlights, for example from within <pre>
+	 * tags. To remove a highlight, remove the matching starting and ending tokens
+	 * from the $content string.
+	 *
+	 * @param string $content         The highlighted content.
+	 * @param string $start_emp_token A token that signifies the start of a highlight.
+	 * @param string $end_emp_token   A token that signifies the end of a highlight.
+	 *
+	 * @return string The highlighted content.
+	 */
+	$content = apply_filters( 'relevanssi_clean_excerpt', $content, $start_emp_token, $end_emp_token );
 
 	$content = str_replace( $start_emp_token, $start_emp, $content );
 	$content = str_replace( $end_emp_token, $end_emp, $content );
@@ -625,8 +640,8 @@ function relevanssi_fix_entities( $excerpt, $in_docs ) {
 		// Running htmlentities() for whole posts tends to ruin things.
 		// However, we want to run htmlentities() for anything inside
 		// <pre> and <code> tags.
-		$excerpt = relevanssi_entities_inside( $excerpt, 'code' );
 		$excerpt = relevanssi_entities_inside( $excerpt, 'pre' );
+		$excerpt = relevanssi_entities_inside( $excerpt, 'code' );
 	}
 	return $excerpt;
 }
@@ -641,18 +656,18 @@ function relevanssi_fix_entities( $excerpt, $in_docs ) {
  * ran through htmlentities().
  */
 function relevanssi_entities_inside( $content, $tag ) {
-	$hits = preg_match_all( '/<' . $tag . '>(.*?)<\/' . $tag . '>/im', $content, $matches );
+	$hits = preg_match_all( '/<' . $tag . '.*?>(.*?)<\/' . $tag . '>/ims', $content, $matches );
 	if ( $hits > 0 ) {
 		$replacements = array();
 		foreach ( $matches[1] as $match ) {
 			if ( ! empty( $match ) ) {
-				$replacements[] = '<xxx' . $tag . '>' . htmlentities( $match, ENT_QUOTES, 'UTF-8' ) . '</xxx' . $tag . '>';
+				$replacements[] = '<xxx' . $tag . '\1>' . htmlentities( $match, ENT_QUOTES, 'UTF-8' ) . '</xxx' . $tag . '>';
 			}
 		}
 		if ( ! empty( $replacements ) ) {
 			$count_replacements = count( $replacements );
 			for ( $i = 0; $i < $count_replacements; $i++ ) {
-				$patterns[] = '/<' . $tag . '>(.*?)<\/' . $tag . '>/im';
+				$patterns[] = '/<' . $tag . '(.*?)>(.*?)<\/' . $tag . '>/ims';
 			}
 			$content = preg_replace( $patterns, $replacements, $content, 1 );
 		}
