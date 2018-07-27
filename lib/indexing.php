@@ -1335,12 +1335,19 @@ function relevanssi_get_comments( $post_id ) {
 		}
 		foreach ( $comments as $comment ) {
 			/**
-			 * Filters the comment content before indexing.
+			 * Filters the comment author before indexing.
 			 *
-			 * @param string Comment author, a space, the comment content.
+			 * @param string Comment author display name.
 			 * @param int    The comment ID.
 			 */
-			$comment_string .= apply_filters( 'relevanssi_comment_content_to_index', $comment->comment_author . ' ' . $comment->comment_content . ' ', $comment->comment_ID );
+			$comment_string .= ' ' . apply_filters( 'relevanssi_comment_author_to_index', $comment->comment_author, $comment->comment_ID );
+			/**
+			 * Filters the comment content before indexing.
+			 *
+			 * @param string Comment content.
+			 * @param int    The comment ID.
+			 */
+			$comment_string .= ' ' . apply_filters( 'relevanssi_comment_content_to_index', $comment->comment_content, $comment->comment_ID );
 		}
 		$offset += $limit;
 	}
