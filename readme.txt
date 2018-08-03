@@ -5,7 +5,7 @@ Tags: search, relevance, better search
 Requires at least: 4.0
 Tested up to: 5.0
 Requires PHP: 5.6
-Stable tag: 4.0.10.1
+Stable tag: 4.0.11
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -44,7 +44,7 @@ Do note that using Relevanssi may require large amounts (hundreds of megabytes) 
 * Disable indexing of post content and post titles with a simple filter hook.
 
 = Premium features (only in Relevanssi Premium) =
-* Indexing PDF content.
+* Indexing attachment content (PDF, Office, Open Office).
 * Improved spelling correction in "Did you mean?" suggestions.
 * Searching across multiple sites in the same multisite installation.
 * Search and index user profiles.
@@ -130,6 +130,20 @@ Each document database is full of useless words. All the little words that appea
 
 == Changelog ==
 
+= 4.0.11 =
+* Home page links were getting the highlight parameter even though they shouldn't. This has been fixed.
+* Added support for WP JV Post Reading Groups.
+* Improved handling of HTML entities.
+* Events Made Easy Calendar shortcodes are now removed when building excerpts.
+* `set_time_limit()` was removed from the indexing; it's no longer necessary, and it can break the indexing on sites that don't allow the use of the function.
+* `relevanssi_post_title_before_tokenize` filter was moved a bit so that it's the last thing that runs before tokenizing.
+* Disabled shortcodes are handled better in the indexing: the shortcode names won't be indexed anymore like they were before.
+* Made sure there won't be a warning for non-numeric values when searching.
+* New filter: `relevanssi_clean_excerpt` lets you remove unwanted highlights from excerpts.
+* Highlighting works better with `pre` and `code` tags.
+* New filter: `relevanssi_comment_author_to_index` lets you filter comment author names before indexing.
+* `relevanssi_comment_content_to_index` doesn't include the comment author name anymore.
+
 = 4.0.10.1 =
 * The privacy features caused an error notice with certain Relevanssi configurations, and the plugin required WP 4.9.6.
 
@@ -172,6 +186,9 @@ Each document database is full of useless words. All the little words that appea
 * WPML language filter fix.
 
 == Upgrade notice ==
+
+= 4.0.11 =
+* Several small improvements, new filters and highlighting fixes.
 
 = 4.0.10.1 =
 * Privacy feature bug fix.
