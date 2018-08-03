@@ -1091,11 +1091,13 @@ function relevanssi_get_the_title( $post_id ) {
  *
  * @global object $wpdb                 The WordPress database interface.
  * @global array  $relevanssi_variables The Relevanssi global variable, used for table names.
+ * @return int    The doc count.
  */
 function relevanssi_update_doc_count() {
 	global $wpdb, $relevanssi_variables;
-	$doc_count = $wpdb->get_var( 'SELECT COUNT(DISTINCT(relevanssi.doc)) FROM ' . $relevanssi_variables['relevanssi_table'] . ' AS relevanssi' ); // WPCS: unprepared SQL ok, Relevanssi table name.
+	$doc_count = $wpdb->get_var( 'SELECT COUNT(DISTINCT(doc)) FROM ' . $relevanssi_variables['relevanssi_table'] ); // WPCS: unprepared SQL ok, Relevanssi table name.
 	update_option( 'relevanssi_doc_count', $doc_count );
+	return $doc_count;
 }
 
 /**

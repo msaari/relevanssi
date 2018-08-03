@@ -366,8 +366,7 @@ function relevanssi_build_index( $extend_offset = false, $verbose = true, $post_
 	update_option( 'relevanssi_indexed', 'done' );
 
 	// Update the document count variable.
-	$document_count = $wpdb->get_var( "SELECT COUNT(DISTINCT(relevanssi.doc)) FROM $relevanssi_table AS relevanssi" ); // WPCS: unprepared SQL ok, Relevanssi table name.
-	update_option( 'relevanssi_doc_count', $document_count );
+	relevanssi_update_doc_count();
 
 	wp_suspend_cache_addition( false );
 
@@ -869,6 +868,9 @@ function relevanssi_index_doc( $index_post, $remove_first = false, $custom_field
 				$shortcodes         = explode( ',', $disable_shortcodes );
 				$shortcodes         = array_unique( array_merge( $shortcodes, $default_disables ) );
 				foreach ( $shortcodes as $shortcode ) {
+					if ( empty( $shortcode ) ) {
+						continue;
+					}
 					remove_shortcode( trim( $shortcode ) );
 					add_shortcode( $shortcode, '__return_empty_string' );
 				}

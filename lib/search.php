@@ -399,8 +399,7 @@ function relevanssi_search( $args ) {
 	// Go get the count from the options, but run the full query if it's not available.
 	$doc_count = get_option( 'relevanssi_doc_count' );
 	if ( ! $doc_count || $doc_count < 1 ) {
-		$doc_count = $wpdb->get_var( "SELECT COUNT(DISTINCT(relevanssi.doc)) FROM $relevanssi_table AS relevanssi" ); // WPCS: unprepared SQL ok, Relevanssi table name.
-		update_option( 'relevanssi_doc_count', $doc_count );
+		$doc_count = relevanssi_update_doc_count();
 	}
 
 	$total_hits = 0;
@@ -1655,20 +1654,21 @@ function relevanssi_do_query( &$query ) {
 	// Manipulating the array with array_unique() for example may mess with that.
 	$hits = array_values( $hits_filters_applied[0] );
 
-	$query->found_posts = count( $hits );
+	$hits_count         = count( $hits );
+	$query->found_posts = $hits_count;
 	if ( ! isset( $query->query_vars['posts_per_page'] ) || 0 === $query->query_vars['posts_per_page'] ) {
 		// Assume something sensible to prevent "division by zero error".
 		$query->query_vars['posts_per_page'] = -1;
 	}
 	if ( -1 === $query->query_vars['posts_per_page'] ) {
-		$query->max_num_pages = count( $hits );
+		$query->max_num_pages = $hits_count;
 	} else {
-		$query->max_num_pages = ceil( count( $hits ) / $query->query_vars['posts_per_page'] );
+		$query->max_num_pages = ceil( $hits_count / $query->query_vars['posts_per_page'] );
 	}
 
 	$update_log = get_option( 'relevanssi_log_queries' );
 	if ( 'on' === $update_log ) {
-		relevanssi_update_log( $q, count( $hits ) );
+		relevanssi_update_log( $q, $hits_count );
 	}
 
 	$make_excerpts = get_option( 'relevanssi_excerpts' );
@@ -1683,7 +1683,7 @@ function relevanssi_do_query( &$query ) {
 	}
 
 	if ( ! isset( $query->query_vars['posts_per_page'] ) || -1 === $query->query_vars['posts_per_page'] ) {
-		$search_high_boundary = count( $hits );
+		$search_high_boundary = $hits_count;
 	} else {
 		$search_high_boundary = $search_low_boundary + $query->query_vars['posts_per_page'] - 1;
 	}
@@ -1693,8 +1693,8 @@ function relevanssi_do_query( &$query ) {
 		$search_low_boundary  += $query->query_vars['offset'];
 	}
 
-	if ( $search_high_boundary > count( $hits ) ) {
-		$search_high_boundary = count( $hits );
+	if ( $search_high_boundary > $hits_count ) {
+		$search_high_boundary = $hits_count;
 	}
 
 	for ( $i = $search_low_boundary; $i <= $search_high_boundary; $i++ ) {
