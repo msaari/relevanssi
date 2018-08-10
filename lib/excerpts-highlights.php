@@ -638,10 +638,26 @@ function relevanssi_fix_entities( $excerpt, $in_docs ) {
 		$excerpt = str_replace( '&#039;', "'", $excerpt );
 	} else {
 		// Running htmlentities() for whole posts tends to ruin things.
-		// However, we want to run htmlentities() for anything inside
+		// However, we may want to run htmlentities() for anything inside
 		// <pre> and <code> tags.
-		$excerpt = relevanssi_entities_inside( $excerpt, 'pre' );
-		$excerpt = relevanssi_entities_inside( $excerpt, 'code' );
+		/**
+		 * Choose whether htmlentities() is run inside <pre> tags or not. If your
+		 * pages have HTML code inside <pre> tags, set this to false.
+		 *
+		 * @param boolean If true, htmlentities() will be used inside <pre> tags.
+		 */
+		if ( apply_filters( 'relevanssi_entities_inside_pre', true ) ) {
+			$excerpt = relevanssi_entities_inside( $excerpt, 'pre' );
+		}
+		/**
+		 * Choose whether htmlentities() is run inside <code> tags or not. If your
+		 * pages have HTML code inside <code> tags, set this to false.
+		 *
+		 * @param boolean If true, htmlentities() will be used inside <code> tags.
+		 */
+		if ( apply_filters( 'relevanssi_entities_inside_code', true ) ) {
+			$excerpt = relevanssi_entities_inside( $excerpt, 'code' );
+		}
 	}
 	return $excerpt;
 }
