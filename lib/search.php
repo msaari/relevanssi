@@ -612,12 +612,23 @@ function relevanssi_search( $args ) {
 
 	$tag = $relevanssi_variables['post_type_weight_defaults']['post_tag'];
 	$cat = $relevanssi_variables['post_type_weight_defaults']['category'];
+
+	if ( ! empty( $post_type_weights['post_tagged_with_post_tag'] ) ) {
+		$tag = $post_type_weights['post_tagged_with_post_tag'];
+	}
+	if ( ! empty( $post_type_weights['post_tagged_with_category'] ) ) {
+		$cat = $post_type_weights['post_tagged_with_category'];
+	}
+
+	/* Legacy code, improvement introduced in 2.1.8, remove at some point. */
 	if ( ! empty( $post_type_weights['post_tag'] ) ) {
 		$tag = $post_type_weights['post_tag'];
 	}
 	if ( ! empty( $post_type_weights['category'] ) ) {
 		$cat = $post_type_weights['category'];
 	}
+	/* End legacy code. */
+
 	$include_these_posts = array();
 	$df_counts           = array();
 
@@ -727,6 +738,16 @@ function relevanssi_search( $args ) {
 					relevanssi_taxonomy_score( $match, $post_type_weights );
 				} else {
 					$tag_weight = 1;
+					if ( isset( $post_type_weights['post_tagged_with_post_tag'] ) && is_numeric( $post_type_weights['post_tagged_with_post_tag'] ) ) {
+						$tag_weight = $post_type_weights['post_tagged_with_post_tag'];
+					}
+
+					$category_weight = 1;
+					if ( isset( $post_type_weights['post_tagged_with_category'] ) && is_numeric( $post_type_weights['post_tagged_with_category'] ) ) {
+						$category_weight = $post_type_weights['post_tagged_with_category'];
+					}
+
+					/* Legacy code from 2.1.8. Remove at some point. */
 					if ( isset( $post_type_weights['post_tag'] ) && is_numeric( $post_type_weights['post_tag'] ) ) {
 						$tag_weight = $post_type_weights['post_tag'];
 					}
@@ -735,6 +756,7 @@ function relevanssi_search( $args ) {
 					if ( isset( $post_type_weights['category'] ) && is_numeric( $post_type_weights['category'] ) ) {
 						$category_weight = $post_type_weights['category'];
 					}
+					/* End legacy code. */
 
 					$taxonomy_weight = 1;
 
@@ -817,12 +839,18 @@ function relevanssi_search( $args ) {
 				$taxonomy_matches[ $match->doc ] += $match->taxonomy;
 				$comment_matches[ $match->doc ]  += $match->comment;
 
+				/* Post type weights. */
 				$type = null;
 				if ( isset( $relevanssi_post_types[ $match->doc ] ) ) {
 					$type = $relevanssi_post_types[ $match->doc ];
 				}
 				if ( ! empty( $post_type_weights[ $type ] ) ) {
 					$match->weight = $match->weight * $post_type_weights[ $type ];
+				}
+
+				/* Weight boost for taxonomy terms based on taxonomy. */
+				if ( ! empty( $post_type_weights[ 'taxonomy_term_' . $match->type ] ) ) {
+					$match->weight = $match->weight * $post_type_weights[ 'taxonomy_term_' . $match->type ];
 				}
 
 				/**
@@ -2158,10 +2186,14 @@ function relevanssi_taxonomy_score( &$match, $post_type_weights ) {
 	$match->taxonomy_detail = json_decode( $match->taxonomy_detail );
 	if ( is_object( $match->taxonomy_detail ) ) {
 		foreach ( $match->taxonomy_detail as $tax => $count ) {
-			if ( empty( $post_type_weights[ $tax ] ) ) {
-				$match->taxonomy_score += $count * 1;
+			if ( empty( $post_type_weights[ 'post_tagged_with_' . $tax ] ) ) {
+				if ( ! empty( $post_type_weights[ $tax ] ) ) { // Legacy code, needed for 2.1.8, remove later.
+					$match->taxonomy_score += $count * $post_type_weights[ $tax ];
+				} else {
+					$match->taxonomy_score += $count * 1;
+				}
 			} else {
-				$match->taxonomy_score += $count * $post_type_weights[ $tax ];
+				$match->taxonomy_score += $count * $post_type_weights[ 'post_tagged_with_' . $tax ];
 			}
 		}
 	}

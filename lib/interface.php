@@ -232,8 +232,17 @@ function update_relevanssi_options() {
 		if ( empty( $value ) ) {
 			$value = 0;
 		}
+
 		if ( 'relevanssi_weight_' === substr( $key, 0, strlen( 'relevanssi_weight_' ) ) ) {
 			$type                       = substr( $key, strlen( 'relevanssi_weight_' ) );
+			$post_type_weights[ $type ] = $value;
+		}
+		if ( 'relevanssi_taxonomy_weight_' === substr( $key, 0, strlen( 'relevanssi_taxonomy_weight_' ) ) ) {
+			$type                       = 'post_tagged_with_' . substr( $key, strlen( 'relevanssi_taxonomy_weight_' ) );
+			$post_type_weights[ $type ] = $value;
+		}
+		if ( 'relevanssi_term_weight_' === substr( $key, 0, strlen( 'relevanssi_term_weight_' ) ) ) {
+			$type                       = 'taxonomy_term_' . substr( $key, strlen( 'relevanssi_term_weight_' ) );
 			$post_type_weights[ $type ] = $value;
 		}
 		if ( 'relevanssi_index_type_' === substr( $key, 0, strlen( 'relevanssi_index_type_' ) ) ) {
