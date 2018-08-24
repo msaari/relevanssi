@@ -179,6 +179,9 @@ function relevanssi_post_type_restriction() {
 		}
 	}
 
+	if ( empty( $post_types ) ) {
+		$post_types[] = "'no_post_types_chosen_so_index_no_posts'";
+	}
 	if ( count( $post_types ) > 0 ) {
 		$restriction = ' AND post.post_type IN (' . implode( ', ', $post_types ) . ') ';
 	}
