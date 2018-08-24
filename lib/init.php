@@ -132,6 +132,10 @@ function relevanssi_init() {
 	if ( class_exists( 'acf' ) ) {
 		require_once 'compatibility/acf.php';
 	}
+
+	if ( class_exists( 'Obenland_Wp_Search_Suggest' ) ) {
+		require_once 'compatibility/wp-search-suggest.php';
+	}
 }
 
 /**
