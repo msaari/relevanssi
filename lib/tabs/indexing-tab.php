@@ -143,7 +143,11 @@ function relevanssi_indexing_tab() {
 
 	<?php
 	if ( count( $index_post_types ) < 2 ) {
-		printf( '<p><strong>%s</strong></p>', esc_html__( "WARNING: You've chosen no post types to index. Nothing will be indexed. Choose some post types to index.", 'relevanssi' ) );
+		$index_users      = get_option( 'relevanssi_index_users', 'off' );
+		$index_taxonomies = get_option( 'relevanssi_index_taxonomies', 'off' );
+		if ( 'off' === $index_users && 'off' === $index_taxonomies ) {
+			printf( '<p><strong>%s</strong></p>', esc_html__( "WARNING: You've chosen no post types to index. Nothing will be indexed. Choose some post types to index.", 'relevanssi' ) );
+		}
 	}
 	?>
 
@@ -280,6 +284,13 @@ function relevanssi_indexing_tab() {
 			esc_html_e( "'Some' lets you choose individual custom fields to index.", 'relevanssi' );
 			?>
 			</p>
+			<?php
+			if ( class_exists( 'acf' ) && $fields_select_all ) {
+				echo "<p class='description important'>";
+				esc_html_e( 'Advanced Custom Fields has lots of invisible custom fields with meta data. Selecting "all" will include lots of garbage in the index and excerpts. "Visible" is usually a better option with ACF.' );
+				echo '</p>';
+			}
+			?>
 			<div id="index_field_input"
 			<?php
 			if ( empty( $fields_select_some ) ) {

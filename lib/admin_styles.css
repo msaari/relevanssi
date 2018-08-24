@@ -96,3 +96,7 @@ table.form-table table.widefat th {
 #relevanssi-timer {
     display: none;
 }
+
+#category_inclusion_checklist ul.children, #category_exclusion_checklist ul.children {
+	margin-left: 1.5em;
+}

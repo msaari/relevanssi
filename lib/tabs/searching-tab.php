@@ -332,7 +332,7 @@ function relevanssi_searching_tab() {
 		<td>
 			<div class="categorydiv" style="max-width: 400px">
 			<div class="tabs-panel">
-			<ul id="categorychecklist">
+			<ul id="category_inclusion_checklist">
 			<?php
 				$selected_cats = explode( ',', $cat );
 				$walker        = get_relevanssi_taxonomy_walker();
@@ -357,7 +357,7 @@ function relevanssi_searching_tab() {
 		<td>
 			<div class="categorydiv" style="max-width: 400px">
 			<div class="tabs-panel">
-			<ul id="categorychecklist">
+			<ul id="category_exclusion_checklist">
 			<?php
 				$selected_cats = explode( ',', $excat );
 				$walker        = get_relevanssi_taxonomy_walker();
