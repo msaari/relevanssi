@@ -301,10 +301,6 @@ function relevanssi_object_sort( &$data, $orderby ) {
 	} while ( ! empty( $values['key'] ) );
 
 	$primary_key = $relevanssi_keys[0];
-	if ( 'rand' !== $primary_key && ! isset( $data[0]->$primary_key ) ) {
-		// Trying to sort by a non-existent key.
-		return;
-	}
 
 	usort( $data, 'relevanssi_cmp_function' );
 }
