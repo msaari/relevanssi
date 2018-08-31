@@ -1451,6 +1451,7 @@ function relevanssi_do_query( &$query ) {
 					);
 				}
 			}
+			$query->tax_query = $tax_query;
 		}
 
 		$author = false;
