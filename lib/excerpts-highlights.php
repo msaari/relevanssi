@@ -535,7 +535,7 @@ function relevanssi_highlight_terms( $content, $query, $in_docs = false ) {
 			}
 		}
 
-		if ( preg_match_all( '/<(style|script|object|embed|pre|code)>.*<\/(style|script|object|embed|pre|code)>/U', $content, $matches ) > 0 ) {
+		if ( preg_match_all( '/<(style|script|object|embed|pre|code).*<\/(style|script|object|embed|pre|code)>/U', $content, $matches ) > 0 ) {
 			// Remove highlights in style, object, embed, script and pre tags.
 			foreach ( $matches as $match ) {
 				$new_match = str_replace( $start_emp_token, '', $match );
