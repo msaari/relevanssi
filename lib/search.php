@@ -730,6 +730,8 @@ function relevanssi_search( $args ) {
 			foreach ( $matches as $match ) {
 				if ( 'user' === $match->type ) {
 					$match->doc = 'u_' . $match->item;
+				} elseif ( 'post_type' === $match->type ) {
+					$match->doc = 'p_' . $match->item;
 				} elseif ( ! in_array( $match->type, array( 'post', 'attachment' ), true ) ) {
 					$match->doc = '**' . $match->type . '**' . $match->item;
 				}
@@ -1753,21 +1755,37 @@ function relevanssi_do_query( &$query ) {
 		}
 
 		if ( 'on' === $make_excerpts && empty( $fields ) ) {
+			if ( isset( $post->blog_id ) ) {
+				switch_to_blog( $post->blog_id );
+			}
 			$post->original_excerpt = $post->post_excerpt;
 			$post->post_excerpt     = relevanssi_do_excerpt( $post, $q );
+			if ( isset( $post->blog_id ) ) {
+				restore_current_blog();
+			}
 		}
 		if ( 'on' === get_option( 'relevanssi_show_matches' ) && empty( $fields ) ) {
 			$post_id = $post->ID;
 			if ( 'user' === $post->post_type ) {
 				$post_id = 'u_' . $post->user_id;
+			} elseif ( 'post_type' === $post->post_type ) {
+				$post_id = 'p_' . $post->ID;
 			} elseif ( isset( $post->term_id ) ) {
 				$post_id = '**' . $post->post_type . '**' . $post->term_id;
+			}
+			if ( isset( $post->blog_id ) ) {
+				$post_id = $post->blog_id . '|' . $post->ID;
 			}
 			$post->post_excerpt .= relevanssi_show_matches( $return, $post_id );
 		}
 
-		if ( empty( $fields ) && isset( $return['scores'][ $post->ID ] ) ) {
-			$post->relevance_score = round( $return['scores'][ $post->ID ], 2 );
+		$post_id = $post->ID;
+		if ( isset( $post->blog_id ) ) {
+			$post_id = $post->blog_id . '|' . $post->ID;
+		}
+
+		if ( empty( $fields ) && isset( $return['scores'][ $post_id ] ) ) {
+			$post->relevance_score = round( $return['scores'][ $post_id ], 2 );
 		}
 
 		$posts[] = $post;
