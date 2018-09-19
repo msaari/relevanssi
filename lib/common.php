@@ -103,7 +103,6 @@ function relevanssi_show_matches( $data, $hit ) {
 	} else {
 		$term_hits_array = array();
 	}
-
 	$term_hits  = '';
 	$total_hits = 0;
 	foreach ( $term_hits_array as $term => $hits ) {
@@ -197,7 +196,6 @@ function relevanssi_default_post_ok( $post_ok, $post_id ) {
 		// WP JV Post Reading Groups.
 		$post_ok = wp_jv_prg_user_can_see_a_post( get_current_user_id(), $post_id );
 	}
-
 	/**
 	 * Filters statuses allowed in admin searches.
 	 *
@@ -337,6 +335,7 @@ function relevanssi_recognize_phrases( $search_query ) {
 	if ( count( $phrases ) > 0 ) {
 		foreach ( $phrases as $phrase ) {
 			$queries = array();
+			$phrase  = $wpdb->esc_like( $phrase );
 			$phrase  = str_replace( '‘', '_', $phrase );
 			$phrase  = str_replace( '’', '_', $phrase );
 			$phrase  = str_replace( "'", '_', $phrase );
@@ -345,7 +344,6 @@ function relevanssi_recognize_phrases( $search_query ) {
 			$phrase  = str_replace( '“', '_', $phrase );
 			$phrase  = str_replace( '„', '_', $phrase );
 			$phrase  = str_replace( '´', '_', $phrase );
-			$phrase  = $wpdb->esc_like( $phrase );
 			$phrase  = esc_sql( $phrase );
 			$excerpt = '';
 			if ( 'on' === get_option( 'relevanssi_index_excerpt' ) ) {
@@ -804,7 +802,7 @@ function relevanssi_tokenize( $string, $remove_stops = true, $min_word_length = 
 function relevanssi_get_post_status( $post_id ) {
 	global $relevanssi_post_array;
 	$type = substr( $post_id, 0, 2 );
-	if ( '**' === $type || 'u_' === $type ) {
+	if ( '**' === $type || 'u_' === $type || 'p_' === $type ) {
 		// Taxonomy term or user (a Premium feature).
 		return 'publish';
 	}
@@ -1406,8 +1404,7 @@ function relevanssi_simple_generate_suggestion( $query ) {
 				break;
 			} else {
 				$lev = levenshtein( $token, $row->query );
-
-				if ( $lev < $distance || $distance < 0 ) {
+				if ( $lev < 3 && ( $lev < $distance || $distance < 0 ) ) {
 					if ( $row->a > 0 ) {
 						$distance = $lev;
 						$closest  = $row->query;
