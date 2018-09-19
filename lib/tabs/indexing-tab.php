@@ -387,6 +387,9 @@ function relevanssi_indexing_tab() {
 	if ( function_exists( 'relevanssi_form_index_taxonomies' ) ) {
 		relevanssi_form_index_taxonomies();
 	}
+	if ( function_exists( 'relevanssi_form_index_post_type_archives' ) ) {
+		relevanssi_form_index_post_type_archives();
+	}
 	if ( function_exists( 'relevanssi_form_index_pdf_parent' ) ) {
 		relevanssi_form_index_pdf_parent();
 	}
