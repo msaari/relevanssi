@@ -86,7 +86,7 @@ function relevanssi_polylang_where_include_terms( $where ) {
 	$languages        = get_terms( array( 'taxonomy' => 'language' ) );
 	$language_id      = 0;
 	foreach ( $languages as $language ) {
-		if ( $language->slug === $current_language ) {
+		if ( ! is_wp_error( $language ) && $language instanceof WP_Term && $language->slug === $current_language ) {
 			$language_id = intval( $language->term_id );
 			break;
 		}
