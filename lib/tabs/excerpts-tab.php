@@ -97,6 +97,14 @@ function relevanssi_excerpts_tab() {
 			</label>
 		</fieldset>
 		<p class="description"><?php esc_html_e( 'Only enable this if you actually use the custom excerpts.', 'relevanssi' ); ?></p>
+		<?php
+		$theme    = wp_get_theme();
+		$template = $theme->get( 'Template' );
+		if ( 'divi' === strtolower( $template ) ) :
+		?>
+			<?php // Translators: %1$s opens the link, %2$s closes it. ?>
+			<p class="important"><?php printf( esc_html__( 'Looks like you are using Divi. In order to use custom excerpts with Divi, you need to make some changes to your templates. %1$sSee instructions here%2$s.', 'relevanssi' ), '<a href="https://www.relevanssi.com/knowledge-base/divi-page-builder-and-cleaner-excerpts/">', '</a>' ); ?></p>
+		<?php endif; ?>
 		</td>
 	</tr>
 	<tr id="tr_excerpt_length"
