@@ -1012,7 +1012,7 @@ function relevanssi_get_custom_field_content( $post_id ) {
 		$remove_underscore_fields = true;
 	}
 	/* Documented in lib/indexing.php. */
-	$custom_fields = apply_filters( 'relevanssi_index_custom_fields', $custom_fields );
+	$custom_fields = apply_filters( 'relevanssi_index_custom_fields', $custom_fields, $post_id );
 
 	if ( function_exists( 'relevanssi_get_child_pdf_content' ) ) {
 		$custom_field_content .= ' ' . relevanssi_get_child_pdf_content( $post_id );
