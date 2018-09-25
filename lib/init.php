@@ -121,19 +121,19 @@ function relevanssi_init() {
 		require_once 'compatibility/wpml.php';
 	}
 
-	if ( function_exists( 'pll_get_post' ) ) {
+	if ( class_exists( 'Polylang', false ) ) {
 		require_once 'compatibility/polylang.php';
 	}
 
-	if ( class_exists( 'WooCommerce' ) ) {
+	if ( class_exists( 'WooCommerce', false ) ) {
 		require_once 'compatibility/woocommerce.php';
 	}
 
-	if ( class_exists( 'acf' ) ) {
+	if ( class_exists( 'acf', false ) ) {
 		require_once 'compatibility/acf.php';
 	}
 
-	if ( class_exists( 'Obenland_Wp_Search_Suggest' ) ) {
+	if ( class_exists( 'Obenland_Wp_Search_Suggest', false ) ) {
 		require_once 'compatibility/wp-search-suggest.php';
 	}
 }
