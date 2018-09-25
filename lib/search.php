@@ -232,28 +232,28 @@ function relevanssi_search( $args ) {
 	}
 
 	if ( is_array( $parent_query ) ) {
-		if ( ! empty( $parent_query['parent in'] ) ) {
+		if ( isset( $parent_query['parent in'] ) ) {
 			$valid_values = array();
 			foreach ( $parent_query['parent in'] as $post_in_id ) {
-				if ( is_numeric( $post_in_id ) ) {
+				if ( is_int( $post_in_id ) ) {
 					$valid_values[] = $post_in_id;
 				}
 			}
 			$posts = implode( ',', $valid_values );
-			if ( ! empty( $posts ) ) {
+			if ( strlen( $posts ) > 0 ) {
 				$query_restrictions .= " AND relevanssi.doc IN (SELECT ID FROM $wpdb->posts WHERE post_parent IN ($posts))";
 				// Clean: $posts is checked to be integers.
 			}
 		}
-		if ( ! empty( $parent_query['parent not in'] ) ) {
+		if ( isset( $parent_query['parent not in'] ) ) {
 			$valid_values = array();
 			foreach ( $parent_query['parent not in'] as $post_not_in_id ) {
-				if ( is_numeric( $post_not_in_id ) ) {
+				if ( is_int( $post_not_in_id ) ) {
 					$valid_values[] = $post_not_in_id;
 				}
 			}
 			$posts = implode( ',', $valid_values );
-			if ( ! empty( $posts ) ) {
+			if ( isset( $posts ) ) {
 				$query_restrictions .= " AND relevanssi.doc NOT IN (SELECT ID FROM $wpdb->posts WHERE post_parent IN ($posts))";
 				// Clean: $posts is checked to be integers.
 			}
@@ -1466,27 +1466,27 @@ function relevanssi_do_query( &$query ) {
 		}
 
 		$post_query = array();
-		if ( ! empty( $query->query_vars['p'] ) ) {
+		if ( isset( $query->query_vars['p'] ) ) {
 			$post_query = array( 'in' => array( $query->query_vars['p'] ) );
 		}
-		if ( ! empty( $query->query_vars['page_id'] ) ) {
+		if ( isset( $query->query_vars['page_id'] ) ) {
 			$post_query = array( 'in' => array( $query->query_vars['page_id'] ) );
 		}
-		if ( ! empty( $query->query_vars['post__in'] ) ) {
+		if ( isset( $query->query_vars['post__in'] ) ) {
 			$post_query = array( 'in' => $query->query_vars['post__in'] );
 		}
-		if ( ! empty( $query->query_vars['post__not_in'] ) ) {
+		if ( isset( $query->query_vars['post__not_in'] ) ) {
 			$post_query = array( 'not in' => $query->query_vars['post__not_in'] );
 		}
 
 		$parent_query = array();
-		if ( ! empty( $query->query_vars['post_parent'] ) ) {
+		if ( isset( $query->query_vars['post_parent'] ) ) {
 			$parent_query = array( 'parent in' => array( $query->query_vars['post_parent'] ) );
 		}
-		if ( ! empty( $query->query_vars['post_parent__in'] ) ) {
+		if ( is_array( $query->query_vars['post_parent__in'] ) && ! empty( $query->query_vars['post_parent__in'] ) ) {
 			$parent_query = array( 'parent in' => $query->query_vars['post_parent__in'] );
 		}
-		if ( ! empty( $query->query_vars['post_parent__not_in'] ) ) {
+		if ( is_array( $query->query_vars['post_parent__not_in'] ) && ! empty( $query->query_vars['post_parent__not_in'] ) ) {
 			$parent_query = array( 'parent not in' => $query->query_vars['post_parent__not_in'] );
 		}
 
