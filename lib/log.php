@@ -233,3 +233,37 @@ function relevanssi_erase_log_data( $user_id, $page ) {
 		'done'           => $done,
 	);
 }
+
+/**
+ * Prints out the Relevanssi log as a CSV file.
+ *
+ * Exports the whole Relevanssi search log as a CSV file.
+ *
+ * @since 2.2
+ */
+function relevanssi_export_log() {
+	global $wpdb, $relevanssi_variables;
+
+	$now      = gmdate( 'D, d M Y H:i:s' );
+	$filename = 'relevanssi_log.csv';
+
+	header( '"Expires: Tue, 03 Jul 2001 06:00:00 GMT' );
+	header( 'Cache-Control: max-age=0, no-cache, must-revalidate, proxy-revalidate' );
+	header( "Last-Modified: {$now} GMT" );
+	header( 'Content-Type: application/force-download' );
+	header( 'Content-Type: application/octet-stream' );
+	header( 'Content-Type: application/download' );
+	header( "Content-Disposition: attachment;filename={$filename}" );
+	header( 'Content-Transfer-Encoding: binary' );
+
+	$data = $wpdb->get_results( 'SELECT * FROM ' . $relevanssi_variables['log_table'], ARRAY_A ); // WPCS: unprepared SQL ok. Relevanssi table name.
+	ob_start();
+	$df = fopen( 'php://output', 'w' ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+	fputcsv( $df, array_keys( reset( $data ) ) );
+	foreach ( $data as $row ) {
+		fputcsv( $df, $row );
+	}
+	fclose( $df ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+	echo ob_get_clean(); // WPCS XSS ok.
+	die();
+}

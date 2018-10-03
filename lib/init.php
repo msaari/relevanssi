@@ -52,6 +52,9 @@ add_filter( 'post_link', 'relevanssi_permalink', 10, 2 );
 add_filter( 'page_link', 'relevanssi_permalink', 10, 2 );
 add_filter( 'relevanssi_permalink', 'relevanssi_permalink' );
 
+// Log exports.
+add_action( 'plugins_loaded', 'relevanssi_export_log_check' );
+
 global $relevanssi_variables;
 register_activation_hook( $relevanssi_variables['file'], 'relevanssi_install' );
 
@@ -186,6 +189,18 @@ function relevanssi_menu() {
 		apply_filters( 'relevanssi_user_searches_capability', 'edit_pages' ),
 		$relevanssi_variables['file'],
 		'relevanssi_search_stats'
+	);
+	add_dashboard_page(
+		__( 'Admin search', 'relevanssi' ),
+		__( 'Admin search', 'relevanssi' ),
+		/**
+		 * Filters the capability required to access Relevanssi admin search page.
+		 *
+		 * @param string The capability required. Default 'edit_posts'.
+		 */
+		apply_filters( 'relevanssi_admin_search_capability', 'edit_posts' ),
+		'relevanssi_admin_search',
+		'relevanssi_admin_search_page'
 	);
 	require_once 'contextual-help.php';
 	add_action( 'load-' . $plugin_page, 'relevanssi_admin_help' );
@@ -384,4 +399,18 @@ function relevanssi_action_links( $links ) {
 function relevanssi_rest_api_disable() {
 	remove_filter( 'posts_request', 'relevanssi_prevent_default_request' );
 	remove_filter( 'the_posts', 'relevanssi_query', 99 );
+}
+
+/**
+ * Checks if a log export is requested.
+ *
+ * If the 'relevanssi_export' query variable is set, a log export has been requested
+ * and one will be provided by relevanssi_export_log().
+ *
+ * @see relevanssi_export_log
+ */
+function relevanssi_export_log_check() {
+	if ( isset( $_REQUEST['relevanssi_export'] ) ) { // WPCS: CSRF ok, just checking the parameter exists.
+		relevanssi_export_log();
+	}
 }
