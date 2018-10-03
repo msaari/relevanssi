@@ -1,3 +1,33 @@
+= 4.0.9 =
+* Fixes broken tag and category indexing and searching. If you use tags and categories, rebuild the index after updating.
+* Phrases were not highlighted correctly on documents. This is now fixed.
+* Shortcode fix: 'wp_show_posts' shouldn't cause problems anymore.
+* New filter: `relevanssi_indexing_restriction` allows filtering posts before indexing.
+* New WooCommerce product visibility filtering tool makes WooCommerce product indexing faster.
+* MemberPress post controls were loose and showed drafts to searchers. That is now fixed.
+* Highlighting was too loose, even if matching was set to whole words.
+* Highlighting now works better in cases where there's a hyphen or an apostrophe inside a word.
+
+= 4.0.8 =
+* Fixed cases where Relevanssi added an ellipsis even if the excerpt was from the start of the post.
+* Highlighting now works with numeric search strings.
+* Improved highlighting for accented words. Thanks to Paul Ryan.
+* A surplus comma at the end of post exclusion setting won't break the search anymore.
+* Fixed instructions for adjusting the throttle limit.
+
+= 4.0.7 =
+* Recent post bonus is now applied to searches.
+* Exact term setting can now be disabled.
+* Users of Members plugin would have drafts appear in search results. This is now fixed.
+
+= 4.0.6 =
+* Indexing bugs squashed.
+* Missing tag and category weight settings returned.
+* Fusion builder shortcodes are removed from excerpts.
+* MemberPress post control was backwards.
+* User searches page reset buttons fixed.
+* WPML language filter fix.
+
 = 4.0.4 =
 * Fixed shortcode: `searchform` shortcode didn't work properly.
 * Setting post type or post content weight to 0 didn't work.

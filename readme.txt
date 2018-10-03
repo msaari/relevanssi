@@ -130,6 +130,21 @@ Each document database is full of useless words. All the little words that appea
 
 == Changelog ==
 
+= 4.1 =
+* New feature: You can now export the search log as a CSV file.
+* New feature: Admin Search page allows you to perform searches in WP admin using Relevanssi.
+* New filter: `relevanssi_admin_search_capability` can be used to adjust who sees the admin search page.
+* New filter: `relevanssi_entities_inside_pre` and `relevanssi_entities_inside_code` adjust how HTML entities are handled inside `pre` and `code` tags.
+* Numeric meta values (`meta_value_num`) are now sorted as numbers and not strings.
+* Pinned posts have `$post->relevanssi_pinned` set to 1 for debugging purposes, but you can also use this for styling the posts in the search results templates.
+* The Did you mean feature has been toned down a bit, to make the suggestions slightly less weird in some cases.
+* Post parent parameters now accept 0 as a value, making it easier to search for children of any post or posts without a parent.
+* Polylang compatibility has been improved.
+* Phrases with apostrophes inside work better.
+* The `relevanssi_excerpt` filter hook got a second parameter that holds the post ID.
+* Custom field sorting actually works now.
+* WP Search Suggest compatibility added.
+
 = 4.0.11 =
 * Home page links were getting the highlight parameter even though they shouldn't. This has been fixed.
 * Added support for WP JV Post Reading Groups.
@@ -155,37 +170,10 @@ Each document database is full of useless words. All the little words that appea
 * Random order works again; using orderby `rand` didn't work properly. The `rand(seed)` format is also supported now.
 * Fixed quotes and apostrophes in Did you mean suggestions.
 
-= 4.0.9 =
-* Fixes broken tag and category indexing and searching. If you use tags and categories, rebuild the index after updating.
-* Phrases were not highlighted correctly on documents. This is now fixed.
-* Shortcode fix: 'wp_show_posts' shouldn't cause problems anymore.
-* New filter: `relevanssi_indexing_restriction` allows filtering posts before indexing.
-* New WooCommerce product visibility filtering tool makes WooCommerce product indexing faster.
-* MemberPress post controls were loose and showed drafts to searchers. That is now fixed.
-* Highlighting was too loose, even if matching was set to whole words.
-* Highlighting now works better in cases where there's a hyphen or an apostrophe inside a word.
-
-= 4.0.8 =
-* Fixed cases where Relevanssi added an ellipsis even if the excerpt was from the start of the post.
-* Highlighting now works with numeric search strings.
-* Improved highlighting for accented words. Thanks to Paul Ryan.
-* A surplus comma at the end of post exclusion setting won't break the search anymore.
-* Fixed instructions for adjusting the throttle limit.
-
-= 4.0.7 =
-* Recent post bonus is now applied to searches.
-* Exact term setting can now be disabled.
-* Users of Members plugin would have drafts appear in search results. This is now fixed.
-
-= 4.0.6 =
-* Indexing bugs squashed.
-* Missing tag and category weight settings returned.
-* Fusion builder shortcodes are removed from excerpts.
-* MemberPress post control was backwards.
-* User searches page reset buttons fixed.
-* WPML language filter fix.
-
 == Upgrade notice ==
+
+= 4.1 =
+* New features and plenty of small fixes.
 
 = 4.0.11 =
 * Several small improvements, new filters and highlighting fixes.
@@ -195,15 +183,3 @@ Each document database is full of useless words. All the little words that appea
 
 = 4.0.10 =
 * Privacy update, with some bug fixes.
-
-= 4.0.9 =
-* Fixes broken tag and category searching and indexing. Reindex after the update!
-
-= 4.0.8 =
-* Improvements to highlighting and excerpts.
-
-= 4.0.7 =
-* Small bug fixes.
-
-= 4.0.6 =
-* Indexing bugs fixed and WPML support corrected.
