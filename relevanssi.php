@@ -62,6 +62,8 @@ require_once 'lib/install.php';
 require_once 'lib/init.php';
 require_once 'lib/interface.php';
 require_once 'lib/indexing.php';
+require_once 'lib/log.php';
+require_once 'lib/sorting.php';
 require_once 'lib/stopwords.php';
 require_once 'lib/search.php';
 require_once 'lib/excerpts-highlights.php';
