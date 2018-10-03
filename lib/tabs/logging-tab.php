@@ -90,6 +90,16 @@ function relevanssi_logging_tab() {
 		</td>
 	</tr>
 
+	<tr>
+		<th scope="row">
+			<label for='relevanssi_export_logs'><?php esc_html_e( 'Export logs', 'relevanssi' ); ?></label>
+		</th>
+		<td>
+			<?php submit_button( __( 'Export the log as a CSV file', 'relevanssi' ), 'secondary', 'relevanssi_export' ); ?>
+			<p class="description"><?php esc_html_e( 'Push the button to export the search log as a CSV file.', 'relevanssi' ); ?></p>
+		</td>
+	</tr>
+
 	</table>
 	<?php
 }

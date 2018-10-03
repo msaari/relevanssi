@@ -30,6 +30,9 @@ function relevanssi_overview_tab() {
 	if ( function_exists( 'relevanssi_form_hide_post_controls' ) ) {
 		relevanssi_form_hide_post_controls();
 	}
+	if ( function_exists( 'relevanssi_form_do_not_call_home' ) ) {
+		relevanssi_form_do_not_call_home();
+	}
 	?>
 	<tr>
 		<th scope="row"><?php esc_html_e( 'Getting started', 'relevanssi' ); ?></th>
