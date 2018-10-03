@@ -901,7 +901,8 @@ function relevanssi_add_admin_scripts( $hook ) {
 	wp_localize_script( 'relevanssi_admin_js', 'relevanssi', $localizations );
 
 	$nonce = array(
-		'indexing_nonce' => wp_create_nonce( 'relevanssi_indexing_nonce' ),
+		'indexing_nonce'  => wp_create_nonce( 'relevanssi_indexing_nonce' ),
+		'searching_nonce' => wp_create_nonce( 'relevanssi_admin_search_nonce' ),
 	);
 
 	wp_localize_script( 'relevanssi_admin_js', 'nonce', $nonce );

@@ -13,6 +13,7 @@ add_action( 'wp_ajax_relevanssi_index_posts', 'relevanssi_index_posts_ajax_wrapp
 add_action( 'wp_ajax_relevanssi_count_posts', 'relevanssi_count_posts_ajax_wrapper' );
 add_action( 'wp_ajax_relevanssi_count_missing_posts', 'relevanssi_count_missing_posts_ajax_wrapper' );
 add_action( 'wp_ajax_relevanssi_list_categories', 'relevanssi_list_categories' );
+add_action( 'wp_ajax_relevanssi_admin_search', 'relevanssi_admin_search' );
 
 /**
  * Truncates the Relevanssi index.
