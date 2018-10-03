@@ -100,3 +100,7 @@ table.form-table table.widefat th {
 #category_inclusion_checklist ul.children, #category_exclusion_checklist ul.children {
 	margin-left: 1.5em;
 }
+
+#relevanssi_filter_list {
+	display: none;
+}

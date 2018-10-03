@@ -466,6 +466,27 @@ function relevanssi_search_stats() {
 }
 
 /**
+ * Prints out the 'Admin search' page.
+ */
+function relevanssi_admin_search_page() {
+	global $relevanssi_variables;
+
+	$relevanssi_hide_branding = get_option( 'relevanssi_hide_branding' );
+
+	$options_txt = __( 'Admin Search', 'relevanssi' );
+
+	wp_enqueue_style( 'dashboard' );
+	wp_print_styles( 'dashboard' );
+	wp_enqueue_script( 'dashboard' );
+	wp_print_scripts( 'dashboard' );
+
+	printf( "<div class='wrap'><h2>%s</h2>", esc_html( $options_txt ) );
+
+	require_once dirname( $relevanssi_variables['file'] ) . '/lib/tabs/search-page.php';
+	relevanssi_search_tab();
+}
+
+/**
  * Truncates the Relevanssi logs.
  *
  * @global object $wpdb                 The WP database interface.
@@ -792,13 +813,6 @@ function relevanssi_options_form() {
 			relevanssi_import_export_tab();
 		}
 	}
-	if ( 'search' === $active_tab ) {
-		if ( RELEVANSSI_PREMIUM ) {
-			$display_save_button = false;
-			require_once dirname( $relevanssi_variables['file'] ) . '/premium/tabs/search-tab.php';
-			relevanssi_search_tab();
-		}
-	}
 
 	if ( $display_save_button ) :
 	?>
@@ -833,6 +847,7 @@ function relevanssi_add_admin_scripts( $hook ) {
 		'settings_page_relevanssi-premium/relevanssi',
 		'toplevel_page_relevanssi/relevanssi',
 		'settings_page_relevanssi/relevanssi',
+		'dashboard_page_relevanssi_admin_search',
 	);
 	if ( ! in_array( $hook, $acceptable_hooks, true ) ) {
 		return;
