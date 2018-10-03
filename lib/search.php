@@ -21,12 +21,6 @@
  * @param WP_Query $query The WP_Query object, default false.
  */
 function relevanssi_query( $posts, $query = false ) {
-	$admin_search_option = get_option( 'relevanssi_admin_search' );
-	$admin_search        = false;
-	if ( 'on' === $admin_search_option ) {
-		$admin_search = true;
-	}
-
 	global $relevanssi_active;
 
 	if ( ! $query ) {
@@ -45,8 +39,9 @@ function relevanssi_query( $posts, $query = false ) {
 	// use 'admin_ajax' hook (which sets is_admin() to true whether it's an admin search
 	// or not.
 	if ( $query->is_search() && $query->is_admin ) {
-		$search_ok = false; // But if this is an admin search, reconsider.
-		if ( $admin_search ) {
+		$search_ok           = false; // But if this is an admin search, reconsider.
+		$admin_search_option = get_option( 'relevanssi_admin_search' );
+		if ( 'on' === $admin_search_option ) {
 			$search_ok = true; // Yes, we can search!
 		}
 	}
@@ -121,25 +116,27 @@ function relevanssi_search( $args ) {
 	 *
 	 * @param array The search parameters.
 	 */
-	$filtered_args      = apply_filters( 'relevanssi_search_filters', $args );
-	$q                  = $filtered_args['q'];
-	$tax_query          = $filtered_args['tax_query'];
-	$tax_query_relation = $filtered_args['tax_query_relation'];
-	$post_query         = $filtered_args['post_query'];
-	$parent_query       = $filtered_args['parent_query'];
-	$meta_query         = $filtered_args['meta_query'];
-	$date_query         = $filtered_args['date_query'];
-	$expost             = $filtered_args['expost'];
-	$post_type          = $filtered_args['post_type'];
-	$post_status        = $filtered_args['post_status'];
-	$operator           = $filtered_args['operator'];
-	$search_blogs       = $filtered_args['search_blogs'];
-	$author             = $filtered_args['author'];
-	$orderby            = $filtered_args['orderby'];
-	$order              = $filtered_args['order'];
-	$fields             = $filtered_args['fields'];
-	$sentence           = $filtered_args['sentence'];
-	$by_date            = $filtered_args['by_date'];
+	$filtered_args       = apply_filters( 'relevanssi_search_filters', $args );
+	$q                   = $filtered_args['q'];
+	$tax_query           = $filtered_args['tax_query'];
+	$tax_query_relation  = $filtered_args['tax_query_relation'];
+	$post_query          = $filtered_args['post_query'];
+	$parent_query        = $filtered_args['parent_query'];
+	$meta_query          = $filtered_args['meta_query'];
+	$date_query          = $filtered_args['date_query'];
+	$expost              = $filtered_args['expost'];
+	$post_type           = $filtered_args['post_type'];
+	$post_status         = $filtered_args['post_status'];
+	$operator            = $filtered_args['operator'];
+	$search_blogs        = $filtered_args['search_blogs'];
+	$author              = $filtered_args['author'];
+	$orderby             = $filtered_args['orderby'];
+	$order               = $filtered_args['order'];
+	$fields              = $filtered_args['fields'];
+	$sentence            = $filtered_args['sentence'];
+	$by_date             = $filtered_args['by_date'];
+	$admin_search        = $filtered_args['admin_search'];
+	$include_attachments = $filtered_args['include_attachments'];
 
 	$hits               = array();
 	$query_restrictions = '';
@@ -289,8 +286,8 @@ function relevanssi_search( $args ) {
 	// If $post_type is not set, see if there are post types to exclude from the search.
 	// If $post_type is set, there's no need to exclude, as we only include.
 	$negative_post_type = null;
-	if ( ! $post_type ) {
-		$negative_post_type = relevanssi_get_negative_post_type();
+	if ( ! $post_type && ! $admin_search ) {
+		$negative_post_type = relevanssi_get_negative_post_type( $include_attachments );
 	}
 
 	$non_post_post_type        = null;
@@ -630,6 +627,7 @@ function relevanssi_search( $args ) {
 	/* End legacy code. */
 
 	$include_these_posts = array();
+	$include_these_items = array();
 	$df_counts           = array();
 
 	do {
@@ -711,6 +709,31 @@ function relevanssi_search( $args ) {
 					relevanssi.taxonomy + relevanssi.customfield + relevanssi.mysqlcolumn AS tf
 					FROM $relevanssi_table AS relevanssi WHERE relevanssi.doc IN ($post_ids_to_add)
 					AND relevanssi.doc NOT IN ($existing_ids) AND $term_cond";
+
+					// Clean: no unescaped user inputs.
+					$matches_to_add = $wpdb->get_results( $query ); // WPCS: unprepared SQL ok.
+					$matches        = array_merge( $matches, $matches_to_add );
+				}
+				if ( count( $include_these_items ) > 0 ) {
+					$items_to_add   = implode( ',', array_keys( $include_these_items ) );
+					$existing_items = array();
+					foreach ( $matches as $match ) {
+						if ( 0 !== intval( $match->item ) ) {
+							$existing_items[] = $match->item;
+						}
+					}
+					$existing_items = implode( ',', $existing_items );
+					if ( ! empty( $existing_items ) ) {
+						$existing_items = "AND relevanssi.item NOT IN ($existing_items) ";
+					}
+					$query = "SELECT relevanssi.*, relevanssi.title * $title_boost +
+					relevanssi.content * $content_boost + relevanssi.comment * $comment_boost +
+					relevanssi.tag * $tag + relevanssi.link * $link_boost +
+					relevanssi.author + relevanssi.category * $cat + relevanssi.excerpt +
+					relevanssi.taxonomy + relevanssi.customfield + relevanssi.mysqlcolumn AS tf
+					FROM $relevanssi_table AS relevanssi WHERE relevanssi.item IN ($items_to_add)
+					$existing_items AND $term_cond";
+
 					// Clean: no unescaped user inputs.
 					$matches_to_add = $wpdb->get_results( $query ); // WPCS: unprepared SQL ok.
 					$matches        = array_merge( $matches, $matches_to_add );
@@ -898,6 +921,8 @@ function relevanssi_search( $args ) {
 					if ( is_numeric( $match->doc ) ) {
 						// This is to weed out taxonomies and users (t_XXX, u_XXX).
 						$include_these_posts[ $match->doc ] = true;
+					} elseif ( 0 !== intval( $match->item ) ) {
+						$include_these_items[ $match->item ] = true;
 					}
 				}
 			}
@@ -1244,6 +1269,11 @@ function relevanssi_do_query( &$query ) {
 			}
 
 			$multi_args['meta_query'] = $meta_query;
+
+			if ( isset( $query->query_vars['include_attachments'] ) ) {
+				$multi_args['include_attachments'] = $query->query_vars['include_attachments'];
+			}
+
 			if ( function_exists( 'relevanssi_search_multi' ) ) {
 				$return = relevanssi_search_multi( $multi_args );
 			}
@@ -1395,14 +1425,6 @@ function relevanssi_do_query( &$query ) {
 					'field'    => 'id',
 					'terms'    => $query->query_vars['tag__and'],
 					'operator' => 'AND',
-				);
-			}
-			if ( ! empty( $query->query_vars['tag__not_in'] ) ) {
-				$tax_query[] = array(
-					'taxonomy' => 'post_tag',
-					'field'    => 'id',
-					'terms'    => $query->query_vars['tag__not_in'],
-					'operator' => 'NOT IN',
 				);
 			}
 			if ( ! empty( $query->query_vars['tag_slug__in'] ) ) {
@@ -1627,6 +1649,17 @@ function relevanssi_do_query( &$query ) {
 				$by_date = $query->query_vars['by_date'];
 			}
 		}
+
+		$admin_search = false;
+		if ( isset( $query->query_vars['relevanssi_admin_search'] ) ) {
+			$admin_search = true;
+		}
+
+		$include_attachments = '';
+		if ( isset( $query->query_vars['include_attachments'] ) ) {
+			$include_attachments = $query->query_vars['include_attachments'];
+		}
+
 		// Add synonyms.
 		// This is done here so the new terms will get highlighting.
 		if ( 'OR' === $operator ) {
@@ -1635,24 +1668,26 @@ function relevanssi_do_query( &$query ) {
 		}
 
 		$search_params = array(
-			'q'                  => $q,
-			'tax_query'          => $tax_query,
-			'tax_query_relation' => $tax_query_relation,
-			'post_query'         => $post_query,
-			'parent_query'       => $parent_query,
-			'meta_query'         => $meta_query,
-			'date_query'         => $date_query,
-			'expost'             => $expost,
-			'post_type'          => $post_type,
-			'post_status'        => $post_status,
-			'operator'           => $operator,
-			'search_blogs'       => $search_blogs,
-			'author'             => $author,
-			'orderby'            => $orderby,
-			'order'              => $order,
-			'fields'             => $fields,
-			'sentence'           => $sentence,
-			'by_date'            => $by_date,
+			'q'                   => $q,
+			'tax_query'           => $tax_query,
+			'tax_query_relation'  => $tax_query_relation,
+			'post_query'          => $post_query,
+			'parent_query'        => $parent_query,
+			'meta_query'          => $meta_query,
+			'date_query'          => $date_query,
+			'expost'              => $expost,
+			'post_type'           => $post_type,
+			'post_status'         => $post_status,
+			'operator'            => $operator,
+			'search_blogs'        => $search_blogs,
+			'author'              => $author,
+			'orderby'             => $orderby,
+			'order'               => $order,
+			'fields'              => $fields,
+			'sentence'            => $sentence,
+			'by_date'             => $by_date,
+			'admin_search'        => $admin_search,
+			'include_attachments' => $include_attachments,
 		);
 
 		$return = relevanssi_search( $search_params );
@@ -1779,13 +1814,14 @@ function relevanssi_do_query( &$query ) {
 			$post->post_excerpt .= relevanssi_show_matches( $return, $post_id );
 		}
 
-		$post_id = $post->ID;
-		if ( isset( $post->blog_id ) ) {
-			$post_id = $post->blog_id . '|' . $post->ID;
-		}
-
-		if ( empty( $fields ) && isset( $return['scores'][ $post_id ] ) ) {
-			$post->relevance_score = round( $return['scores'][ $post_id ], 2 );
+		if ( empty( $fields ) ) {
+			$post_id = $post->ID;
+			if ( isset( $post->blog_id ) ) {
+				$post_id = $post->blog_id . '|' . $post->ID;
+			}
+			if ( isset( $return['scores'][ $post_id ] ) ) {
+				$post->relevance_score = round( $return['scores'][ $post_id ], 2 );
+			}
 		}
 
 		$posts[] = $post;
@@ -1824,21 +1860,23 @@ function relevanssi_limit_filter( $query ) {
  *
  * Figures out the post types that are not included in the search.
  *
- * @global WP_Query $wp_query The global WP_Query object.
+ * @param string $include_attachments Whether to include attachments or not.
  *
  * @return string SQL escaped list of excluded post types.
  */
-function relevanssi_get_negative_post_type() {
-	global $wp_query;
-
+function relevanssi_get_negative_post_type( $include_attachments ) {
 	$negative_post_type      = null;
 	$negative_post_type_list = array();
 
-	if ( isset( $wp_query->query_vars['include_attachments'] ) && in_array( $wp_query->query_vars['include_attachments'], array( '0', 'off', 'false' ), true ) ) {
+	if ( isset( $include_attachments ) && in_array( $include_attachments, array( '0', 'off', 'false' ), true ) ) {
 		$negative_post_type_list[] = 'attachment';
 	}
 
-	if ( 'on' === get_option( 'relevanssi_respect_exclude' ) ) {
+	$front_end = true;
+	if ( is_admin() && ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) ) {
+		$front_end = false;
+	}
+	if ( 'on' === get_option( 'relevanssi_respect_exclude' ) && $front_end ) {
 		// If Relevanssi is set to respect exclude_from_search, find out which
 		// post types should be excluded from search.
 		$pt_1 = get_post_types( array( 'exclude_from_search' => '1' ) );

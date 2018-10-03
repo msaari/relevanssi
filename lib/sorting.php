@@ -70,7 +70,7 @@ function relevanssi_get_next_key( &$orderby ) {
 			break;
 	}
 
-	$numeric_keys = array( 'menu_order', 'ID', 'post_parent', 'post_author', 'comment_count', 'relevance_score' );
+	$numeric_keys = array( 'meta_value_num', 'menu_order', 'ID', 'post_parent', 'post_author', 'comment_count', 'relevance_score' );
 	$date_keys    = array( 'post_date', 'post_date_gmt', 'post_modified', 'post_modified_gmt' );
 
 	$compare = 'string';
