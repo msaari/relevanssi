@@ -5,7 +5,7 @@ Tags: search, relevance, better search
 Requires at least: 4.0
 Tested up to: 5.0
 Requires PHP: 5.6
-Stable tag: 4.0.11
+Stable tag: 4.1.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -129,6 +129,9 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+
+= 4.1.0.1 =
+* Actually working admin search.
 
 = 4.1 =
 * New feature: You can now export the search log as a CSV file.
