@@ -1494,10 +1494,10 @@ function relevanssi_do_query( &$query ) {
 		if ( isset( $query->query_vars['page_id'] ) ) {
 			$post_query = array( 'in' => array( $query->query_vars['page_id'] ) );
 		}
-		if ( isset( $query->query_vars['post__in'] ) ) {
+		if ( is_array( $query->query_vars['post__in'] ) && ! empty( $query->query_vars['post__in'] ) ) {
 			$post_query = array( 'in' => $query->query_vars['post__in'] );
 		}
-		if ( isset( $query->query_vars['post__not_in'] ) ) {
+		if ( is_array( $query->query_vars['post__not_in'] ) && ! empty( $query->query_vars['post__not_in'] ) ) {
 			$post_query = array( 'not in' => $query->query_vars['post__not_in'] );
 		}
 
