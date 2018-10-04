@@ -786,7 +786,6 @@ function relevanssi_index_doc( $index_post, $remove_first = false, $custom_field
 		if ( $debug ) {
 			relevanssi_debug_echo( "\tPost content after relevanssi_post_content:\n$contents" );
 		}
-
 		/**
 		 * Can be used to add extra content to the post before indexing.
 		 *
@@ -799,7 +798,7 @@ function relevanssi_index_doc( $index_post, $remove_first = false, $custom_field
 		if ( ! empty( $additional_content ) ) {
 			$contents .= ' ' . $additional_content;
 			if ( $debug ) {
-				relevanssi_debug_echo( "\tAdditional content from relevanssi_content_to_index:\n$contents" );
+				relevanssi_debug_echo( "\tAdditional content from relevanssi_content_to_index:\n$additional_content" );
 			}
 		}
 
