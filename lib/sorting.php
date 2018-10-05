@@ -134,7 +134,6 @@ function relevanssi_get_compare_values( $key, $item_1, $item_2 ) {
 
 	$key1 = '';
 	$key2 = '';
-
 	if ( 'meta_value' === $key || 'meta_value_num' === $key ) {
 		global $wp_query;
 		// Get the name of the field from the global WP_Query.
@@ -169,8 +168,12 @@ function relevanssi_get_compare_values( $key, $item_1, $item_2 ) {
 			$key2 = apply_filters( 'relevanssi_missing_sort_key', $key2, $key );
 		}
 	} else {
+		global $wp_query;
 		if ( isset( $item_1->$key ) ) {
 			$key1 = relevanssi_strtolower( $item_1->$key );
+		} elseif ( isset( $wp_query->query_vars['meta_query'][ $key ] ) ) {
+			// Named meta queries.
+			$key1 = get_post_meta( $item_1->ID, $wp_query->query_vars['meta_query'][ $key ]['key'], true );
 		} else {
 			/**
 			 * Documented in lib/common.php.
@@ -179,6 +182,9 @@ function relevanssi_get_compare_values( $key, $item_1, $item_2 ) {
 		}
 		if ( isset( $item_2->$key ) ) {
 			$key2 = relevanssi_strtolower( $item_2->$key );
+		} elseif ( isset( $wp_query->query_vars['meta_query'][ $key ] ) ) {
+			// Named meta queries.
+			$key2 = get_post_meta( $item_2->ID, $wp_query->query_vars['meta_query'][ $key ]['key'], true );
 		} else {
 			/**
 			 * Documented in lib/common.php.
@@ -299,7 +305,6 @@ function relevanssi_object_sort( &$data, $orderby ) {
 			$relevanssi_compares[] = $values['compare'];
 		}
 	} while ( ! empty( $values['key'] ) );
-
 	$primary_key = $relevanssi_keys[0];
 
 	usort( $data, 'relevanssi_cmp_function' );
