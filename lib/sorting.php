@@ -111,7 +111,7 @@ function relevanssi_get_next_key( &$orderby ) {
  * Fetches the key values for the item pair. If random order is required, this
  * function will randomize the order.
  *
- * @global object $wp_query The global WP_Query object.
+ * @global array $relevanssi_meta_query The meta query used for the sorting.
  *
  * @param string $key    The key used.
  * @param object $item_1 The first post object to compare.
@@ -131,18 +131,24 @@ function relevanssi_get_compare_values( $key, $item_1, $item_2 ) {
 		);
 		return $keys;
 	}
-
 	$key1 = '';
 	$key2 = '';
 	if ( 'meta_value' === $key || 'meta_value_num' === $key ) {
 		global $wp_query;
 		// Get the name of the field from the global WP_Query.
 		$key = $wp_query->query_vars['meta_key'];
-		if ( ! isset( $key ) ) {
-			// The key is not set.
-			return array( '', '' );
+		if ( empty( $key ) ) {
+			// If empty, try the Relevanssi meta_query.
+			global $relevanssi_meta_query;
+			if ( isset( $relevanssi_meta_query[0]['key'] ) ) {
+				// Take from index 0, because using 'meta_value' requires the use of
+				// 'meta_key', which means there'll be just one key.
+				$key = $relevanssi_meta_query[0]['key'];
+			} else {
+				// The key is not set.
+				return array( '', '' );
+			}
 		}
-
 		$key1 = get_post_meta( $item_1->ID, $key, true );
 		if ( empty( $key1 ) ) {
 			/**
@@ -168,12 +174,12 @@ function relevanssi_get_compare_values( $key, $item_1, $item_2 ) {
 			$key2 = apply_filters( 'relevanssi_missing_sort_key', $key2, $key );
 		}
 	} else {
-		global $wp_query;
+		global $relevanssi_meta_query;
 		if ( isset( $item_1->$key ) ) {
 			$key1 = relevanssi_strtolower( $item_1->$key );
-		} elseif ( isset( $wp_query->query_vars['meta_query'][ $key ] ) ) {
+		} elseif ( isset( $relevanssi_meta_query[ $key ] ) ) {
 			// Named meta queries.
-			$key1 = get_post_meta( $item_1->ID, $wp_query->query_vars['meta_query'][ $key ]['key'], true );
+			$key1 = get_post_meta( $item_1->ID, $relevanssi_meta_query[ $key ]['key'], true );
 		} else {
 			/**
 			 * Documented in lib/common.php.
@@ -182,9 +188,9 @@ function relevanssi_get_compare_values( $key, $item_1, $item_2 ) {
 		}
 		if ( isset( $item_2->$key ) ) {
 			$key2 = relevanssi_strtolower( $item_2->$key );
-		} elseif ( isset( $wp_query->query_vars['meta_query'][ $key ] ) ) {
+		} elseif ( isset( $relevanssi_meta_query[ $key ] ) ) {
 			// Named meta queries.
-			$key2 = get_post_meta( $item_2->ID, $wp_query->query_vars['meta_query'][ $key ]['key'], true );
+			$key2 = get_post_meta( $item_2->ID, $relevanssi_meta_query[ $key ]['key'], true );
 		} else {
 			/**
 			 * Documented in lib/common.php.
@@ -268,7 +274,6 @@ function relevanssi_cmp_function( $a, $b ) {
 		$compare_values = relevanssi_get_compare_values( $relevanssi_keys[ $level ], $a, $b );
 		$val            = relevanssi_compare_values( $compare_values['key1'], $compare_values['key2'], $compare );
 	}
-
 	if ( 'desc' === $relevanssi_dirs[ $level ] ) {
 		$val = $val * -1;
 	}
@@ -283,19 +288,23 @@ function relevanssi_cmp_function( $a, $b ) {
  * originally written by Matthew Hood and published in the PHP manual comments.
  * The actual sorting is handled by relevanssi_cmp_function().
  *
- * @global array $relevanssi_keys     An array of sorting keys by level.
- * @global array $relevanssi_dirs     An array of sorting directions by level.
- * @global array $relevanssi_compares An array of comparison methods by level.
+ * @global array $relevanssi_keys       An array of sorting keys by level.
+ * @global array $relevanssi_dirs       An array of sorting directions by level.
+ * @global array $relevanssi_compares   An array of comparison methods by level.
+ * @global array $relevanssi_meta_query The meta query array.
  *
- * @param array $data    The posts to sort are in $data[0], used as a reference.
- * @param array $orderby The array of orderby rules with directions.
+ * @param array $data       The posts to sort are in $data[0], used as a reference.
+ * @param array $orderby    The array of orderby rules with directions.
+ * @param array $meta_query The meta query array, in case it's needed for meta
+ * query based sorting.
  */
-function relevanssi_object_sort( &$data, $orderby ) {
-	global $relevanssi_keys, $relevanssi_dirs, $relevanssi_compares;
+function relevanssi_object_sort( &$data, $orderby, $meta_query ) {
+	global $relevanssi_keys, $relevanssi_dirs, $relevanssi_compares, $relevanssi_meta_query;
 
-	$relevanssi_keys     = array();
-	$relevanssi_dirs     = array();
-	$relevanssi_compares = array();
+	$relevanssi_keys       = array();
+	$relevanssi_dirs       = array();
+	$relevanssi_compares   = array();
+	$relevanssi_meta_query = $meta_query; // Store in a global variable to avoid complicated parameter passing.
 
 	do {
 		$values = relevanssi_get_next_key( $orderby );

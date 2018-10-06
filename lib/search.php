@@ -137,6 +137,7 @@ function relevanssi_search( $args ) {
 	$by_date             = $filtered_args['by_date'];
 	$admin_search        = $filtered_args['admin_search'];
 	$include_attachments = $filtered_args['include_attachments'];
+	$meta_query          = $filtered_args['meta_query'];
 
 	$hits               = array();
 	$query_restrictions = '';
@@ -1074,7 +1075,6 @@ function relevanssi_search( $args ) {
 	if ( empty( $orderby ) ) {
 		$orderby = $default_order;
 	}
-
 	if ( is_array( $orderby ) ) {
 		/**
 		 * Filters the 'orderby' value just before sorting.
@@ -1087,7 +1087,7 @@ function relevanssi_search( $args ) {
 		 * @param string The 'orderby' parameter.
 		 */
 		$orderby = apply_filters( 'relevanssi_orderby', $orderby );
-		relevanssi_object_sort( $hits, $orderby );
+		relevanssi_object_sort( $hits, $orderby, $meta_query );
 	} else {
 		if ( empty( $order ) ) {
 			$order = 'desc';
@@ -1110,7 +1110,7 @@ function relevanssi_search( $args ) {
 
 		if ( 'relevance' !== $orderby ) {
 			$orderby_array = array( $orderby => $order );
-			relevanssi_object_sort( $hits, $orderby_array );
+			relevanssi_object_sort( $hits, $orderby_array, $meta_query );
 		}
 	}
 	$return = array(
@@ -1688,6 +1688,7 @@ function relevanssi_do_query( &$query ) {
 			'by_date'             => $by_date,
 			'admin_search'        => $admin_search,
 			'include_attachments' => $include_attachments,
+			'meta_query'          => $meta_query,
 		);
 
 		$return = relevanssi_search( $search_params );
