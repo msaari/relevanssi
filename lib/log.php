@@ -247,7 +247,7 @@ function relevanssi_export_log() {
 	$now      = gmdate( 'D, d M Y H:i:s' );
 	$filename = 'relevanssi_log.csv';
 
-	header( '"Expires: Tue, 03 Jul 2001 06:00:00 GMT' );
+	header( 'Expires: Tue, 03 Jul 2001 06:00:00 GMT' );
 	header( 'Cache-Control: max-age=0, no-cache, must-revalidate, proxy-revalidate' );
 	header( "Last-Modified: {$now} GMT" );
 	header( 'Content-Type: application/force-download' );
