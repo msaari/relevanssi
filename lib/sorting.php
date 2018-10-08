@@ -80,6 +80,21 @@ function relevanssi_get_next_key( &$orderby ) {
 		$compare = 'date';
 	}
 
+	/**
+	 * Lets you choose the compare method for fields.
+	 *
+	 * @param string $compare The compare method, can be 'string', 'number' or
+	 * 'date'.
+	 * @param string $key     The name of the custom field key.
+	 *
+	 * @return string The compare method.
+	 */
+	$compare = apply_filters( 'relevanssi_sort_compare', $compare, $key );
+	if ( ! in_array( $compare, array( 'string', 'number', 'date' ), true ) ) {
+		// Not a valid value, fall back.
+		$compare = 'string';
+	}
+
 	if ( 'rand(' === substr( $key, 0, 5 ) ) {
 		$parts = explode( '(', $key );
 		$dir   = intval( trim( str_replace( ')', '', $parts[1] ) ) );
@@ -197,6 +212,13 @@ function relevanssi_get_compare_values( $key, $item_1, $item_2 ) {
 			 */
 			$key2 = apply_filters( 'relevanssi_missing_sort_key', $key2, $key );
 		}
+	}
+
+	if ( is_array( $key1 ) ) {
+		$key1 = relevanssi_flatten_array( $key1 );
+	}
+	if ( is_array( $key2 ) ) {
+		$key2 = relevanssi_flatten_array( $key2 );
 	}
 
 	$keys = array(
