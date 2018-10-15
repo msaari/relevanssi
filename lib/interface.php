@@ -521,6 +521,20 @@ function relevanssi_query_log() {
 	/**
 	 * Adjusts the number of days to show the logs in User searches page.
 	 *
+	 * @param int Number of days, default 1.
+	 */
+	$days1 = apply_filters( 'relevanssi_1day', 1 );
+
+	/**
+	 * Adjusts the number of days to show the logs in User searches page.
+	 *
+	 * @param int Number of days, default 7.
+	 */
+	$days7 = apply_filters( 'relevanssi_7days', 7 );
+
+	/**
+	 * Adjusts the number of days to show the logs in User searches page.
+	 *
 	 * @param int Number of days, default 30.
 	 */
 	$days30 = apply_filters( 'relevanssi_30days', 30 );
@@ -544,11 +558,17 @@ function relevanssi_query_log() {
 	printf( '<p>%s</p>', esc_html( sprintf( __( 'Here you can see the %d most common user search queries, how many times those queries were made and how many results were found for those queries.', 'relevanssi' ), $limit ) ) );
 
 	echo "<div style='width: 30%; float: left; margin-right: 2%; overflow: auto'>";
-	relevanssi_date_queries( 1, __( 'Today and yesterday', 'relevanssi' ) );
+	if ( 1 === $days1 ) {
+		relevanssi_date_queries( $days1, __( 'Today and yesterday', 'relevanssi' ) );
+	} else {
+		// Translators: number of days to show.
+		relevanssi_date_queries( $days1, springf( __( 'Last %d days', 'relevanssi' ), $days1 ) );
+	}
 	echo '</div>';
 
 	echo "<div style='width: 30%; float: left; margin-right: 2%; overflow: auto'>";
-	relevanssi_date_queries( 7, __( 'Last 7 days', 'relevanssi' ) );
+	// Translators: number of days to show.
+	relevanssi_date_queries( $days7, springf( __( 'Last %d days', 'relevanssi' ), $days7 ) );
 	echo '</div>';
 
 	echo "<div style='width: 30%; float: left; margin-right: 2%; overflow: auto'>";
