@@ -1377,7 +1377,21 @@ function relevanssi_simple_didyoumean( $query, $pre, $post, $n = 5 ) {
 function relevanssi_simple_generate_suggestion( $query ) {
 	global $wpdb, $relevanssi_variables;
 
-	$q = 'SELECT query, count(query) as c, AVG(hits) as a FROM ' . $relevanssi_variables['log_table'] . ' WHERE hits > 1 GROUP BY query ORDER BY count(query) DESC';
+	/**
+	 * The minimum limit of occurrances to include a word.
+	 *
+	 * To save resources, only words with more than this many occurrances are fed for
+	 * the spelling corrector. If there are problems with the spelling corrector,
+	 * increasing this value may fix those problems.
+	 *
+	 * @param int $number The number of occurrances must be more than this value,
+	 * default 2.
+	 */
+	$count = apply_filters( 'relevanssi_get_words_having', 2 );
+	if ( ! is_numeric( $count ) ) {
+		$count = 2;
+	}
+	$q = 'SELECT query, count(query) as c, AVG(hits) as a FROM ' . $relevanssi_variables['log_table'] . ' WHERE hits > ' . $count . ' GROUP BY query ORDER BY count(query) DESC';
 	$q = apply_filters( 'relevanssi_didyoumean_query', $q );
 
 	$data = wp_cache_get( 'relevanssi_didyoumean_query' );
