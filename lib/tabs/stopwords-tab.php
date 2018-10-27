@@ -129,7 +129,7 @@ function relevanssi_common_words( $limit = 25, $wp_cli = false ) {
 
 	if ( ! $wp_cli ) {
 		printf( '<h2>%s</h2>', esc_html__( '25 most common words in the index', 'relevanssi' ) );
-		printf( '<p>%s</p>', esc_html__( "These words are excellent stopword material. A word that appears in most of the posts in the database is quite pointless when searching. This is also an easy way to create a completely new stopword list, if one isn't available in your language. Click the icon after the word to add the word to the stopword list. The word will also be removed from the index, so rebuilding the index is not necessary.", 'relevanssi' ) );
+		printf( '<p>%s</p>', esc_html__( "These words are excellent stopword material. A word that appears in most of the posts in the database is quite pointless when searching. This is also an easy way to create a completely new stopword list, if one isn't available in your language. Click the word to add the word to the stopword list. The word will also be removed from the index, so rebuilding the index is not necessary.", 'relevanssi' ) );
 
 ?>
 <input type="hidden" name="dowhat" value="add_stopword" />
@@ -143,7 +143,7 @@ function relevanssi_common_words( $limit = 25, $wp_cli = false ) {
 
 	foreach ( $words as $word ) {
 		$stop = __( 'Add to stopwords', 'relevanssi' );
-		printf( '<li>%1$s (%2$d) <input style="padding: 0; margin: 0" type="image" src="%3$s" alt="%4$s" name="term" value="%5$s"/></li>', esc_html( $word->term ), esc_html( $word->cnt ), esc_attr( $src ), esc_attr( $stop ), esc_attr( $word->term ) );
+		printf( '<li><input style="padding: 0; margin: 0" type="submit" src="%1$s" name="term" value="%2$s"/> (%3$d)</li>', esc_attr( $src ), esc_attr( $word->term ), esc_html( $word->cnt ) );
 	}
 	?>
 	</ul>
