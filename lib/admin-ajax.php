@@ -270,7 +270,7 @@ function relevanssi_admin_search_debugging_info( $query ) {
 	$result .= '<ul style="list-style: disc; margin-left: 1.5em">';
 	foreach ( $query->query_vars as $key => $value ) {
 		if ( is_array( $value ) ) {
-			$value = implode( ', ', $value );
+			$value = relevanssi_flatten_array( $value );
 		}
 		if ( empty( $value ) ) {
 			continue;
@@ -282,7 +282,7 @@ function relevanssi_admin_search_debugging_info( $query ) {
 		foreach ( $query->tax_query as $tax_query ) {
 			foreach ( $tax_query as $key => $value ) {
 				if ( is_array( $value ) ) {
-					$value = implode( ', ', $value );
+					$value = relevanssi_flatten_array( $value );
 				}
 				$result .= "<li>$key: $value</li>";
 			}
