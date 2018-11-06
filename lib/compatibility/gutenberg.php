@@ -24,11 +24,10 @@ add_filter( 'relevanssi_post_content', 'relevanssi_gutenberg_block_rendering', 1
  * @return string The post content with the rendered content added.
  */
 function relevanssi_gutenberg_block_rendering( $content, $post ) {
-	if ( gutenberg_content_has_blocks( $post->post_content ) ) {
-		$blocks = gutenberg_parse_blocks( $post->post_content );
-	}
+	$blocks = gutenberg_parse_blocks( $post->post_content );
+
 	foreach ( $blocks as $block ) {
-		$attributes = (array) $block->attrs;
+		$attributes = (array) $block['attrs'];
 		$render     = render_block_core_block( $attributes );
 		$content   .= $render;
 	}
