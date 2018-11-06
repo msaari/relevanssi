@@ -5,7 +5,7 @@ Tags: search, relevance, better search
 Requires at least: 4.0
 Tested up to: 5.0
 Requires PHP: 5.6
-Stable tag: 4.1.0.1
+Stable tag: 4.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -130,6 +130,15 @@ Each document database is full of useless words. All the little words that appea
 
 == Changelog ==
 
+= 4.1.1 =
+* Relevanssi can now index Gutenberg reusable blocks. (This functionality broke once already before release, so that can happen, since Gutenberg is still in very active development.)
+* The `post__in` and `post__not_in` parameters didn't work, and are now fixed. `post_parent__in` and `post_parent__not_in` are also improved.
+* You can use named meta queries for sorting posts. Meta query sorting is improved in other ways as well.
+* Log export didn't work properly.
+* Adding stopwords from the common word list has been fixed.
+* The `relevanssi_get_words_having` filter hook is now also applied to the free version Did you mean queries.
+* New filters: `relevanssi_1day` and `relevanssi_7days` can be used to adjust the number of days for log displays, so instead of 1, 7 and 30 days you can have anything you want.
+
 = 4.1.0.1 =
 * Actually working admin search.
 
@@ -174,6 +183,9 @@ Each document database is full of useless words. All the little words that appea
 * Fixed quotes and apostrophes in Did you mean suggestions.
 
 == Upgrade notice ==
+
+= 4.1.1 =
+* Minor improvements here and there, particularly in custom field sorting.
 
 = 4.1 =
 * New features and plenty of small fixes.
