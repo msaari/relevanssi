@@ -5,7 +5,7 @@ Tags: search, relevance, better search
 Requires at least: 4.0
 Tested up to: 5.0
 Requires PHP: 5.6
-Stable tag: 4.1.1
+Stable tag: 4.1.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -130,6 +130,9 @@ Each document database is full of useless words. All the little words that appea
 
 == Changelog ==
 
+= 4.1.1.1 =
+* Adding the missing Gutenberg compatibility file.
+
 = 4.1.1 =
 * Relevanssi can now index Gutenberg reusable blocks. (This functionality broke once already before release, so that can happen, since Gutenberg is still in very active development.)
 * The `post__in` and `post__not_in` parameters didn't work, and are now fixed. `post_parent__in` and `post_parent__not_in` are also improved.
@@ -183,6 +186,9 @@ Each document database is full of useless words. All the little words that appea
 * Fixed quotes and apostrophes in Did you mean suggestions.
 
 == Upgrade notice ==
+
+= 4.1.1.1 =
+* Adding the missing Gutenberg compatibility file.
 
 = 4.1.1 =
 * Minor improvements here and there, particularly in custom field sorting.
