@@ -562,13 +562,13 @@ function relevanssi_query_log() {
 		relevanssi_date_queries( $days1, __( 'Today and yesterday', 'relevanssi' ) );
 	} else {
 		// Translators: number of days to show.
-		relevanssi_date_queries( $days1, springf( __( 'Last %d days', 'relevanssi' ), $days1 ) );
+		relevanssi_date_queries( $days1, sprintf( __( 'Last %d days', 'relevanssi' ), $days1 ) );
 	}
 	echo '</div>';
 
 	echo "<div style='width: 30%; float: left; margin-right: 2%; overflow: auto'>";
 	// Translators: number of days to show.
-	relevanssi_date_queries( $days7, springf( __( 'Last %d days', 'relevanssi' ), $days7 ) );
+	relevanssi_date_queries( $days7, sprintf( __( 'Last %d days', 'relevanssi' ), $days7 ) );
 	echo '</div>';
 
 	echo "<div style='width: 30%; float: left; margin-right: 2%; overflow: auto'>";

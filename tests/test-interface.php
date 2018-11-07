@@ -63,6 +63,8 @@ class InterfaceTest extends WP_UnitTestCase {
 		$_REQUEST['tab'] = 'search';
 		relevanssi_options_form();
 
+		relevanssi_query_log();
+
 		ob_end_clean();
 	}
 

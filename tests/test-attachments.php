@@ -22,9 +22,9 @@ class AttachmentTest extends WP_UnitTestCase {
 	 * - ODT file that says "This is an ODT file."
 	 */
 	public static function wpSetUpBeforeClass() {
-		if ( RELEVANSSI_PREMIUM ) {
-			relevanssi_install();
+		relevanssi_install();
 
+		if ( RELEVANSSI_PREMIUM ) {
 			update_option( 'relevanssi_read_new_files', 'on' );
 			update_option( 'relevanssi_send_pdf_files', 'on' );
 			update_option( 'relevanssi_index_post_types', array( 'post', 'attachment' ) );
