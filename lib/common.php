@@ -1394,10 +1394,10 @@ function relevanssi_simple_generate_suggestion( $query ) {
 	$q = 'SELECT query, count(query) as c, AVG(hits) as a FROM ' . $relevanssi_variables['log_table'] . ' WHERE hits > ' . $count . ' GROUP BY query ORDER BY count(query) DESC';
 	$q = apply_filters( 'relevanssi_didyoumean_query', $q );
 
-	$data = wp_cache_get( 'relevanssi_didyoumean_query' );
+	$data = get_transient( 'relevanssi_didyoumean_query' );
 	if ( empty( $data ) ) {
 		$data = $wpdb->get_results( $q ); // WPCS: unprepared SQL ok. No user-generated input involved.
-		wp_cache_set( 'relevanssi_didyoumean_query', $data );
+		set_transient( 'relevanssi_didyoumean_query', $data, 60 * 60 * 24 * 7 );
 	}
 
 	$query            = htmlspecialchars_decode( $query, ENT_QUOTES );
