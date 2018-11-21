@@ -1926,6 +1926,7 @@ function relevanssi_process_tax_query_row( $row, $is_sub_row, $global_relation, 
 	if ( ! isset( $row['field'] ) ) {
 		$row['field'] = 'term_id'; // In case 'field' is not set, go with the WP default of 'term_id'.
 	}
+	$row['field'] = strtolower( $row['field'] ); // In some cases, you can get 'ID' instead of 'id'.
 	if ( 'slug' === $row['field'] ) {
 		$slug          = $row['terms'];
 		$numeric_slugs = array();
