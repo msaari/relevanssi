@@ -72,10 +72,13 @@ function relevanssi_get_next_key( &$orderby ) {
 
 	$numeric_keys = array( 'meta_value_num', 'menu_order', 'ID', 'post_parent', 'post_author', 'comment_count', 'relevance_score' );
 	$date_keys    = array( 'post_date', 'post_date_gmt', 'post_modified', 'post_modified_gmt' );
+	$filter_keys  = array( 'post_type' );
 
 	$compare = 'string';
 	if ( in_array( $key, $numeric_keys, true ) ) {
 		$compare = 'number';
+	} elseif ( in_array( $key, $filter_keys, true ) ) {
+		$compare = 'filter';
 	} elseif ( in_array( $key, $date_keys, true ) ) {
 		$compare = 'date';
 	}
@@ -90,7 +93,7 @@ function relevanssi_get_next_key( &$orderby ) {
 	 * @return string The compare method.
 	 */
 	$compare = apply_filters( 'relevanssi_sort_compare', $compare, $key );
-	if ( ! in_array( $compare, array( 'string', 'number', 'date' ), true ) ) {
+	if ( ! in_array( $compare, array( 'string', 'number', 'date', 'filter' ), true ) ) {
 		// Not a valid value, fall back.
 		$compare = 'string';
 	}
@@ -253,6 +256,8 @@ function relevanssi_compare_values( $key1, $key2, $compare ) {
 		}
 	} elseif ( 'string' === $compare ) {
 		$val = relevanssi_mb_strcasecmp( $key1, $key2 );
+	} elseif ( 'filter' === $compare ) {
+		$val = relevanssi_filter_compare( $key1, $key2 );
 	} else {
 		if ( $key1 > $key2 ) {
 			$val = 1;
@@ -261,6 +266,53 @@ function relevanssi_compare_values( $key1, $key2, $compare ) {
 		}
 	}
 	return $val;
+}
+
+/**
+ * Compares two values using order array from a filter.
+ *
+ * Compares two sorting keys using a sorted array that contains value => order pairs.
+ * Uses the 'relevanssi_comparison_order' filter to get the sorting guidance array.
+ *
+ * @param string $key1 The first key.
+ * @param string $key2 The second key.
+ *
+ * @return int $val Returns < 0 if key1 is less than key2; > 0 if key1 is greater
+ * than key2, and 0 if they are equal.
+ */
+function relevanssi_filter_compare( $key1, $key2 ) {
+	/**
+	 * Provides the sorting order for the filter.
+	 *
+	 * The array should contain the possible key values as keys and their order in
+	 * the values, like this:
+	 *
+	 * $order = array(
+	 *     'post' => 0,
+	 *     'page' => 1,
+	 *     'book' => 2,
+	 * );
+	 *
+	 * This would sort posts first, pages second, books third. Values that do not
+	 * appear in the array are sorted last.
+	 *
+	 * @param array Sorting guidance array.
+	 */
+	$order = apply_filters( 'relevanssi_comparison_order', array() );
+
+	// Set the default values so that if the key is not found in the array, it's last.
+	$max_key = max( $order );
+	$val_1   = $max_key + 1;
+	$val_2   = $max_key + 1;
+
+	if ( isset( $order[ $key1 ] ) ) {
+		$val_1 = $order[ $key1 ];
+	}
+	if ( isset( $order[ $key2 ] ) ) {
+		$val_2 = $order[ $key2 ];
+	}
+
+	return $val_1 - $val_2;
 }
 
 /**
