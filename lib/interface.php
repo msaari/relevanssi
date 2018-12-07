@@ -779,6 +779,7 @@ function relevanssi_options_form() {
 	<a href="<?php echo esc_attr( $this_page ); ?>&amp;tab=excerpts" class="nav-tab <?php echo 'excerpts' === $active_tab ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'Excerpts and highlights', 'relevanssi' ); ?></a>
 	<a href="<?php echo esc_attr( $this_page ); ?>&amp;tab=synonyms" class="nav-tab <?php echo 'synonyms' === $active_tab ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'Synonyms', 'relevanssi' ); ?></a>
 	<a href="<?php echo esc_attr( $this_page ); ?>&amp;tab=stopwords" class="nav-tab <?php echo 'stopwords' === $active_tab ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'Stopwords', 'relevanssi' ); ?></a>
+	<a href="<?php echo esc_attr( $this_page ); ?>&amp;tab=redirects" class="nav-tab <?php echo 'redirects' === $active_tab ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'Redirects', 'relevanssi' ); ?></a>
 	<?php if ( RELEVANSSI_PREMIUM ) : ?>
 	<a href="<?php echo esc_attr( $this_page ); ?>&amp;tab=importexport" class="nav-tab <?php echo 'importexport' === $active_tab ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'Import / Export options', 'relevanssi' ); ?></a>
 	<a href="<?php echo esc_attr( $this_page ); ?>&amp;tab=search" class="nav-tab <?php echo 'search' === $active_tab ? 'nav-tab-active' : ''; ?>"><?php echo esc_html_x( 'Search', 'noun', 'relevanssi' ); ?></a>
@@ -831,6 +832,16 @@ function relevanssi_options_form() {
 		if ( RELEVANSSI_PREMIUM ) {
 			require_once dirname( $relevanssi_variables['file'] ) . '/premium/tabs/import-export-tab.php';
 			relevanssi_import_export_tab();
+		}
+	}
+	if ( 'redirects' === $active_tab ) {
+		if ( ! RELEVANSSI_PREMIUM ) {
+			$display_save_button = false;
+			require_once 'tabs/redirects-tab.php';
+			relevanssi_redirects_tab();
+		} else {
+			require_once dirname( $relevanssi_variables['file'] ) . '/premium/tabs/redirects-tab.php';
+			relevanssi_redirects_tab();
 		}
 	}
 

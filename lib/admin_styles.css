@@ -104,3 +104,7 @@ table.form-table table.widefat th {
 #relevanssi_filter_list {
 	display: none;
 }
+
+#redirect_table td {
+	vertical-align: top;
+}
