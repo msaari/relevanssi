@@ -42,7 +42,7 @@ function relevanssi_woocommerce_indexing_filter() {
 	$woocommerce_blocks = array(
 		'outofstock'           => false,
 		'exclude-from-catalog' => false,
-		'exclude-from-search'  => false,
+		'exclude-from-search'  => true,
 	);
 	/**
 	 * Controls the WooCommerce product visibility filtering.
