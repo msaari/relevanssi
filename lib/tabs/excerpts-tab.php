@@ -58,7 +58,7 @@ function relevanssi_excerpts_tab() {
 	$highlight_strong      = relevanssi_select( $highlight, 'strong' );
 	$highlight_col         = relevanssi_select( $highlight, 'col' );
 	$highlight_bgcol       = relevanssi_select( $highlight, 'bgcol' );
-	$highlight_style       = relevanssi_select( $highlight, 'style' );
+	$highlight_style       = relevanssi_select( $highlight, 'css' );
 	$highlight_class       = relevanssi_select( $highlight, 'class' );
 
 	$txt_col_display = 'screen-reader-text';
@@ -72,7 +72,7 @@ function relevanssi_excerpts_tab() {
 	if ( 'bgcol' === $highlight ) {
 		$bg_col_display = '';
 	}
-	if ( 'style' === $highlight ) {
+	if ( 'css' === $highlight ) {
 		$css_display = '';
 	}
 	if ( 'class' === $highlight ) {
