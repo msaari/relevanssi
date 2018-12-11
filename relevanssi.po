@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Relevanssi\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-26 20:49+0300\n"
+"POT-Creation-Date: 2018-12-11 14:06+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Mikko Saari <mikko@mikkosaari.fi>\n"
 "Language-Team: \n"
@@ -12,27 +12,362 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-KeywordsList: _e;__;esc_html__;esc_html_e;_n\n"
 "X-Poedit-Basepath: .\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 2.2\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPath-1: lib\n"
 
-#: lib/indexing.php:349
+#: lib/admin-ajax.php:88
+#, php-format
+msgid "Indexed %1$d post (total %2$d), processed %3$d / %4$d."
+msgstr ""
+
+#: lib/admin-ajax.php:198
+msgid "Results"
+msgstr ""
+
+#: lib/admin-ajax.php:200
+#, php-format
+msgid "Found a total of %1$d posts, showing %2$d posts from offset %3$s."
+msgstr ""
+
+#: lib/admin-ajax.php:209
+msgid "Score:"
+msgstr ""
+
+#: lib/admin-ajax.php:269
+msgid "Query variables"
+msgstr ""
+
+#: lib/admin-ajax.php:316
+msgid "Filters"
+msgstr ""
+
+#: lib/admin-ajax.php:317
+msgid "show"
+msgstr ""
+
+#: lib/admin-ajax.php:318
+msgid "hide"
+msgstr ""
+
+#: lib/contextual-help.php:24 lib/interface.php:777
+#: lib/tabs/overview-tab.php:56
+msgid "Searching"
+msgstr ""
+
+#: lib/contextual-help.php:27
+#, php-format
+msgid ""
+"To adjust the post order, you can use the %1$s query parameter. With %1$s, "
+"you can use multiple layers of different sorting methods. See <a "
+"href='%2$s'>WordPress Codex</a> for more details on using arrays for orderby."
+msgstr ""
+
+#: lib/contextual-help.php:28
+msgid ""
+"Inside-word matching is disabled by default, because it increases garbage "
+"results that don't really match the search term. If you want to enable it, "
+"add the following function to your theme functions.php:"
+msgstr ""
+
+#: lib/contextual-help.php:34
+#, php-format
+msgid ""
+"To get inside-word highlights, uncheck the \"%s\" option. That has a side-"
+"effect of enabling the inside-word highlights."
+msgstr ""
+
+#: lib/contextual-help.php:34 lib/tabs/excerpts-tab.php:377
+#: lib/tabs/excerpts-tab.php:386
+msgid "Uncheck this if you use non-ASCII characters"
+msgstr ""
+
+#: lib/contextual-help.php:36
+#, php-format
+msgid "In order to adjust the throttle limit, you can use the %s filter hook."
+msgstr ""
+
+#: lib/contextual-help.php:38
+msgid ""
+"It's not usually necessary to adjust the limit from 500, but in some cases "
+"performance gains can be achieved by setting a lower limit. We don't suggest "
+"going under 200, as low values will make the results worse."
+msgstr ""
+
+#: lib/contextual-help.php:43
+msgid "Restrictions"
+msgstr ""
+
+#: lib/contextual-help.php:45
+msgid ""
+"If you want the general search to target all posts, but have a single search "
+"form target only certain posts, you can add a hidden input variable to the "
+"search form. "
+msgstr ""
+
+#: lib/contextual-help.php:46
+msgid ""
+"For example in order to restrict the search to categories 10, 14 and 17, you "
+"could add this to the search form:"
+msgstr ""
+
+#: lib/contextual-help.php:48
+msgid ""
+"To restrict the search to posts tagged with alfa AND beta, you could add "
+"this to the search form:"
+msgstr ""
+
+#: lib/contextual-help.php:51
+#, php-format
+msgid "For all the possible options, see the Codex documentation for %s."
+msgstr ""
+
+#: lib/contextual-help.php:56
+msgid "Exclusions"
+msgstr ""
+
+#: lib/contextual-help.php:59
+#, php-format
+msgid ""
+"For more exclusion options, see the Codex documentation for %s. For example, "
+"to exclude tag ID 10, use"
+msgstr ""
+
+#: lib/contextual-help.php:62
+#, php-format
+msgid ""
+"To exclude posts from the index and not just from the search, you can use "
+"the %s filter hook. This would not index posts that have a certain taxonomy "
+"term:"
+msgstr ""
+
+#: lib/contextual-help.php:72 lib/contextual-help.php:120
+#, php-format
+msgid ""
+"For more examples, see <a href='%s'>the related knowledge base posts</a>."
+msgstr ""
+
+#: lib/contextual-help.php:77
+msgid "Logs"
+msgstr ""
+
+#: lib/contextual-help.php:80
+#, php-format
+msgid ""
+"By default, the User searches page shows 20 most common keywords. In order "
+"to see more, you can adjust the value with the %s filter hook, like this:"
+msgstr ""
+
+#: lib/contextual-help.php:83
+#, php-format
+msgid ""
+"The complete logs are stored in the %s database table, where you can access "
+"them if you need more information than what the User searches page provides."
+msgstr ""
+
+#: lib/contextual-help.php:88 lib/tabs/indexing-tab.php:330
+msgid "Excerpts"
+msgstr ""
+
+#: lib/contextual-help.php:90
+msgid ""
+"Building custom excerpts can be slow. If you are not actually using the "
+"excerpts, make sure you disable the option."
+msgstr ""
+
+#: lib/contextual-help.php:92
+#, php-format
+msgid ""
+"Custom snippets require that the search results template uses %s to print "
+"out the excerpts."
+msgstr ""
+
+#: lib/contextual-help.php:93
+msgid ""
+"Generally, Relevanssi generates the excerpts from post content. If you want "
+"to include custom field content in the excerpt-building, this can be done "
+"with a simple setting from the excerpt settings."
+msgstr ""
+
+#: lib/contextual-help.php:95
+#, php-format
+msgid ""
+"If you want more control over what content Relevanssi uses to create the "
+"excerpts, you can use the %1$s and %2$s filter hooks to adjust the content."
+msgstr ""
+
+#: lib/contextual-help.php:97
+#, php-format
+msgid ""
+"Some shortcode do not work well with Relevanssi excerpt-generation. "
+"Relevanssi disables some shortcodes automatically to prevent problems. This "
+"can be adjusted with the %s filter hook."
+msgstr ""
+
+#: lib/contextual-help.php:99
+#, php-format
+msgid ""
+"If you want Relevanssi to build excerpts faster and don't mind that they may "
+"be less than perfect in quality, add a filter that returns true on hook %s."
+msgstr ""
+
+#: lib/contextual-help.php:105
+msgid "Highlights"
+msgstr ""
+
+#: lib/contextual-help.php:107
+msgid ""
+"Title highlights don't appear automatically, because that led to problems "
+"with highlights appearing in wrong places and messing up navigation menus, "
+"for example."
+msgstr ""
+
+#: lib/contextual-help.php:109
+#, php-format
+msgid ""
+"In order to see title highlights from Relevanssi, replace %1$s in the search "
+"results template with %2$s. It does the same thing, but supports Relevanssi "
+"title highlights."
+msgstr ""
+
+#: lib/contextual-help.php:114
+msgid "Punctuation"
+msgstr ""
+
+#: lib/contextual-help.php:116
+msgid ""
+"Relevanssi removes punctuation. Some punctuation is removed, some replaced "
+"with spaces. Advanced indexing settings include some of the more common "
+"settings people want to change."
+msgstr ""
+
+#: lib/contextual-help.php:118
+#, php-format
+msgid ""
+"For more fine-tuned changes, you can use %1$s filter hook to adjust what is "
+"replaced with what, and %2$s filter hook to completely override the default "
+"punctuation control."
+msgstr ""
+
+#: lib/contextual-help.php:125
+msgid "Helpful shortcodes"
+msgstr ""
+
+#: lib/contextual-help.php:128
+#, php-format
+msgid ""
+"If you have content that you don't want indexed, you can wrap that content "
+"in a %s shortcode."
+msgstr ""
+
+#: lib/contextual-help.php:130
+#, php-format
+msgid ""
+"If you need a search form on some page on your site, you can use the %s "
+"shortcode to print out a basic search form."
+msgstr ""
+
+#: lib/contextual-help.php:132
+#, php-format
+msgid ""
+"If you need to add query variables to the search form, the shortcode takes "
+"parameters, which are then printed out as hidden input fields. To get a "
+"search form with a post type restriction, you can use %1$s. To restrict the "
+"search to categories 10, 14 and 17, you can use %2$s and so on."
+msgstr ""
+
+#: lib/contextual-help.php:137
+msgid "WooCommerce"
+msgstr ""
+
+#: lib/contextual-help.php:139
+msgid ""
+"If your SKUs include hyphens or other punctuation, do note that Relevanssi "
+"replaces most punctuation with spaces. That's going to cause issues with SKU "
+"searches."
+msgstr ""
+
+#: lib/contextual-help.php:141
+#, php-format
+msgid ""
+"For more details how to fix that issue, see <a href='%s'>WooCommerce tips in "
+"Relevanssi user manual</a>."
+msgstr ""
+
+#: lib/contextual-help.php:142
+msgid ""
+"If you don't want to index products that are out of stock, excluded from the "
+"catalog or excluded from the search, there's a product visibility filtering "
+"method that is described in the user manual (see link above)."
+msgstr ""
+
+#: lib/contextual-help.php:147
+msgid "Exact match bonus"
+msgstr ""
+
+#: lib/contextual-help.php:150
+#, php-format
+msgid ""
+"To adjust the amount of the exact match bonus, you can use the %s filter "
+"hook. It works like this:"
+msgstr ""
+
+#: lib/contextual-help.php:156
+#, php-format
+msgid "The default values are %1$s for titles and %2$s for content."
+msgstr ""
+
+#: lib/contextual-help.php:159
+msgid "For more information:"
+msgstr ""
+
+#: lib/contextual-help.php:160
+msgid "Plugin knowledge base"
+msgstr ""
+
+#: lib/contextual-help.php:161
+msgid "WordPress.org forum"
+msgstr ""
+
+#: lib/excerpts-highlights.php:24
+msgid "There is no excerpt because this is a protected post."
+msgstr ""
+
+#: lib/indexing.php:360
 msgid "Indexing complete!"
 msgstr ""
 
-#: lib/indexing.php:352
+#: lib/indexing.php:363
 msgid "More to index..."
 msgstr ""
 
-#: lib/init.php:149 lib/init.php:150
+#: lib/init.php:87
+msgid ""
+"You do not have an index! Remember to build the index (click the \"Build the "
+"index\" button), otherwise searching won't work."
+msgstr ""
+
+#: lib/init.php:99
+msgid ""
+"Multibyte string functions are not available. Relevanssi may not work well "
+"without them. Please install (or ask your host to install) the mbstring "
+"extension."
+msgstr ""
+
+#: lib/init.php:186 lib/init.php:187 lib/interface.php:439
+#: lib/tabs/logging-tab.php:47
 msgid "User searches"
 msgstr ""
 
-#: lib/init.php:339
+#: lib/init.php:198 lib/init.php:199 lib/tabs/searching-tab.php:244
+msgid "Admin search"
+msgstr ""
+
+#: lib/init.php:389
 msgid "Settings"
 msgstr ""
 
-#: lib/init.php:342
+#: lib/init.php:392
 msgid "Go Premium!"
 msgstr ""
 
@@ -44,433 +379,2317 @@ msgstr ""
 msgid "Relevanssi Premium Search Options"
 msgstr ""
 
-#: lib/interface.php:79
-msgid "User Searches"
-msgstr ""
-
-#: lib/interface.php:81
+#: lib/interface.php:441
 msgid "Relevanssi User Searches"
 msgstr ""
 
-#: lib/interface.php:654
-msgid "Add to stopwords"
+#: lib/interface.php:464
+msgid "Enable query logging to see stats here."
 msgstr ""
 
-#: lib/interface.php:684
+#: lib/interface.php:476
+msgid "Admin Search"
+msgstr ""
+
+#: lib/interface.php:506
+msgid "Logs clear!"
+msgstr ""
+
+#: lib/interface.php:508
+msgid "Clearing the logs failed."
+msgstr ""
+
+#: lib/interface.php:542
+msgid "Total Searches"
+msgstr ""
+
+#: lib/interface.php:544
 msgid "Totals"
 msgstr ""
 
-#: lib/interface.php:698
+#: lib/interface.php:548
+msgid "Common Queries"
+msgstr ""
+
+#: lib/interface.php:558
 #, php-format
 msgid ""
 "Here you can see the %d most common user search queries, how many times "
 "those queries were made and how many results were found for those queries."
 msgstr ""
 
-#: lib/interface.php:701 lib/interface.php:718 lib/interface.php:759
+#: lib/interface.php:562 lib/interface.php:584 lib/interface.php:625
 msgid "Today and yesterday"
 msgstr ""
 
-#: lib/interface.php:705 lib/interface.php:722 lib/interface.php:760
-msgid "Last 7 days"
-msgstr ""
-
-#: lib/interface.php:710 lib/interface.php:727
+#: lib/interface.php:565 lib/interface.php:571 lib/interface.php:576
+#: lib/interface.php:593
 #, php-format
 msgid "Last %d days"
 msgstr ""
 
-#: lib/interface.php:737
+#: lib/interface.php:581
+msgid "Unsuccessful Queries"
+msgstr ""
+
+#: lib/interface.php:588 lib/interface.php:626
+msgid "Last 7 days"
+msgstr ""
+
+#: lib/interface.php:599
+msgid "Reset Logs"
+msgstr ""
+
+#: lib/interface.php:603
 #, php-format
 msgid "To reset the logs, type \"reset\" into the box here %1$s and click %2$s"
 msgstr ""
 
-#: lib/interface.php:761
+#: lib/interface.php:627
 msgid "Last 30 days"
 msgstr ""
 
-#: lib/interface.php:762
+#: lib/interface.php:628
 msgid "Forever"
 msgstr ""
 
-#: lib/interface.php:2187 lib/interface.php:2241
-msgid "yes"
+#: lib/interface.php:636
+msgid "When"
 msgstr ""
 
-#: lib/interface.php:2189 lib/interface.php:2239
-msgid "no"
+#: lib/interface.php:636
+msgid "Searches"
 msgstr ""
 
-#: lib/interface.php:2302
-msgid "some"
+#: lib/interface.php:693 lib/log.php:163
+msgid "Query"
 msgstr ""
 
-#: lib/interface.php:2658
-msgid "Searching"
+#: lib/interface.php:693
+msgid "Hits"
 msgstr ""
 
-#: lib/interface.php:2661
-#, php-format
-msgid ""
-"To adjust the post order, you can use the %1$s query parameter. With %1$s, "
-"you can use multiple layers of different sorting methods. See <a "
-"href='%2$s'>WordPress Codex</a> for more details on using arrays for orderby."
+#: lib/interface.php:774
+msgid "Overview"
 msgstr ""
 
-#: lib/interface.php:2662
-msgid ""
-"Inside-word matching is disabled by default, because it increases garbage "
-"results that don't really match the search term. If you want to enable it, "
-"add the following function to your theme functions.php:"
+#: lib/interface.php:775 lib/tabs/overview-tab.php:44
+msgid "Indexing"
 msgstr ""
 
-#: lib/interface.php:2668
-#, php-format
-msgid "In order to adjust the throttle limit, you can use the %s filter hook."
+#: lib/interface.php:776
+msgid "Attachments"
 msgstr ""
 
-#: lib/interface.php:2670
-msgid ""
-"It's not usually necessary to adjust the limit from 500, but in some cases "
-"performance gains can be achieved by setting a lower limit. We don't suggest "
-"going under 200, as low values will make the results worse."
+#: lib/interface.php:778
+msgid "Logging"
 msgstr ""
 
-#: lib/interface.php:2675
-msgid "Restrictions"
+#: lib/interface.php:779 lib/tabs/overview-tab.php:60
+msgid "Excerpts and highlights"
 msgstr ""
 
-#: lib/interface.php:2677
-msgid ""
-"If you want the general search to target all posts, but have a single search "
-"form target only certain posts, you can add a hidden input variable to the "
-"search form. "
+#: lib/interface.php:780 lib/tabs/synonyms-tab.php:25
+#: lib/tabs/synonyms-tab.php:30
+msgid "Synonyms"
 msgstr ""
 
-#: lib/interface.php:2678
-msgid ""
-"For example in order to restrict the search to categories 10, 14 and 17, you "
-"could add this to the search form:"
+#: lib/interface.php:781 lib/tabs/stopwords-tab.php:18
+msgid "Stopwords"
 msgstr ""
 
-#: lib/interface.php:2680
-msgid ""
-"To restrict the search to posts tagged with alfa AND beta, you could add "
-"this to the search form:"
+#: lib/interface.php:782 lib/tabs/redirects-tab.php:18
+msgid "Redirects"
 msgstr ""
 
-#: lib/interface.php:2683
-#, php-format
-msgid "For all the possible options, see the Codex documentation for %s."
+#: lib/interface.php:784
+msgid "Import / Export options"
 msgstr ""
 
-#: lib/interface.php:2688
-msgid "Exclusions"
-msgstr ""
-
-#: lib/interface.php:2691
-#, php-format
-msgid ""
-"For more exclusion options, see the Codex documentation for %s. For example, "
-"to exclude tag ID 10, use"
-msgstr ""
-
-#: lib/interface.php:2694
-#, php-format
-msgid ""
-"To exclude posts from the index and not just from the search, you can use "
-"the %s filter hook. This would not index posts that have a certain taxonomy "
-"term:"
-msgstr ""
-
-#: lib/interface.php:2704 lib/interface.php:2752
-#, php-format
-msgid ""
-"For more examples, see <a href='%s'>the related knowledge base posts</a>."
-msgstr ""
-
-#: lib/interface.php:2709
-msgid "Logs"
-msgstr ""
-
-#: lib/interface.php:2712
-#, php-format
-msgid ""
-"By default, the User searches page shows 20 most common keywords. In order "
-"to see more, you can adjust the value with the %s filter hook, like this:"
-msgstr ""
-
-#: lib/interface.php:2715
-#, php-format
-msgid ""
-"The complete logs are stored in the %s database table, where you can access "
-"them if you need more information than what the User searches page provides."
-msgstr ""
-
-#: lib/interface.php:2720
-msgid "Excerpts"
-msgstr ""
-
-#: lib/interface.php:2722
-msgid ""
-"Building custom excerpts can be slow. If you are not actually using the "
-"excerpts, make sure you disable the option."
-msgstr ""
-
-#: lib/interface.php:2724
-#, php-format
-msgid ""
-"Custom snippets require that the search results template uses %s to print "
-"out the excerpts."
-msgstr ""
-
-#: lib/interface.php:2725
-msgid ""
-"Generally, Relevanssi generates the excerpts from post content. If you want "
-"to include custom field content in the excerpt-building, this can be done "
-"with a simple setting from the excerpt settings."
-msgstr ""
-
-#: lib/interface.php:2727
-#, php-format
-msgid ""
-"If you want more control over what content Relevanssi uses to create the "
-"excerpts, you can use the %1$s and %2$s filter hooks to adjust the content."
-msgstr ""
-
-#: lib/interface.php:2729
-#, php-format
-msgid ""
-"Some shortcode do not work well with Relevanssi excerpt-generation. "
-"Relevanssi disables some shortcodes automatically to prevent problems. This "
-"can be adjusted with the %s filter hook."
-msgstr ""
-
-#: lib/interface.php:2731
-#, php-format
-msgid ""
-"If you want Relevanssi to build excerpts faster and don't mind that they may "
-"be less than perfect in quality, add a filter that returns true on hook %s."
-msgstr ""
-
-#: lib/interface.php:2737
-msgid "Highlights"
-msgstr ""
-
-#: lib/interface.php:2739
-msgid ""
-"Title highlights don't appear automatically, because that led to problems "
-"with highlights appearing in wrong places and messing up navigation menus, "
-"for example."
-msgstr ""
-
-#: lib/interface.php:2741
-#, php-format
-msgid ""
-"In order to see title highlights from Relevanssi, replace %1$s in the search "
-"results template with %2$s. It does the same thing, but supports Relevanssi "
-"title highlights."
-msgstr ""
-
-#: lib/interface.php:2746
-msgid "Punctuation"
-msgstr ""
-
-#: lib/interface.php:2748
-msgid ""
-"Relevanssi removes punctuation. Some punctuation is removed, some replaced "
-"with spaces. Advanced indexing settings include some of the more common "
-"settings people want to change."
-msgstr ""
-
-#: lib/interface.php:2750
-#, php-format
-msgid ""
-"For more fine-tuned changes, you can use %1$s filter hook to adjust what is "
-"replaced with what, and %2$s filter hook to completely override the default "
-"punctuation control."
-msgstr ""
-
-#: lib/interface.php:2757
-msgid "Helpful shortcodes"
-msgstr ""
-
-#: lib/interface.php:2760
-#, php-format
-msgid ""
-"If you have content that you don't want indexed, you can wrap that content "
-"in a %s shortcode."
-msgstr ""
-
-#: lib/interface.php:2762
-#, php-format
-msgid ""
-"If you need a search form on some page on your site, you can use the %s "
-"shortcode to print out a basic search form."
-msgstr ""
-
-#: lib/interface.php:2764
-#, php-format
-msgid ""
-"If you need to add query variables to the search form, the shortcode takes "
-"parameters, which are then printed out as hidden input fields. To get a "
-"search form with a post type restriction, you can use %1$s. To restrict the "
-"search to categories 10, 14 and 17, you can use %2$s and so on."
-msgstr ""
-
-#: lib/interface.php:2769
-msgid "WooCommerce"
-msgstr ""
-
-#: lib/interface.php:2771
-msgid ""
-"If your SKUs include hyphens or other punctuation, do note that Relevanssi "
-"replaces most punctuation with spaces. That's going to cause issues with SKU "
-"searches."
-msgstr ""
-
-#: lib/interface.php:2773
-#, php-format
-msgid ""
-"For more details how to fix that issue, see <a href='%s'>WooCommerce tips in "
-"Relevanssi user manual</a>."
-msgstr ""
-
-#: lib/interface.php:2778
-msgid "Exact match bonus"
-msgstr ""
-
-#: lib/interface.php:2781
-#, php-format
-msgid ""
-"To adjust the amount of the exact match bonus, you can use the %s filter "
-"hook. It works like this:"
-msgstr ""
-
-#: lib/interface.php:2790
-msgid "For more information:"
-msgstr ""
-
-#: lib/interface.php:2791
-msgid "Plugin knowledge base"
-msgstr ""
-
-#: lib/interface.php:2792
-msgid "WordPress.org forum"
-msgstr ""
-
-#: lib/interface.php:2832
+#: lib/interface.php:898
 msgid "Click OK to copy Relevanssi options to all subsites"
 msgstr ""
 
-#: lib/interface.php:2833
+#: lib/interface.php:899
 msgid "Are you sure you want to remove all stopwords?"
 msgstr ""
 
-#: lib/interface.php:2834
+#: lib/interface.php:900
 msgid "Wiping out the index..."
 msgstr ""
 
-#: lib/interface.php:2835
+#: lib/interface.php:901
 msgid "Done."
 msgstr ""
 
-#: lib/interface.php:2836
+#: lib/interface.php:902
 msgid "Indexing users..."
 msgstr ""
 
-#: lib/interface.php:2837
+#: lib/interface.php:903
 msgid "Indexing the following taxonomies:"
 msgstr ""
 
-#: lib/interface.php:2838
+#: lib/interface.php:904
+msgid "Indexing attachments..."
+msgstr ""
+
+#: lib/interface.php:905
 msgid "Counting posts..."
 msgstr ""
 
-#: lib/interface.php:2839
+#: lib/interface.php:906
 msgid "Counting taxonomy terms..."
 msgstr ""
 
-#: lib/interface.php:2840
+#: lib/interface.php:907
 msgid "Counting users..."
 msgstr ""
 
-#: lib/interface.php:2841
+#: lib/interface.php:908
+msgid "Counting attachments..."
+msgstr ""
+
+#: lib/interface.php:909
 msgid "posts found."
 msgstr ""
 
-#: lib/interface.php:2842
+#: lib/interface.php:910
 msgid "taxonomy terms found."
 msgstr ""
 
-#: lib/interface.php:2843
+#: lib/interface.php:911
 msgid "users found."
 msgstr ""
 
-#: lib/interface.php:2844
+#: lib/interface.php:912
+msgid "attachments found."
+msgstr ""
+
+#: lib/interface.php:913
 msgid "Taxonomy term indexing is disabled."
 msgstr ""
 
-#: lib/interface.php:2845
+#: lib/interface.php:914
 msgid "User indexing is disabled."
 msgstr ""
 
-#: lib/interface.php:2846
+#: lib/interface.php:915
 msgid "Indexing complete."
 msgstr ""
 
-#: lib/interface.php:2847
+#: lib/interface.php:916
 msgid "posts excluded."
 msgstr ""
 
-#: lib/interface.php:2848
+#: lib/interface.php:917
 msgid "Settings have changed, please save the options before indexing."
 msgstr ""
 
-#: lib/interface.php:2849
+#: lib/interface.php:918
 msgid "Reload the page to refresh the state of the index."
 msgstr ""
 
-#: lib/interface.php:2850
+#: lib/interface.php:919
 msgid "Are you sure you want to delete all attachment content from the index?"
 msgstr ""
 
-#: lib/interface.php:2851
+#: lib/interface.php:920
 msgid "Relevanssi attachment data wiped clean."
 msgstr ""
 
-#: lib/interface.php:2852
+#: lib/interface.php:921
 msgid "hour"
 msgstr ""
 
-#: lib/interface.php:2853
+#: lib/interface.php:922
 msgid "hours"
 msgstr ""
 
-#: lib/interface.php:2854
+#: lib/interface.php:923
 msgid "about"
 msgstr ""
 
-#: lib/interface.php:2855
+#: lib/interface.php:924
 msgid "about an hour"
 msgstr ""
 
-#: lib/interface.php:2856
+#: lib/interface.php:925
 msgid "about an hour and a half"
 msgstr ""
 
-#: lib/interface.php:2857
+#: lib/interface.php:926
 msgid "minute"
 msgstr ""
 
-#: lib/interface.php:2858
+#: lib/interface.php:927
 msgid "minutes"
 msgstr ""
 
-#: lib/interface.php:2859
+#: lib/interface.php:928
 msgid "less than a minute"
 msgstr ""
 
-#: lib/interface.php:2860
+#: lib/interface.php:929
 msgid "we're done!"
+msgstr ""
+
+#: lib/interface.php:961
+msgid "Tag weight"
+msgstr ""
+
+#: lib/interface.php:969
+msgid "Category weight"
+msgstr ""
+
+#: lib/log.php:156
+msgid "Logged seaches"
+msgstr ""
+
+#: lib/log.php:159
+msgid "Time"
+msgstr ""
+
+#: lib/log.php:167
+msgid "Hits found"
+msgstr ""
+
+#: lib/log.php:171
+msgid "IP address"
+msgstr ""
+
+#: lib/privacy.php:34
+msgid "What personal data we collect and why we collect it"
+msgstr ""
+
+#: lib/privacy.php:36
+msgid "IP address for searches"
+msgstr ""
+
+#: lib/privacy.php:37
+msgid ""
+"All searches performed using the internal site search are logged in the "
+"database, including the following information: the search query, the number "
+"of hits found, user ID for users who are logged in, date and time and the IP "
+"address. The IP address is stored for security and auditing purposes."
+msgstr ""
+
+#: lib/privacy.php:39
+msgid ""
+"All searches performed using the internal site search are logged in the "
+"database, including the following information: the search query, the number "
+"of hits found, user ID for users who are logged in and date and time."
+msgstr ""
+
+#: lib/privacy.php:42
+msgid "How long we retain your data"
+msgstr ""
+
+#: lib/privacy.php:45
+#, php-format
+msgid ""
+"The search logs are stored for %d days before they are automatically removed."
+msgstr ""
+
+#: lib/privacy.php:47
+msgid "The search logs are stored indefinitely."
+msgstr ""
+
+#: lib/privacy.php:64 lib/privacy.php:81
+msgid "Relevanssi Search Logs"
+msgstr ""
+
+#: lib/stopwords.php:99
+#, php-format
+msgid "Successfully added %1$d/%2$d terms to stopwords!"
+msgstr ""
+
+#: lib/stopwords.php:110
+#, php-format
+msgid "Term '%s' added to stopwords!"
+msgstr ""
+
+#: lib/stopwords.php:113
+#, php-format
+msgid ""
+"<div id='message' class='updated fade'><p>Couldn't add term '%s' to "
+"stopwords!</p></div>"
+msgstr ""
+
+#: lib/stopwords.php:165
+msgid "All stopwords removed! Remember to re-index."
+msgstr ""
+
+#: lib/stopwords.php:167
+msgid "There was a problem, and stopwords couldn't be removed."
+msgstr ""
+
+#: lib/stopwords.php:190
+#, php-format
+msgid "Term '%s' removed from stopwords! Re-index to get it back to index."
+msgstr ""
+
+#: lib/stopwords.php:196
+#, php-format
+msgid "Couldn't remove term '%s' from stopwords!"
+msgstr ""
+
+#: lib/tabs/attachments-tab.php:18
+msgid "Indexing attachment content"
+msgstr ""
+
+#: lib/tabs/attachments-tab.php:20
+msgid ""
+"With Relevanssi Premium, you can index the text contents of attachments "
+"(PDFs, Word documents, Open Office documents and many other types). The "
+"contents of the attachments are processed on an external service, which "
+"makes the feature reliable and light on your own server performance."
+msgstr ""
+
+#: lib/tabs/attachments-tab.php:22 lib/tabs/redirects-tab.php:22
+#, php-format
+msgid ""
+"In order to access this and many other delightful Premium features, %1$sbuy "
+"Relevanssi Premium here%2$s."
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:84
+msgid "Custom excerpts/snippets"
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:89
+msgid "Custom search result snippets"
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:93 lib/tabs/excerpts-tab.php:96
+msgid "Create custom search result snippets"
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:99
+msgid "Only enable this if you actually use the custom excerpts."
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:106
+#, php-format
+msgid ""
+"Looks like you are using Divi. In order to use custom excerpts with Divi, "
+"you need to make some changes to your templates. %1$sSee instructions here"
+"%2$s."
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:118
+msgid "Length of the snippet"
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:135
+msgid "characters"
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:136
+msgid "words"
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:138
+msgid ""
+"Using words is much faster than characters. Don't use characters, unless you "
+"have a really good reason and your posts are short."
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:149
+msgid "Allowable tags in excerpts"
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:159
+msgid ""
+"List all tags you want to allow in excerpts. For example: &lt;p&gt;&lt;a&gt;"
+"&lt;strong&gt;."
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:170
+msgid "Use custom fields for excerpts"
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:174 lib/tabs/excerpts-tab.php:183
+msgid "Use custom field content for building excerpts"
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:186
+msgid ""
+"Use the custom fields setting for indexing for excerpt-making as well. "
+"Enabling this option will show custom field content in Relevanssi-generated "
+"excerpts."
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:189
+msgid "Enable this option to use PDF content for excerpts."
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:194
+msgid "Current custom field setting"
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:197
+msgid "all visible custom fields"
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:199
+msgid "all custom fields"
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:203
+msgid "Just PDF content"
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:205
+msgid "None selected"
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:213
+msgid "Search hit highlighting"
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:224
+msgid "Highlight type"
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:234
+msgid "No highlighting"
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:238 lib/tabs/excerpts-tab.php:248
+msgid "Text color"
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:239 lib/tabs/excerpts-tab.php:262
+msgid "Background color"
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:240
+msgid "CSS Style"
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:241
+msgid "CSS Class"
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:243 lib/tabs/excerpts-tab.php:421
+msgid "Requires custom snippets to work."
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:276
+msgid "CSS style for highlights"
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:287
+#, php-format
+msgid ""
+"The highlights will be wrapped in a %s with this CSS in the style parameter."
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:292
+msgid "CSS class for highlights"
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:303
+#, php-format
+msgid "The highlights will be wrapped in a %s with this class."
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:308
+msgid "Highlight in titles"
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:312 lib/tabs/excerpts-tab.php:321
+msgid "Highlight query terms in titles"
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:325
+#, php-format
+msgid ""
+"Highlights in titles require changes to the search results template. You "
+"need to replace %1$s in the search results template with %2$s. For more "
+"information, see the contextual help."
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:330
+msgid "Highlight in documents"
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:334 lib/tabs/excerpts-tab.php:343
+msgid "Highlight query terms in documents"
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:347
+#, php-format
+msgid ""
+"Highlights hits when user opens the post from search results. This requires "
+"an extra parameter (%s) to the links from the search results pages, which "
+"Relevanssi should add automatically."
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:352
+msgid "Highlight in comments"
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:356 lib/tabs/excerpts-tab.php:365
+msgid "Highlight query terms in comments"
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:368
+msgid ""
+"Highlights hits in comments when user opens the post from search results."
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:373
+msgid "Highlighting problems with non-ASCII alphabet?"
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:389
+msgid ""
+"If you use non-ASCII characters (like Cyrillic alphabet) and the highlights "
+"don't work, unchecking this option may make the highlights work."
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:394
+msgid "Breakdown of search results"
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:405
+msgid "Breakdown of search hits in excerpts"
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:409
+msgid "Show the breakdown of search hits in the excerpts"
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:418
+msgid "Show the breakdown of search hits in the excerpts."
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:426
+msgid "The breakdown format"
+msgstr ""
+
+#: lib/tabs/excerpts-tab.php:436
+msgid ""
+"Use %body%, %title%, %tags% and %comments% to display the number of hits (in "
+"different parts of the post), %total% for total hits, %score% to display the "
+"document weight and %terms% to show how many hits each search term got."
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:113
+#, php-format
+msgid "%s empties the existing index and rebuilds it from scratch."
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:113
+msgid "Build the index"
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:115
+#, php-format
+msgid ""
+"%s doesn't empty the index and only indexes those posts that are not "
+"indexed. You can use it if you have to interrupt building the index."
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:115
+msgid "Index unindexed posts"
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:118
+msgid "This doesn't index any taxonomy terms or users."
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:125
+msgid "Time elapsed"
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:125
+msgid "Time remaining"
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:125
+msgid "some time"
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:127
+msgid ""
+"Indexing should respond quickly. If nothing happens in couple of minutes, "
+"it's probably stuck. The most common reasons for indexing issues are "
+"incompatible shortcodes, so try disabling the shortcode expansion setting "
+"and try again. Also, if you've just updated Relevanssi, doing a hard refresh "
+"in your browser will make sure your browser is not trying to use an outdated "
+"version of the Relevanssi scripts."
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:131
+msgid "State of the index"
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:132
+msgid "document in the index."
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:134
+msgid "user in the index."
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:135
+msgid "taxonomy term in the index."
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:138
+msgid "term in the index."
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:139
+msgid "is the lowest post ID indexed."
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:149
+msgid ""
+"WARNING: You've chosen no post types to index. Nothing will be indexed. "
+"Choose some post types to index."
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:154
+msgid "Indexing options"
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:156
+msgid ""
+"Any changes to the settings on this page require reindexing before they take "
+"effect."
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:160
+msgid "Post types"
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:166
+msgid "Type"
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:167 lib/tabs/indexing-tab.php:221
+msgid "Index"
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:168
+msgid "Excluded from search?"
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:185 lib/tabs/indexing-tab.php:239
+msgid "yes"
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:187 lib/tabs/indexing-tab.php:237
+msgid "no"
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:207
+#, php-format
+msgid ""
+"%1$s includes all attachment types. If you want to index only some "
+"attachments, see %2$sControlling attachment types in the Knowledge base%3$s."
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:213
+msgid "Taxonomies"
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:220
+msgid "Taxonomy"
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:222
+msgid "Public?"
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:248
+msgid ""
+"If you check a taxonomy here, the terms for that taxonomy are indexed with "
+"the posts. If you for example choose \"post_tag\", searching for a tag will "
+"find all posts that have the tag."
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:255
+msgid "Comments"
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:259 lib/tabs/indexing-tab.php:273
+msgid "none"
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:260
+msgid "comments"
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:261
+msgid "comments and pingbacks"
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:263
+msgid ""
+"If you choose to index comments, you can choose if you want to index just "
+"comments, or everything including comments and track- and pingbacks."
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:269
+msgid "Custom fields"
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:274
+msgid "all"
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:275
+msgid "visible"
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:276 lib/tabs/indexing-tab.php:307
+msgid "some"
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:280
+msgid "'All' indexes all custom fields for posts."
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:282
+msgid ""
+"'Visible' only includes the custom fields that are visible in the user "
+"interface (with names that don't start with an underscore)."
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:284
+msgid "'Some' lets you choose individual custom fields to index."
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:290
+msgid ""
+"Advanced Custom Fields has lots of invisible custom fields with meta data. "
+"Selecting \"all\" will include lots of garbage in the index and excerpts. "
+"\"Visible\" is usually a better option with ACF."
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:302
+msgid ""
+"Enter a comma-separated list of custom fields to include in the index. With "
+"Relevanssi Premium, you can also use 'fieldname_%_subfieldname' notation for "
+"ACF repeater fields."
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:303
+msgid ""
+"You can use 'relevanssi_index_custom_fields' filter hook to adjust which "
+"custom fields are indexed."
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:307
+#, php-format
+msgid ""
+"If you want the SKU included, choose %1$s and enter %2$s. Also see the "
+"contextual help for more details."
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:314
+msgid "Author display names"
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:318 lib/tabs/indexing-tab.php:321
+msgid "Index the post author display name"
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:323
+msgid ""
+"Searching for the post author display name will return posts by that author."
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:334 lib/tabs/indexing-tab.php:337
+#: lib/tabs/indexing-tab.php:358
+msgid "Index the post excerpt"
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:339
+msgid "Relevanssi will find posts by the content in the excerpt."
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:341
+msgid ""
+"WooCommerce stores the product short description in the excerpt, so it's a "
+"good idea to index excerpts."
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:349
+msgid "Shortcodes"
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:354
+msgid "Expand shortcodes"
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:361
+msgid "Expand shortcodes when indexing"
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:364
+msgid ""
+"WooCommerce has shortcodes that don't work well with Relevanssi. With "
+"WooCommerce, make sure the option is disabled."
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:366
+msgid ""
+"If checked, Relevanssi will expand shortcodes in post content before "
+"indexing. Otherwise shortcodes will be stripped."
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:367
+msgid ""
+"If you use shortcodes to include dynamic content, Relevanssi will not keep "
+"the index updated, the index will reflect the status of the shortcode "
+"content at the moment of indexing."
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:398
+msgid "Advanced indexing settings"
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:400
+msgid "Show advanced settings"
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:405
+msgid "Minimum word length"
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:409
+msgid "Words shorter than this many letters will not be indexed."
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:411
+#, php-format
+msgid ""
+"To enable one-letter searches, you need to add a filter function on the "
+"filter hook %1$s that returns %2$s."
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:415
+msgid "Punctuation control"
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:416
+msgid ""
+"Here you can adjust how the punctuation is controlled. For more information, "
+"see help. Remember that any changes here require reindexing, otherwise "
+"searches will fail to find posts they should."
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:420
+msgid "Hyphens and dashes"
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:424 lib/tabs/indexing-tab.php:451
+#: lib/tabs/indexing-tab.php:465
+msgid "Keep"
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:425 lib/tabs/indexing-tab.php:438
+#: lib/tabs/indexing-tab.php:452 lib/tabs/indexing-tab.php:466
+msgid "Replace with spaces"
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:426 lib/tabs/indexing-tab.php:439
+#: lib/tabs/indexing-tab.php:453 lib/tabs/indexing-tab.php:467
+msgid "Remove"
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:428
+msgid ""
+"How Relevanssi should handle hyphens and dashes (en and em dashes)? "
+"Replacing with spaces is generally the best option, but in some cases "
+"removing completely is the best option. Keeping them is rarely the best "
+"option."
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:434
+msgid "Apostrophes and quotes"
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:441
+msgid ""
+"How Relevanssi should handle apostrophes and quotes? It's not possible to "
+"keep them; that would lead to problems. Default behaviour is to replace with "
+"spaces, but sometimes removing makes sense."
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:447
+msgid "Ampersands"
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:455
+msgid ""
+"How Relevanssi should handle ampersands? Replacing with spaces is generally "
+"the best option, but if you talk a lot about D&amp;D, for example, keeping "
+"the ampersands is useful."
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:461
+msgid "Decimal separators"
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:469
+msgid ""
+"How Relevanssi should handle periods between decimals? Replacing with spaces "
+"is the default option, but that often leads to the numbers being removed "
+"completely. If you need to search decimal numbers a lot, keep the periods."
+msgstr ""
+
+#: lib/tabs/indexing-tab.php:487
+msgid "Hide advanced settings"
+msgstr ""
+
+#: lib/tabs/logging-tab.php:33
+msgid "Enable logs"
+msgstr ""
+
+#: lib/tabs/logging-tab.php:37 lib/tabs/logging-tab.php:40
+msgid "Keep a log of user queries."
+msgstr ""
+
+#: lib/tabs/logging-tab.php:46
+#, php-format
+msgid ""
+"If enabled, Relevanssi will log user queries. The logs can be examined under "
+"'%1$s' on the Dashboard admin menu and are stored in the %2$s database table."
+msgstr ""
+
+#: lib/tabs/logging-tab.php:54
+msgid "Log user IP"
+msgstr ""
+
+#: lib/tabs/logging-tab.php:58 lib/tabs/logging-tab.php:61
+msgid "Log the user's IP with the queries."
+msgstr ""
+
+#: lib/tabs/logging-tab.php:64
+msgid ""
+"If enabled, Relevanssi will log user's IP adress with the queries. Note that "
+"this may be illegal where you live, and in EU will create a person registry "
+"that falls under the GDPR."
+msgstr ""
+
+#: lib/tabs/logging-tab.php:69
+msgid "Exclude users"
+msgstr ""
+
+#: lib/tabs/logging-tab.php:73
+msgid ""
+"Comma-separated list of numeric user IDs or user login names that will not "
+"be logged."
+msgstr ""
+
+#: lib/tabs/logging-tab.php:83
+msgid "Trim logs"
+msgstr ""
+
+#: lib/tabs/logging-tab.php:87
+msgid "How many days of logs to keep in the database."
+msgstr ""
+
+#: lib/tabs/logging-tab.php:89
+#, php-format
+msgid " Set to %d for no trimming."
+msgstr ""
+
+#: lib/tabs/logging-tab.php:95
+msgid "Export logs"
+msgstr ""
+
+#: lib/tabs/logging-tab.php:98
+msgid "Export the log as a CSV file"
+msgstr ""
+
+#: lib/tabs/logging-tab.php:99
+msgid "Push the button to export the search log as a CSV file."
+msgstr ""
+
+#: lib/tabs/overview-tab.php:22
+msgid "Welcome to Relevanssi!"
+msgstr ""
+
+#: lib/tabs/overview-tab.php:38
+msgid "Getting started"
+msgstr ""
+
+#: lib/tabs/overview-tab.php:40
+msgid ""
+"You've already installed Relevanssi. That's a great first step towards good "
+"search experience!"
+msgstr ""
+
+#: lib/tabs/overview-tab.php:44
+#, php-format
+msgid ""
+"Now, you need an index. Head over to the %1$s%2$s%3$s tab to set up the "
+"basic indexing options and to build the index."
+msgstr ""
+
+#: lib/tabs/overview-tab.php:45
+msgid "You need to check at least the following options:"
+msgstr ""
+
+#: lib/tabs/overview-tab.php:46
+msgid "Make sure the post types you want to include in the index are indexed."
+msgstr ""
+
+#: lib/tabs/overview-tab.php:48
+#, php-format
+msgid ""
+"Do you use custom fields to store content you want included? If so, add "
+"those too. WooCommerce user? You probably want to include %s."
+msgstr ""
+
+#: lib/tabs/overview-tab.php:49
+msgid ""
+"Then just save the options and build the index. First time you have to do it "
+"manually, but after that, it's fully automatic: all changes are reflected in "
+"the index without reindexing. (That said, it's a good idea to rebuild the "
+"index once a year.)"
+msgstr ""
+
+#: lib/tabs/overview-tab.php:52
+msgid "Great, you already have an index!"
+msgstr ""
+
+#: lib/tabs/overview-tab.php:56
+#, php-format
+msgid ""
+"On the %1$s%2$s%3$s tab, choose whether you want the default operator to be "
+"AND (less results, but more precise) or OR (more results, less precise)."
+msgstr ""
+
+#: lib/tabs/overview-tab.php:60
+#, php-format
+msgid ""
+"The next step is the %1$s%2$s%3$s tab, where you can enable the custom "
+"excerpts that show the relevant part of post in the search results pages."
+msgstr ""
+
+#: lib/tabs/overview-tab.php:61
+msgid ""
+"There are couple of options related to that, so if you want highlighting in "
+"the results, you can adjust the styles for that to suit the look of your "
+"site."
+msgstr ""
+
+#: lib/tabs/overview-tab.php:64
+msgid ""
+"That's about it! Now you should have Relevanssi up and running. The rest of "
+"the options is mostly fine-tuning."
+msgstr ""
+
+#: lib/tabs/overview-tab.php:67
+msgid ""
+"Relevanssi doesn't have a separate search widget. Instead, Relevanssi uses "
+"the default search widget. Any standard search form will do!"
+msgstr ""
+
+#: lib/tabs/overview-tab.php:71
+msgid "Privacy and GDPR compliance"
+msgstr ""
+
+#: lib/tabs/overview-tab.php:74
+#, php-format
+msgid ""
+"%1$sGDPR Compliance at Relevanssi knowledge base%2$s explains how using "
+"Relevanssi affects the GDPR compliance and the privacy policies of your "
+"site. Relevanssi also supports the %3$sprivacy policy tool%2$s and the "
+"WordPress user data export and erase tools."
+msgstr ""
+
+#: lib/tabs/overview-tab.php:78
+msgid "For more information"
+msgstr ""
+
+#: lib/tabs/overview-tab.php:80
+msgid ""
+"Relevanssi uses the WordPress contextual help. Click 'Help' on the top right "
+"corner for more information on many Relevanssi topics."
+msgstr ""
+
+#: lib/tabs/overview-tab.php:82
+#, php-format
+msgid ""
+"%1$sRelevanssi knowledge base%2$s has lots of information about advanced "
+"Relevanssi use, including plenty of code samples."
+msgstr ""
+
+#: lib/tabs/overview-tab.php:86
+msgid "Do you like Relevanssi?"
+msgstr ""
+
+#: lib/tabs/overview-tab.php:88
+msgid ""
+"If you do, the best way to show your appreciation is to spread the word and "
+"perhaps give us a good review on WordPress.org."
+msgstr ""
+
+#: lib/tabs/overview-tab.php:90
+#, php-format
+msgid ""
+"If you like Relevanssi, leaving a five-star review on WordPress.org will "
+"help others discover Relevanssi. %1$sYou can add your review here%2$s."
+msgstr ""
+
+#: lib/tabs/overview-tab.php:95
+msgid "Relevanssi on Facebook"
+msgstr ""
+
+#: lib/tabs/overview-tab.php:98
+msgid ""
+"Check out the Relevanssi page on Facebook for news and updates about "
+"Relevanssi."
+msgstr ""
+
+#: lib/tabs/overview-tab.php:104
+msgid "Buy Relevanssi Premium"
+msgstr ""
+
+#: lib/tabs/overview-tab.php:107
+msgid "Buy Relevanssi Premium now"
+msgstr ""
+
+#: lib/tabs/overview-tab.php:109
+#, php-format
+msgid ""
+"use coupon code %1$s for 20%% discount (valid at least until the end of %2$s)"
+msgstr ""
+
+#: lib/tabs/overview-tab.php:110
+msgid "Here are some improvements Relevanssi Premium offers:"
+msgstr ""
+
+#: lib/tabs/overview-tab.php:112
+msgid "PDF content indexing"
+msgstr ""
+
+#: lib/tabs/overview-tab.php:113
+msgid "Index and search user profile pages"
+msgstr ""
+
+#: lib/tabs/overview-tab.php:114
+msgid "Index and search taxonomy term pages"
+msgstr ""
+
+#: lib/tabs/overview-tab.php:115
+msgid "Multisite searches across many subsites"
+msgstr ""
+
+#: lib/tabs/overview-tab.php:116
+msgid "WP CLI commands"
+msgstr ""
+
+#: lib/tabs/overview-tab.php:117
+msgid "Adjust weights separately for each post type and taxonomy"
+msgstr ""
+
+#: lib/tabs/overview-tab.php:118
+msgid "Internal link anchors can be search terms for the target posts"
+msgstr ""
+
+#: lib/tabs/overview-tab.php:119
+msgid "Index and search any columns in the wp_posts database"
+msgstr ""
+
+#: lib/tabs/overview-tab.php:120
+msgid ""
+"Hide Relevanssi branding from the User Searches page on a client installation"
+msgstr ""
+
+#: lib/tabs/redirects-tab.php:20
+msgid ""
+"With Relevanssi Premium, you can set up redirects. These are keywords that "
+"automatically redirect the user to certain page, without going through the "
+"usual search process. For example, you could set it up so that all searches "
+"for \"job\" automatically lead to your \"Careers\" page."
+msgstr ""
+
+#: lib/tabs/search-page.php:18
+msgid ""
+"You can use this search to perform Relevanssi searches without any "
+"restrictions from WordPress. You can search all post types here."
+msgstr ""
+
+#: lib/tabs/search-page.php:23
+msgid "Search terms"
+msgstr ""
+
+#: lib/tabs/search-page.php:31
+msgid "Posts per page"
+msgstr ""
+
+#: lib/tabs/search-page.php:35
+msgid "All"
+msgstr ""
+
+#: lib/tabs/search-page.php:44
+msgid "Search parameters"
+msgstr ""
+
+#: lib/tabs/search-page.php:49
+#, php-format
+msgid ""
+"Use query parameter formatting here, the same that would appear on search "
+"page results URL. For example %s."
+msgstr ""
+
+#: lib/tabs/searching-tab.php:66
+msgid "Default operator"
+msgstr ""
+
+#: lib/tabs/searching-tab.php:70
+msgid "AND - require all terms"
+msgstr ""
+
+#: lib/tabs/searching-tab.php:71
+msgid "OR - any term present is enough"
+msgstr ""
+
+#: lib/tabs/searching-tab.php:73
+msgid "This setting determines the default operator for the search."
+msgstr ""
+
+#: lib/tabs/searching-tab.php:77
+#, php-format
+msgid ""
+"You can override this setting with the %1$s query parameter, like this: %2$s"
+msgstr ""
+
+#: lib/tabs/searching-tab.php:84
+msgid "Fallback to OR"
+msgstr ""
+
+#: lib/tabs/searching-tab.php:88 lib/tabs/searching-tab.php:91
+msgid "Disable the OR fallback."
+msgstr ""
+
+#: lib/tabs/searching-tab.php:94
+msgid ""
+"By default, if AND search fails to find any results, Relevanssi will switch "
+"the operator to OR and run the search again. You can prevent that by "
+"checking this option."
+msgstr ""
+
+#: lib/tabs/searching-tab.php:99
+msgid "Default order"
+msgstr ""
+
+#: lib/tabs/searching-tab.php:103
+msgid "Relevance (highly recommended)"
+msgstr ""
+
+#: lib/tabs/searching-tab.php:104
+msgid "Post date"
+msgstr ""
+
+#: lib/tabs/searching-tab.php:107
+#, php-format
+msgid ""
+"If you want to override this or use multi-layered ordering (eg. first order "
+"by relevance, but sort ties by post title), you can use the %s query "
+"variable. See Help for more information."
+msgstr ""
+
+#: lib/tabs/searching-tab.php:109
+msgid ""
+" If you want date-based results, see the recent post bonus in the Weights "
+"section."
+msgstr ""
+
+#: lib/tabs/searching-tab.php:115
+msgid "Keyword matching"
+msgstr ""
+
+#: lib/tabs/searching-tab.php:119
+msgid "Whole words"
+msgstr ""
+
+#: lib/tabs/searching-tab.php:120
+msgid "Partial words"
+msgstr ""
+
+#: lib/tabs/searching-tab.php:121
+msgid "Partial words if no hits for whole words"
+msgstr ""
+
+#: lib/tabs/searching-tab.php:123
+msgid ""
+"Whole words means Relevanssi only finds posts that include the whole search "
+"term."
+msgstr ""
+
+#: lib/tabs/searching-tab.php:124
+msgid ""
+"Partial words also includes cases where the word in the index begins or ends "
+"with the search term (searching for 'ana' will match 'anaconda' or 'banana', "
+"but not 'banal'). See Help, if you want to make Relevanssi match also inside "
+"words."
+msgstr ""
+
+#: lib/tabs/searching-tab.php:129
+msgid "Weights"
+msgstr ""
+
+#: lib/tabs/searching-tab.php:132
+msgid ""
+"All the weights in the table are multipliers. To increase the weight of an "
+"element, use a higher number. To make an element less significant, use a "
+"number lower than 1."
+msgstr ""
+
+#: lib/tabs/searching-tab.php:136
+msgid "Element"
+msgstr ""
+
+#: lib/tabs/searching-tab.php:137
+msgid "Weight"
+msgstr ""
+
+#: lib/tabs/searching-tab.php:142
+msgid "Content"
+msgstr ""
+
+#: lib/tabs/searching-tab.php:150
+msgid "Titles"
+msgstr ""
+
+#: lib/tabs/searching-tab.php:163
+msgid "Comment text"
+msgstr ""
+
+#: lib/tabs/searching-tab.php:192
+msgid "Boost exact matches"
+msgstr ""
+
+#: lib/tabs/searching-tab.php:196 lib/tabs/searching-tab.php:199
+msgid "Give boost to exact matches."
+msgstr ""
+
+#: lib/tabs/searching-tab.php:203
+#, php-format
+msgid ""
+"If you enable this option, matches where the search query appears in title "
+"or content as a phrase will get a weight boost. To adjust the boost, you can "
+"use the %s filter hook. See Help for more details."
+msgstr ""
+
+#: lib/tabs/searching-tab.php:211
+msgid "WPML"
+msgstr ""
+
+#: lib/tabs/searching-tab.php:215 lib/tabs/searching-tab.php:218
+msgid "Limit results to current language."
+msgstr ""
+
+#: lib/tabs/searching-tab.php:221
+msgid ""
+"Enabling this option will restrict the results to the currently active "
+"language. If the option is disabled, results will include posts in all "
+"languages."
+msgstr ""
+
+#: lib/tabs/searching-tab.php:228
+msgid "Polylang"
+msgstr ""
+
+#: lib/tabs/searching-tab.php:232 lib/tabs/searching-tab.php:235
+msgid "Allow results from all languages."
+msgstr ""
+
+#: lib/tabs/searching-tab.php:238
+msgid ""
+"By default Polylang restricts the search to the current language. Enabling "
+"this option will lift this restriction."
+msgstr ""
+
+#: lib/tabs/searching-tab.php:248 lib/tabs/searching-tab.php:251
+msgid "Use Relevanssi for admin searches."
+msgstr ""
+
+#: lib/tabs/searching-tab.php:254
+msgid ""
+"If checked, Relevanssi will be used for searches in the admin interface. The "
+"page search doesn't use Relevanssi, because WordPress works like that."
+msgstr ""
+
+#: lib/tabs/searching-tab.php:260
+#, php-format
+msgid "Respect %s"
+msgstr ""
+
+#: lib/tabs/searching-tab.php:264
+msgid "Respect exclude_from_search for custom post types"
+msgstr ""
+
+#: lib/tabs/searching-tab.php:268
+#, php-format
+msgid "Respect %s for custom post types"
+msgstr ""
+
+#: lib/tabs/searching-tab.php:270
+msgid ""
+"If checked, Relevanssi won't display posts of custom post types that have "
+"'exclude_from_search' set to true."
+msgstr ""
+
+#: lib/tabs/searching-tab.php:282
+msgid ""
+"You probably should uncheck this option, because you've set Relevanssi to "
+"index the following non-public post types:"
+msgstr ""
+
+#: lib/tabs/searching-tab.php:295
+msgid "Throttle searches"
+msgstr ""
+
+#: lib/tabs/searching-tab.php:305
+msgid "Throttling the search does not work when sorting the posts by date."
+msgstr ""
+
+#: lib/tabs/searching-tab.php:315 lib/tabs/searching-tab.php:318
+msgid "Throttle searches."
+msgstr ""
+
+#: lib/tabs/searching-tab.php:322
+msgid "Your database is so small that you don't need to enable this."
+msgstr ""
+
+#: lib/tabs/searching-tab.php:324
+msgid ""
+"If this option is checked, Relevanssi will limit search results to at most "
+"500 results per term. This will improve performance, but may cause some "
+"relevant documents to go unfound. See Help for more details."
+msgstr ""
+
+#: lib/tabs/searching-tab.php:330
+msgid "Category restriction"
+msgstr ""
+
+#: lib/tabs/searching-tab.php:350
+msgid ""
+"You can restrict search results to a category for all searches. For "
+"restricting on a per-search basis and more options (eg. tag restrictions), "
+"see Help."
+msgstr ""
+
+#: lib/tabs/searching-tab.php:355
+msgid "Category exclusion"
+msgstr ""
+
+#: lib/tabs/searching-tab.php:375
+msgid ""
+"Posts in these categories are not included in search results. To exclude the "
+"posts completely from the index, see Help."
+msgstr ""
+
+#: lib/tabs/searching-tab.php:380
+msgid "Post exclusion"
+msgstr ""
+
+#: lib/tabs/searching-tab.php:384
+msgid ""
+"Enter a comma-separated list of post or page ID's to exclude those pages "
+"from the search results."
+msgstr ""
+
+#: lib/tabs/searching-tab.php:386
+msgid ""
+"With Relevanssi Premium, it's better to use the check box on post edit "
+"pages. That will remove the posts completely from the index, and will work "
+"with multisite searches unlike this setting."
+msgstr ""
+
+#: lib/tabs/stopwords-tab.php:53
+msgid ""
+"Enter a word here to add it to the list of stopwords. The word will "
+"automatically be removed from the index, so re-indexing is not necessary. "
+"You can enter many words at the same time, separate words with commas."
+msgstr ""
+
+#: lib/tabs/stopwords-tab.php:58
+msgid "Stopword(s) to add"
+msgstr ""
+
+#: lib/tabs/stopwords-tab.php:66
+msgid ""
+"Here's a list of stopwords in the database. Click a word to remove it from "
+"stopwords. Removing stopwords won't automatically return them to index, so "
+"you need to re-index all posts after removing stopwords to get those words "
+"back to index."
+msgstr ""
+
+#: lib/tabs/stopwords-tab.php:71
+msgid "Current stopwords"
+msgstr ""
+
+#: lib/tabs/stopwords-tab.php:92
+msgid "Exportable list of stopwords"
+msgstr ""
+
+#: lib/tabs/stopwords-tab.php:96
+msgid ""
+"You can copy the list of stopwords here if you want to back up the list, "
+"copy it to a different blog or otherwise need the list."
+msgstr ""
+
+#: lib/tabs/stopwords-tab.php:131
+msgid "25 most common words in the index"
+msgstr ""
+
+#: lib/tabs/stopwords-tab.php:132
+msgid ""
+"These words are excellent stopword material. A word that appears in most of "
+"the posts in the database is quite pointless when searching. This is also an "
+"easy way to create a completely new stopword list, if one isn't available in "
+"your language. Click the word to add the word to the stopword list. The word "
+"will also be removed from the index, so rebuilding the index is not "
+"necessary."
+msgstr ""
+
+#: lib/tabs/stopwords-tab.php:138
+msgid "Stopword Candidates"
+msgstr ""
+
+#: lib/tabs/stopwords-tab.php:145
+msgid "Add to stopwords"
+msgstr ""
+
+#: lib/tabs/synonyms-tab.php:33
+msgid ""
+"Add synonyms here to make the searches find better results. If you notice "
+"your users frequently misspelling a product name, or for other reasons use "
+"many names for one thing, adding synonyms will make the results better."
+msgstr ""
+
+#: lib/tabs/synonyms-tab.php:35
+msgid ""
+"Do not go overboard, though, as too many synonyms can make the search "
+"confusing: users understand if a search query doesn't match everything, but "
+"they get confused if the searches match to unexpected things."
+msgstr ""
+
+#: lib/tabs/synonyms-tab.php:39
+msgid ""
+"The format here is <code>key = value</code>. If you add <code>dog = hound</"
+"code> to the list of synonyms, searches for <code>dog</code> automatically "
+"become a search for <code>dog hound</code> and will thus match to posts that "
+"include either <code>dog</code> or <code>hound</code>. This only works in OR "
+"searches: in AND searches the synonyms only restrict the search, as now the "
+"search only finds posts that contain <strong>both</strong> <code>dog</code> "
+"and <code>hound</code>."
+msgstr ""
+
+#: lib/tabs/synonyms-tab.php:41
+msgid ""
+"The synonyms are one direction only. If you want both directions, add the "
+"synonym again, reversed: <code>hound = dog</code>."
+msgstr ""
+
+#: lib/tabs/synonyms-tab.php:43
+msgid ""
+"It's possible to use phrases for the value, but not for the key. <code>dog = "
+"\"great dane\"</code> works, but <code>\"great dane\" = dog</code> doesn't."
+msgstr ""
+
+#: lib/tabs/synonyms-tab.php:46
+msgid ""
+"If you want to use synonyms in AND searches, enable synonym indexing on the "
+"Indexing tab."
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/internationalized-plugin.php:11
+msgid "This is a dummy plugin"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/parsers.php:42
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/parsers.php:72
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/parsers.php:80
+msgid "There was an error when reading this WXR file"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/parsers.php:43
+msgid ""
+"Details are shown above. The importer will now try again with a different "
+"parser..."
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/parsers.php:84
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/parsers.php:89
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/parsers.php:306
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/parsers.php:495
+msgid ""
+"This does not appear to be a WXR file, missing/invalid WXR version number"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/wordpress-importer.php:132
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/wordpress-importer.php:141
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/wordpress-importer.php:192
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/wordpress-importer.php:196
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/wordpress-importer.php:205
+msgid "Sorry, there has been an error."
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/wordpress-importer.php:133
+msgid "The file does not exist, please try again."
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/wordpress-importer.php:176
+msgid "All done."
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/wordpress-importer.php:176
+msgid "Have fun!"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/wordpress-importer.php:177
+msgid "Remember to update the passwords and roles of imported users."
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/wordpress-importer.php:197
+#, php-format
+msgid ""
+"The export file could not be found at <code>%s</code>. It is likely that "
+"this was caused by a permissions problem."
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/wordpress-importer.php:213
+#, php-format
+msgid ""
+"This WXR file (version %s) may not be supported by this version of the "
+"importer. Please consider updating."
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/wordpress-importer.php:238
+#, php-format
+msgid ""
+"Failed to import author %s. Their posts will be attributed to the current "
+"user."
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/wordpress-importer.php:264
+msgid "Assign Authors"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/wordpress-importer.php:265
+msgid ""
+"To make it easier for you to edit and save the imported content, you may "
+"want to reassign the author of the imported item to an existing user of this "
+"site. For example, you may want to import all the entries as <code>admin</"
+"code>s entries."
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/wordpress-importer.php:267
+#, php-format
+msgid ""
+"If a new user is created by WordPress, a new password will be randomly "
+"generated and the new user&#8217;s role will be set as %s. Manually changing "
+"the new user&#8217;s details will be necessary."
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/wordpress-importer.php:277
+msgid "Import Attachments"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/wordpress-importer.php:280
+msgid "Download and import file attachments"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/wordpress-importer.php:297
+msgid "Import author:"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/wordpress-importer.php:308
+msgid "or create new user with login name:"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/wordpress-importer.php:311
+msgid "as a new user:"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/wordpress-importer.php:319
+msgid "assign posts to an existing user:"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/wordpress-importer.php:321
+msgid "or assign posts to an existing user:"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/wordpress-importer.php:322
+msgid "- Select -"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/wordpress-importer.php:372
+#, php-format
+msgid ""
+"Failed to create new user for %s. Their posts will be attributed to the "
+"current user."
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/wordpress-importer.php:424
+#, php-format
+msgid "Failed to import category %s"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/wordpress-importer.php:467
+#, php-format
+msgid "Failed to import post tag %s"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/wordpress-importer.php:516
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/wordpress-importer.php:738
+#, php-format
+msgid "Failed to import %s %s"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/wordpress-importer.php:605
+#, php-format
+msgid "Failed to import &#8220;%s&#8221;: Invalid post type %s"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/wordpress-importer.php:642
+#, php-format
+msgid "%s &#8220;%s&#8221; already exists."
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/wordpress-importer.php:704
+#, php-format
+msgid "Failed to import %s &#8220;%s&#8221;"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/wordpress-importer.php:869
+msgid "Menu item skipped due to missing menu slug"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/wordpress-importer.php:876
+#, php-format
+msgid "Menu item skipped due to invalid menu slug: %s"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/wordpress-importer.php:939
+msgid "Fetching attachments is not enabled"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/wordpress-importer.php:952
+msgid "Invalid file type"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/wordpress-importer.php:996
+msgid "Remote server did not respond"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/wordpress-importer.php:1002
+#, php-format
+msgid "Remote server returned error response %1$d %2$s"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/wordpress-importer.php:1009
+msgid "Remote file is incorrect size"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/wordpress-importer.php:1014
+msgid "Zero size file downloaded"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/wordpress-importer.php:1020
+#, php-format
+msgid "Remote file is too large, limit is %s"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/wordpress-importer.php:1119
+msgid "Import WordPress"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/wordpress-importer.php:1126
+#, php-format
+msgid ""
+"A new version of this importer is available. Please update to version %s to "
+"ensure compatibility with newer export files."
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/wordpress-importer.php:1141
+msgid ""
+"Howdy! Upload your WordPress eXtended RSS (WXR) file and we&#8217;ll import "
+"the posts, pages, comments, custom fields, categories, and tags into this "
+"site."
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/wordpress-importer.php:1142
+msgid "Choose a WXR (.xml) file to upload, then click Upload file and import."
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/data/plugins/wordpress-importer/wordpress-importer.php:1216
+msgid ""
+"Import <strong>posts, pages, comments, custom fields, categories, and tags</"
+"strong> from a WordPress export file."
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/data/themedir1/internationalized-theme/functions.php:7
+msgid "This is a dummy theme"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/category/wpDropdownCategories.php:196
+#: vendor/rask/wp-test-framework/src/phpunit/tests/category/wpDropdownCategories.php:221
+#: vendor/rask/wp-test-framework/src/phpunit/tests/category/wpDropdownCategories.php:246
+msgid "Select one"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/comment/template.php:41
+msgid "No Comments"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/comment/template.php:46
+msgid "1 Comment"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/comment/template.php:51
+#: vendor/rask/wp-test-framework/src/phpunit/tests/comment/template.php:97
+#: vendor/rask/wp-test-framework/src/phpunit/tests/comment/template.php:117
+#: vendor/rask/wp-test-framework/src/phpunit/tests/comment/template.php:127
+#: vendor/rask/wp-test-framework/src/phpunit/tests/comment/template.php:132
+#: vendor/rask/wp-test-framework/src/phpunit/tests/comment/template.php:137
+#: vendor/rask/wp-test-framework/src/phpunit/tests/comment/template.php:142
+#: vendor/rask/wp-test-framework/src/phpunit/tests/comment/template.php:147
+#: vendor/rask/wp-test-framework/src/phpunit/tests/comment/template.php:152
+#, php-format
+msgid "%s Comment"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/comment/template.php:116
+#: vendor/rask/wp-test-framework/src/phpunit/tests/comment/template.php:146
+#: vendor/rask/wp-test-framework/src/phpunit/tests/comment/template.php:151
+msgid "% Comments"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/comment/template.php:126
+msgid "<b>%</b> Replies"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/comment/template.php:131
+msgid "% <span class=\"reply\">comments &rarr;</span>"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/comment/template.php:136
+msgid "% Replies"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/comment/template.php:141
+#, php-format
+msgid "View all % comments"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/customize/manager.php:2236
+#: vendor/rask/wp-test-framework/src/phpunit/tests/customize/manager.php:2251
+#: vendor/rask/wp-test-framework/src/phpunit/tests/customize/manager.php:2298
+msgid "Invalid value."
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/customize/manager.php:3188
+msgid "Enter desktop preview mode"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/customize/manager.php:3192
+msgid "Enter tablet preview mode"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/customize/manager.php:3195
+msgid "Enter mobile preview mode"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/customize/manager.php:3220
+msgid "Enter custom-device preview mode"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/customize/manager.php:3378
+msgid "You must supply a value"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/customize/nav-menu-item-setting.php:1139
+#: vendor/rask/wp-test-framework/src/phpunit/tests/customize/nav-menu-item-setting.php:1164
+msgid "Post Type Archive"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/customize/nav-menus.php:137
+#: vendor/rask/wp-test-framework/src/phpunit/tests/customize/nav-menus.php:432
+msgid "Custom Link"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/customize/nav-menus.php:554
+msgid "Post"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/customize/nav-menus.php:560
+msgid "Page"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/customize/nav-menus.php:566
+msgid "Category"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/customize/nav-menus.php:572
+msgid "Tag"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/customize/nav-menus.php:581
+msgid "Format"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/editor/wpEditors.php:40
+#: vendor/rask/wp-test-framework/src/phpunit/tests/editor/wpEditors.php:79
+msgid "Y/m/d"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/includes/helpers.php:265
+msgid "Incorrect usage test"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/l10n/loadTextdomain.php:121
+msgid "just some string"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/l10n/loadTextdomainJustInTime.php:248
+msgid "Foo"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/l10n/loadTextdomainJustInTime.php:249
+msgid "Bar"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/l10n/loadTextdomainJustInTime.php:250
+msgid "Baz"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/l10n/loadTextdomainJustInTime.php:251
+msgid "Foo Bar"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/l10n/loadTextdomainJustInTime.php:252
+msgid "Foo Bar Baz"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/l10n/localeSwitcher.php:71
+#: vendor/rask/wp-test-framework/src/phpunit/tests/l10n/localeSwitcher.php:127
+#: vendor/rask/wp-test-framework/src/phpunit/tests/l10n/localeSwitcher.php:167
+msgid "Invalid parameter."
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:23
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:40
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:50
+msgid "Sunday"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:24
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:41
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:51
+msgid "Monday"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:25
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:42
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:52
+msgid "Tuesday"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:26
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:43
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:53
+msgid "Wednesday"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:27
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:44
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:54
+msgid "Thursday"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:28
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:45
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:55
+msgid "Friday"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:29
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:46
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:56
+msgid "Saturday"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:40
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:46
+msgid "S"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:41
+msgid "M"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:42
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:44
+msgid "T"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:43
+msgid "W"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:45
+msgid "F"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:50
+msgid "Sun"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:51
+msgid "Mon"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:52
+msgid "Tue"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:53
+msgid "Wed"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:54
+msgid "Thu"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:55
+msgid "Fri"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:56
+msgid "Sat"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:60
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:75
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:87
+msgid "January"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:61
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:76
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:88
+msgid "February"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:62
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:77
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:89
+msgid "March"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:63
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:78
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:90
+msgid "April"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:64
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:79
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:91
+msgid "May"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:65
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:80
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:92
+msgid "June"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:66
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:81
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:93
+msgid "July"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:67
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:82
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:94
+msgid "August"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:68
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:83
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:95
+msgid "September"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:69
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:96
+msgid "October"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:70
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:97
+msgid "November"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:71
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:98
+msgid "December"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:87
+msgid "Jan"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:88
+msgid "Feb"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:89
+msgid "Mar"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:90
+msgid "Apr"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:92
+msgid "Jun"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:93
+msgid "Jul"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:94
+msgid "Aug"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:95
+msgid "Sep"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:96
+msgid "Oct"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:97
+msgid "Nov"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:98
+msgid "Dec"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:102
+msgid "am"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:103
+msgid "AM"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:104
+msgid "pm"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/locale.php:105
+msgid "PM"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/oembed/template.php:269
+#, php-format
+msgid "&#8220;%1$s&#8221; &#8212; %2$s"
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/theme/themeDir.php:185
+msgid "Stylesheet is missing."
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/theme/themeDir.php:190
+#, php-format
+msgid ""
+"The theme defines itself as its parent theme. Please check the %s header."
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/xmlrpc/wp/deleteTerm.php:29
+#: vendor/rask/wp-test-framework/src/phpunit/tests/xmlrpc/wp/deleteTerm.php:38
+#: vendor/rask/wp-test-framework/src/phpunit/tests/xmlrpc/wp/editTerm.php:41
+#: vendor/rask/wp-test-framework/src/phpunit/tests/xmlrpc/wp/editTerm.php:50
+#: vendor/rask/wp-test-framework/src/phpunit/tests/xmlrpc/wp/getTaxonomy.php:20
+#: vendor/rask/wp-test-framework/src/phpunit/tests/xmlrpc/wp/getTaxonomy.php:29
+#: vendor/rask/wp-test-framework/src/phpunit/tests/xmlrpc/wp/getTerm.php:30
+#: vendor/rask/wp-test-framework/src/phpunit/tests/xmlrpc/wp/getTerm.php:39
+#: vendor/rask/wp-test-framework/src/phpunit/tests/xmlrpc/wp/getTerms.php:20
+#: vendor/rask/wp-test-framework/src/phpunit/tests/xmlrpc/wp/getTerms.php:29
+#: vendor/rask/wp-test-framework/src/phpunit/tests/xmlrpc/wp/newTerm.php:30
+#: vendor/rask/wp-test-framework/src/phpunit/tests/xmlrpc/wp/newTerm.php:39
+msgid "Invalid taxonomy."
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/xmlrpc/wp/deleteTerm.php:47
+msgid "Sorry, you are not allowed to delete this term."
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/xmlrpc/wp/deleteTerm.php:56
+#: vendor/rask/wp-test-framework/src/phpunit/tests/xmlrpc/wp/editTerm.php:77
+#: vendor/rask/wp-test-framework/src/phpunit/tests/xmlrpc/wp/getTerm.php:58
+msgid "Empty Term."
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/xmlrpc/wp/deleteTerm.php:65
+#: vendor/rask/wp-test-framework/src/phpunit/tests/xmlrpc/wp/editTerm.php:68
+#: vendor/rask/wp-test-framework/src/phpunit/tests/xmlrpc/wp/getTerm.php:67
+msgid "Invalid term ID."
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/xmlrpc/wp/editComment.php:63
+msgid "Sorry, you are not allowed to moderate or edit this comment."
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/xmlrpc/wp/editTerm.php:59
+msgid "Sorry, you are not allowed to edit this term."
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/xmlrpc/wp/editTerm.php:97
+#: vendor/rask/wp-test-framework/src/phpunit/tests/xmlrpc/wp/newTerm.php:67
+msgid "The term name cannot be empty."
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/xmlrpc/wp/editTerm.php:117
+msgid "Cannot set parent term, taxonomy is not hierarchical."
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/xmlrpc/wp/editTerm.php:202
+#: vendor/rask/wp-test-framework/src/phpunit/tests/xmlrpc/wp/newTerm.php:126
+msgid "Parent term does not exist."
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/xmlrpc/wp/editTerm.php:223
+#, php-format
+msgid "The slug &#8220;%s&#8221; is already in use by another term."
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/xmlrpc/wp/getTaxonomy.php:38
+#: vendor/rask/wp-test-framework/src/phpunit/tests/xmlrpc/wp/getTerms.php:38
+msgid "Sorry, you are not allowed to assign terms in this taxonomy."
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/xmlrpc/wp/getTerm.php:48
+msgid "Sorry, you are not allowed to assign this term."
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/xmlrpc/wp/newTerm.php:48
+msgid "Sorry, you are not allowed to create terms in this taxonomy."
+msgstr ""
+
+#: vendor/rask/wp-test-framework/src/phpunit/tests/xmlrpc/wp/newTerm.php:87
+msgid "This taxonomy is not hierarchical."
 msgstr ""
