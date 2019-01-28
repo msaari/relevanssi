@@ -240,6 +240,7 @@ function relevanssi_populate_array( $matches ) {
 		array_push( $ids, $match->doc );
 	}
 
+	$ids   = array_keys( array_flip( $ids ) ); // Remove duplicate IDs.
 	$ids   = implode( ',', $ids );
 	$posts = $wpdb->get_results( "SELECT * FROM $wpdb->posts WHERE id IN ($ids)" ); // WPCS: unprepared SQL ok, no user-generated inputs.
 
@@ -486,6 +487,8 @@ function relevanssi_remove_punct( $a ) {
 		// In case something sends a non-string here.
 		return '';
 	}
+
+	$a = preg_replace( '/&lt;(\d|\s)/', '\1', $a );
 
 	$a = html_entity_decode( $a, ENT_QUOTES );
 	$a = preg_replace( '/<[^>]*>/', ' ', $a );
