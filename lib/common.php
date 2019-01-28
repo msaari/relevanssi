@@ -168,12 +168,13 @@ function relevanssi_default_post_ok( $post_ok, $post_id ) {
 			$post_ok = true;
 		}
 
-		if ( function_exists( 'members_can_current_user_view_post' ) ) {
-			// Members.
-			$post_ok = members_can_current_user_view_post( $post_id );
+		if ( function_exists( 'members_content_permissions_enabled' ) && function_exists( 'members_can_current_user_view_post' ) ) {
+			// Members. Only use, if 'content permissions' feature is enabled.
+			if ( members_content_permissions_enabled() ) {
+				$post_ok = members_can_current_user_view_post( $post_id );
+			}
 		}
 	}
-
 	if ( defined( 'GROUPS_CORE_VERSION' ) ) {
 		// Groups.
 		$current_user = wp_get_current_user();
