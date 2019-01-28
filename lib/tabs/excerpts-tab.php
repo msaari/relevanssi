@@ -243,7 +243,7 @@ function relevanssi_excerpts_tab() {
 			<p class="description"><?php esc_html_e( 'Requires custom snippets to work.', 'relevanssi' ); ?></p>
 		</td>
 	</tr>
-	<tr id="relevanssi_txt_col" class='<?php echo esc_attr( $txt_col_display ); ?>'>
+	<tr id="tr_relevanssi_txt_col" class='<?php echo esc_attr( $txt_col_display ); ?>'>
 		<th scope="row">
 			<label for="relevanssi_txt_col"><?php esc_html_e( 'Text color', 'relevanssi' ); ?></label>
 		</th>
@@ -257,7 +257,7 @@ function relevanssi_excerpts_tab() {
 			/>
 		</td>
 	</tr>
-	<tr id="relevanssi_bg_col" class=' <?php echo esc_attr( $bg_col_display ); ?>'>
+	<tr id="tr_relevanssi_bg_col" class=' <?php echo esc_attr( $bg_col_display ); ?>'>
 		<th scope="row">
 			<label for="relevanssi_bg_col"><?php esc_html_e( 'Background color', 'relevanssi' ); ?></label>
 		</th>
@@ -271,7 +271,7 @@ function relevanssi_excerpts_tab() {
 			/>
 		</td>
 	</tr>
-	<tr id="relevanssi_css" class=' <?php echo esc_attr( $css_display ); ?>'>
+	<tr id="tr_relevanssi_css" class=' <?php echo esc_attr( $css_display ); ?>'>
 		<th scope="row">
 			<label for='relevanssi_css'><?php esc_html_e( 'CSS style for highlights', 'relevanssi' ); ?></label>
 		</th>
@@ -287,7 +287,7 @@ function relevanssi_excerpts_tab() {
 			<p class="description"><?php printf( esc_html__( 'The highlights will be wrapped in a %s with this CSS in the style parameter.', 'relevanssi' ), '&lt;span&gt;' ); ?></p>
 		</td>
 	</tr>
-	<tr id="relevanssi_class" class=' <?php echo esc_attr( $class_display ); ?>'>
+	<tr id="tr_relevanssi_class" class=' <?php echo esc_attr( $class_display ); ?>'>
 		<th scope="row">
 			<label for='relevanssi_class'><?php esc_html_e( 'CSS class for highlights', 'relevanssi' ); ?></label>
 		</th>
