@@ -174,7 +174,7 @@ function relevanssi_indexing_tab() {
 	$public_types = array_merge( $pt_1, $pt_2 );
 	$post_types   = get_post_types();
 	foreach ( $post_types as $type ) {
-		if ( in_array( $type, array( 'nav_menu_item', 'revision', 'acf-field', 'acf-field-group', 'oembed_cache', 'customize_changeset', 'custom_css' ), true ) ) {
+		if ( in_array( $type, relevanssi_get_forbidden_post_types(), true ) ) {
 			continue;
 		}
 		$checked = '';
@@ -226,7 +226,7 @@ function relevanssi_indexing_tab() {
 	<?php
 	$taxos = get_taxonomies( '', 'objects' );
 	foreach ( $taxos as $taxonomy ) {
-		if ( in_array( $taxonomy->name, array( 'nav_menu', 'link_category' ), true ) ) {
+		if ( in_array( $taxonomy->name, relevanssi_get_forbidden_taxonomies(), true ) ) {
 			continue;
 		}
 		$checked = '';
