@@ -864,6 +864,7 @@ function relevanssi_index_doc( $index_post, $remove_first = false, $custom_field
 					'swpm_protected', // Simple Membership Partially Protected content.
 					'gravityform', // Gravity Forms.
 					'sdm_latest_downloads', // SDM Simple Download Monitor.
+					'slimstat', // Slimstat Analytics.
 				);
 
 				$disable_shortcodes = get_option( 'relevanssi_disable_shortcodes' );
