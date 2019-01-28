@@ -317,8 +317,22 @@ function update_relevanssi_options() {
 
 	if ( isset( $_REQUEST['relevanssi_excat'] ) ) {
 		if ( is_array( $_REQUEST['relevanssi_excat'] ) ) {
-			$csv_cats = implode( ',', $_REQUEST['relevanssi_excat'] );
-			update_option( 'relevanssi_excat', $csv_cats );
+			$array_excats = $_REQUEST['relevanssi_excat'];
+			$cat          = get_option( 'relevanssi_cat' );
+			if ( $cat ) {
+				$array_cats   = explode( ',', $cat );
+				$valid_excats = array();
+				foreach ( $array_excats as $excat ) {
+					if ( ! in_array( $excat, $array_cats, true ) ) {
+						$valid_excats[] = $excat;
+					}
+				}
+			} else {
+				// No category restrictions, so everything's good.
+				$valid_excats = $array_excats;
+			}
+			$csv_excats = implode( ',', $valid_excats );
+			update_option( 'relevanssi_excat', $csv_excats );
 		}
 	} else {
 		if ( isset( $_REQUEST['relevanssi_excat_active'] ) ) {
