@@ -110,6 +110,7 @@ function relevanssi_overview_tab() {
 			<p><?php esc_html_e( 'Here are some improvements Relevanssi Premium offers:', 'relevanssi' ); ?></p>
 			<ul class="relevanssi_ul">
 				<li><?php esc_html_e( 'PDF content indexing', 'relevanssi' ); ?></li>
+				<li><?php esc_html_e( 'A Related posts feature', 'relevanssi' ); ?></li>
 				<li><?php esc_html_e( 'Index and search user profile pages', 'relevanssi' ); ?></li>
 				<li><?php esc_html_e( 'Index and search taxonomy term pages', 'relevanssi' ); ?></li>
 				<li><?php esc_html_e( 'Multisite searches across many subsites', 'relevanssi' ); ?></li>
@@ -118,6 +119,7 @@ function relevanssi_overview_tab() {
 				<li><?php esc_html_e( 'Internal link anchors can be search terms for the target posts', 'relevanssi' ); ?></li>
 				<li><?php esc_html_e( 'Index and search any columns in the wp_posts database', 'relevanssi' ); ?></li>
 				<li><?php esc_html_e( 'Hide Relevanssi branding from the User Searches page on a client installation', 'relevanssi' ); ?></li>
+				<li><?php esc_html_e( 'Redirect search queries to custom URLs', 'relevanssi' ); ?></li>
 			</ul>
 		</td>
 	</tr>
