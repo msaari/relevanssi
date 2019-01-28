@@ -117,5 +117,10 @@ function relevanssi_search_form( $atts ) {
 		}
 		$form = str_replace( '</form>', implode( "\n", $additional_fields ) . '</form>', $form );
 	}
-	return $form;
+	/**
+	 * Filters the Relevanssi shortcode search form before it's used.
+	 *
+	 * @param string The form HTML code.
+	 */
+	return apply_filters( 'relevanssi_search_form', $form );
 }
