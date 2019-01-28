@@ -21,7 +21,7 @@ function relevanssi_the_excerpt() {
 	if ( ! post_password_required( $post ) ) {
 		echo '<p>' . $post->post_excerpt . '</p>'; // WPCS: XSS ok.
 	} else {
-		echo esc_html__( 'There is no excerpt because this is a protected post.' );
+		esc_html_e( 'There is no excerpt because this is a protected post.', 'relevanssi' );
 	}
 }
 
