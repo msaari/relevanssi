@@ -24,7 +24,7 @@ function relevanssi_overview_tab() {
 	<table class="form-table">
 
 	<?php
-	if ( ! is_multisite() && function_exists( 'relevanssi_form_api_key' ) ) {
+	if ( ! is_plugin_active_for_network( plugin_basename( $relevanssi_variables['file'] ) ) && function_exists( 'relevanssi_form_api_key' ) ) {
 		relevanssi_form_api_key();
 	}
 	if ( function_exists( 'relevanssi_form_hide_post_controls' ) ) {
