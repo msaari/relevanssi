@@ -110,7 +110,7 @@ function relevanssi_add_stopword( $term, $verbose = true ) {
 				printf( "<div id='message' class='updated fade'><p>%s</p></div>", sprintf( esc_html__( "Term '%s' added to stopwords!", 'relevanssi' ), esc_html( stripslashes( $term ) ) ) );
 			} else {
 				// Translators: %s is the stopword.
-				printf( esc_html__( "<div id='message' class='updated fade'><p>Couldn't add term '%s' to stopwords!</p></div>", 'relevanssi' ), esc_html( stripslashes( $term ) ) );
+				printf( "<div id='message' class='updated fade'><p>%s</p></div>", sprintf( esc_html__( "Couldn't add term '%s' to stopwords!", 'relevanssi' ), esc_html( stripslashes( $term ) ) ) );
 			}
 		}
 	}
@@ -137,7 +137,7 @@ function relevanssi_add_single_stopword( $term ) {
 	$term = stripslashes( $term );
 	$term = esc_sql( $wpdb->esc_like( $term ) );
 
-	$success = $wpdb->query( $wpdb->prepare( 'INSERT INTO ' . $relevanssi_variables['stopword_table'] . ' (stopword) VALUES (%s)', $term ) ); // WPCS: unprepared SQL ok, Relevanssi table name.
+	$success = $wpdb->query( $wpdb->prepare( 'INSERT IGNORE INTO ' . $relevanssi_variables['stopword_table'] . ' (stopword) VALUES (%s)', $term ) ); // WPCS: unprepared SQL ok, Relevanssi table name.
 
 	if ( $success ) {
 		// Remove from index.
