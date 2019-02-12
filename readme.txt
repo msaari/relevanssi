@@ -3,9 +3,9 @@ Contributors: msaari
 Donate link: https://www.relevanssi.com/buy-premium/
 Tags: search, relevance, better search
 Requires at least: 4.0
-Tested up to: 5.0
+Tested up to: 5.0.3
 Requires PHP: 5.6
-Stable tag: 4.1.2
+Stable tag: 4.1.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -56,6 +56,7 @@ Do note that using Relevanssi may require large amounts (hundreds of megabytes) 
 * Highlighting search terms for visitors from external search engines.
 * Export and import settings.
 * [WP CLI commands](https://www.relevanssi.com/user-manual/wp-cli/).
+* Related posts.
 
 = Relevanssi in Facebook =
 You can find [Relevanssi in Facebook](https://www.facebook.com/relevanssi).
@@ -129,6 +130,14 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.1.3 =
+* Improvements to meta key sorting.
+* Relevanssi settings page won't let you exclude categories you have restricted the search to.
+* Members plugin compatibility has been improved: it's only used if the 'content permissions' feature has been enabled.
+* The excerpt settings page was a bit buggy.
+* Slimstat analytics is now added to the blocked shortcodes list.
+* New filter: `relevanssi_search_form` works exactly like `get_search_form`, but only applies to the Relevanssi shortcode search forms.
+* New JetPack taxonomies and post types have been added to the block list so they won't appear in Relevanssi settings.
 
 = 4.1.2 =
 * Choosing "CSS Style" for highlighting was not possible. That is now fixed.
@@ -173,6 +182,8 @@ Each document database is full of useless words. All the little words that appea
 * WP Search Suggest compatibility added.
 
 == Upgrade notice ==
+= 4.1.3 =
+* Small improvements here and there.
 
 = 4.1.2 =
 * Better compatibility with Gutenberg, new features.
