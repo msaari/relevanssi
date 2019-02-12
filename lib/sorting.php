@@ -155,14 +155,25 @@ function relevanssi_get_compare_values( $key, $item_1, $item_2 ) {
 		global $wp_query;
 		// Get the name of the field from the global WP_Query.
 		$key = $wp_query->query_vars['meta_key'];
+
 		if ( empty( $key ) ) {
 			// If empty, try the Relevanssi meta_query.
 			global $relevanssi_meta_query;
-			if ( isset( $relevanssi_meta_query[0]['key'] ) ) {
-				// Take from index 0, because using 'meta_value' requires the use of
-				// 'meta_key', which means there'll be just one key.
-				$key = $relevanssi_meta_query[0]['key'];
-			} else {
+			foreach ( $relevanssi_meta_query as $meta_row ) {
+				// There may be many rows. Choose the one where there's just key
+				// and no value.
+				if ( ! is_array( $meta_row ) ) {
+					continue;
+				}
+				if ( isset( $meta_row['value'] ) ) {
+					continue;
+				}
+				if ( isset( $meta_row['key'] ) ) {
+					$key = $meta_row['key'];
+				}
+			}
+
+			if ( empty( $key ) ) {
 				// The key is not set.
 				return array( '', '' );
 			}
