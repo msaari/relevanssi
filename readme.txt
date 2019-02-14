@@ -53,7 +53,6 @@ Do note that using Relevanssi may require large amounts (hundreds of megabytes) 
 * Assign weights to any post types and taxonomies.
 * Assign extra weight to new posts.
 * Let the user choose between AND and OR searches, use + and - operator (AND and NOT).
-* Highlighting search terms for visitors from external search engines.
 * Export and import settings.
 * [WP CLI commands](https://www.relevanssi.com/user-manual/wp-cli/).
 * Related posts.
