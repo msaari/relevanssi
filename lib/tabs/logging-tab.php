@@ -85,8 +85,18 @@ function relevanssi_logging_tab() {
 		<td>
 			<input type='number' name='relevanssi_trim_logs' id='relevanssi_trim_logs' value='<?php echo esc_attr( $trim_logs ); ?>' />
 			<?php esc_html_e( 'How many days of logs to keep in the database.', 'relevanssi' ); ?>
-			<?php // Translators: %d is the setting for no trim (probably 0). ?>
-			<p class="description"><?php printf( esc_html__( ' Set to %d for no trimming.', 'relevanssi' ), 0 ); ?></p>
+			<?php
+			if ( '0' === $trim_logs ) {
+				echo '<p class="description">';
+				esc_html_e( "Big log database table will eventually start to slow down the search, so it's a good idea to use some level of automatic log trimming.", 'relevanssi' );
+				echo '</p>';
+			} else {
+				echo '<p class="description">';
+				// Translators: %d is the setting for no trim (probably 0).
+				printf( esc_html__( ' Set to %d for no trimming.', 'relevanssi' ), 0 );
+				echo '</p>';
+			}
+			?>
 		</td>
 	</tr>
 
