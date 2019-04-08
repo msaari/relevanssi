@@ -20,6 +20,10 @@
  * @param int    $hits  The number of hits found.
  */
 function relevanssi_update_log( $query, $hits ) {
+	if ( empty( $query ) ) {
+		return;
+	}
+
 	// Bot filter, by Justin_K.
 	// See: http://wordpress.org/support/topic/bot-logging-problem-w-tested-solution.
 	$user_agent = '';
