@@ -379,9 +379,10 @@ function relevanssi_highlight_in_docs( $content ) {
  * want to override the settings, 'pre_option_relevanssi_highlight' filter hook
  * is your friend).
  *
- * @param string  $content The content to highlight.
- * @param string  $query   The search query.
- * @param boolean $in_docs Are we highlighting post content? Default false.
+ * @param string       $content The content to highlight.
+ * @param string|array $query   The search query (should be a string, can sometimes
+ *                              be an array).
+ * @param boolean      $in_docs Are we highlighting post content? Default false.
  *
  * @return string The $content with highlighting.
  */
