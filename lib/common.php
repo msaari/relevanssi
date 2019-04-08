@@ -175,8 +175,8 @@ function relevanssi_default_post_ok( $post_ok, $post_id ) {
 			}
 		}
 	}
-	if ( defined( 'GROUPS_CORE_VERSION' ) ) {
-		// Groups.
+	if ( defined( 'GROUPS_CORE_VERSION' ) && 'publish' === $status ) {
+		// Groups. Only apply to published posts, don't apply to drafts.
 		$current_user = wp_get_current_user();
 		$post_ok      = Groups_Post_Access::user_can_read_post( $post_id, $current_user->ID );
 	}
