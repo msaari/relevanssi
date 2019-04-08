@@ -4,7 +4,8 @@
     "version": "4.1.4",
     "source": {
         "url": "https://github.com/msaari/relevanssi.git",
-        "type": "git"
+        "type": "git",
+        "reference": "origin/master"
     },
     "require": {
         "rask/wp-test-framework": "*"
