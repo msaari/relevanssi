@@ -898,7 +898,7 @@ function relevanssi_the_tags( $before = null, $separator = ', ', $after = '', $e
  * @param string $after     What is printed after the tags, default ''.
  */
 function relevanssi_get_the_tags( $before = null, $separator = ', ', $after = '' ) {
-	return relevanssi_the_tags( $before, $sep, $after, false );
+	return relevanssi_the_tags( $before, $separator, $after, false );
 }
 
 /**
