@@ -230,6 +230,7 @@ function relevanssi_query_vars( $qv ) {
 	$qv[] = 'post_types';
 	$qv[] = 'by_date';
 	$qv[] = 'highlight';
+	$qv[] = 'posts_per_page';
 
 	return $qv;
 }
