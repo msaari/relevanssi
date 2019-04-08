@@ -1998,7 +1998,7 @@ function relevanssi_process_tax_query_row( $row, $is_sub_row, $global_relation, 
 			$term_id = array();
 			foreach ( $name as $t_name ) {
 				$term = get_term_by( 'name', $t_name, $row['taxonomy'] );
-				if ( ! $term && is_numeric( $t_names ) ) {
+				if ( ! $term && is_numeric( $t_name ) ) {
 					$numeric_names[] = "'$t_name'";
 				} else {
 					if ( isset( $term->term_id ) ) {
