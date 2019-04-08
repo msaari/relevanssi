@@ -1,4 +1,10 @@
 {
+    "name": "msaari/relevanssi",
+    "version": "4.1.4",
+    "dist": {
+        "url": "https://github.com/msaari/relevanssi.git",
+        "type": "git"
+    },
     "require": {
         "rask/wp-test-framework": "*"
     }
