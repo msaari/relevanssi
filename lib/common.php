@@ -197,6 +197,10 @@ function relevanssi_default_post_ok( $post_ok, $post_id ) {
 		// WP JV Post Reading Groups.
 		$post_ok = wp_jv_prg_user_can_see_a_post( get_current_user_id(), $post_id );
 	}
+	if ( function_exists( 'rcp_user_can_access' ) ) {
+		// Restrict Content Pro.
+		$post_ok = rcp_user_can_access( get_current_user_id(), $post_id );
+	}
 	/**
 	 * Filters statuses allowed in admin searches.
 	 *
