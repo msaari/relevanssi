@@ -143,7 +143,7 @@ function relevanssi_search( $args ) {
 	$query_restrictions = '';
 
 	if ( ! isset( $tax_query_relation ) ) {
-		$tax_query_relation = 'or';
+		$tax_query_relation = 'and';
 	}
 	$tax_query_relation = relevanssi_strtolower( $tax_query_relation );
 	$term_tax_id        = array();
