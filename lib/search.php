@@ -630,6 +630,7 @@ function relevanssi_search( $args ) {
 	$include_these_posts = array();
 	$include_these_items = array();
 	$df_counts           = array();
+	$doc_weight          = array();
 
 	do {
 		foreach ( $terms as $term ) {
