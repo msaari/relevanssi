@@ -120,6 +120,10 @@ function relevanssi_searching_tab() {
 				<option value='always' <?php echo esc_html( $fuzzy_always ); ?>><?php esc_html_e( 'Partial words', 'relevanssi' ); ?></option>
 				<option value='sometimes' <?php echo esc_html( $fuzzy_sometimes ); ?>><?php esc_html_e( 'Partial words if no hits for whole words', 'relevanssi' ); ?></option>
 			</select>
+			<?php if ( $fuzzy_sometimes ) : ?>
+				<?php // Translators: %1$s is the "partial words if no hits" option and %2$s is the "partial words" option. ?>
+				<p class="description important"><?php printf( esc_html__( 'Choosing the "%1$s" option may lead to unexpected results. Most of the time the "%2$s" option is the better choice.', 'relevanssi' ), esc_html__( 'Partial words if not hits for whole words', 'relevanssi' ), esc_html__( 'Partial words', 'relevanssi' ) ); ?></p>
+			<?php endif; ?>
 			<p class="description"><?php esc_html_e( 'Whole words means Relevanssi only finds posts that include the whole search term.', 'relevanssi' ); ?></p>
 			<p class="description"><?php esc_html_e( "Partial words also includes cases where the word in the index begins or ends with the search term (searching for 'ana' will match 'anaconda' or 'banana', but not 'banal'). See Help, if you want to make Relevanssi match also inside words.", 'relevanssi' ); ?></p>
 		</td>
