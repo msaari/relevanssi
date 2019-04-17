@@ -1428,13 +1428,16 @@ function relevanssi_simple_generate_suggestion( $query ) {
 				$closest = '';
 				break;
 			} else {
-				$lev = levenshtein( $token, $row->query );
-				if ( $lev < 3 && ( $lev < $distance || $distance < 0 ) ) {
-					if ( $row->a > 0 ) {
-						$distance = $lev;
-						$closest  = $row->query;
-						if ( $lev < 2 ) {
-							break; // get the first with distance of 1 and go.
+				if ( relevanssi_strlen( $token ) < 255 ) {
+					// The levenshtein() function has a max length of 255 characters.
+					$lev = levenshtein( $token, $row->query );
+					if ( $lev < 3 && ( $lev < $distance || $distance < 0 ) ) {
+						if ( $row->a > 0 ) {
+							$distance = $lev;
+							$closest  = $row->query;
+							if ( $lev < 2 ) {
+								break; // get the first with distance of 1 and go.
+							}
 						}
 					}
 				}
