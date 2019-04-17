@@ -259,8 +259,6 @@ function relevanssi_search( $args ) {
 	}
 
 	if ( is_array( $meta_query ) ) {
-		$meta_query_restrictions = '';
-
 		$mq_vars = array( 'meta_query' => $meta_query );
 
 		$mq = new WP_Meta_Query();
@@ -1517,13 +1515,7 @@ function relevanssi_do_query( &$query ) {
 			$parent_query = array( 'parent not in' => $query->query_vars['post_parent__not_in'] );
 		}
 
-		/**
-		 * Filters the default meta_query relation.
-		 *
-		 * @param string The meta_query relation, default 'AND'.
-		 */
-		$meta_query_relation = apply_filters( 'relevanssi_default_meta_query_relation', 'AND' );
-		$meta_query          = array();
+		$meta_query = array();
 		if ( ! empty( $query->query_vars['meta_query'] ) ) {
 			$meta_query = $query->query_vars['meta_query'];
 		}
