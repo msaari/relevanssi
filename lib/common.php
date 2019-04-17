@@ -1333,7 +1333,7 @@ function relevanssi_didyoumean( $query, $pre, $post, $n = 5, $echo = true ) {
  * @return string The suggestion HTML code, null if nothing found.
  */
 function relevanssi_simple_didyoumean( $query, $pre, $post, $n = 5 ) {
-	global $wpdb, $relevanssi_variables, $wp_query;
+	global $wp_query;
 
 	$total_results = $wp_query->found_posts;
 
