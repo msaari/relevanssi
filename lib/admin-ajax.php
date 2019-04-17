@@ -309,7 +309,6 @@ function relevanssi_admin_search_debugging_info( $query ) {
 		'relevanssi_orderby',
 		'relevanssi_order',
 		'relevanssi_default_tax_query_relation',
-		'relevanssi_default_meta_query_relation',
 		'relevanssi_hits_filter',
 	);
 
