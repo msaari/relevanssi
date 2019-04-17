@@ -293,19 +293,22 @@ function relevanssi_extract_phrases( $query ) {
 		$substr_function = 'mb_substr';
 	}
 
-	$pos = call_user_func( $strpos_function, $query, '"' );
+	// iOS uses ” as the default quote, so Relevanssi needs to understand that as
+	// well.
+	$normalized_query = str_replace( '”', '"', $query );
+	$pos              = call_user_func( $strpos_function, $normalized_query, '"' );
 
 	$phrases = array();
 	while ( false !== $pos ) {
 		$start = $pos;
-		$end   = call_user_func( $strpos_function, $query, '"', $start + 1 );
+		$end   = call_user_func( $strpos_function, $normalized_query, '"', $start + 1 );
 
 		if ( false === $end ) {
 			// Just one " in the query.
 			$pos = $end;
 			continue;
 		}
-		$phrase = call_user_func( $substr_function, $query, $start + 1, $end - $start - 1 );
+		$phrase = call_user_func( $substr_function, $normalized_query, $start + 1, $end - $start - 1 );
 		$phrase = trim( $phrase );
 
 		// Do not count single-word phrases as phrases.
