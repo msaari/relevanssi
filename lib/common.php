@@ -293,9 +293,9 @@ function relevanssi_extract_phrases( $query ) {
 		$substr_function = 'mb_substr';
 	}
 
-	// iOS uses ” as the default quote, so Relevanssi needs to understand that as
+	// iOS uses “” as the default quotes, so Relevanssi needs to understand that as
 	// well.
-	$normalized_query = str_replace( '”', '"', $query );
+	$normalized_query = str_replace( array( '”', '“' ), '"', $query );
 	$pos              = call_user_func( $strpos_function, $normalized_query, '"' );
 
 	$phrases = array();
