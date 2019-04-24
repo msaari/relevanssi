@@ -312,7 +312,7 @@ function relevanssi_extract_phrases( $query ) {
 		$phrase = trim( $phrase );
 
 		// Do not count single-word phrases as phrases.
-		if ( ! empty( $phrase ) && str_word_count( $phrase ) > 1 ) {
+		if ( ! empty( $phrase ) && count( explode( ' ', $phrase ) ) > 1 ) {
 			$phrases[] = $phrase;
 		}
 		$pos = $end;
