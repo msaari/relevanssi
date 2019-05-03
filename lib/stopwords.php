@@ -67,8 +67,6 @@ function relevanssi_fetch_stopwords() {
 /**
  * Adds a stopword to the list of stopwords.
  *
- * @global object $wpdb The WP database interface.
- *
  * @param string  $term    The stopword that is added.
  * @param boolean $verbose If true, print out notice. If false, be silent. Default
  * true.
@@ -76,7 +74,6 @@ function relevanssi_fetch_stopwords() {
  * @return boolean True, if success; false otherwise.
  */
 function relevanssi_add_stopword( $term, $verbose = true ) {
-	global $wpdb;
 	if ( empty( $term ) ) {
 		return;
 	}

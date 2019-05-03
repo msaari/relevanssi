@@ -1568,11 +1568,6 @@ function relevanssi_sanitize_hex_color( $color ) {
 function relevanssi_common_words( $limit = 25, $wp_cli = false ) {
 	global $wpdb, $relevanssi_variables;
 
-	$plugin = 'relevanssi';
-	if ( RELEVANSSI_PREMIUM ) {
-		$plugin = 'relevanssi-premium';
-	}
-
 	if ( ! is_numeric( $limit ) ) {
 		$limit = 25;
 	}

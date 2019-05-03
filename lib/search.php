@@ -128,7 +128,6 @@ function relevanssi_search( $args ) {
 	$post_type           = $filtered_args['post_type'];
 	$post_status         = $filtered_args['post_status'];
 	$operator            = $filtered_args['operator'];
-	$search_blogs        = $filtered_args['search_blogs'];
 	$author              = $filtered_args['author'];
 	$orderby             = $filtered_args['orderby'];
 	$order               = $filtered_args['order'];
@@ -146,7 +145,6 @@ function relevanssi_search( $args ) {
 		$tax_query_relation = 'and';
 	}
 	$tax_query_relation = relevanssi_strtolower( $tax_query_relation );
-	$term_tax_id        = array();
 	$term_tax_ids       = array();
 	$not_term_tax_ids   = array();
 	$and_term_tax_ids   = array();

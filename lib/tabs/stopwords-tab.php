@@ -56,11 +56,6 @@ function relevanssi_stopwords_tab() {
 function relevanssi_show_stopwords() {
 	global $wpdb, $relevanssi_variables;
 
-	$plugin = 'relevanssi';
-	if ( RELEVANSSI_PREMIUM ) {
-		$plugin = 'relevanssi-premium';
-	}
-
 	printf( '<p>%s</p>', esc_html__( 'Enter a word here to add it to the list of stopwords. The word will automatically be removed from the index, so re-indexing is not necessary. You can enter many words at the same time, separate words with commas.', 'relevanssi' ) );
 ?>
 <table class="form-table">
