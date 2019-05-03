@@ -1286,9 +1286,9 @@ function relevanssi_do_query( &$query ) {
 		/**
 		 * Filters the default tax_query relation.
 		 *
-		 * @param string The default relation, default 'OR'.
+		 * @param string The default relation, default 'AND'.
 		 */
-		$tax_query_relation = apply_filters( 'relevanssi_default_tax_query_relation', 'OR' );
+		$tax_query_relation = apply_filters( 'relevanssi_default_tax_query_relation', 'AND' );
 		if ( isset( $query->tax_query ) && empty( $query->tax_query->queries ) ) {
 			// Tax query is empty, let's get rid of it.
 			$query->tax_query = null;
