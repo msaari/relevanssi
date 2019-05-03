@@ -915,7 +915,7 @@ function relevanssi_index_doc( $index_post, $remove_first = false, $custom_field
 		 * @param object $post     The full post object.
 		 */
 		$contents       = apply_filters( 'relevanssi_post_content_before_tokenize', $contents, $post );
-		$content_tokens = relevanssi_tokenize( $contents, true, $min_word_length );
+		$content_tokens = relevanssi_tokenize( $contents, 'body', $min_word_length );
 		if ( $debug ) {
 			relevanssi_debug_echo( "\tContent, tokenized:\n" . implode( ' ', array_keys( $content_tokens ) ) );
 		}

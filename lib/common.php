@@ -708,9 +708,13 @@ function relevanssi_prevent_default_request( $request, $query ) {
  * source material. If the parameter is an array of string, each string is
  * tokenized separately and the resulting tokens are combined into one array.
  *
- * @param string|array $string          The string, or an array of strings, to tokenize.
- * @param boolean      $remove_stops    If true, stopwords are removed. Default true.
- * @param int          $min_word_length The minimum word length to include. Default -1.
+ * @param string|array   $string          The string, or an array of strings, to
+ *                                        tokenize.
+ * @param boolean|string $remove_stops    If true, stopwords are removed. If 'body',
+ *                                        also removes the body stopwords. Default
+ *                                        true.
+ * @param int            $min_word_length The minimum word length to include.
+ *                                        Default -1.
  */
 function relevanssi_tokenize( $string, $remove_stops = true, $min_word_length = -1 ) {
 	$tokens = array();
@@ -733,6 +737,9 @@ function relevanssi_tokenize( $string, $remove_stops = true, $min_word_length = 
 	$stopword_list = array();
 	if ( $remove_stops ) {
 		$stopword_list = relevanssi_fetch_stopwords();
+	}
+	if ( 'body' === $remove_stops && function_exists( 'relevanssi_fetch_body_stopwords' ) ) {
+		$stopword_list = array_merge( $stopword_list, relevanssi_fetch_body_stopwords() );
 	}
 
 	if ( function_exists( 'relevanssi_apply_thousands_separator' ) ) {
@@ -1584,11 +1591,14 @@ function relevanssi_common_words( $limit = 25, $wp_cli = false ) {
 	<td>
 <ul>
 	<?php
-	$src = plugins_url( 'delete.png', $relevanssi_variables['file'] );
-
 	foreach ( $words as $word ) {
 		$stop = __( 'Add to stopwords', 'relevanssi' );
-		printf( '<li><input style="padding: 0; margin: 0" type="submit" src="%1$s" name="term" value="%2$s"/> (%3$d)</li>', esc_attr( $src ), esc_attr( $word->term ), esc_html( $word->cnt ) );
+		printf( '<li>%1$s (%2$d) <button name="term" value="%1$s" />%3$s</button>', esc_attr( $word->term ), esc_html( $word->cnt ), esc_html( $stop ) );
+		if ( RELEVANSSI_PREMIUM ) {
+			$body = __( 'Add to content stopwords', 'relevanssi' );
+			printf( ' <button name="body_term" value="%1$s" />%3$s</button>', esc_attr( $word->term ), esc_html( $word->cnt ), esc_html( $body ) );
+		}
+		echo '</li>';
 	}
 	?>
 	</ul>
