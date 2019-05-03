@@ -110,12 +110,22 @@ function relevanssi_search_form( $atts ) {
 	if ( is_array( $atts ) ) {
 		$additional_fields = array();
 		foreach ( $atts as $key => $value ) {
-			$key   = esc_attr( $key );
-			$value = esc_attr( $value );
+			if ( 'dropdown' === $key ) {
+				$args                = array(
+					'taxonomy'         => $value,
+					'echo'             => 0,
+					'hide_if_empty'    => true,
+					'show_option_none' => __( 'None' ),
+				);
+				$additional_fields[] = wp_dropdown_categories( $args );
+			} else {
+				$key   = esc_attr( $key );
+				$value = esc_attr( $value );
 
-			$additional_fields[] = "<input type='hidden' name='$key' value='$value' />";
+				$additional_fields[] = "<input type='hidden' name='$key' value='$value' />";
+			}
 		}
-		$form = str_replace( '</form>', implode( "\n", $additional_fields ) . '</form>', $form );
+		$form = str_replace( '<input type="submit"', implode( "\n", $additional_fields ) . '<input type="submit"', $form );
 	}
 	/**
 	 * Filters the Relevanssi shortcode search form before it's used.
