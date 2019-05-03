@@ -164,7 +164,7 @@ function relevanssi_search( $args ) {
 					$is_sub_row = true;
 					if ( isset( $subrow['terms'] ) ) {
 						list( $query_restrictions, $term_tax_ids, $not_term_tax_ids, $and_term_tax_ids ) =
-						relevanssi_process_tax_query_row( $subrow, $is_sub_row, $tax_query_relation, $query_restrictions, $tax_query_relation, $term_tax_ids, $not_term_tax_ids, $and_term_tax_ids );
+						relevanssi_process_tax_query_row( $subrow, $is_sub_row, $tax_query_relation, $query_restrictions, $row_tax_query_relation, $term_tax_ids, $not_term_tax_ids, $and_term_tax_ids );
 					}
 				}
 			}
