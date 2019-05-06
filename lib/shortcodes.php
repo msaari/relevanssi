@@ -111,11 +111,22 @@ function relevanssi_search_form( $atts ) {
 		$additional_fields = array();
 		foreach ( $atts as $key => $value ) {
 			if ( 'dropdown' === $key ) {
+				switch ( $value ) {
+					case 'category':
+						$name = 'cat';
+						break;
+					case 'post_tag':
+						$name = 'tag';
+						break;
+					default:
+						$name = $value;
+				}
 				$args                = array(
 					'taxonomy'         => $value,
 					'echo'             => 0,
 					'hide_if_empty'    => true,
 					'show_option_none' => __( 'None' ),
+					'name'             => $name,
 				);
 				$additional_fields[] = wp_dropdown_categories( $args );
 			} else {
