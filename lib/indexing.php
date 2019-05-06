@@ -567,7 +567,15 @@ function relevanssi_index_doc( $index_post, $remove_first = false, $custom_field
 			if ( $debug ) {
 				relevanssi_debug_echo( "Comment content: $post_comments" );
 			}
-			$post_comments_tokens = relevanssi_tokenize( $post_comments, true, $min_word_length );
+			/**
+			 * Filters the indexing tokens before they are added to the $insert_data.
+			 *
+			 * @param array  An array of token-frequency pairs.
+			 * @param string The context of the tokens (eg. 'content', 'title').
+			 *
+			 * @return array The filtered tokens.
+			 */
+			$post_comments_tokens = apply_filters( 'relevanssi_indexing_tokens', relevanssi_tokenize( $post_comments, true, $min_word_length ), 'comments' );
 			if ( count( $post_comments_tokens ) > 0 ) {
 				foreach ( $post_comments_tokens as $token => $count ) {
 					$n++;
@@ -590,7 +598,8 @@ function relevanssi_index_doc( $index_post, $remove_first = false, $custom_field
 	if ( 'on' === get_option( 'relevanssi_index_author' ) ) {
 		$author_id    = $post->post_author;
 		$display_name = get_the_author_meta( 'display_name', $author_id );
-		$name_tokens  = relevanssi_tokenize( $display_name, false, $min_word_length );
+		/** This filter is documented in common/indexing.php */
+		$name_tokens = apply_filters( 'relevanssi_indexing_tokens', relevanssi_tokenize( $display_name, false, $min_word_length ), 'author' );
 		if ( $debug ) {
 			relevanssi_debug_echo( 'Indexing post author as: ' . implode( ' ', array_keys( $name_tokens ) ) );
 		}
@@ -671,8 +680,8 @@ function relevanssi_index_doc( $index_post, $remove_first = false, $custom_field
 				if ( $debug ) {
 					relevanssi_debug_echo( "\tKey: " . $field . ' – value: ' . $value );
 				}
-
-				$value_tokens = relevanssi_tokenize( $value, true, $min_word_length );
+				/** This filter is documented in common/indexing.php */
+				$value_tokens = apply_filters( 'relevanssi_indexing_tokens', relevanssi_tokenize( $value, true, $min_word_length ), 'custom_field' );
 				foreach ( $value_tokens as $token => $count ) {
 					if ( ! isset( $insert_data[ $token ]['customfield'] ) ) {
 						$insert_data[ $token ]['customfield'] = 0;
@@ -694,7 +703,8 @@ function relevanssi_index_doc( $index_post, $remove_first = false, $custom_field
 		if ( $debug ) {
 			relevanssi_debug_echo( "Indexing post excerpt: $post->post_excerpt" );
 		}
-		$excerpt_tokens = relevanssi_tokenize( $post->post_excerpt, true, $min_word_length );
+		/** This filter is documented in common/indexing.php */
+		$excerpt_tokens = apply_filters( 'relevanssi_indexing_tokens', relevanssi_tokenize( $post->post_excerpt, true, $min_word_length ), 'excerpt' );
 		foreach ( $excerpt_tokens as $token => $count ) {
 			if ( ! isset( $insert_data[ $token ]['excerpt'] ) ) {
 				$insert_data[ $token ]['excerpt'] = 0;
@@ -745,6 +755,8 @@ function relevanssi_index_doc( $index_post, $remove_first = false, $custom_field
 			 * @param boolean If true, remove stopwords. Default true.
 			 */
 			$title_tokens = relevanssi_tokenize( $filtered_title, apply_filters( 'relevanssi_remove_stopwords_in_titles', true ), $min_word_length );
+			/** This filter is documented in common/indexing.php */
+			$title_tokens = apply_filters( 'relevanssi_indexing_tokens', $title_tokens, 'title' );
 
 			if ( $debug ) {
 				relevanssi_debug_echo( "\tTitle, tokenized: " . implode( ' ', array_keys( $title_tokens ) ) );
@@ -914,8 +926,9 @@ function relevanssi_index_doc( $index_post, $remove_first = false, $custom_field
 		 * @param string $contents The post content.
 		 * @param object $post     The full post object.
 		 */
-		$contents       = apply_filters( 'relevanssi_post_content_before_tokenize', $contents, $post );
-		$content_tokens = relevanssi_tokenize( $contents, 'body', $min_word_length );
+		$contents = apply_filters( 'relevanssi_post_content_before_tokenize', $contents, $post );
+		/** This filter is documented in common/indexing.php */
+		$content_tokens = apply_filters( 'relevanssi_indexing_tokens', relevanssi_tokenize( $contents, 'body', $min_word_length ), 'content' );
 		if ( $debug ) {
 			relevanssi_debug_echo( "\tContent, tokenized:\n" . implode( ' ', array_keys( $content_tokens ) ) );
 		}
