@@ -1036,6 +1036,7 @@ function relevanssi_stripos( $haystack, $needle, $offset = 0 ) {
  * @return string The HTML code, with tags closed.
  */
 function relevanssi_close_tags( $html ) {
+	$result = array();
 	preg_match_all( '#<(?!meta|img|br|hr|input\b)\b([a-z]+)(?: .*)?(?<![/|/ ])>#iU', $html, $result );
 	$opened_tags = $result[1];
 	preg_match_all( '#</([a-z]+)>#iU', $html, $result );
@@ -1616,6 +1617,7 @@ function relevanssi_get_forbidden_post_types() {
 	return array(
 		'nav_menu_item',        // Navigation menu items.
 		'revision',             // Never index revisions.
+		'acf',                  // Advanced Custom Fields.
 		'acf-field',            // Advanced Custom Fields.
 		'acf-field-group',      // Advanced Custom Fields.
 		'oembed_cache',         // Mysterious caches.
@@ -1628,6 +1630,10 @@ function relevanssi_get_forbidden_post_types() {
 		'amp_validated_url',    // AMP.
 		'jp_pay_order',         // Jetpack.
 		'jp_pay_product',       // Jetpack.
+		'tablepress_table',     // TablePress.
+		'shop_order',           // WooCommerce.
+		'shop_order_refund',    // WooCommerce.
+		'shop_webhook',         // WooCommerce.
 	);
 }
 
@@ -1641,5 +1647,6 @@ function relevanssi_get_forbidden_taxonomies() {
 		'nav_menu',               // Navigation menus.
 		'link_category',          // Link categories.
 		'amp_validation_error',   // AMP.
+		'product_visibility',     // WooCommerce.
 	);
 }
