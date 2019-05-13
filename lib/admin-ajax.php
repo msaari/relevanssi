@@ -174,7 +174,7 @@ function relevanssi_admin_search() {
 	if ( isset( $query->query_vars['offset'] ) ) {
 		$offset = $query->query_vars['offset'];
 	}
-	$results .= relevanssi_admin_search_format_posts( $query->posts, $query->found_posts, $offset );
+	$results .= relevanssi_admin_search_format_posts( $query->posts, $query->found_posts, $offset, $args['s'] );
 
 	echo wp_json_encode( $results );
 	wp_die();
@@ -186,23 +186,24 @@ function relevanssi_admin_search() {
  * Results are presented as an ordered list of posts. The format is very basic, and
  * can be modified with the 'relevanssi_admin_search_element' filter hook.
  *
- * @param array $posts  The posts array.
- * @param int   $total  The number of posts found in total.
- * @param int   $offset Offset value.
+ * @param array  $posts  The posts array.
+ * @param int    $total  The number of posts found in total.
+ * @param int    $offset Offset value.
+ * @param string $query  The search query.
  *
  * @return string The formatted posts.
  *
  * @since 2.2.0
  */
-function relevanssi_admin_search_format_posts( $posts, $total, $offset ) {
+function relevanssi_admin_search_format_posts( $posts, $total, $offset, $query ) {
 	$result = '<h3>' . __( 'Results', 'relevanssi' ) . '</h3>';
 	// Translators: %1$d is the total number of posts found, %2$d is the current search result count, %3$d is the offset.
 	$result .= '<p>' . sprintf( __( 'Found a total of %1$d posts, showing %2$d posts from offset %3$s.', 'relevanssi' ), $total, count( $posts ), '<span id="offset">' . $offset . '</span>' ) . '</p>';
 	if ( $offset > 0 ) {
-		$result .= '<button type="button" id="prev_page">Previous page</button>';
+		$result .= sprintf( '<button type="button" id="prev_page">%s</button>', __( 'Previous page', 'relevanssi' ) );
 	}
 	if ( count( $posts ) + $offset < $total ) {
-		$result .= '<button type="button" id="next_page">Next page</button>';
+		$result .= sprintf( '<button type="button" id="next_page">%s</button>', __( 'Next page', 'relevanssi' ) );
 	}
 	$result .= '<ol>';
 
@@ -215,25 +216,31 @@ function relevanssi_admin_search_format_posts( $posts, $total, $offset ) {
 			$blog_name = get_bloginfo( 'name' ) . ': ';
 		}
 		$permalink = get_permalink( $post->ID );
-		$edit_link = get_edit_post_link( $post->ID );
+		$edit_url  = get_edit_post_link( $post->ID );
 		$post_type = $post->post_type;
 		if ( isset( $post->relevanssi_link ) ) {
 			$permalink = $post->relevanssi_link;
 		}
 		if ( 'user' === $post->post_type ) {
-			$edit_link = get_edit_user_link( $post->ID );
+			$edit_url = get_edit_user_link( $post->ID );
 		}
-		if ( empty( $edit_link ) ) {
+		if ( empty( $edit_url ) ) {
 			if ( isset( $post->term_id ) ) {
-				$edit_link = get_edit_term_link( $post->term_id, $post->post_type );
+				$edit_url = get_edit_term_link( $post->term_id, $post->post_type );
 			}
 		}
-		$pinned = '';
-		if ( isset( $post->relevanssi_pinned ) ) {
-			$pinned = '<strong>(pinned)</strong>';
+		$view_link       = sprintf( '<a href="%1$s">%2$s %3$s</a>', $permalink, __( 'View', 'relevanssi' ), $post_type );
+		$edit_link       = sprintf( '<a href="%1$s">%2$s %3$s</a>', $edit_url, __( 'Edit', 'relevanssi' ), $post_type );
+		$pinning_buttons = '';
+		$pinned          = '';
+
+		if ( function_exists( 'relevanssi_admin_search_pinning' ) ) {
+			// Relevanssi Premium adds pinning features to the admin search.
+			list( $pinning_buttons, $pinned ) = relevanssi_admin_search_pinning( $post, $query );
 		}
+
 		$post_element = <<<EOH
-<li>$blog_name <strong>$post->post_title</strong> (<a href="$permalink">View $post_type</a>) (<a href="$edit_link">Edit $post_type</a>) <br />
+<li>$blog_name <strong>$post->post_title</strong> ($view_link) ($edit_link) $pinning_buttons <br />
 $post->post_excerpt<br />
 $score_label $post->relevance_score $pinned</li>
 EOH;
