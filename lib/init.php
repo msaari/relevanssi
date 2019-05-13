@@ -143,6 +143,10 @@ function relevanssi_init() {
 	if ( defined( 'GUTENBERG_VERSION' ) ) {
 		require_once 'compatibility/gutenberg.php';
 	}
+
+	if ( defined( 'WPFD_VERSION' ) ) {
+		require_once 'compatibility/wp-file-download.php';
+	}
 }
 
 /**
