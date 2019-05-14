@@ -864,16 +864,21 @@ function relevanssi_get_post_status( $post_id ) {
  */
 function relevanssi_get_post_type( $post_id ) {
 	global $relevanssi_post_array;
-
 	if ( isset( $relevanssi_post_array[ $post_id ] ) ) {
 		return $relevanssi_post_array[ $post_id ]->post_type;
 	} else {
 		// No hit from the cache; let's add this post to the cache.
-		$post = get_post( $post_id );
+		$post = relevanssi_get_post( $post_id );
 
-		$relevanssi_post_array[ $post_id ] = $post;
-
-		return $post->post_type;
+		if ( is_wp_error( $post ) ) {
+			$post->add_data( 'not_found', "relevanssi_get_post_type() didn't get a post, relevanssi_get_post() returned null." );
+			return $post;
+		} elseif ( $post ) {
+			$relevanssi_post_array[ $post_id ] = $post;
+			return $post->post_type;
+		} else {
+			return new WP_Error( 'not_found', 'Something went wrong.' );
+		}
 	}
 }
 
