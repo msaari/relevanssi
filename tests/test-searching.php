@@ -8,6 +8,8 @@
 
 /**
  * Test Relevanssi searching.
+ *
+ * @group searching
  */
 class SearchingTest extends WP_UnitTestCase {
 	/**
@@ -46,14 +48,24 @@ class SearchingTest extends WP_UnitTestCase {
 	public static $taxonomy_matches;
 
 	/**
+	 * The main author ID for the posts.
+	 *
+	 * @var int $post_author_id
+	 */
+	public static $post_author_id;
+
+	/**
+	 * The secondary author ID for the posts.
+	 *
+	 * @var int $other_author_id
+	 */
+	public static $other_author_id;
+
+	/**
 	 * Sets up the index.
 	 */
 	public static function wpSetUpBeforeClass() {
 		relevanssi_install();
-
-		global $wpdb, $relevanssi_variables;
-		$relevanssi_table = $relevanssi_variables['relevanssi_table'];
-		// phpcs:disable WordPress.WP.PreparedSQL
 
 		// Truncate the index.
 		relevanssi_truncate_index();
@@ -79,7 +91,8 @@ class SearchingTest extends WP_UnitTestCase {
 		self::$user_count = 10;
 		$user_ids         = self::factory()->user->create_many( self::$user_count );
 
-		$post_author_id = $user_ids[0];
+		self::$post_author_id  = $user_ids[0];
+		self::$other_author_id = $user_ids[1];
 
 		$counter                = 0;
 		self::$visible          = 0;
@@ -124,11 +137,19 @@ class SearchingTest extends WP_UnitTestCase {
 
 			$title = substr( md5( rand() ), 0, 7 );
 
+			$post_date = date( 'Y-m-d', time() - ( $counter * MONTH_IN_SECONDS ) );
+
+			$author_id = self::$post_author_id;
+			if ( $counter < 1 ) {
+				$author_id = self::$other_author_id;
+			}
+
 			// Set the post author and title.
 			$args = array(
 				'ID'          => $id,
-				'post_author' => $post_author_id,
+				'post_author' => $author_id,
 				'post_title'  => $title,
+				'post_date'   => $post_date,
 			);
 			wp_update_post( $args );
 
@@ -148,11 +169,17 @@ class SearchingTest extends WP_UnitTestCase {
 
 		// Name the post author 'displayname user'.
 		$args = array(
-			'ID'           => $post_author_id,
+			'ID'           => self::$post_author_id,
 			'display_name' => 'displayname user',
 			'description'  => 'displayname displayname displayname displayname displayname',
 		);
 		wp_update_user( $args );
+
+		$user_object = get_user_by( 'ID', self::$post_author_id );
+		$user_object->set_role( 'editor' );
+
+		$user_object = get_user_by( 'ID', self::$other_author_id );
+		$user_object->set_role( 'author' );
 
 		// Rebuild the index.
 		relevanssi_build_index( false, false, 200, false );
@@ -165,8 +192,7 @@ class SearchingTest extends WP_UnitTestCase {
 	 */
 	public function test_searching() {
 		global $wpdb, $relevanssi_variables;
-		$relevanssi_table = $relevanssi_variables['relevanssi_table'];
-		$relevanssi_log   = $relevanssi_variables['log_table'];
+		$relevanssi_log = $relevanssi_variables['log_table'];
 		// phpcs:disable WordPress.WP.PreparedSQL
 
 		// Search for "content" in posts.
@@ -209,7 +235,24 @@ class SearchingTest extends WP_UnitTestCase {
 
 		$query = new WP_Query();
 		$query->parse_query( $args );
-		$posts = relevanssi_do_query( $query );
+		relevanssi_do_query( $query );
+
+		// This should find all the posts.
+		$this->assertEquals( self::$post_count, $query->found_posts );
+
+		update_option( 'relevanssi_fuzzy', 'always' );
+		// Search for "conte" in posts. With the fuzzy search set to "always",
+		// this should find all posts.
+		$args = array(
+			's'           => 'conte',
+			'post_type'   => 'post',
+			'numberposts' => -1,
+			'post_status' => 'publish',
+		);
+
+		$query = new WP_Query();
+		$query->parse_query( $args );
+		relevanssi_do_query( $query );
 
 		// This should find all the posts.
 		$this->assertEquals( self::$post_count, $query->found_posts );
@@ -226,7 +269,7 @@ class SearchingTest extends WP_UnitTestCase {
 
 		$query = new WP_Query();
 		$query->parse_query( $args );
-		$posts = relevanssi_do_query( $query );
+		relevanssi_do_query( $query );
 
 		// This should find nothing.
 		$this->assertEquals( 0, $query->found_posts );
@@ -275,6 +318,20 @@ class SearchingTest extends WP_UnitTestCase {
 
 			// This should match the number of users.
 			$this->assertEquals( self::$user_count, $query->found_posts );
+
+			$args = array(
+				's'           => 'user',
+				'post_type'   => array( 'user', 'post' ),
+				'numberposts' => -1,
+				'post_status' => 'publish',
+			);
+
+			$query = new WP_Query();
+			$query->parse_query( $args );
+			$posts = relevanssi_do_query( $query );
+
+			// This should match the number of users and posts.
+			$this->assertEquals( self::$user_count + self::$post_count, $query->found_posts );
 		}
 	}
 
@@ -283,7 +340,7 @@ class SearchingTest extends WP_UnitTestCase {
 	 *
 	 * Should find posts by the author name.
 	 */
-	public function test_author_search() {
+	public function test_author_name_search() {
 		// Search for "displayname" to find authors.
 		$args = array(
 			's'           => 'displayname',
@@ -569,7 +626,8 @@ class SearchingTest extends WP_UnitTestCase {
 		$query = new WP_Query();
 		$query->parse_query( $args );
 		$posts = relevanssi_do_query( $query );
-		$this->assertEquals( self::$taxonomy_matches, count( $posts ), 'Tag search should find correct number of posts.' );
+		$this->assertEquals( self::$taxonomy_matches, count( $posts ),
+		'Tag search should find correct number of posts.' );
 
 		// Search for "cat_bar_cat".
 		$args = array(
@@ -582,7 +640,64 @@ class SearchingTest extends WP_UnitTestCase {
 		$query = new WP_Query();
 		$query->parse_query( $args );
 		$posts = relevanssi_do_query( $query );
-		$this->assertEquals( self::$taxonomy_matches, count( $posts ), 'Category search should find correct number of posts.' );
+		$this->assertEquals( self::$taxonomy_matches, count( $posts ),
+		'Category search should find correct number of posts.' );
+	}
+
+	/**
+	 * Tests phrase searching.
+	 *
+	 * Uses both quotes for phrases and the "sentence" parameter.
+	 */
+	public function test_phrase_search() {
+		// Search for "test phrase" as a phrase.
+		$args = array(
+			's'           => '"test phrase"',
+			'post_type'   => 'post',
+			'numberposts' => -1,
+			'post_status' => 'publish',
+		);
+
+		$query = new WP_Query();
+		$query->parse_query( $args );
+		relevanssi_do_query( $query );
+
+		// This should find one post.
+		$this->assertEquals( 1, $query->found_posts,
+		"Searching for phrases isn't working." );
+
+		// Curly quotes should work as well.
+		$args = array(
+			's'           => '“test phrase”',
+			'post_type'   => 'post',
+			'numberposts' => -1,
+			'post_status' => 'publish',
+		);
+
+		$query = new WP_Query();
+		$query->parse_query( $args );
+		relevanssi_do_query( $query );
+
+		// This should find one post.
+		$this->assertEquals( 1, $query->found_posts,
+		"Searching for phrases with curly quotes isn't working." );
+
+		// Search for "test phrase" with the "sentence" parameter.
+		$args = array(
+			's'           => 'test phrase',
+			'post_type'   => 'post',
+			'numberposts' => -1,
+			'post_status' => 'publish',
+			'sentence'    => '1',
+		);
+
+		$query = new WP_Query();
+		$query->parse_query( $args );
+		relevanssi_do_query( $query );
+
+		// This should find one post.
+		$this->assertEquals( 1, $query->found_posts,
+		"Searching for phrases with sentence isn't working." );
 	}
 
 	/**
@@ -605,7 +720,8 @@ class SearchingTest extends WP_UnitTestCase {
 		$posts = relevanssi_do_query( $query );
 
 		// This should find one post.
-		$this->assertEquals( 1, $query->found_posts, "Searching for apostrophe-containing phrases isn't working." );
+		$this->assertEquals( 1, $query->found_posts,
+		"Searching for apostrophe-containing phrases isn't working." );
 	}
 
 	/**
@@ -613,12 +729,8 @@ class SearchingTest extends WP_UnitTestCase {
 	 *
 	 * Should find posts without a post parent. Setting the post_parent__not_in to 0
 	 * did not work in 2.1.7.
-	 *
-	 * @group failing
 	 */
 	public function test_post_parent_search() {
-		global $wpdb;
-
 		$args = array(
 			's'                   => 'content',
 			'post_type'           => 'page',
@@ -629,9 +741,10 @@ class SearchingTest extends WP_UnitTestCase {
 
 		$query = new WP_Query();
 		$query->parse_query( $args );
-		$posts = relevanssi_do_query( $query );
+		relevanssi_do_query( $query );
 		// This should find one post.
-		$this->assertEquals( 1, $query->found_posts, 'Searching with post_parent__not_in 0 is not working.' );
+		$this->assertEquals( 1, $query->found_posts,
+		'Searching with post_parent__not_in 0 is not working.' );
 
 		$args = array(
 			's'               => 'content',
@@ -643,10 +756,11 @@ class SearchingTest extends WP_UnitTestCase {
 
 		$query = new WP_Query();
 		$query->parse_query( $args );
-		$posts = relevanssi_do_query( $query );
+		relevanssi_do_query( $query );
 
 		// This should find one post.
-		$this->assertEquals( 1, $query->found_posts, 'Searching with post_parent__in 0 is not working.' );
+		$this->assertEquals( 1, $query->found_posts,
+		'Searching with post_parent__in 0 is not working.' );
 
 		$args = array(
 			's'           => 'content',
@@ -658,10 +772,11 @@ class SearchingTest extends WP_UnitTestCase {
 
 		$query = new WP_Query();
 		$query->parse_query( $args );
-		$posts = relevanssi_do_query( $query );
+		relevanssi_do_query( $query );
 
 		// This should find one post.
-		$this->assertEquals( 1, $query->found_posts, 'Searching with post_parent 0 is not working.' );
+		$this->assertEquals( 1, $query->found_posts,
+		'Searching with post_parent 0 is not working.' );
 	}
 
 	/**
@@ -693,8 +808,209 @@ class SearchingTest extends WP_UnitTestCase {
 					break;
 				}
 			}
-			$this->assertTrue( $is_user_found, 'User profile should be found in search.' );
+			$this->assertTrue( $is_user_found,
+			'User profile should be found in search.' );
 		}
+	}
+
+	/**
+	 * Tests the by_date parameter.
+	 *
+	 * The test posts are generated with dates starting from current time and each
+	 * post is dated one month earlier than the last.
+	 */
+	public function test_by_date_search() {
+		$args = array(
+			's'           => 'content',
+			'post_type'   => 'post',
+			'numberposts' => -1,
+			'by_date'     => '1w',
+		);
+
+		$query = new WP_Query();
+		$query->parse_query( $args );
+		relevanssi_do_query( $query );
+		$this->assertEquals( 1, $query->found_posts,
+		'Searching with by_date 1w should find one post.' );
+	}
+
+	/**
+	 * Tests the Date_Query parameter.
+	 *
+	 * The test posts are generated with dates starting from current time and each
+	 * post is dated one month earlier than the last.
+	 */
+	public function test_date_query_search() {
+		$date_query = array(
+			'year' => date( 'Y' ),
+			'week' => date( 'W' ),
+		);
+
+		$args = array(
+			's'           => 'content',
+			'post_type'   => 'post',
+			'numberposts' => -1,
+			'date_query'  => $date_query,
+		);
+
+		$query = new WP_Query();
+		$query->parse_query( $args );
+		relevanssi_do_query( $query );
+		$this->assertEquals( 1, $query->found_posts,
+		'Searching with date query for posts published this week should find one post.' );
+	}
+
+	/**
+	 * Tests the author parameter.
+	 *
+	 * The test posts are generated with one post having self::$other_author_id as
+	 * the author, while the rest have self::$post_author:id.
+	 */
+	public function test_author_parameter_search() {
+		$args = array(
+			's'           => 'content',
+			'post_type'   => 'post',
+			'numberposts' => -1,
+			'author'      => self::$other_author_id,
+		);
+
+		$query = new WP_Query();
+		$query->parse_query( $args );
+		relevanssi_do_query( $query );
+		$this->assertEquals( 1, $query->found_posts,
+		'Searching with author parameter should find one post.' );
+
+		$negative_author = self::$other_author_id * -1;
+
+		$args = array(
+			's'           => 'content',
+			'post_type'   => 'post',
+			'numberposts' => -1,
+			'author'      => "$negative_author,word",
+		);
+
+		$query = new WP_Query();
+		$query->parse_query( $args );
+		relevanssi_do_query( $query );
+		$this->assertEquals( 9, $query->found_posts,
+		'Searching with a negative author parameter should find one post.' );
+	}
+
+	/**
+	 * Test searching for private posts.
+	 *
+	 * Checks that editors can see all private posts and that authors can see their
+	 * own private posts (this didn't work before 2.3.0).
+	 */
+	public function test_private_search() {
+		$private_count    = 4;
+		$private_post_ids = self::factory()->post->create_many( $private_count );
+		$author_count     = 0;
+
+		$counter = 0;
+		foreach ( $private_post_ids as $private_post_id ) {
+			// Distribute the private posts between the two author profiles.
+			$author_id = self::$post_author_id;
+			if ( $counter > 1 ) {
+				$author_id = self::$other_author_id;
+				$author_count++;
+			}
+			$args = array(
+				'ID'          => $private_post_id,
+				'post_status' => 'private',
+				'post_author' => $author_id,
+			);
+			wp_update_post( $args );
+			relevanssi_index_doc( $private_post_id, false, false, true, false );
+			$counter++;
+		}
+
+		wp_set_current_user( self::$post_author_id );
+
+		$args = array(
+			's'           => 'content',
+			'post_status' => array( 'private' ),
+			'numberposts' => -1,
+		);
+
+		$query = new WP_Query();
+		$query->parse_query( $args );
+		relevanssi_do_query( $query );
+		$this->assertEquals( $private_count, $query->found_posts,
+		'Editor should see all private posts.' );
+
+		wp_set_current_user( self::$other_author_id );
+
+		$args = array(
+			's'           => 'content',
+			'post_status' => array( 'private' ),
+			'numberposts' => -1,
+		);
+
+		$query = new WP_Query();
+		$query->parse_query( $args );
+		relevanssi_do_query( $query );
+		$this->assertEquals( $author_count, $query->found_posts,
+		'Author should see their own private posts.' );
+
+		foreach ( $private_post_ids as $private_post_id ) {
+			wp_delete_post( $private_post_id, true );
+		}
+	}
+
+	/**
+	 * Test the NOT operator.
+	 */
+	public function test_not_operator() {
+		if ( RELEVANSSI_PREMIUM ) {
+			$args = array(
+				's'           => 'content -words',
+				'post_status' => array( 'publish' ),
+				'numberposts' => -1,
+				'post_type'   => array( 'post' ),
+			);
+
+			$query = new WP_Query();
+			$query->parse_query( $args );
+			relevanssi_do_query( $query );
+			$this->assertEquals( 9, $query->found_posts,
+			'NOT operator should eliminate one post from the results.' );
+		}
+	}
+
+	/**
+	 * Test the AND operator.
+	 */
+	public function test_and_operator() {
+		if ( RELEVANSSI_PREMIUM ) {
+			$args = array(
+				's'           => 'content +words',
+				'post_status' => array( 'publish' ),
+				'numberposts' => -1,
+				'post_type'   => array( 'post' ),
+				'operator'    => 'OR',
+			);
+
+			$query = new WP_Query();
+			$query->parse_query( $args );
+			relevanssi_do_query( $query );
+			$this->assertEquals( 1, $query->found_posts,
+			'AND operator should restrict the results to one post.' );
+		}
+	}
+
+	/**
+	 * Test tokenizer kills all terms.
+	 */
+	public function test_tokenizer_death() {
+		$args = array(
+			's' => 'hereupon formerly by bill',
+		);
+
+		$query = new WP_Query();
+		$query->parse_query( $args );
+		relevanssi_do_query( $query );
+		$this->assertEquals( 0, $query->found_posts, 'Nothing should be found.' );
 	}
 
 	/**

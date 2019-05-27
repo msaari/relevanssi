@@ -60,11 +60,15 @@ class InterfaceTest extends WP_UnitTestCase {
 		$_REQUEST['tab'] = 'importexport';
 		relevanssi_options_form();
 
-		$_REQUEST['tab'] = 'search';
+		$_REQUEST['tab'] = 'redirects';
+		relevanssi_options_form();
+
+		$_REQUEST['tab'] = 'related';
 		relevanssi_options_form();
 
 		relevanssi_query_log();
 
+		$this->assertTrue( true );
 		ob_end_clean();
 	}
 
