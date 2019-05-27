@@ -130,6 +130,8 @@ function rlv_index_filter( $block, $post_id ) {
 			'<li>' . sprintf( __( 'If you need a search form on some page on your site, you can use the %s shortcode to print out a basic search form.', 'relevanssi' ), '<code>[searchform]</code>' ) . '</li>' .
 			// Translators: %1$s is '[searchform post_types="page"]', %2$s is '[searchform cats="10,14,17"]'.
 			'<li>' . sprintf( __( 'If you need to add query variables to the search form, the shortcode takes parameters, which are then printed out as hidden input fields. To get a search form with a post type restriction, you can use %1$s. To restrict the search to categories 10, 14 and 17, you can use %2$s and so on.', 'relevanssi' ), '<code>[searchform post_types="page"]</code>', '<code>[searchform cats="10,14,17"]</code>' ) . '</li>' .
+			// Translators: %1$s is 'dropdown', %2$s is '[searchform dropdown="category"]'.
+			'<li>' . sprintf( __( 'You can use the %1$s parameter to add a taxonomy dropdown to the search form. Just use the name of the taxonomy, like %2$s. This works best with hierarchical taxonomies like categories with relatively few options available.', 'relevanssi' ), '<code>dropdown</code>', '<code>[searchform dropdown="category"]</code>' ) . '</li>' .
 			'</ul>',
 	));
 	$screen->add_help_tab( array(
