@@ -198,7 +198,7 @@ function relevanssi_get_compare_values( $key, $item_1, $item_2 ) {
 		$key2 = get_post_meta( $item_2->ID, $key, true );
 		if ( empty( $key2 ) ) {
 			/**
-			 * Documented in lib/common.php.
+			 * Documented in lib/sorting.php.
 			 */
 			$key2 = apply_filters( 'relevanssi_missing_sort_key', $key2, $key );
 		}
@@ -211,7 +211,7 @@ function relevanssi_get_compare_values( $key, $item_1, $item_2 ) {
 			$key1 = get_post_meta( $item_1->ID, $relevanssi_meta_query[ $key ]['key'], true );
 		} else {
 			/**
-			 * Documented in lib/common.php.
+			 * Documented in lib/sorting.php.
 			 */
 			$key1 = apply_filters( 'relevanssi_missing_sort_key', $key1, $key );
 		}
@@ -222,7 +222,7 @@ function relevanssi_get_compare_values( $key, $item_1, $item_2 ) {
 			$key2 = get_post_meta( $item_2->ID, $relevanssi_meta_query[ $key ]['key'], true );
 		} else {
 			/**
-			 * Documented in lib/common.php.
+			 * Documented in lib/sorting.php.
 			 */
 			$key2 = apply_filters( 'relevanssi_missing_sort_key', $key2, $key );
 		}
