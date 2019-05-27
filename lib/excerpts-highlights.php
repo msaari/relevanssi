@@ -487,9 +487,9 @@ function relevanssi_highlight_terms( $content, $query, $in_docs = false ) {
 
 	usort( $terms, 'relevanssi_strlen_sort' );
 
-	$word_boundaries = false;
+	$word_boundaries_available = true;
 	if ( 'on' === get_option( 'relevanssi_word_boundaries', 'on' ) ) {
-		$word_boundaries = true;
+		$word_boundaries_available = false;
 	}
 
 	foreach ( $terms as $term ) {
@@ -499,7 +499,7 @@ function relevanssi_highlight_terms( $content, $query, $in_docs = false ) {
 		$undecoded_content = $content;
 		$content           = html_entity_decode( $content, ENT_QUOTES, 'UTF-8' );
 
-		if ( $word_boundaries ) {
+		if ( $word_boundaries_available ) {
 			$regex = "/(\b$pr_term\b)/iu";
 			if ( 'never' !== get_option( 'relevanssi_fuzzy' ) ) {
 				$regex = "/(\b$pr_term|$pr_term\b)/iu";
@@ -817,10 +817,24 @@ function relevanssi_count_matches( $words, $complete_text ) {
 	$lowercase_text = relevanssi_strtolower( $complete_text, 'UTF-8' );
 	$text           = '';
 
+	$word_boundaries_available = true;
+	if ( 'on' === get_option( 'relevanssi_word_boundaries', 'on' ) ) {
+		$word_boundaries_available = false;
+	}
+
 	$count_words = count( $words );
 	for ( $t = 0; $t < $count_words; $t++ ) {
 		$word_slice = relevanssi_strtolower( relevanssi_add_accent_variations( $words[ $t ] ), 'UTF-8' );
-		$lines      = preg_split( "/$word_slice/", $lowercase_text );
+		if ( $word_boundaries_available ) {
+			if ( 'never' !== get_option( 'relevanssi_fuzzy' ) ) {
+				$regex = "/\b$word_slice|$word_slice\b/";
+			} else {
+				$regex = "/\b$word_slice\b/";
+			}
+		} else {
+			$regex = "/$word_slice/";
+		}
+		$lines = preg_split( $regex, $lowercase_text );
 		if ( count( $lines ) > 1 ) {
 			$count_lines = count( $lines );
 			for ( $tt = 0; $tt < $count_lines; $tt++ ) {
