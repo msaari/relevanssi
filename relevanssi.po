@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Relevanssi\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-12 14:31+0200\n"
+"POT-Creation-Date: 2019-05-27 11:38+0300\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Mikko Saari <mikko@mikkosaari.fi>\n"
 "Language-Team: \n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-KeywordsList: _e;__;esc_html__;esc_html_e;_n\n"
 "X-Poedit-Basepath: .\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.2.3\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPath-1: lib\n"
 
@@ -21,40 +21,56 @@ msgstr ""
 msgid "Indexed %1$d post (total %2$d), processed %3$d / %4$d."
 msgstr ""
 
-#: lib/admin-ajax.php:198
+#: lib/admin-ajax.php:199
 msgid "Results"
 msgstr ""
 
-#: lib/admin-ajax.php:200
+#: lib/admin-ajax.php:201
 #, php-format
 msgid "Found a total of %1$d posts, showing %2$d posts from offset %3$s."
 msgstr ""
 
-#: lib/admin-ajax.php:209
+#: lib/admin-ajax.php:203
+msgid "Previous page"
+msgstr ""
+
+#: lib/admin-ajax.php:206
+msgid "Next page"
+msgstr ""
+
+#: lib/admin-ajax.php:210
 msgid "Score:"
 msgstr ""
 
-#: lib/admin-ajax.php:269
+#: lib/admin-ajax.php:232
+msgid "View"
+msgstr ""
+
+#: lib/admin-ajax.php:233
+msgid "Edit"
+msgstr ""
+
+#: lib/admin-ajax.php:276
 msgid "Query variables"
 msgstr ""
 
-#: lib/admin-ajax.php:316
+#: lib/admin-ajax.php:322
 msgid "Filters"
 msgstr ""
 
-#: lib/admin-ajax.php:317
+#: lib/admin-ajax.php:323
 msgid "show"
 msgstr ""
 
-#: lib/admin-ajax.php:318
+#: lib/admin-ajax.php:324
 msgid "hide"
 msgstr ""
 
-#: lib/common.php:1566
+#: lib/common.php:1598
 msgid "25 most common words in the index"
 msgstr ""
 
-#: lib/common.php:1567
+#: lib/common.php:1599
 msgid ""
 "These words are excellent stopword material. A word that appears in most of "
 "the posts in the database is quite pointless when searching. This is also an "
@@ -64,15 +80,19 @@ msgid ""
 "necessary."
 msgstr ""
 
-#: lib/common.php:1573
+#: lib/common.php:1605
 msgid "Stopword Candidates"
 msgstr ""
 
-#: lib/common.php:1580
+#: lib/common.php:1610
 msgid "Add to stopwords"
 msgstr ""
 
-#: lib/contextual-help.php:24 lib/interface.php:791
+#: lib/common.php:1613
+msgid "Add to content stopwords"
+msgstr ""
+
+#: lib/contextual-help.php:24 lib/interface.php:810
 #: lib/tabs/overview-tab.php:56
 msgid "Searching"
 msgstr ""
@@ -298,56 +318,65 @@ msgid ""
 "search to categories 10, 14 and 17, you can use %2$s and so on."
 msgstr ""
 
-#: lib/contextual-help.php:137
-msgid "WooCommerce"
+#: lib/contextual-help.php:134
+#, php-format
+msgid ""
+"You can use the %1$s parameter to add a taxonomy dropdown to the search "
+"form. Just use the name of the taxonomy, like %2$s. This works best with "
+"hierarchical taxonomies like categories with relatively few options "
+"available."
 msgstr ""
 
 #: lib/contextual-help.php:139
+msgid "WooCommerce"
+msgstr ""
+
+#: lib/contextual-help.php:141
 msgid ""
 "If your SKUs include hyphens or other punctuation, do note that Relevanssi "
 "replaces most punctuation with spaces. That's going to cause issues with SKU "
 "searches."
 msgstr ""
 
-#: lib/contextual-help.php:141
+#: lib/contextual-help.php:143
 #, php-format
 msgid ""
 "For more details how to fix that issue, see <a href='%s'>WooCommerce tips in "
 "Relevanssi user manual</a>."
 msgstr ""
 
-#: lib/contextual-help.php:142
+#: lib/contextual-help.php:144
 msgid ""
 "If you don't want to index products that are out of stock, excluded from the "
 "catalog or excluded from the search, there's a product visibility filtering "
 "method that is described in the user manual (see link above)."
 msgstr ""
 
-#: lib/contextual-help.php:147
+#: lib/contextual-help.php:149
 msgid "Exact match bonus"
 msgstr ""
 
-#: lib/contextual-help.php:150
+#: lib/contextual-help.php:152
 #, php-format
 msgid ""
 "To adjust the amount of the exact match bonus, you can use the %s filter "
 "hook. It works like this:"
 msgstr ""
 
-#: lib/contextual-help.php:156
+#: lib/contextual-help.php:158
 #, php-format
 msgid "The default values are %1$s for titles and %2$s for content."
 msgstr ""
 
-#: lib/contextual-help.php:159
+#: lib/contextual-help.php:161
 msgid "For more information:"
 msgstr ""
 
-#: lib/contextual-help.php:160
+#: lib/contextual-help.php:162
 msgid "Plugin knowledge base"
 msgstr ""
 
-#: lib/contextual-help.php:161
+#: lib/contextual-help.php:163
 msgid "WordPress.org forum"
 msgstr ""
 
@@ -376,20 +405,20 @@ msgid ""
 "extension."
 msgstr ""
 
-#: lib/init.php:186 lib/init.php:187 lib/interface.php:453
+#: lib/init.php:190 lib/init.php:191 lib/interface.php:472
 #: lib/tabs/logging-tab.php:47
 msgid "User searches"
 msgstr ""
 
-#: lib/init.php:198 lib/init.php:199 lib/tabs/searching-tab.php:244
+#: lib/init.php:202 lib/init.php:203 lib/tabs/searching-tab.php:248
 msgid "Admin search"
 msgstr ""
 
-#: lib/init.php:389
+#: lib/init.php:394
 msgid "Settings"
 msgstr ""
 
-#: lib/init.php:392
+#: lib/init.php:397
 msgid "Go Premium!"
 msgstr ""
 
@@ -401,286 +430,286 @@ msgstr ""
 msgid "Relevanssi Premium Search Options"
 msgstr ""
 
-#: lib/interface.php:455
+#: lib/interface.php:474
 msgid "Relevanssi User Searches"
 msgstr ""
 
-#: lib/interface.php:478
+#: lib/interface.php:497
 msgid "Enable query logging to see stats here."
 msgstr ""
 
-#: lib/interface.php:490
+#: lib/interface.php:509
 msgid "Admin Search"
 msgstr ""
 
-#: lib/interface.php:520
+#: lib/interface.php:539
 msgid "Logs clear!"
 msgstr ""
 
-#: lib/interface.php:522
+#: lib/interface.php:541
 msgid "Clearing the logs failed."
 msgstr ""
 
-#: lib/interface.php:556
+#: lib/interface.php:575
 msgid "Total Searches"
 msgstr ""
 
-#: lib/interface.php:558
+#: lib/interface.php:577
 msgid "Totals"
 msgstr ""
 
-#: lib/interface.php:562
+#: lib/interface.php:581
 msgid "Common Queries"
 msgstr ""
 
-#: lib/interface.php:572
+#: lib/interface.php:591
 #, php-format
 msgid ""
 "Here you can see the %d most common user search queries, how many times "
 "those queries were made and how many results were found for those queries."
 msgstr ""
 
-#: lib/interface.php:576 lib/interface.php:598 lib/interface.php:639
+#: lib/interface.php:595 lib/interface.php:617 lib/interface.php:658
 msgid "Today and yesterday"
 msgstr ""
 
-#: lib/interface.php:579 lib/interface.php:585 lib/interface.php:590
-#: lib/interface.php:607
+#: lib/interface.php:598 lib/interface.php:604 lib/interface.php:609
+#: lib/interface.php:626
 #, php-format
 msgid "Last %d days"
 msgstr ""
 
-#: lib/interface.php:595
+#: lib/interface.php:614
 msgid "Unsuccessful Queries"
 msgstr ""
 
-#: lib/interface.php:602 lib/interface.php:640
+#: lib/interface.php:621 lib/interface.php:659
 msgid "Last 7 days"
 msgstr ""
 
-#: lib/interface.php:613
+#: lib/interface.php:632
 msgid "Reset Logs"
 msgstr ""
 
-#: lib/interface.php:617
+#: lib/interface.php:636
 #, php-format
 msgid "To reset the logs, type \"reset\" into the box here %1$s and click %2$s"
 msgstr ""
 
-#: lib/interface.php:641
+#: lib/interface.php:660
 msgid "Last 30 days"
 msgstr ""
 
-#: lib/interface.php:642
+#: lib/interface.php:661
 msgid "Forever"
 msgstr ""
 
-#: lib/interface.php:650
+#: lib/interface.php:669
 msgid "When"
 msgstr ""
 
-#: lib/interface.php:650
+#: lib/interface.php:669
 msgid "Searches"
 msgstr ""
 
-#: lib/interface.php:707 lib/log.php:163
+#: lib/interface.php:726 lib/log.php:167
 msgid "Query"
 msgstr ""
 
-#: lib/interface.php:707
+#: lib/interface.php:726
 msgid "Hits"
 msgstr ""
 
-#: lib/interface.php:788
+#: lib/interface.php:807
 msgid "Overview"
 msgstr ""
 
-#: lib/interface.php:789 lib/tabs/overview-tab.php:44
+#: lib/interface.php:808 lib/tabs/overview-tab.php:44
 msgid "Indexing"
 msgstr ""
 
-#: lib/interface.php:790
+#: lib/interface.php:809
 msgid "Attachments"
 msgstr ""
 
-#: lib/interface.php:792
+#: lib/interface.php:811
 msgid "Logging"
 msgstr ""
 
-#: lib/interface.php:793 lib/tabs/overview-tab.php:60
+#: lib/interface.php:812 lib/tabs/overview-tab.php:60
 msgid "Excerpts and highlights"
 msgstr ""
 
-#: lib/interface.php:794 lib/tabs/synonyms-tab.php:25
+#: lib/interface.php:813 lib/tabs/synonyms-tab.php:25
 #: lib/tabs/synonyms-tab.php:30
 msgid "Synonyms"
 msgstr ""
 
-#: lib/interface.php:795 lib/tabs/stopwords-tab.php:18
+#: lib/interface.php:814 lib/tabs/stopwords-tab.php:18
 msgid "Stopwords"
 msgstr ""
 
-#: lib/interface.php:796 lib/tabs/redirects-tab.php:18
+#: lib/interface.php:815 lib/tabs/redirects-tab.php:18
 msgid "Redirects"
 msgstr ""
 
-#: lib/interface.php:798
+#: lib/interface.php:817
 msgid "Related"
 msgstr ""
 
-#: lib/interface.php:799
+#: lib/interface.php:818
 msgid "Import / Export options"
 msgstr ""
 
-#: lib/interface.php:918
+#: lib/interface.php:937
 msgid "Click OK to copy Relevanssi options to all subsites"
 msgstr ""
 
-#: lib/interface.php:919
+#: lib/interface.php:938
 msgid "Are you sure you want to remove all stopwords?"
 msgstr ""
 
-#: lib/interface.php:920
+#: lib/interface.php:939
 msgid "Wiping out the index..."
 msgstr ""
 
-#: lib/interface.php:921
+#: lib/interface.php:940
 msgid "Done."
 msgstr ""
 
-#: lib/interface.php:922
+#: lib/interface.php:941
 msgid "Indexing users..."
 msgstr ""
 
-#: lib/interface.php:923
+#: lib/interface.php:942
 msgid "Indexing the following taxonomies:"
 msgstr ""
 
-#: lib/interface.php:924
+#: lib/interface.php:943
 msgid "Indexing attachments..."
 msgstr ""
 
-#: lib/interface.php:925
+#: lib/interface.php:944
 msgid "Counting posts..."
 msgstr ""
 
-#: lib/interface.php:926
+#: lib/interface.php:945
 msgid "Counting taxonomy terms..."
 msgstr ""
 
-#: lib/interface.php:927
+#: lib/interface.php:946
 msgid "Counting users..."
 msgstr ""
 
-#: lib/interface.php:928
+#: lib/interface.php:947
 msgid "Counting attachments..."
 msgstr ""
 
-#: lib/interface.php:929
+#: lib/interface.php:948
 msgid "posts found."
 msgstr ""
 
-#: lib/interface.php:930
+#: lib/interface.php:949
 msgid "taxonomy terms found."
 msgstr ""
 
-#: lib/interface.php:931
+#: lib/interface.php:950
 msgid "users found."
 msgstr ""
 
-#: lib/interface.php:932
+#: lib/interface.php:951
 msgid "attachments found."
 msgstr ""
 
-#: lib/interface.php:933
+#: lib/interface.php:952
 msgid "Taxonomy term indexing is disabled."
 msgstr ""
 
-#: lib/interface.php:934
+#: lib/interface.php:953
 msgid "User indexing is disabled."
 msgstr ""
 
-#: lib/interface.php:935
+#: lib/interface.php:954
 msgid "Indexing complete."
 msgstr ""
 
-#: lib/interface.php:936
+#: lib/interface.php:955
 msgid "posts excluded."
 msgstr ""
 
-#: lib/interface.php:937
+#: lib/interface.php:956
 msgid "Settings have changed, please save the options before indexing."
 msgstr ""
 
-#: lib/interface.php:938
+#: lib/interface.php:957
 msgid "Reload the page to refresh the state of the index."
 msgstr ""
 
-#: lib/interface.php:939
+#: lib/interface.php:958
 msgid "Are you sure you want to delete all attachment content from the index?"
 msgstr ""
 
-#: lib/interface.php:940
+#: lib/interface.php:959
 msgid "Relevanssi attachment data wiped clean."
 msgstr ""
 
-#: lib/interface.php:941
+#: lib/interface.php:960
 msgid "hour"
 msgstr ""
 
-#: lib/interface.php:942
+#: lib/interface.php:961
 msgid "hours"
 msgstr ""
 
-#: lib/interface.php:943
+#: lib/interface.php:962
 msgid "about"
 msgstr ""
 
-#: lib/interface.php:944
+#: lib/interface.php:963
 msgid "about an hour"
 msgstr ""
 
-#: lib/interface.php:945
+#: lib/interface.php:964
 msgid "about an hour and a half"
 msgstr ""
 
-#: lib/interface.php:946
+#: lib/interface.php:965
 msgid "minute"
 msgstr ""
 
-#: lib/interface.php:947
+#: lib/interface.php:966
 msgid "minutes"
 msgstr ""
 
-#: lib/interface.php:948
+#: lib/interface.php:967
 msgid "less than a minute"
 msgstr ""
 
-#: lib/interface.php:949
+#: lib/interface.php:968
 msgid "we're done!"
 msgstr ""
 
-#: lib/interface.php:981
+#: lib/interface.php:1000
 msgid "Tag weight"
 msgstr ""
 
-#: lib/interface.php:989
+#: lib/interface.php:1008
 msgid "Category weight"
 msgstr ""
 
-#: lib/log.php:156
+#: lib/log.php:160
 msgid "Logged seaches"
 msgstr ""
 
-#: lib/log.php:159
+#: lib/log.php:163
 msgid "Time"
 msgstr ""
 
-#: lib/log.php:167
+#: lib/log.php:171
 msgid "Hits found"
 msgstr ""
 
-#: lib/log.php:171
+#: lib/log.php:175
 msgid "IP address"
 msgstr ""
 
@@ -725,35 +754,39 @@ msgstr ""
 msgid "Relevanssi Search Logs"
 msgstr ""
 
-#: lib/stopwords.php:99
+#: lib/shortcodes.php:128
+msgid "None"
+msgstr ""
+
+#: lib/stopwords.php:96
 #, php-format
 msgid "Successfully added %1$d/%2$d terms to stopwords!"
 msgstr ""
 
-#: lib/stopwords.php:110
+#: lib/stopwords.php:107
 #, php-format
 msgid "Term '%s' added to stopwords!"
 msgstr ""
 
-#: lib/stopwords.php:113
+#: lib/stopwords.php:110
 #, php-format
 msgid "Couldn't add term '%s' to stopwords!"
 msgstr ""
 
-#: lib/stopwords.php:165
+#: lib/stopwords.php:162
 msgid "All stopwords removed! Remember to re-index."
 msgstr ""
 
-#: lib/stopwords.php:167
+#: lib/stopwords.php:164
 msgid "There was a problem, and stopwords couldn't be removed."
 msgstr ""
 
-#: lib/stopwords.php:190
+#: lib/stopwords.php:187
 #, php-format
 msgid "Term '%s' removed from stopwords! Re-index to get it back to index."
 msgstr ""
 
-#: lib/stopwords.php:196
+#: lib/stopwords.php:193
 #, php-format
 msgid "Couldn't remove term '%s' from stopwords!"
 msgstr ""
@@ -1421,20 +1454,26 @@ msgstr ""
 msgid "How many days of logs to keep in the database."
 msgstr ""
 
-#: lib/tabs/logging-tab.php:89
+#: lib/tabs/logging-tab.php:91
+msgid ""
+"Big log database table will eventually start to slow down the search, so "
+"it's a good idea to use some level of automatic log trimming."
+msgstr ""
+
+#: lib/tabs/logging-tab.php:96
 #, php-format
 msgid " Set to %d for no trimming."
 msgstr ""
 
-#: lib/tabs/logging-tab.php:95
+#: lib/tabs/logging-tab.php:105
 msgid "Export logs"
 msgstr ""
 
-#: lib/tabs/logging-tab.php:98
+#: lib/tabs/logging-tab.php:108
 msgid "Export the log as a CSV file"
 msgstr ""
 
-#: lib/tabs/logging-tab.php:99
+#: lib/tabs/logging-tab.php:109
 msgid "Push the button to export the search log as a CSV file."
 msgstr ""
 
@@ -1747,7 +1786,7 @@ msgstr ""
 msgid "Whole words"
 msgstr ""
 
-#: lib/tabs/searching-tab.php:120
+#: lib/tabs/searching-tab.php:120 lib/tabs/searching-tab.php:125
 msgid "Partial words"
 msgstr ""
 
@@ -1755,13 +1794,24 @@ msgstr ""
 msgid "Partial words if no hits for whole words"
 msgstr ""
 
-#: lib/tabs/searching-tab.php:123
+#: lib/tabs/searching-tab.php:125
+#, php-format
+msgid ""
+"Choosing the \"%1$s\" option may lead to unexpected results. Most of the "
+"time the \"%2$s\" option is the better choice."
+msgstr ""
+
+#: lib/tabs/searching-tab.php:125
+msgid "Partial words if not hits for whole words"
+msgstr ""
+
+#: lib/tabs/searching-tab.php:127
 msgid ""
 "Whole words means Relevanssi only finds posts that include the whole search "
 "term."
 msgstr ""
 
-#: lib/tabs/searching-tab.php:124
+#: lib/tabs/searching-tab.php:128
 msgid ""
 "Partial words also includes cases where the word in the index begins or ends "
 "with the search term (searching for 'ana' will match 'anaconda' or 'banana', "
@@ -1769,46 +1819,46 @@ msgid ""
 "words."
 msgstr ""
 
-#: lib/tabs/searching-tab.php:129
+#: lib/tabs/searching-tab.php:133
 msgid "Weights"
 msgstr ""
 
-#: lib/tabs/searching-tab.php:132
+#: lib/tabs/searching-tab.php:136
 msgid ""
 "All the weights in the table are multipliers. To increase the weight of an "
 "element, use a higher number. To make an element less significant, use a "
 "number lower than 1."
 msgstr ""
 
-#: lib/tabs/searching-tab.php:136
+#: lib/tabs/searching-tab.php:140
 msgid "Element"
 msgstr ""
 
-#: lib/tabs/searching-tab.php:137
+#: lib/tabs/searching-tab.php:141
 msgid "Weight"
 msgstr ""
 
-#: lib/tabs/searching-tab.php:142
+#: lib/tabs/searching-tab.php:146
 msgid "Content"
 msgstr ""
 
-#: lib/tabs/searching-tab.php:150
+#: lib/tabs/searching-tab.php:154
 msgid "Titles"
 msgstr ""
 
-#: lib/tabs/searching-tab.php:163
+#: lib/tabs/searching-tab.php:167
 msgid "Comment text"
 msgstr ""
 
-#: lib/tabs/searching-tab.php:192
+#: lib/tabs/searching-tab.php:196
 msgid "Boost exact matches"
 msgstr ""
 
-#: lib/tabs/searching-tab.php:196 lib/tabs/searching-tab.php:199
+#: lib/tabs/searching-tab.php:200 lib/tabs/searching-tab.php:203
 msgid "Give boost to exact matches."
 msgstr ""
 
-#: lib/tabs/searching-tab.php:203
+#: lib/tabs/searching-tab.php:207
 #, php-format
 msgid ""
 "If you enable this option, matches where the search query appears in title "
@@ -1816,144 +1866,156 @@ msgid ""
 "use the %s filter hook. See Help for more details."
 msgstr ""
 
-#: lib/tabs/searching-tab.php:211
+#: lib/tabs/searching-tab.php:215
 msgid "WPML"
 msgstr ""
 
-#: lib/tabs/searching-tab.php:215 lib/tabs/searching-tab.php:218
+#: lib/tabs/searching-tab.php:219 lib/tabs/searching-tab.php:222
 msgid "Limit results to current language."
 msgstr ""
 
-#: lib/tabs/searching-tab.php:221
+#: lib/tabs/searching-tab.php:225
 msgid ""
 "Enabling this option will restrict the results to the currently active "
 "language. If the option is disabled, results will include posts in all "
 "languages."
 msgstr ""
 
-#: lib/tabs/searching-tab.php:228
+#: lib/tabs/searching-tab.php:232
 msgid "Polylang"
 msgstr ""
 
-#: lib/tabs/searching-tab.php:232 lib/tabs/searching-tab.php:235
+#: lib/tabs/searching-tab.php:236 lib/tabs/searching-tab.php:239
 msgid "Allow results from all languages."
 msgstr ""
 
-#: lib/tabs/searching-tab.php:238
+#: lib/tabs/searching-tab.php:242
 msgid ""
 "By default Polylang restricts the search to the current language. Enabling "
 "this option will lift this restriction."
 msgstr ""
 
-#: lib/tabs/searching-tab.php:248 lib/tabs/searching-tab.php:251
+#: lib/tabs/searching-tab.php:252 lib/tabs/searching-tab.php:255
 msgid "Use Relevanssi for admin searches."
 msgstr ""
 
-#: lib/tabs/searching-tab.php:254
+#: lib/tabs/searching-tab.php:258
 msgid ""
 "If checked, Relevanssi will be used for searches in the admin interface. The "
 "page search doesn't use Relevanssi, because WordPress works like that."
 msgstr ""
 
-#: lib/tabs/searching-tab.php:260
+#: lib/tabs/searching-tab.php:264
 #, php-format
 msgid "Respect %s"
 msgstr ""
 
-#: lib/tabs/searching-tab.php:264
+#: lib/tabs/searching-tab.php:268
 msgid "Respect exclude_from_search for custom post types"
 msgstr ""
 
-#: lib/tabs/searching-tab.php:268
+#: lib/tabs/searching-tab.php:272
 #, php-format
 msgid "Respect %s for custom post types"
 msgstr ""
 
-#: lib/tabs/searching-tab.php:270
+#: lib/tabs/searching-tab.php:274
 msgid ""
 "If checked, Relevanssi won't display posts of custom post types that have "
 "'exclude_from_search' set to true."
 msgstr ""
 
-#: lib/tabs/searching-tab.php:282
+#: lib/tabs/searching-tab.php:286
 msgid ""
 "You probably should uncheck this option, because you've set Relevanssi to "
 "index the following non-public post types:"
 msgstr ""
 
-#: lib/tabs/searching-tab.php:295
+#: lib/tabs/searching-tab.php:299
 msgid "Throttle searches"
 msgstr ""
 
-#: lib/tabs/searching-tab.php:305
+#: lib/tabs/searching-tab.php:309
 msgid "Throttling the search does not work when sorting the posts by date."
 msgstr ""
 
-#: lib/tabs/searching-tab.php:315 lib/tabs/searching-tab.php:318
+#: lib/tabs/searching-tab.php:319 lib/tabs/searching-tab.php:322
 msgid "Throttle searches."
 msgstr ""
 
-#: lib/tabs/searching-tab.php:322
+#: lib/tabs/searching-tab.php:326
 msgid "Your database is so small that you don't need to enable this."
 msgstr ""
 
-#: lib/tabs/searching-tab.php:324
+#: lib/tabs/searching-tab.php:328
 msgid ""
 "If this option is checked, Relevanssi will limit search results to at most "
 "500 results per term. This will improve performance, but may cause some "
 "relevant documents to go unfound. See Help for more details."
 msgstr ""
 
-#: lib/tabs/searching-tab.php:330
+#: lib/tabs/searching-tab.php:334
 msgid "Category restriction"
 msgstr ""
 
-#: lib/tabs/searching-tab.php:350
+#: lib/tabs/searching-tab.php:354
 msgid ""
 "You can restrict search results to a category for all searches. For "
 "restricting on a per-search basis and more options (eg. tag restrictions), "
 "see Help."
 msgstr ""
 
-#: lib/tabs/searching-tab.php:355
+#: lib/tabs/searching-tab.php:359
 msgid "Category exclusion"
 msgstr ""
 
-#: lib/tabs/searching-tab.php:375
+#: lib/tabs/searching-tab.php:379
 msgid ""
 "Posts in these categories are not included in search results. To exclude the "
 "posts completely from the index, see Help."
 msgstr ""
 
-#: lib/tabs/searching-tab.php:380
+#: lib/tabs/searching-tab.php:384
 msgid "Post exclusion"
 msgstr ""
 
-#: lib/tabs/searching-tab.php:384
+#: lib/tabs/searching-tab.php:388
 msgid ""
 "Enter a comma-separated list of post or page ID's to exclude those pages "
 "from the search results."
 msgstr ""
 
-#: lib/tabs/searching-tab.php:386
+#: lib/tabs/searching-tab.php:390
 msgid ""
 "With Relevanssi Premium, it's better to use the check box on post edit "
 "pages. That will remove the posts completely from the index, and will work "
 "with multisite searches unlike this setting."
 msgstr ""
 
-#: lib/tabs/stopwords-tab.php:53
+#: lib/tabs/stopwords-tab.php:25
+msgid "Content stopwords"
+msgstr ""
+
+#: lib/tabs/stopwords-tab.php:31
+msgid ""
+"Content stopwords are a premium feature where you can set stopwords that "
+"only apply to the post content. Those stopwords will still be indexed if "
+"they appear in post titles, tags, categories, custom fields or other parts "
+"of the post. To use content stopwords, you need Relevanssi Premium."
+msgstr ""
+
+#: lib/tabs/stopwords-tab.php:59
 msgid ""
 "Enter a word here to add it to the list of stopwords. The word will "
 "automatically be removed from the index, so re-indexing is not necessary. "
 "You can enter many words at the same time, separate words with commas."
 msgstr ""
 
-#: lib/tabs/stopwords-tab.php:58
+#: lib/tabs/stopwords-tab.php:64
 msgid "Stopword(s) to add"
 msgstr ""
 
-#: lib/tabs/stopwords-tab.php:66
+#: lib/tabs/stopwords-tab.php:72
 msgid ""
 "Here's a list of stopwords in the database. Click a word to remove it from "
 "stopwords. Removing stopwords won't automatically return them to index, so "
@@ -1961,15 +2023,15 @@ msgid ""
 "back to index."
 msgstr ""
 
-#: lib/tabs/stopwords-tab.php:71
+#: lib/tabs/stopwords-tab.php:77
 msgid "Current stopwords"
 msgstr ""
 
-#: lib/tabs/stopwords-tab.php:92
+#: lib/tabs/stopwords-tab.php:98
 msgid "Exportable list of stopwords"
 msgstr ""
 
-#: lib/tabs/stopwords-tab.php:96
+#: lib/tabs/stopwords-tab.php:102
 msgid ""
 "You can copy the list of stopwords here if you want to back up the list, "
 "copy it to a different blog or otherwise need the list."
