@@ -107,6 +107,8 @@ class AttachmentTest extends WP_UnitTestCase {
 
 			// There should be one post matching the search.
 			$this->assertEquals( 1, count( $posts ) );
+		} else {
+			$this->assertTrue( true );
 		}
 	}
 

@@ -380,7 +380,7 @@ class FunctionTest extends WP_UnitTestCase {
 		$this->assertDiscardWhitespace(
 			"AND relevanssi.doc IN (SELECT DISTINCT(ID) FROM {$wpdb->prefix}posts WHERE 1
 			AND (HOUR({$wpdb->prefix}posts.post_date) >= 9
-			AND HOUR ({$wpdb->prefix}posts.post_date) <= 17 
+			AND HOUR ({$wpdb->prefix}posts.post_date) <= 17
 			AND DAYOFWEEK({$wpdb->prefix}posts.post_date) BETWEEN 2 AND 6))",
 			relevanssi_process_date_query( new WP_Date_Query( $date_query ) )
 		);
@@ -400,7 +400,7 @@ class FunctionTest extends WP_UnitTestCase {
 	public function test_process_author() {
 		global $wpdb;
 		$this->assertDiscardWhitespace(
-			"AND relevanssi.doc IN (SELECT DISTINCT(posts.ID) FROM {$wpdb->prefix}posts AS posts 
+			"AND relevanssi.doc IN (SELECT DISTINCT(posts.ID) FROM {$wpdb->prefix}posts AS posts
 		 	WHERE posts.post_author IN (1,2))
 			AND relevanssi.doc NOT IN (SELECT DISTINCT(posts.ID) FROM {$wpdb->prefix}posts AS posts
 			WHERE posts.post_author IN (3,4))",
@@ -468,6 +468,8 @@ class FunctionTest extends WP_UnitTestCase {
 			);
 
 			update_option( 'relevanssi_recency_bonus', $bonus_before_test );
+		} else {
+			$this->assertTrue( true );
 		}
 	}
 

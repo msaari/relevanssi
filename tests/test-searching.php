@@ -332,6 +332,8 @@ class SearchingTest extends WP_UnitTestCase {
 
 			// This should match the number of users and posts.
 			$this->assertEquals( self::$user_count + self::$post_count, $query->found_posts );
+		} else {
+			$this->assertTrue( true );
 		}
 	}
 
@@ -608,6 +610,8 @@ class SearchingTest extends WP_UnitTestCase {
 			$first_result = array_shift( $posts );
 
 			$this->assertEquals( $pinned_for_all_post_id, $first_result->ID );
+		} else {
+			$this->assertTrue( true );
 		}
 	}
 
@@ -810,6 +814,8 @@ class SearchingTest extends WP_UnitTestCase {
 			}
 			$this->assertTrue( $is_user_found,
 			'User profile should be found in search.' );
+		} else {
+			$this->assertTrue( true );
 		}
 	}
 
@@ -975,6 +981,8 @@ class SearchingTest extends WP_UnitTestCase {
 			relevanssi_do_query( $query );
 			$this->assertEquals( 9, $query->found_posts,
 			'NOT operator should eliminate one post from the results.' );
+		} else {
+			$this->assertTrue( true );
 		}
 	}
 
@@ -996,6 +1004,8 @@ class SearchingTest extends WP_UnitTestCase {
 			relevanssi_do_query( $query );
 			$this->assertEquals( 1, $query->found_posts,
 			'AND operator should restrict the results to one post.' );
+		} else {
+			$this->assertTrue( true );
 		}
 	}
 

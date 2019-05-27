@@ -61,6 +61,8 @@ class DidYouMeanTest extends WP_UnitTestCase {
 
 			$corrected = relevanssi_premium_generate_suggestion( 'profision' );
 			$this->assertEquals( 'provision', $corrected, 'Switched letter.' );
+		} else {
+			$this->assertTrue( true );
 		}
 	}
 
