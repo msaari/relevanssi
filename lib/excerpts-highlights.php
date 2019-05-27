@@ -293,7 +293,6 @@ function relevanssi_create_excerpt( $content, $terms, $query ) {
 			$excerpt_slice = array_slice( $words, $offset, $excerpt_length );
 			$excerpt_slice = ' ' . implode( ' ', $excerpt_slice );
 
-			$term_hits     = 0;
 			$count_matches = relevanssi_count_matches( array_keys( $terms ), $excerpt_slice );
 			if ( $count_matches > 0 && $count_matches > $best_excerpt_term_hits ) {
 				$best_excerpt_term_hits = $count_matches;
@@ -515,9 +514,6 @@ function relevanssi_highlight_terms( $content, $query, $in_docs = false ) {
 				$content = preg_replace( "/($pr_term)/iu", $start_emp_token . '\\1' . $end_emp_token, $undecoded_content );
 			}
 		}
-
-		$preg_start = preg_quote( $start_emp_token );
-		$preg_end   = preg_quote( $end_emp_token );
 
 		if ( preg_match_all( '/<.*>/U', $content, $matches ) > 0 ) {
 			// Remove highlights from inside HTML tags.
