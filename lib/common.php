@@ -208,6 +208,13 @@ function relevanssi_default_post_ok( $post_ok, $post_id ) {
 		// Restrict Content Pro.
 		$post_ok = rcp_user_can_access( get_current_user_id(), $post_id );
 	}
+	// User Access Manager.
+	global $userAccessManager; // phpcs:ignore WordPress.NamingConventions.ValidVariableName
+	if ( isset( $userAccessManager ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName
+		$type    = relevanssi_get_post_type( $post_id );
+		$post_ok = $userAccessManager->getAccessHandler()->checkObjectAccess( $type, $post_id ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName
+	}
+
 	/**
 	 * Filters statuses allowed in admin searches.
 	 *
