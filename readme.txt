@@ -3,9 +3,9 @@ Contributors: msaari
 Donate link: https://www.relevanssi.com/buy-premium/
 Tags: search, relevance, better search
 Requires at least: 4.8.3
-Tested up to: 5.1.1
+Tested up to: 5.2.1
 Requires PHP: 5.6
-Stable tag: 4.1.4
+Stable tag: 4.2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -129,6 +129,22 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.2.0 =
+* New feature: The search form shortcode has a new parameter `dropdown` which can be used to add a category dropdown, like this: `[searchform dropdown="category"]`.
+* New feature: Relevanssi can now use the contents of the PDF files indexed with WP File Download.
+* New filter: `relevanssi_indexing_tokens` can be used to filter the tokens (individual words) before they are indexed.
+* Removed filter: `relevanssi_default_meta_query_relation` did not have any effect anymore.
+* Changed behaviour: The default taxonomy relation was set to AND in 4.1.4, but wasn't properly applied before. Now it is really switched.
+* Changed behaviour: New post types have been added to list of forbidden post types Relevanssi won't show as indexing options (ACF, TablePress and WooCommerce).
+* Major fix: Tax query processing has been completely refactored, eliminating all sorts of bugs, especially with various edge cases.
+* Major fix: Gutenberg block indexing only worked with the Gutenberg plugin enabled. It now works with WP 5.0 built-in Gutenberg as well. If you use Gutenberg blocks, reindex to get all the block content in the index.
+* Major fix: Excerpt-building and highlighting did not respect the "Keyword matching" setting. They do now, and the excerpts should be better now.
+* Major fix: AND searches needed queries that could get too long for the database to handle. This has been fixed and optimized.
+* Major fix: Taxonomy term subquery relations didn't work; now they are applied.
+* Minor fix: iOS uses curly quotes by default, and that didn't work as a phrase operator. Now phrase operator works with curly quotes and straight quotes.
+* Minor fix: The Did you mean broke with search terms longer than 255 characters.
+* Minor fix: Phrases with numbers and one word like "team 17" didn't work, because numbers weren't counted as words.
+
 = 4.1.4 =
 * `EXISTS` and `NOT EXISTS` didn’t work for taxonomy terms in searches.
 * WPML post type handling has been improved. If post type allows fallback for default language, Relevanssi will support that.
@@ -193,6 +209,9 @@ Each document database is full of useless words. All the little words that appea
 * WP Search Suggest compatibility added.
 
 == Upgrade notice ==
+= 4.2.0 =
+* New features, bug fixes, smaller improvements.
+
 = 4.1.4 =
 * Restrict Content Pro support, bug fixes and small improvements.
 
