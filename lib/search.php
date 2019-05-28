@@ -192,20 +192,6 @@ function relevanssi_search( $args ) {
 	$fuzzy = get_option( 'relevanssi_fuzzy' );
 
 	$no_matches = true;
-	if ( 'always' === $fuzzy ) {
-		/**
-		 * Filters the partial matching search query.
-		 *
-		 * By default partial matching matches the beginnings and the ends of the
-		 * words. If you want it to match inside words, add a function to this
-		 * hook that returns '(relevanssi.term LIKE '%#term#%')'.
-		 *
-		 * @param string The partial matching query.
-		 */
-		$o_term_cond = apply_filters( 'relevanssi_fuzzy_query', "(relevanssi.term LIKE '#term#%' OR relevanssi.term_reverse LIKE CONCAT(REVERSE('#term#'), '%')) " );
-	} else {
-		$o_term_cond = " relevanssi.term = '#term#' ";
-	}
 
 	if ( count( $terms ) < 1 ) {
 		$o_term_cond = ' relevanssi.term = relevanssi.term ';
@@ -273,7 +259,7 @@ function relevanssi_search( $args ) {
 
 	do {
 		foreach ( $terms as $term ) {
-			$term_cond = relevanssi_generate_term_cond( $term, $o_term_cond );
+			$term_cond = relevanssi_generate_term_where( $term, $search_again );
 			if ( null === $term_cond ) {
 				continue;
 			}
@@ -310,7 +296,7 @@ function relevanssi_search( $args ) {
 		asort( $df_counts );
 
 		foreach ( $df_counts as $term => $df ) {
-			$term_cond = relevanssi_generate_term_cond( $term, $o_term_cond );
+			$term_cond = relevanssi_generate_term_where( $term, $search_again );
 			if ( null === $term_cond ) {
 				continue;
 			}
@@ -595,7 +581,6 @@ function relevanssi_search( $args ) {
 			} else {
 				if ( 'sometimes' === $fuzzy ) {
 					$search_again = true;
-					$o_term_cond  = "(term LIKE '%#term#' OR term LIKE '#term#%') ";
 				}
 			}
 		} else {
@@ -605,7 +590,6 @@ function relevanssi_search( $args ) {
 			'no_matches'   => $no_matches,
 			'doc_weight'   => $doc_weight,
 			'terms'        => $terms,
-			'o_term_cond'  => $o_term_cond,
 			'search_again' => $search_again,
 		);
 		/**
@@ -620,7 +604,6 @@ function relevanssi_search( $args ) {
 		$params       = apply_filters( 'relevanssi_search_again', $params );
 		$search_again = $params['search_again'];
 		$terms        = $params['terms'];
-		$o_term_cond  = $params['o_term_cond'];
 		$doc_weight   = $params['doc_weight'];
 		$no_matches   = $params['no_matches'];
 	} while ( $search_again );
@@ -1562,34 +1545,60 @@ function relevanssi_get_negative_post_type( $include_attachments ) {
  *
  * Tested.
  *
- * @param string $term        The search term.
- * @param string $o_term_cond The search condition template.
+ * @param string  $term        The search term.
+ * @param boolean $force_fuzzy If true, force fuzzy search. Default false.
  *
  * @return string The template with the term in place.
  */
-function relevanssi_generate_term_cond( $term, $o_term_cond ) {
+function relevanssi_generate_term_where( $term, $force_fuzzy = false ) {
 	global $wpdb;
 
-	$term = trim( $term ); // Numeric search terms will start with a space.
+	$fuzzy = get_option( 'relevanssi_fuzzy' );
+
 	/**
-	 * Allows the use of one letter search terms.
+	 * Filters the partial matching search query.
 	 *
-	 * Return false to allow one letter searches.
+	 * By default partial matching matches the beginnings and the ends of the
+	 * words. If you want it to match inside words, add a function to this
+	 * hook that returns '(relevanssi.term LIKE '%#term#%')'.
 	 *
-	 * @param boolean True, if search term is one letter long and will be blocked.
+	 * @param string The partial matching query.
 	 */
-	if ( apply_filters( 'relevanssi_block_one_letter_searches', relevanssi_strlen( $term ) < 2 ) ) {
-		return null;
+	$fuzzy_query = apply_filters( 'relevanssi_fuzzy_query', "(relevanssi.term LIKE '#term#%' OR relevanssi.term_reverse LIKE CONCAT(REVERSE('#term#'), '%')) " );
+	$basic_query = " relevanssi.term = '#term#' ";
+
+	if ( 'always' === $fuzzy || $force_fuzzy ) {
+		$term_where_template = $fuzzy_query;
+	} else {
+		$term_where_template = $basic_query;
 	}
+
+	$term = trim( $term ); // Numeric search terms will start with a space.
+
+	if ( relevanssi_strlen( $term ) < 2 ) {
+		/**
+		 * Allows the use of one letter search terms.
+		 *
+		 * Return false to allow one letter searches.
+		 *
+		 * @param boolean True, if search term is one letter long and will be blocked.
+		 */
+		if ( apply_filters( 'relevanssi_block_one_letter_searches', true ) ) {
+			return null;
+		}
+		// No fuzzy matching for one-letter search terms.
+		$term_where_template = $basic_query;
+	}
+
 	$term = esc_sql( $term );
 
-	if ( false !== strpos( $o_term_cond, 'LIKE' ) ) {
+	if ( false !== strpos( $term_where_template, 'LIKE' ) ) {
 		$term = $wpdb->esc_like( $term );
 	}
 
-	$term_cond = str_replace( '#term#', $term, $o_term_cond );
+	$term_where = str_replace( '#term#', $term, $term_where_template );
 
-	return $term_cond;
+	return $term_where;
 }
 
 /**
