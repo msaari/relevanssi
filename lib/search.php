@@ -139,16 +139,18 @@ function relevanssi_search( $args ) {
 	$remove_stopwords = apply_filters( 'relevanssi_remove_stopwords_in_titles', true );
 
 	$terms = relevanssi_tokenize( $q, $remove_stopwords );
-	if ( count( $terms ) < 1 ) {
-		// Tokenizer killed all the search terms.
-		return $hits;
-	}
 	$terms = array_keys( $terms ); // Don't care about tf in query.
 
 	if ( function_exists( 'relevanssi_process_terms' ) ) {
 		$process_terms_results = relevanssi_process_terms( $terms, $q );
 		$query_restrictions   .= $process_terms_results['query_restrictions'];
 		$terms                 = $process_terms_results['terms'];
+	}
+
+	$no_terms = false;
+	if ( count( $terms ) < 1 && empty( $q ) ) {
+		$no_terms = true;
+		$terms[]  = 'term';
 	}
 
 	/**
@@ -193,11 +195,6 @@ function relevanssi_search( $args ) {
 
 	$no_matches = true;
 
-	if ( count( $terms ) < 1 ) {
-		$o_term_cond = ' relevanssi.term = relevanssi.term ';
-		$terms[]     = 'term';
-	}
-
 	$post_type_weights = get_option( 'relevanssi_post_type_weights' );
 
 	$recency_bonus       = false;
@@ -217,10 +214,13 @@ function relevanssi_search( $args ) {
 		 * @param array The title bonus under 'title' (default 5) and the content
 		 * bonus under 'content' (default 2).
 		 */
-		$exact_match_boost = apply_filters( 'relevanssi_exact_match_bonus', array(
-			'title'   => 5,
-			'content' => 2,
-		));
+		$exact_match_boost = apply_filters(
+			'relevanssi_exact_match_bonus',
+			array(
+				'title'   => 5,
+				'content' => 2,
+			)
+		);
 
 	}
 
@@ -262,7 +262,7 @@ function relevanssi_search( $args ) {
 
 	do {
 		foreach ( $terms as $term ) {
-			$term_cond = relevanssi_generate_term_where( $term, $search_again );
+			$term_cond = relevanssi_generate_term_where( $term, $search_again, $no_terms );
 			if ( null === $term_cond ) {
 				continue;
 			}
@@ -301,10 +301,7 @@ function relevanssi_search( $args ) {
 		asort( $df_counts );
 
 		foreach ( $df_counts as $term => $df ) {
-			$term_cond = relevanssi_generate_term_where( $term, $search_again );
-			if ( null === $term_cond ) {
-				continue;
-			}
+			$term_cond = relevanssi_generate_term_where( $term, $search_again, $no_terms );
 
 			$query = "SELECT DISTINCT(relevanssi.doc), relevanssi.*, relevanssi.title * $title_boost +
 				relevanssi.content * $content_boost + relevanssi.comment * $comment_boost +
@@ -474,12 +471,14 @@ function relevanssi_search( $args ) {
 
 				if ( $exact_match_bonus ) {
 					$post    = relevanssi_get_post( $match->doc );
-					$clean_q = str_replace( '"', '', $q );
-					if ( stristr( $post->post_title, $clean_q ) !== false ) {
-						$match->weight *= $exact_match_boost['title'];
-					}
-					if ( stristr( $post->post_content, $clean_q ) !== false ) {
-						$match->weight *= $exact_match_boost['content'];
+					$clean_q = str_replace( array( '"', '”', '“' ), '', $q );
+					if ( $clean_q ) {
+						if ( stristr( $post->post_title, $clean_q ) !== false ) {
+							$match->weight *= $exact_match_boost['title'];
+						}
+						if ( stristr( $post->post_content, $clean_q ) !== false ) {
+							$match->weight *= $exact_match_boost['content'];
+						}
 					}
 				}
 
@@ -578,10 +577,6 @@ function relevanssi_search( $args ) {
 			}
 		}
 
-		if ( ! isset( $doc_weight ) ) {
-			$doc_weight = array();
-			$no_matches = true;
-		}
 		if ( $no_matches ) {
 			if ( $search_again ) {
 				// No hits even with fuzzy search!
@@ -684,7 +679,6 @@ function relevanssi_search( $args ) {
 			$category_matches = $return['category_matches'];
 			$taxonomy_matches = $return['taxonomy_matches'];
 			$comment_matches  = $return['comment_matches'];
-			$body_matches     = $return['body_matches'];
 			$link_matches     = $return['link_matches'];
 			$term_hits        = $return['term_hits'];
 			$q                = $return['query'];
@@ -1421,12 +1415,8 @@ function relevanssi_do_query( &$query ) {
 		}
 
 		if ( 'on' === get_option( 'relevanssi_hilite_title' ) && empty( $fields ) ) {
-			if ( function_exists( 'qtrans_useCurrentLanguageIfNotFoundUseDefaultLanguage' ) ) {
-				$post->post_highlighted_title = strip_tags( qtrans_useCurrentLanguageIfNotFoundUseDefaultLanguage( $post->post_title ) );
-			} else {
-				$post->post_highlighted_title = strip_tags( $post->post_title );
-			}
-			$highlight = get_option( 'relevanssi_highlight' );
+			$post->post_highlighted_title = wp_strip_all_tags( $post->post_title );
+			$highlight                    = get_option( 'relevanssi_highlight' );
 			if ( 'none' !== $highlight ) {
 				if ( ! is_admin() || ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
 					$post->post_highlighted_title = relevanssi_highlight_terms( $post->post_highlighted_title, $q );
@@ -1553,15 +1543,23 @@ function relevanssi_get_negative_post_type( $include_attachments ) {
  *
  * Tested.
  *
- * @param string  $term        The search term.
- * @param boolean $force_fuzzy If true, force fuzzy search. Default false.
+ * @param string  $term            The search term.
+ * @param boolean $force_fuzzy     If true, force fuzzy search. Default false.
+ * @param boolean $no_terms        If true, no search term is used. Default false.
+ * @param string  $option_override If set, won't read the value from the
+ * 'relevanssi_fuzzy' option but will use this instead. Used in multisite searching.
+ * Default null.
  *
  * @return string The template with the term in place.
  */
-function relevanssi_generate_term_where( $term, $force_fuzzy = false ) {
+function relevanssi_generate_term_where( $term, $force_fuzzy = false, $no_terms = false, $option_override = null ) {
 	global $wpdb;
 
 	$fuzzy = get_option( 'relevanssi_fuzzy' );
+	if ( $option_override &&
+	in_array( $option_override, array( 'always', 'sometimes', 'never' ), true ) ) {
+		$fuzzy = $option_override;
+	}
 
 	/**
 	 * Filters the partial matching search query.
@@ -1572,13 +1570,19 @@ function relevanssi_generate_term_where( $term, $force_fuzzy = false ) {
 	 *
 	 * @param string The partial matching query.
 	 */
-	$fuzzy_query = apply_filters( 'relevanssi_fuzzy_query', "(relevanssi.term LIKE '#term#%' OR relevanssi.term_reverse LIKE CONCAT(REVERSE('#term#'), '%')) " );
+	$fuzzy_query = apply_filters(
+		'relevanssi_fuzzy_query',
+		"(relevanssi.term LIKE '#term#%' OR relevanssi.term_reverse LIKE CONCAT(REVERSE('#term#'), '%')) "
+	);
 	$basic_query = " relevanssi.term = '#term#' ";
 
 	if ( 'always' === $fuzzy || $force_fuzzy ) {
 		$term_where_template = $fuzzy_query;
 	} else {
 		$term_where_template = $basic_query;
+	}
+	if ( $no_terms ) {
+		$term_where_template = ' relevanssi.term = relevanssi.term ';
 	}
 
 	$term = trim( $term ); // Numeric search terms will start with a space.
@@ -1630,7 +1634,10 @@ function relevanssi_taxonomy_score( &$match, $post_type_weights ) {
 		foreach ( $match->taxonomy_detail as $tax => $count ) {
 			if ( empty( $post_type_weights[ 'post_tagged_with_' . $tax ] ) ) {
 				if ( ! empty( $post_type_weights[ $tax ] ) ) { // Legacy code, needed for 2.1.8, remove later.
+					// phpcs:ignore Squiz.Commenting.InlineComment
+					// @codeCoverageIgnoreStart
 					$match->taxonomy_score += $count * $post_type_weights[ $tax ];
+					// @codeCoverageIgnoreEnd
 				} else {
 					$match->taxonomy_score += $count * 1;
 				}
