@@ -57,7 +57,7 @@ function relevanssi_show_stopwords() {
 	global $wpdb, $relevanssi_variables;
 
 	printf( '<p>%s</p>', esc_html__( 'Enter a word here to add it to the list of stopwords. The word will automatically be removed from the index, so re-indexing is not necessary. You can enter many words at the same time, separate words with commas.', 'relevanssi' ) );
-?>
+	?>
 <table class="form-table">
 <tr>
 	<th scope="row">
@@ -79,7 +79,7 @@ function relevanssi_show_stopwords() {
 	<td>
 	<?php
 	echo '<ul>';
-	$results    = $wpdb->get_results( 'SELECT * FROM ' . $relevanssi_variables['stopword_table'] ); // WPCS: unprepared SQL ok, Relevanssi table name.
+	$results    = $wpdb->get_results( 'SELECT * FROM ' . $relevanssi_variables['stopword_table'] );  // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
 	$exportlist = array();
 	foreach ( $results as $stopword ) {
 		$sw = stripslashes( $stopword->stopword );
@@ -89,7 +89,7 @@ function relevanssi_show_stopwords() {
 	echo '</ul>';
 
 	$exportlist = htmlspecialchars( implode( ', ', $exportlist ) );
-?>
+	?>
 	<p><input type="submit" id="removeallstopwords" name="removeallstopwords" value="<?php esc_attr_e( 'Remove all stopwords', 'relevanssi' ); ?>" class='button' /></p>
 	</td>
 </tr>
@@ -104,5 +104,5 @@ function relevanssi_show_stopwords() {
 </tr>
 </table>
 
-<?php
+	<?php
 }

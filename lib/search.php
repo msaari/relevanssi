@@ -243,13 +243,16 @@ function relevanssi_search( $args ) {
 		$cat = $post_type_weights['post_tagged_with_category'];
 	}
 
-	/* Legacy code, improvement introduced in 2.1.8, remove at some point. */
+	// Legacy code, improvement introduced in 2.1.8, remove at some point.
+	// phpcs:ignore Squiz.Commenting.InlineComment
+	// @codeCoverageIgnoreStart
 	if ( ! empty( $post_type_weights['post_tag'] ) ) {
 		$tag = $post_type_weights['post_tag'];
 	}
 	if ( ! empty( $post_type_weights['category'] ) ) {
 		$cat = $post_type_weights['category'];
 	}
+	// @codeCoverageIgnoreEnd
 	/* End legacy code. */
 
 	$include_these_posts = array();
@@ -275,16 +278,18 @@ function relevanssi_search( $args ) {
 			 */
 			$query = apply_filters( 'relevanssi_df_query_filter', $query );
 
-			$df = $wpdb->get_var( $query ); // WPCS: unprepared SQL ok.
+			$df = $wpdb->get_var( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 			if ( $df < 1 && 'sometimes' === $fuzzy ) {
-				$query = "SELECT COUNT(DISTINCT(relevanssi.doc)) FROM $relevanssi_table AS relevanssi
-					$query_join WHERE (relevanssi.term LIKE '$term%'
-					OR relevanssi.term_reverse LIKE CONCAT(REVERSE('$term'), '%')) $query_restrictions";
+				$term_cond = relevanssi_generate_term_where( $term, true, $no_terms );
+				$query     = "
+				SELECT COUNT(DISTINCT(relevanssi.doc))
+					FROM $relevanssi_table AS relevanssi
+					$query_join WHERE $term_cond $query_restrictions";
 				// Clean: $query_restrictions is escaped, $term is escaped.
 				/** Documented in lib/search.php. */
 				$query = apply_filters( 'relevanssi_df_query_filter', $query );
-				$df    = $wpdb->get_var( $query ); // WPCS: unprepared SQL ok.
+				$df    = $wpdb->get_var( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			}
 
 			$df_counts[ $term ] = $df;
@@ -317,7 +322,7 @@ function relevanssi_search( $args ) {
 			 * @param string MySQL query for the Relevanssi search.
 			 */
 			$query   = apply_filters( 'relevanssi_query_filter', $query );
-			$matches = $wpdb->get_results( $query ); // WPCS: unprepared SQL ok, the query is thoroughly escaped.
+			$matches = $wpdb->get_results( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			if ( count( $matches ) < 1 ) {
 				continue;
 			} else {
@@ -346,7 +351,7 @@ function relevanssi_search( $args ) {
 								AND $term_cond";
 
 								// Clean: no unescaped user inputs.
-								$matches_to_add = $wpdb->get_results( $query ); // WPCS: unprepared SQL ok.
+								$matches_to_add = $wpdb->get_results( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 								$matches        = array_merge( $matches, $matches_to_add );
 							}
 							$offset += $slice_length;
@@ -373,7 +378,7 @@ function relevanssi_search( $args ) {
 						AND $term_cond";
 
 						// Clean: no unescaped user inputs.
-						$matches_to_add = $wpdb->get_results( $query ); // WPCS: unprepared SQL ok.
+						$matches_to_add = $wpdb->get_results( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 						$matches        = array_merge( $matches, $matches_to_add );
 					}
 				}
@@ -412,7 +417,9 @@ function relevanssi_search( $args ) {
 						$category_weight = $post_type_weights['post_tagged_with_category'];
 					}
 
-					/* Legacy code from 2.1.8. Remove at some point. */
+					// Legacy code from 2.1.8. Remove at some point.
+					// phpcs:ignore Squiz.Commenting.InlineComment
+					// @codeCoverageIgnoreStart
 					if ( isset( $post_type_weights['post_tag'] ) && is_numeric( $post_type_weights['post_tag'] ) ) {
 						$tag_weight = $post_type_weights['post_tag'];
 					}
@@ -421,6 +428,7 @@ function relevanssi_search( $args ) {
 					if ( isset( $post_type_weights['category'] ) && is_numeric( $post_type_weights['category'] ) ) {
 						$category_weight = $post_type_weights['category'];
 					}
+					// @codeCoverageIgnoreEnd
 					/* End legacy code. */
 
 					$taxonomy_weight = 1;

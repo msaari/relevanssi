@@ -19,7 +19,7 @@
 function relevanssi_the_excerpt() {
 	global $post;
 	if ( ! post_password_required( $post ) ) {
-		echo '<p>' . $post->post_excerpt . '</p>'; // WPCS: XSS ok.
+		echo '<p>' . $post->post_excerpt . '</p>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	} else {
 		esc_html_e( 'There is no excerpt because this is a protected post.', 'relevanssi' );
 	}
@@ -43,7 +43,7 @@ function relevanssi_do_excerpt( $t_post, $query ) {
 	if ( null !== $post ) {
 		$old_global_post = $post;
 	}
-	$post = $t_post; // WPCS: override ok, must do because shortcodes etc. expect it.
+	$post = $t_post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 
 	$remove_stopwords = true;
 
@@ -213,7 +213,7 @@ function relevanssi_do_excerpt( $t_post, $query ) {
 	}
 
 	if ( null !== $old_global_post ) {
-		$post = $old_global_post; // WPCS: override ok, returning the overridden value.
+		$post = $old_global_post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 	}
 
 	return $excerpt;
@@ -586,7 +586,7 @@ function relevanssi_highlight_terms( $content, $query, $in_docs = false ) {
  */
 function relevanssi_fix_entities( $excerpt, $in_docs ) {
 	if ( ! $in_docs ) {
-		// For excerpts, use htmlentities().
+		// For excerpts, use htmlentities() to convert.
 		$excerpt = htmlentities( $excerpt, ENT_NOQUOTES, 'UTF-8' );
 
 		// Except for allowed tags, which are turned back into tags.
@@ -619,7 +619,7 @@ function relevanssi_fix_entities( $excerpt, $in_docs ) {
 
 		$closing_tags_entitied_regexped = array();
 		foreach ( $closing_tags_entitied as $tag ) {
-			$pattern = '~' . preg_quote( $tag ) . '~';
+			$pattern = '~' . preg_quote( $tag, '~' ) . '~';
 
 			$closing_tags_entitied_regexped[] = $pattern;
 		}
@@ -982,10 +982,13 @@ function relevanssi_add_accent_variations( $word ) {
 	 *
 	 * @param array Array of replacements. 'from' has the source characters, 'to' the replacements.
 	 */
-	$replacement_arrays = apply_filters('relevanssi_accents_replacement_arrays', array(
-		'from' => array( 'a', 'c', 'e', 'i', 'o', 'u', 'n', 'ss' ),
-		'to'   => array( '(a|á|à|â)', '(c|ç)', '(e|é|è|ê|ë)', '(i|í|ì|î|ï)', '(o|ó|ò|ô|õ)', '(u|ú|ù|ü|û)', '(n|ñ)', '(ss|ß)' ),
-	));
+	$replacement_arrays = apply_filters(
+		'relevanssi_accents_replacement_arrays',
+		array(
+			'from' => array( 'a', 'c', 'e', 'i', 'o', 'u', 'n', 'ss' ),
+			'to'   => array( '(a|á|à|â)', '(c|ç)', '(e|é|è|ê|ë)', '(i|í|ì|î|ï)', '(o|ó|ò|ô|õ)', '(u|ú|ù|ü|û)', '(n|ñ)', '(ss|ß)' ),
+		)
+	);
 
 	$len        = mb_strlen( $word );
 	$word_array = array();
@@ -1086,27 +1089,30 @@ function relevanssi_remove_page_builder_shortcodes( $content ) {
 	 *
 	 * @param array An array of page builder shortcode regexes.
 	 */
-	$search_array = apply_filters('relevanssi_page_builder_shortcodes', array(
-		// Remove content.
-		'/\[et_pb_code.*?\].*\[\/et_pb_code\]/',
-		'/\[et_pb_sidebar.*?\].*\[\/et_pb_sidebar\]/',
-		'/\[et_pb_fullwidth_slider.*?\].*\[\/et_pb_fullwidth_slider\]/',
-		'/\[vc_raw_html.*?\].*\[\/vc_raw_html\]/',
-		// Remove only the tags.
-		'/\[\/?et_pb.*?\]/',
-		'/\[\/?vc.*?\]/',
-		'/\[\/?mk.*?\]/',
-		'/\[\/?cs_.*?\]/',
-		'/\[\/?av_.*?\]/',
-		'/\[\/?fusion_.*?\]/',
-		// Max Mega Menu doesn't work in excerpts.
-		'/\[maxmegamenu.*?\]/',
-		// All-in-one Events Calendar shortcode doesn't look good.
-		'/\[ai1ec.*?\]/',
-		// Events Made Easy Calendar shortcodes should be removed.
-		'/\[eme_.*?\]/',
-	));
-	$content = preg_replace( $search_array, '', $content );
+	$search_array = apply_filters(
+		'relevanssi_page_builder_shortcodes',
+		array(
+			// Remove content.
+			'/\[et_pb_code.*?\].*\[\/et_pb_code\]/',
+			'/\[et_pb_sidebar.*?\].*\[\/et_pb_sidebar\]/',
+			'/\[et_pb_fullwidth_slider.*?\].*\[\/et_pb_fullwidth_slider\]/',
+			'/\[vc_raw_html.*?\].*\[\/vc_raw_html\]/',
+			// Remove only the tags.
+			'/\[\/?et_pb.*?\]/',
+			'/\[\/?vc.*?\]/',
+			'/\[\/?mk.*?\]/',
+			'/\[\/?cs_.*?\]/',
+			'/\[\/?av_.*?\]/',
+			'/\[\/?fusion_.*?\]/',
+			// Max Mega Menu doesn't work in excerpts.
+			'/\[maxmegamenu.*?\]/',
+			// All-in-one Events Calendar shortcode doesn't look good.
+			'/\[ai1ec.*?\]/',
+			// Events Made Easy Calendar shortcodes should be removed.
+			'/\[eme_.*?\]/',
+		)
+	);
+	$content      = preg_replace( $search_array, '', $content );
 	return $content;
 }
 

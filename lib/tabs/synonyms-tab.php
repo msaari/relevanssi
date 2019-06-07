@@ -21,7 +21,7 @@ function relevanssi_synonyms_tab() {
 	} else {
 		$synonyms = '';
 	}
-?>
+	?>
 	<h3 id="synonyms"><?php esc_html_e( 'Synonyms', 'relevanssi' ); ?></h3>
 
 <table class="form-table">
@@ -48,5 +48,5 @@ function relevanssi_synonyms_tab() {
 	</td>
 </tr>
 </table>
-<?php
+	<?php
 }

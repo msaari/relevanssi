@@ -85,10 +85,16 @@ function relevanssi_index_posts_ajax_wrapper() {
 
 	$response['feedback'] = sprintf(
 		// translators: Number of posts indexed on this go, total number of posts indexed so far, number of posts processed on this go, total number of posts to process.
-		_n( 'Indexed %1$d post (total %2$d), processed %3$d / %4$d.', 'Indexed %1$d posts (total %2$d), processed %3$d / %4$d.',
-			$indexing_response['indexed'], 'relevanssi'
+		_n(
+			'Indexed %1$d post (total %2$d), processed %3$d / %4$d.',
+			'Indexed %1$d posts (total %2$d), processed %3$d / %4$d.',
+			$indexing_response['indexed'],
+			'relevanssi'
 		),
-		$indexing_response['indexed'], $completed, $processed, $total
+		$indexing_response['indexed'],
+		$completed,
+		$processed,
+		$total
 	) . "\n";
 	$response['offset'] = $offset;
 
@@ -124,10 +130,12 @@ function relevanssi_count_missing_posts_ajax_wrapper() {
  * AJAX wrapper for get_categories().
  */
 function relevanssi_list_categories() {
-	$categories = get_categories( array(
-		'taxonomy'   => 'category',
-		'hide_empty' => false,
-	) );
+	$categories = get_categories(
+		array(
+			'taxonomy'   => 'category',
+			'hide_empty' => false,
+		)
+	);
 	echo wp_json_encode( $categories );
 	wp_die();
 }

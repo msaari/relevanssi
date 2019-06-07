@@ -34,10 +34,13 @@ add_shortcode( 'searchform', 'relevanssi_search_form' );
 function relevanssi_shortcode( $atts, $content ) {
 	global $wpdb;
 
-	$attributes = shortcode_atts( array(
-		'term'   => false,
-		'phrase' => 'not',
-	), $atts);
+	$attributes = shortcode_atts(
+		array(
+			'term'   => false,
+			'phrase' => 'not',
+		),
+		$atts
+	);
 
 	$term   = $attributes['term'];
 	$phrase = $attributes['phrase'];
@@ -45,7 +48,7 @@ function relevanssi_shortcode( $atts, $content ) {
 	if ( false !== $term ) {
 		$term = rawurlencode( relevanssi_strtolower( $term ) );
 	} else {
-		$term = rawurlencode( strip_tags( relevanssi_strtolower( $content ) ) );
+		$term = rawurlencode( wp_strip_all_tags( relevanssi_strtolower( $content ) ) );
 	}
 
 	if ( 'not' !== $phrase ) {

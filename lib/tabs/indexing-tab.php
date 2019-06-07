@@ -88,13 +88,13 @@ function relevanssi_indexing_tab() {
 	$punct_hyphens_remove     = relevanssi_select( $punctuation['hyphens'], 'remove' );
 	$punct_hyphens_keep       = relevanssi_select( $punctuation['hyphens'], 'keep' );
 
-	$docs_count  = $wpdb->get_var( 'SELECT COUNT(DISTINCT doc) FROM ' . $relevanssi_variables['relevanssi_table'] . ' WHERE doc != -1' ); // WPCS: unprepared SQL ok, Relevanssi table name.
-	$terms_count = $wpdb->get_var( 'SELECT COUNT(*) FROM ' . $relevanssi_variables['relevanssi_table'] ); // WPCS: unprepared SQL ok, Relevanssi table name.
-	$lowest_doc  = $wpdb->get_var( 'SELECT doc FROM ' . $relevanssi_variables['relevanssi_table'] . ' WHERE doc > 0 ORDER BY doc ASC LIMIT 1' ); // WPCS: unprepared SQL ok, Relevanssi table name.
+	$docs_count  = $wpdb->get_var( 'SELECT COUNT(DISTINCT doc) FROM ' . $relevanssi_variables['relevanssi_table'] . ' WHERE doc != -1' );  // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
+	$terms_count = $wpdb->get_var( 'SELECT COUNT(*) FROM ' . $relevanssi_variables['relevanssi_table'] );  // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
+	$lowest_doc  = $wpdb->get_var( 'SELECT doc FROM ' . $relevanssi_variables['relevanssi_table'] . ' WHERE doc > 0 ORDER BY doc ASC LIMIT 1' );  // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
 
 	if ( RELEVANSSI_PREMIUM ) {
-		$user_count    = $wpdb->get_var( 'SELECT COUNT(DISTINCT item) FROM ' . $relevanssi_variables['relevanssi_table'] . " WHERE type = 'user'" ); // WPCS: unprepared SQL ok, Relevanssi table name.
-		$taxterm_count = $wpdb->get_var( 'SELECT COUNT(DISTINCT item) FROM ' . $relevanssi_variables['relevanssi_table'] . " WHERE (type != 'post' AND type != 'attachment' AND type != 'user')" ); // WPCS: unprepared SQL ok, Relevanssi table name.
+		$user_count    = $wpdb->get_var( 'SELECT COUNT(DISTINCT item) FROM ' . $relevanssi_variables['relevanssi_table'] . " WHERE type = 'user'" );  // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
+		$taxterm_count = $wpdb->get_var( 'SELECT COUNT(DISTINCT item) FROM ' . $relevanssi_variables['relevanssi_table'] . " WHERE (type != 'post' AND type != 'attachment' AND type != 'user')" );  // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
 	}
 
 	?>
@@ -133,7 +133,7 @@ function relevanssi_indexing_tab() {
 	<?php if ( RELEVANSSI_PREMIUM ) : ?>
 		<br /><?php echo esc_html( $user_count ); ?> <?php echo esc_html( _n( 'user in the index.', 'users in the index.', $user_count, 'relevanssi' ) ); ?><br />
 		<?php echo esc_html( $taxterm_count ); ?> <?php echo esc_html( _n( 'taxonomy term in the index.', 'taxonomy terms in the index.', $taxterm_count, 'relevanssi' ) ); ?>
-	<?php endif; ?>	
+	<?php endif; ?>
 		</p>
 		<p><?php echo esc_html( $terms_count ); ?> <?php echo esc_html( _n( 'term in the index.', 'terms in the index.', $terms_count, 'relevanssi' ) ); ?><br />
 		<?php echo esc_html( $lowest_doc ); ?> <?php esc_html_e( 'is the lowest post ID indexed.', 'relevanssi' ); ?></p>
@@ -187,8 +187,13 @@ function relevanssi_indexing_tab() {
 			$excluded_from_search = __( 'no', 'relevanssi' );
 		}
 		$name_id = 'relevanssi_index_type_' . $type;
-		printf( '<tr><td>%1$s</td><td><input type="checkbox" name="%2$s" id="%2$s" %3$s /></td><td>%4$s</td></tr>',
-		esc_html( $label ), esc_attr( $name_id ), esc_html( $checked ), esc_html( $excluded_from_search ) );
+		printf(
+			'<tr><td>%1$s</td><td><input type="checkbox" name="%2$s" id="%2$s" %3$s /></td><td>%4$s</td></tr>',
+			esc_html( $label ),
+			esc_attr( $name_id ),
+			esc_html( $checked ),
+			esc_html( $excluded_from_search )
+		);
 	}
 	?>
 	<tr style="display:none">
@@ -239,8 +244,13 @@ function relevanssi_indexing_tab() {
 			$public = __( 'yes', 'relevanssi' );
 		}
 		$name_id = 'relevanssi_index_taxonomy_' . $taxonomy->name;
-		printf( '<tr><td>%1$s</td><td><input type="checkbox" name="%2$s" id="%2$s" %3$s /></td><td>%4$s</td></tr>',
-		esc_html( $label ), esc_attr( $name_id ), esc_html( $checked ), esc_html( $public ) );
+		printf(
+			'<tr><td>%1$s</td><td><input type="checkbox" name="%2$s" id="%2$s" %3$s /></td><td>%4$s</td></tr>',
+			esc_html( $label ),
+			esc_attr( $name_id ),
+			esc_html( $checked ),
+			esc_html( $public )
+		);
 	}
 	?>
 			</table>
@@ -252,7 +262,7 @@ function relevanssi_indexing_tab() {
 
 	<tr>
 		<th scope="row">
-			<label for='relevanssi_index_comments'><?php esc_html_e( 'Comments', 'relevanssi' ); ?></label>		
+			<label for='relevanssi_index_comments'><?php esc_html_e( 'Comments', 'relevanssi' ); ?></label>
 		</th>
 		<td>
 			<select name='relevanssi_index_comments' id='relevanssi_index_comments'>
@@ -303,7 +313,7 @@ function relevanssi_indexing_tab() {
 				<p class="description"><?php esc_html_e( "You can use 'relevanssi_index_custom_fields' filter hook to adjust which custom fields are indexed.", 'relevanssi' ); ?></p>
 			</div>
 			<?php if ( is_plugin_active( 'woocommerce/woocommerce.php' ) ) : ?>
-			<?php // Translators: %1$s is the 'some' option and %2$s is '_sku'. ?>
+				<?php // Translators: %1$s is the 'some' option and %2$s is '_sku'. ?>
 			<p class="description"><?php printf( esc_html__( 'If you want the SKU included, choose %1$s and enter %2$s. Also see the contextual help for more details.', 'relevanssi' ), esc_html( "'" . __( 'some', 'relevanssi' ) . "'" ), '<code>_sku</code>' ); ?></p>
 			<?php endif; ?>
 		</td>
@@ -487,5 +497,5 @@ function relevanssi_indexing_tab() {
 	<p><button type="button" style="display: none" id="hide_advanced_indexing"><?php esc_html_e( 'Hide advanced settings', 'relevanssi' ); ?></button></p>
 
 	</div>
-<?php
+	<?php
 }

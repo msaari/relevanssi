@@ -26,7 +26,7 @@ function relevanssi_logging_tab() {
 	$omit_from_logs      = get_option( 'relevanssi_omit_from_logs' );
 	$trim_logs           = get_option( 'relevanssi_trim_logs' );
 
-?>
+	?>
 	<table class="form-table">
 	<tr>
 		<th scope="row">
@@ -43,8 +43,11 @@ function relevanssi_logging_tab() {
 		<p class="description">
 		<?php
 		// Translators: %1$s is the name of the "User searches" page, %2$s is the name of the database table.
-		printf( esc_html__( "If enabled, Relevanssi will log user queries. The logs can be examined under '%1\$s' on the Dashboard admin menu and are stored in the %2\$s database table.", 'relevanssi' ),
-		esc_html__( 'User searches', 'relevanssi' ), esc_html( $wpdb->prefix . 'relevanssi_log' ) );
+		printf(
+			esc_html__( "If enabled, Relevanssi will log user queries. The logs can be examined under '%1\$s' on the Dashboard admin menu and are stored in the %2\$s database table.", 'relevanssi' ),
+			esc_html__( 'User searches', 'relevanssi' ),
+			esc_html( $wpdb->prefix . 'relevanssi_log' )
+		);
 		?>
 		</p>
 		</td>

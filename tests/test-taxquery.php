@@ -87,7 +87,8 @@ class TaxQueryTest extends WP_UnitTestCase {
 			FROM {$wpdb->prefix}term_relationships AS tr
 			WHERE tr.term_taxonomy_id IN ($books_id,$games_id,$puzzles_id))
 END;
-		$this->assertDiscardWhitespace( $target_query_restriction,
+		$this->assertDiscardWhitespace(
+			$target_query_restriction,
 			relevanssi_process_tax_query( null, $tax_query )
 		);
 	}
@@ -124,7 +125,8 @@ END;
 				FROM {$wpdb->prefix}term_relationships AS tr
 				WHERE tr.term_taxonomy_id IN ($games_id))
 END;
-		$this->assertDiscardWhitespace( $target_query_restriction,
+		$this->assertDiscardWhitespace(
+			$target_query_restriction,
 			relevanssi_process_tax_query( 'and', $tax_query )
 		);
 	}
@@ -154,7 +156,8 @@ END;
 				FROM {$wpdb->prefix}term_relationships AS tr, {$wpdb->prefix}term_taxonomy AS tt
 				WHERE tr.term_taxonomy_id=tt.term_taxonomy_id AND tt.taxonomy='post_tag')
 END;
-		$this->assertDiscardWhitespace( $target_query_restriction,
+		$this->assertDiscardWhitespace(
+			$target_query_restriction,
 			relevanssi_process_tax_query( 'and', $tax_query )
 		);
 	}
@@ -202,7 +205,8 @@ END;
 				FROM {$wpdb->prefix}term_relationships AS tr
 				WHERE tr.term_taxonomy_id IN ($yellow_id))
 END;
-		$this->assertDiscardWhitespace( $target_query_restriction,
+		$this->assertDiscardWhitespace(
+			$target_query_restriction,
 			relevanssi_process_tax_query( 'and', $tax_query )
 		);
 	}
@@ -254,7 +258,8 @@ END;
 				WHERE tr.term_taxonomy_id IN ({$blue_id},{$yellow_id})
 				AND tr.object_id={$wpdb->prefix}posts.ID) = 2))
 END;
-		$this->assertDiscardWhitespace( $target_query_restriction,
+		$this->assertDiscardWhitespace(
+			$target_query_restriction,
 			relevanssi_process_tax_query( 'or', $tax_query )
 		);
 	}
@@ -299,7 +304,8 @@ END;
 				FROM {$wpdb->prefix}term_relationships AS tr
 				WHERE tr.term_taxonomy_id IN ({$games_id},{$yellow_id}))
 END;
-		$this->assertDiscardWhitespace( $target_query_restriction,
+		$this->assertDiscardWhitespace(
+			$target_query_restriction,
 			relevanssi_process_tax_query( 'and', $tax_query )
 		);
 	}
@@ -357,7 +363,8 @@ END;
 				)
 			)
 END;
-		$this->assertDiscardWhitespace( $target_query_restriction,
+		$this->assertDiscardWhitespace(
+			$target_query_restriction,
 			relevanssi_process_tax_query( 'and', $tax_query )
 		);
 	}
@@ -406,7 +413,8 @@ END;
 				FROM {$wpdb->prefix}term_relationships AS tr
 				WHERE tr.term_taxonomy_id IN ($yellow_id))
 END;
-		$this->assertDiscardWhitespace( $target_query_restriction,
+		$this->assertDiscardWhitespace(
+			$target_query_restriction,
 			relevanssi_process_tax_query( 'and', $tax_query )
 		);
 	}
@@ -453,7 +461,8 @@ END;
 			)
 END;
 
-		$this->assertDiscardWhitespace( $target_query_restriction,
+		$this->assertDiscardWhitespace(
+			$target_query_restriction,
 			relevanssi_process_tax_query( 'and', $tax_query )
 		);
 	}

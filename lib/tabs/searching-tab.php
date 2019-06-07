@@ -57,7 +57,7 @@ function relevanssi_searching_tab() {
 		$orfallback_visibility = '';
 	}
 
-	$docs_count = $wpdb->get_var( 'SELECT COUNT(DISTINCT doc) FROM ' . $relevanssi_variables['relevanssi_table'] . ' WHERE doc != -1' ); // WPCS: unprepared SQL ok, Relevanssi table name.
+	$docs_count = $wpdb->get_var( 'SELECT COUNT(DISTINCT doc) FROM ' . $relevanssi_variables['relevanssi_table'] . ' WHERE doc != -1' );  // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
 	?>
 
 	<table class="form-table">
@@ -78,7 +78,7 @@ function relevanssi_searching_tab() {
 	}
 	?>
 		</td>
-	</tr>	
+	</tr>
 	<tr id="orfallback" class='<?php echo esc_attr( $orfallback_visibility ); ?>'>
 		<th scope="row">
 			<label for='relevanssi_disable_or_fallback'><?php esc_html_e( 'Fallback to OR', 'relevanssi' ); ?></label>
@@ -185,7 +185,7 @@ function relevanssi_searching_tab() {
 			?>
 			</table>
 		</td>
-	</tr>	
+	</tr>
 	<?php
 	if ( function_exists( 'relevanssi_form_recency_cutoff' ) ) {
 		relevanssi_form_recency_cutoff();
@@ -209,7 +209,7 @@ function relevanssi_searching_tab() {
 	</tr>
 	<?php
 	if ( function_exists( 'icl_object_id' ) && ! function_exists( 'pll_get_post' ) ) {
-	?>
+		?>
 	<tr>
 		<th scope="row">
 		<label for='relevanssi_wpml_only_current'><?php esc_html_e( 'WPML', 'relevanssi' ); ?></label>
@@ -280,14 +280,14 @@ function relevanssi_searching_tab() {
 				$private_types      = array_merge( $pt_1, $pt_2 );
 				$problem_post_types = array_intersect( $index_post_types, $private_types );
 				if ( ! empty( $problem_post_types ) ) {
-			?>
+					?>
 					<p class="description important">
 					<?php
 					esc_html_e( "You probably should uncheck this option, because you've set Relevanssi to index the following non-public post types:", 'relevanssi' );
 					echo ' ' . esc_html( implode( ', ', $problem_post_types ) );
 					?>
 					</p>
-				<?php
+					<?php
 				}
 			}
 			?>
@@ -328,7 +328,7 @@ function relevanssi_searching_tab() {
 		<p class="description"><?php esc_html_e( 'If this option is checked, Relevanssi will limit search results to at most 500 results per term. This will improve performance, but may cause some relevant documents to go unfound. See Help for more details.', 'relevanssi' ); ?></p>
 		</div>
 		</td>
-	</tr>	
+	</tr>
 	<tr>
 		<th scope="row">
 			<label for='relevanssi_cat'><?php esc_html_e( 'Category restriction', 'relevanssi' ); ?></label>
@@ -341,11 +341,14 @@ function relevanssi_searching_tab() {
 				$selected_cats = explode( ',', $cat );
 				$walker        = get_relevanssi_taxonomy_walker();
 				$walker->name  = 'relevanssi_cat';
-				wp_terms_checklist( 0, array(
-					'taxonomy'      => 'category',
-					'selected_cats' => $selected_cats,
-					'walker'        => $walker,
-				));
+				wp_terms_checklist(
+					0,
+					array(
+						'taxonomy'      => 'category',
+						'selected_cats' => $selected_cats,
+						'walker'        => $walker,
+					)
+				);
 			?>
 			</ul>
 			<input type="hidden" name="relevanssi_cat_active" value="1" />
@@ -366,11 +369,14 @@ function relevanssi_searching_tab() {
 				$selected_cats = explode( ',', $excat );
 				$walker        = get_relevanssi_taxonomy_walker();
 				$walker->name  = 'relevanssi_excat';
-				wp_terms_checklist( 0, array(
-					'taxonomy'      => 'category',
-					'selected_cats' => $selected_cats,
-					'walker'        => $walker,
-				));
+				wp_terms_checklist(
+					0,
+					array(
+						'taxonomy'      => 'category',
+						'selected_cats' => $selected_cats,
+						'walker'        => $walker,
+					)
+				);
 			?>
 			</ul>
 			<input type="hidden" name="relevanssi_excat_active" value="1" />

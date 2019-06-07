@@ -98,9 +98,14 @@ function relevanssi_update_log( $query, $hits ) {
 		global $wpdb, $relevanssi_variables;
 
 		$wpdb->query(
-			$wpdb->prepare( 'INSERT INTO ' . $relevanssi_variables['log_table'] . ' (query, hits, user_id, ip, time) VALUES (%s, %d, %d, %s, NOW())',
-			$query, intval( $hits ), $user->ID, $ip )
-		); // WPCS: unprepared SQL ok, Relevanssi database table name.
+			$wpdb->prepare(
+				'INSERT INTO ' . $relevanssi_variables['log_table'] . ' (query, hits, user_id, ip, time) VALUES (%s, %d, %d, %s, NOW())', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				$query,
+				intval( $hits ),
+				$user->ID,
+				$ip
+			)
+		);
 	}
 }
 
@@ -116,9 +121,11 @@ function relevanssi_trim_logs() {
 	global $wpdb, $relevanssi_variables;
 	$interval = intval( get_option( 'relevanssi_trim_logs' ) );
 	$wpdb->query(
-		$wpdb->prepare( 'DELETE FROM ' . $relevanssi_variables['log_table'] . ' WHERE time < TIMESTAMP(DATE_SUB(NOW(), INTERVAL %d DAY))',
-		$interval )
-	); // WPCS: unprepared SQL ok, Relevanssi database table name.
+		$wpdb->prepare(
+			'DELETE FROM ' . $relevanssi_variables['log_table'] . ' WHERE time < TIMESTAMP(DATE_SUB(NOW(), INTERVAL %d DAY))', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$interval
+		)
+	);
 }
 
 /**
@@ -142,9 +149,13 @@ function relevanssi_export_log_data( $user_id, $page ) {
 	$limit    = 500;
 	$offset   = $limit * ( $page - 1 );
 	$log_data = $wpdb->get_results(
-		$wpdb->prepare( 'SELECT * FROM ' . $relevanssi_variables['log_table'] . ' WHERE user_id = %d LIMIT %d OFFSET %d',
-		$user_id, $limit, $offset )
-	); // WPCS: unprepared SQL ok, Relevanssi database table name.
+		$wpdb->prepare(
+			'SELECT * FROM ' . $relevanssi_variables['log_table'] . ' WHERE user_id = %d LIMIT %d OFFSET %d', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$user_id,
+			$limit,
+			$offset
+		)
+	);
 
 	$export_items = array();
 
@@ -217,9 +228,12 @@ function relevanssi_erase_log_data( $user_id, $page ) {
 	}
 	$limit        = 500;
 	$rows_removed = $wpdb->query(
-		$wpdb->prepare( 'DELETE FROM ' . $relevanssi_variables['log_table'] . ' WHERE user_id = %d LIMIT %d',
-		$user_id, $limit )
-	); // WPCS: unprepared SQL ok, Relevanssi database table name.
+		$wpdb->prepare(
+			'DELETE FROM ' . $relevanssi_variables['log_table'] . ' WHERE user_id = %d LIMIT %d', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$user_id,
+			$limit
+		)
+	);
 
 	$done = false;
 	if ( $rows_removed < $limit ) {
@@ -260,7 +274,7 @@ function relevanssi_export_log() {
 	header( "Content-Disposition: attachment;filename={$filename}" );
 	header( 'Content-Transfer-Encoding: binary' );
 
-	$data = $wpdb->get_results( 'SELECT * FROM ' . $relevanssi_variables['log_table'], ARRAY_A ); // WPCS: unprepared SQL ok. Relevanssi table name.
+	$data = $wpdb->get_results( 'SELECT * FROM ' . $relevanssi_variables['log_table'], ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 	ob_start();
 	$df = fopen( 'php://output', 'w' ); // phpcs:ignore WordPress.WP.AlternativeFunctions
 	fputcsv( $df, array_keys( reset( $data ) ) );
@@ -268,6 +282,6 @@ function relevanssi_export_log() {
 		fputcsv( $df, $row );
 	}
 	fclose( $df ); // phpcs:ignore WordPress.WP.AlternativeFunctions
-	echo ob_get_clean(); // WPCS XSS ok.
+	echo ob_get_clean(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	die();
 }

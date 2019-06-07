@@ -66,7 +66,7 @@ function relevanssi_indexing_post_counter( $extend = false ) {
 	 * those missing from the index, depending on the case).
 	 */
 	do_action( 'relevanssi_pre_indexing_query' );
-	$count = $wpdb->get_var( $query ); // WPCS: unprepared SQL ok.
+	$count = $wpdb->get_var( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
 	if ( empty( $count ) ) {
 		$count = 0;
@@ -329,7 +329,7 @@ function relevanssi_build_index( $extend_offset = false, $verbose = true, $post_
 
 	/* This action documented earlier in lib/indexing.php. */
 	do_action( 'relevanssi_pre_indexing_query' );
-	$content = $wpdb->get_results( $query ); // WPCS: unprepared SQL ok.
+	$content = $wpdb->get_results( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
 	if ( defined( 'WP_CLI' ) && WP_CLI && function_exists( 'relevanssi_generate_progress_bar' ) ) {
 		$progress = relevanssi_generate_progress_bar( 'Indexing posts', count( $content ) );
@@ -353,7 +353,7 @@ function relevanssi_build_index( $extend_offset = false, $verbose = true, $post_
 	}
 
 	// To prevent empty indices.
-	$wpdb->query( "ANALYZE TABLE $relevanssi_table" ); // WPCS: unprepared SQL ok, just Relevanssi table name.
+	$wpdb->query( "ANALYZE TABLE $relevanssi_table" ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 	$complete = false;
 	if ( ( 0 === $size ) || ( count( $content ) < $size ) ) {
@@ -421,7 +421,7 @@ function relevanssi_index_doc( $index_post, $remove_first = false, $custom_field
 	$previous_post    = null;
 
 	// Check if this is a Jetpack Contact Form entry.
-	if ( isset( $_REQUEST['contact-form-id'] ) ) { // WPCS: CSRF ok.
+	if ( isset( $_REQUEST['contact-form-id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 		return;
 	}
 
@@ -435,24 +435,24 @@ function relevanssi_index_doc( $index_post, $remove_first = false, $custom_field
 		}
 
 		if ( is_object( $index_post ) ) {
-			$post = $index_post; // WPCS: override ok.
+			$post = $index_post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 		} else {
-			$post = get_post( $index_post ); // WPCS: override ok.
+			$post = get_post( $index_post ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 		}
 	} else {
 		// Quick edit has an array in the global $post, so fetch the post ID for the
 		// post to edit.
 		if ( is_array( $post ) ) {
-			$post = get_post( $post['ID'] ); // WPCS: override ok.
+			$post = get_post( $post['ID'] ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 		}
 
 		if ( empty( $post ) ) {
 			// No $post set, so we need to use $indexpost, if it's a post object.
 			$post_was_null = true;
 			if ( is_object( $index_post ) ) {
-				$post = $index_post; // WPCS: override ok.
+				$post = $index_post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 			} else {
-				$post = get_post( $index_post ); // WPCS: override ok.
+				$post = get_post( $index_post ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 			}
 		} else {
 			// $post was set, let's grab the previous value in case we need it
@@ -463,17 +463,17 @@ function relevanssi_index_doc( $index_post, $remove_first = false, $custom_field
 	if ( null === $post ) {
 		// At this point we should have something in $post; if not, quit.
 		if ( $post_was_null ) {
-			$post = null; // WPCS: override ok.
+			$post = null; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 		}
 		if ( $previous_post ) {
-			$post = $previous_post; // WPCS: override ok.
+			$post = $previous_post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 		}
 		return -1;
 	}
 
 	// Finally fetch the post again by ID. Complicated, yes, but unless we do this,
 	// we might end up indexing the post before the updates come in.
-	$post = get_post( $post->ID ); // WPCS: override ok.
+	$post = get_post( $post->ID ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 
 	// Post exclusion feature from Relevanssi Premium.
 	if ( function_exists( 'relevanssi_hide_post' ) ) {
@@ -482,10 +482,10 @@ function relevanssi_index_doc( $index_post, $remove_first = false, $custom_field
 				relevanssi_debug_echo( 'relevanssi_hide_post() returned true.' );
 			}
 			if ( $post_was_null ) {
-				$post = null; // WPCS: override ok.
+				$post = null; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 			}
 			if ( $previous_post ) {
-				$post = $previous_post; // WPCS: override ok.
+				$post = $previous_post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 			}
 			return 'hide';
 		}
@@ -533,10 +533,10 @@ function relevanssi_index_doc( $index_post, $remove_first = false, $custom_field
 	// otherwise a post that's in the index but shouldn't be there won't get removed.
 	if ( ! $index_this_post ) {
 		if ( $post_was_null ) {
-			$post = null; // WPCS: override ok.
+			$post = null; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 		}
 		if ( $previous_post ) {
-			$post = $previous_post; // WPCS: override ok.
+			$post = $previous_post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 		}
 		return 'donotindex';
 	}
@@ -550,7 +550,7 @@ function relevanssi_index_doc( $index_post, $remove_first = false, $custom_field
 	 * @param object $post The post object again (in other uses for this filter, the
 	 * second parameter actually makes sense).
 	 */
-	$post = apply_filters( 'relevanssi_post_to_index', $post, $post ); // WPCS: override ok.
+	$post = apply_filters( 'relevanssi_post_to_index', $post, $post ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 
 	$min_word_length = get_option( 'relevanssi_min_word_length', 3 );
 	$insert_data     = array();
@@ -563,7 +563,7 @@ function relevanssi_index_doc( $index_post, $remove_first = false, $custom_field
 		if ( ! empty( $post_comments ) ) {
 			$post_comments = relevanssi_strip_invisibles( $post_comments );
 			$post_comments = preg_replace( '/<[a-zA-Z\/][^>]*>/', ' ', $post_comments );
-			$post_comments = strip_tags( $post_comments );
+			$post_comments = wp_strip_all_tags( $post_comments );
 			if ( $debug ) {
 				relevanssi_debug_echo( "Comment content: $post_comments" );
 			}
@@ -892,7 +892,7 @@ function relevanssi_index_doc( $index_post, $remove_first = false, $custom_field
 
 				$post_before_shortcode = $post;
 				$contents              = do_shortcode( $contents );
-				$post                  = $post_before_shortcode; // WPCS: override ok.
+				$post                  = $post_before_shortcode; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 
 				if ( defined( 'TABLEPRESS_ABSPATH' ) ) {
 					unset( $my_tablepress_controller );
@@ -916,7 +916,7 @@ function relevanssi_index_doc( $index_post, $remove_first = false, $custom_field
 		}
 
 		$contents = preg_replace( '/<[a-zA-Z\/][^>]*>/', ' ', $contents );
-		$contents = strip_tags( $contents );
+		$contents = wp_strip_all_tags( $contents );
 		if ( function_exists( 'wp_encode_emoji' ) ) {
 			$contents = wp_encode_emoji( $contents );
 		}
@@ -987,8 +987,26 @@ function relevanssi_index_doc( $index_post, $remove_first = false, $custom_field
 
 		$term = trim( $term );
 
-		$value = $wpdb->prepare('(%d, %s, REVERSE(%s), %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %s, %s, %s, %d)',
-		$post->ID, $term, $term, $content, $title, $comment, $tag, $link, $author, $category, $excerpt, $taxonomy, $customfield, $type, $taxonomy_detail, $customfield_detail, $mysqlcolumn);
+		$value = $wpdb->prepare(
+			'(%d, %s, REVERSE(%s), %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %s, %s, %s, %d)',
+			$post->ID,
+			$term,
+			$term,
+			$content,
+			$title,
+			$comment,
+			$tag,
+			$link,
+			$author,
+			$category,
+			$excerpt,
+			$taxonomy,
+			$customfield,
+			$type,
+			$taxonomy_detail,
+			$customfield_detail,
+			$mysqlcolumn
+		);
 
 		array_push( $values, $value );
 	}
@@ -1007,14 +1025,14 @@ function relevanssi_index_doc( $index_post, $remove_first = false, $custom_field
 		if ( $debug ) {
 			relevanssi_debug_echo( "Final indexing query:\n\t$query" );
 		}
-		$wpdb->query( $query ); // WPCS: unprepared sql ok. The values are Relevanssi-generated and safe.
+		$wpdb->query( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 	}
 
 	if ( $post_was_null ) {
-		$post = null; // WPCS: override ok.
+		$post = null; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 	}
 	if ( $previous_post ) {
-		$post = $previous_post; // WPCS: override ok.
+		$post = $previous_post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 	}
 
 	return $n;
@@ -1190,7 +1208,7 @@ function relevanssi_insert_edit( $post_id ) {
 	if ( ! empty( $restriction ) ) {
 		// Check the indexing restriction filter: if the post passes the filter, this
 		// should return the post ID.
-		$is_unrestricted = $wpdb->get_var( "SELECT ID FROM $wpdb->posts AS post WHERE ID = $post_id $restriction" ); // WPCS: unprepared SQL ok.
+		$is_unrestricted = $wpdb->get_var( "SELECT ID FROM $wpdb->posts AS post WHERE ID = $post_id $restriction" ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		if ( ! $is_unrestricted ) {
 			$index_this_post = false;
 		}
@@ -1385,7 +1403,7 @@ function relevanssi_get_comments( $post_id ) {
 function relevanssi_truncate_index() {
 	global $wpdb, $relevanssi_variables;
 	$relevanssi_table = $relevanssi_variables['relevanssi_table'];
-	return $wpdb->query( "TRUNCATE TABLE $relevanssi_table" ); // WPCS: unprepared SQL ok, Relevanssi table name.
+	return $wpdb->query( "TRUNCATE TABLE $relevanssi_table" ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 }
 
 /**
@@ -1415,7 +1433,12 @@ function relevanssi_remove_doc( $post_id, $keep_internal_links = false ) {
 
 		$doc_count = get_option( 'relevanssi_doc_count' );
 
-		$rows_updated = $wpdb->query( $wpdb->prepare( 'DELETE FROM ' . $relevanssi_variables['relevanssi_table'] . ' WHERE doc=%d', $post_id ) ); // WPCS: unprepared SQL ok, Relevanssi table name.
+		$rows_updated = $wpdb->query(
+			$wpdb->prepare(
+				'DELETE FROM ' . $relevanssi_variables['relevanssi_table'] . ' WHERE doc=%d', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				$post_id
+			)
+		);
 
 		if ( $rows_updated && $rows_updated > 0 ) {
 			update_option( 'relevanssi_doc_count', $doc_count - $rows_updated );

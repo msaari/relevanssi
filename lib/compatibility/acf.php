@@ -24,7 +24,7 @@ add_filter( 'relevanssi_search_ok', 'relevanssi_acf_relationship_fields' );
  * parameter unchanged otherwise.
  */
 function relevanssi_acf_relationship_fields( $search_ok ) {
-	if ( isset( $_REQUEST['action'] ) && 'acf' === substr( $_REQUEST['action'], 0, 3 ) ) { // WPCS: CSRF ok.
+	if ( isset( $_REQUEST['action'] ) && 'acf' === substr( $_REQUEST['action'], 0, 3 ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 		$search_ok = false;
 	}
 	return $search_ok;

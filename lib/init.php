@@ -297,7 +297,7 @@ function relevanssi_create_database_tables( $relevanssi_db_version ) {
 		dbDelta( $sql );
 
 		$sql     = "SHOW INDEX FROM $relevanssi_table";
-		$indices = $wpdb->get_results( $sql ); // WPCS: unprepared SQL ok.
+		$indices = $wpdb->get_results( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery
 
 		$terms_exists                       = false;
 		$relevanssi_term_reverse_idx_exists = false;
@@ -320,22 +320,22 @@ function relevanssi_create_database_tables( $relevanssi_db_version ) {
 
 		if ( ! $terms_exists ) {
 			$sql = "CREATE INDEX terms ON $relevanssi_table (term(20))";
-			$wpdb->query( $sql ); // WPCS: unprepared SQL ok.
+			$wpdb->query( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery
 		}
 
 		if ( ! $relevanssi_term_reverse_idx_exists ) {
 			$sql = "CREATE INDEX relevanssi_term_reverse_idx ON $relevanssi_table (term_reverse(10))";
-			$wpdb->query( $sql ); // WPCS: unprepared SQL ok.
+			$wpdb->query( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery
 		}
 
 		if ( ! $docs_exists ) {
 			$sql = "CREATE INDEX docs ON $relevanssi_table (doc)";
-			$wpdb->query( $sql ); // WPCS: unprepared SQL ok.
+			$wpdb->query( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery
 		}
 
 		if ( ! $typeitem_exists ) {
 			$sql = "CREATE INDEX typeitem ON $relevanssi_table (type(190), item)";
-			$wpdb->query( $sql ); // WPCS: unprepared SQL ok.
+			$wpdb->query( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery
 		}
 
 		$sql = 'CREATE TABLE ' . $relevanssi_stopword_table . " (stopword varchar(50) $charset_collate_bin_column NOT NULL,
@@ -354,7 +354,7 @@ function relevanssi_create_database_tables( $relevanssi_db_version ) {
 		dbDelta( $sql );
 
 		$sql     = "SHOW INDEX FROM $relevanssi_log_table";
-		$indices = $wpdb->get_results( $sql ); // WPCS: unprepared SQL ok.
+		$indices = $wpdb->get_results( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.NoCaching
 
 		$query_exists = false;
 		foreach ( $indices as $index ) {
@@ -365,13 +365,13 @@ function relevanssi_create_database_tables( $relevanssi_db_version ) {
 
 		if ( ! $query_exists ) {
 			$sql = "CREATE INDEX query ON $relevanssi_log_table (query(190))";
-			$wpdb->query( $sql ); // WPCS: unprepared SQL ok.
+			$wpdb->query( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.NoCaching
 		}
 
 		update_option( 'relevanssi_db_version', $relevanssi_db_version );
 	}
 
-	if ( $wpdb->get_var( "SELECT COUNT(*) FROM $relevanssi_stopword_table WHERE 1" ) < 1 ) { // WPCS: unprepared SQL ok.
+	if ( $wpdb->get_var( "SELECT COUNT(*) FROM $relevanssi_stopword_table WHERE 1" ) < 1 ) { // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.NoCaching
 		relevanssi_populate_stopwords();
 	}
 }
@@ -419,7 +419,7 @@ function relevanssi_rest_api_disable() {
  * @see relevanssi_export_log
  */
 function relevanssi_export_log_check() {
-	if ( isset( $_REQUEST['relevanssi_export'] ) ) { // WPCS: CSRF ok, just checking the parameter exists.
+	if ( isset( $_REQUEST['relevanssi_export'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification, just checking the parameter exists.
 		relevanssi_export_log();
 	}
 }

@@ -353,7 +353,7 @@ function relevanssi_term_tax_id_from_row( $row ) {
 				  LEFT JOIN $wpdb->terms AS t ON (tt.term_id=t.term_id)
 				  WHERE tt.taxonomy = '$row_taxonomy' AND t.$type IN ($term_in)";
 		// Clean: $row_taxonomy is sanitized, each term in $term_in is sanitized.
-		$term_tax_id = $wpdb->get_col( $tt_q ); // WPCS: unprepared SQL ok.
+		$term_tax_id = $wpdb->get_col( $tt_q ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 	}
 
 	return $term_tax_id;

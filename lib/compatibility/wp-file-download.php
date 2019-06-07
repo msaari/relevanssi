@@ -31,12 +31,14 @@ function relevanssi_wpfd_content( $content, $post ) {
 	if ( 'wpfd_file' === $post->post_type ) {
 		if ( $wpfd_search_config && isset( $wpfd_search_config['plain_text_search'] ) && $wpfd_search_config['plain_text_search'] ) {
 			global $wpdb;
-			$words    = $wpdb->get_col("SELECT word
-				FROM {$wpdb->prefix}wpfd_words, {$wpdb->prefix}wpfd_docs, {$wpdb->prefix}wpfd_index, {$wpdb->prefix}wpfd_vectors
-				WHERE {$wpdb->prefix}wpfd_index.tid = {$post->ID}
-					AND {$wpdb->prefix}wpfd_docs.index_id = {$wpdb->prefix}wpfd_index.id
+			$words    = $wpdb->get_col(
+				"SELECT word
+				FROM {$wpdb->prefix}wpfd_words, {$wpdb->prefix}wpfd_docs, {$wpdb->prefix}wpfd_index, {$wpdb->prefix}wpfd_vectors " .
+				"WHERE {$wpdb->prefix}wpfd_index.tid = {$post->ID} " . // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
+				"	AND {$wpdb->prefix}wpfd_docs.index_id = {$wpdb->prefix}wpfd_index.id
 					AND {$wpdb->prefix}wpfd_docs.id = {$wpdb->prefix}wpfd_vectors.did
-					AND {$wpdb->prefix}wpfd_vectors.wid = {$wpdb->prefix}wpfd_words.id"); // WPCS: unprepared SQL ok, no user-generated inputs.
+					AND {$wpdb->prefix}wpfd_vectors.wid = {$wpdb->prefix}wpfd_words.id"
+			);
 			$content .= implode( ' ', $words );
 		}
 	}

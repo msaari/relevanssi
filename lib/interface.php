@@ -95,7 +95,7 @@ function relevanssi_options() {
  * check_admin_referer() is done immediately before this function is called.
  */
 function update_relevanssi_options() {
-	// phpcs:disable WordPress.CSRF.NonceVerification
+	// phpcs:disable WordPress.Security.NonceVerification
 	if ( isset( $_REQUEST['relevanssi_content_boost'] ) ) {
 		$boost = floatval( $_REQUEST['relevanssi_content_boost'] );
 		update_option( 'relevanssi_content_boost', $boost );
@@ -532,7 +532,7 @@ function relevanssi_admin_search_page() {
 function relevanssi_truncate_logs( $verbose = true ) {
 	global $wpdb, $relevanssi_variables;
 
-	$result = $wpdb->query( 'TRUNCATE ' . $relevanssi_variables['log_table'] ); // WPCS: unprepared SQL ok.
+	$result = $wpdb->query( 'TRUNCATE ' . $relevanssi_variables['log_table'] ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
 	if ( $verbose ) {
 		if ( false !== $result ) {
@@ -574,7 +574,7 @@ function relevanssi_query_log() {
 
 	printf( '<h3>%s</h3>', esc_html__( 'Total Searches', 'relevanssi' ) );
 
-	printf( "<div style='width: 50%%; overflow: auto'>%s</div>", relevanssi_total_queries( __( 'Totals', 'relevanssi' ) ) ); // WPCS: XSS ok, already escaped by relevanssi_total_queries().
+	printf( "<div style='width: 50%%; overflow: auto'>%s</div>", relevanssi_total_queries( __( 'Totals', 'relevanssi' ) ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 	echo '<div style="clear: both"></div>';
 
@@ -632,9 +632,18 @@ function relevanssi_query_log() {
 		printf( '<h3>%s</h3>', esc_html__( 'Reset Logs', 'relevanssi' ) );
 		print( "<form method='post'>" );
 		wp_nonce_field( 'relevanssi_reset_logs', '_relresnonce', true, true );
-		// Translators: %1$s is the input field, %2$s is the submit button.
-		printf( '<p>%s</p></form>', sprintf( __( 'To reset the logs, type "reset" into the box here %1$s and click %2$s', 'relevanssi' ), ' <input type="text" name="relevanssi_reset_code" />', ' <input type="submit" name="relevanssi_reset" value="Reset" class="button" />' ) ); // WPCS: XSS ok.
-
+		printf(
+			'<p>%s</p></form>',
+			sprintf(
+				// Translators: %1$s is the input field, %2$s is the submit button.
+				__( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					'To reset the logs, type "reset" into the box here %1$s and click %2$s',
+					'relevanssi'
+				),
+				' <input type="text" name="relevanssi_reset_code" />',
+				' <input type="submit" name="relevanssi_reset" value="Reset" class="button" />'
+			)
+		);
 	}
 
 	echo '</div>';
@@ -660,13 +669,17 @@ function relevanssi_total_queries( $title ) {
 	$titles[2] = __( 'Last 30 days', 'relevanssi' );
 	$titles[3] = __( 'Forever', 'relevanssi' );
 
-	$count[0] = $wpdb->get_var( "SELECT COUNT(id) FROM $log_table WHERE TIMESTAMPDIFF(DAY, time, NOW()) <= 1;" ); // WPCS: unprepared SQL ok, Relevanssi table name.
-	$count[1] = $wpdb->get_var( "SELECT COUNT(id) FROM $log_table WHERE TIMESTAMPDIFF(DAY, time, NOW()) <= 7;" ); // WPCS: unprepared SQL ok, Relevanssi table name.
-	$count[2] = $wpdb->get_var( "SELECT COUNT(id) FROM $log_table WHERE TIMESTAMPDIFF(DAY, time, NOW()) <= 30;" ); // WPCS: unprepared SQL ok, Relevanssi table name.
-	$count[3] = $wpdb->get_var( "SELECT COUNT(id) FROM $log_table;" ); // WPCS: unprepared SQL ok, Relevanssi table name.
+	$count[0] = $wpdb->get_var( "SELECT COUNT(id) FROM $log_table WHERE TIMESTAMPDIFF(DAY, time, NOW()) <= 1;" ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+	$count[1] = $wpdb->get_var( "SELECT COUNT(id) FROM $log_table WHERE TIMESTAMPDIFF(DAY, time, NOW()) <= 7;" ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+	$count[2] = $wpdb->get_var( "SELECT COUNT(id) FROM $log_table WHERE TIMESTAMPDIFF(DAY, time, NOW()) <= 30;" ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+	$count[3] = $wpdb->get_var( "SELECT COUNT(id) FROM $log_table;" ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
-	printf( '<table class="widefat"><thead><tr><th colspan="2">%1$s</th></tr></thead><tbody><tr><th>%2$s</th><th style="text-align: center">%3$s</th></tr>',
-	esc_html( $title ), esc_html__( 'When', 'relevanssi' ), esc_html__( 'Searches', 'relevanssi' ) );
+	printf(
+		'<table class="widefat"><thead><tr><th colspan="2">%1$s</th></tr></thead><tbody><tr><th>%2$s</th><th style="text-align: center">%3$s</th></tr>',
+		esc_html( $title ),
+		esc_html__( 'When', 'relevanssi' ),
+		esc_html__( 'Searches', 'relevanssi' )
+	);
 
 	foreach ( $count as $key => $searches ) {
 		$when = $titles[ $key ];
@@ -696,40 +709,51 @@ function relevanssi_date_queries( $days, $title, $version = 'good' ) {
 	if ( 'good' === $version ) {
 		$queries = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT COUNT(DISTINCT(id)) as cnt, query, hits
-				FROM $log_table
-				WHERE TIMESTAMPDIFF(DAY, time, NOW()) <= %d
+				'SELECT COUNT(DISTINCT(id)) as cnt, query, hits ' .
+				"FROM $log_table " . // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				'WHERE TIMESTAMPDIFF(DAY, time, NOW()) <= %d
 				GROUP BY query
 				ORDER BY cnt DESC
-				LIMIT %d",
-				$days, $limit
+				LIMIT %d',
+				$days,
+				$limit
 			)
-		); // WPCS: unprepared SQL ok, Relevanssi table name.
+		);
 	}
 
 	if ( 'bad' === $version ) {
 		$queries = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT COUNT(DISTINCT(id)) as cnt, query, hits
-				FROM $log_table
-				WHERE TIMESTAMPDIFF(DAY, time, NOW()) <= %d AND hits = 0
+				'SELECT COUNT(DISTINCT(id)) as cnt, query, hits ' .
+				"FROM $log_table " . // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				'WHERE TIMESTAMPDIFF(DAY, time, NOW()) <= %d AND hits = 0
 				GROUP BY query
 				ORDER BY cnt DESC
-				LIMIT %d",
-				$days, $limit
+				LIMIT %d',
+				$days,
+				$limit
 			)
-		); // WPCS: unprepared SQL ok, Relevanssi table name.
+		); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 	}
 
 	if ( count( $queries ) > 0 ) {
-		printf( "<table class='widefat'><thead><tr><th colspan='3'>%s</th></tr></thead><tbody><tr><th>%s</th><th style='text-align: center'>#</th><th style='text-align: center'>%s</th></tr>",
-		esc_html( $title ), esc_html__( 'Query', 'relevanssi' ), esc_html__( 'Hits', 'relevanssi' ) );
+		printf(
+			"<table class='widefat'><thead><tr><th colspan='3'>%s</th></tr></thead><tbody><tr><th>%s</th><th style='text-align: center'>#</th><th style='text-align: center'>%s</th></tr>",
+			esc_html( $title ),
+			esc_html__( 'Query', 'relevanssi' ),
+			esc_html__( 'Hits', 'relevanssi' )
+		);
 		$url = get_bloginfo( 'url' );
 		foreach ( $queries as $query ) {
 			$search_parameter = rawurlencode( $query->query );
 			$query_url        = $url . '/?s=' . $search_parameter;
-			printf( "<tr><td><a href='%s'>%s</a></td><td style='padding: 3px 5px; text-align: center'>%d</td><td style='padding: 3px 5px; text-align: center'>%d</td></tr>",
-			esc_attr( $query_url ), esc_attr( $query->query ), intval( $query->cnt ), intval( $query->hits ) );
+			printf(
+				"<tr><td><a href='%s'>%s</a></td><td style='padding: 3px 5px; text-align: center'>%d</td><td style='padding: 3px 5px; text-align: center'>%d</td></tr>",
+				esc_attr( $query_url ),
+				esc_attr( $query->query ),
+				intval( $query->cnt ),
+				intval( $query->hits )
+			);
 		}
 		echo '</tbody></table>';
 	}
@@ -790,8 +814,8 @@ function relevanssi_options_form() {
 	$display_save_button = true;
 
 	$active_tab = 'overview';
-	if ( isset( $_REQUEST['tab'] ) ) { // WPCS: CSRF ok.
-		$active_tab = $_REQUEST['tab']; // WPCS: CSRF ok. The value is printed once, but there it is escaped.
+	if ( isset( $_REQUEST['tab'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		$active_tab = $_REQUEST['tab']; // phpcs:ignore WordPress.Security.NonceVerification
 	}
 
 	if ( 'stopwords' === $active_tab ) {
@@ -801,7 +825,7 @@ function relevanssi_options_form() {
 	printf( "<input type='hidden' name='tab' value='%s' />", esc_attr( $active_tab ) );
 
 	$this_page = '?page=' . plugin_basename( $relevanssi_variables['file'] );
-?>
+	?>
 
 <h2 class="nav-tab-wrapper">
 	<a href="<?php echo esc_attr( $this_page ); ?>&amp;tab=overview" class="nav-tab <?php echo 'overview' === $active_tab ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'Overview', 'relevanssi' ); ?></a>
@@ -885,7 +909,7 @@ function relevanssi_options_form() {
 	}
 
 	if ( $display_save_button ) :
-	?>
+		?>
 
 	<input type='submit' name='submit' value='<?php esc_attr_e( 'Save the options', 'relevanssi' ); ?>' class='button button-primary' />
 
@@ -924,14 +948,14 @@ function relevanssi_add_admin_scripts( $hook ) {
 	}
 
 	wp_enqueue_style( 'wp-color-picker' );
-	wp_enqueue_script( 'relevanssi_admin_js', $plugin_dir_url . 'lib/admin_scripts.js', array( 'wp-color-picker' ) );
+	wp_enqueue_script( 'relevanssi_admin_js', $plugin_dir_url . 'lib/admin_scripts.js', array( 'wp-color-picker' ), $relevanssi_variables['plugin_version'], true );
 	if ( ! RELEVANSSI_PREMIUM ) {
-		wp_enqueue_script( 'relevanssi_admin_js_free', $plugin_dir_url . 'lib/admin_scripts_free.js', array( 'relevanssi_admin_js' ) );
+		wp_enqueue_script( 'relevanssi_admin_js_free', $plugin_dir_url . 'lib/admin_scripts_free.js', array( 'relevanssi_admin_js' ), $relevanssi_variables['plugin_version'], true );
 	}
 	if ( RELEVANSSI_PREMIUM ) {
-		wp_enqueue_script( 'relevanssi_admin_js_premium', $plugin_dir_url . 'premium/admin_scripts_premium.js', array( 'relevanssi_admin_js' ) );
+		wp_enqueue_script( 'relevanssi_admin_js_premium', $plugin_dir_url . 'premium/admin_scripts_premium.js', array( 'relevanssi_admin_js' ), $relevanssi_variables['plugin_version'], true );
 	}
-	wp_enqueue_style( 'relevanssi_admin_css', $plugin_dir_url . 'lib/admin_styles.css' );
+	wp_enqueue_style( 'relevanssi_admin_css', $plugin_dir_url . 'lib/admin_styles.css', array(), $relevanssi_variables['plugin_version'] );
 
 	$localizations = array(
 		'confirm'              => __( 'Click OK to copy Relevanssi options to all subsites', 'relevanssi' ),
@@ -994,7 +1018,7 @@ function relevanssi_form_tag_weight() {
 	if ( isset( $taxonomy_weights['category'] ) ) {
 		$category_value = $taxonomy_weights['category'];
 	}
-?>
+	?>
 <tr>
 	<td>
 		<?php esc_html_e( 'Tag weight', 'relevanssi' ); ?>
@@ -1011,5 +1035,5 @@ function relevanssi_form_tag_weight() {
 		<input type='text' id='relevanssi_weight_category' name='relevanssi_weight_category' size='4' value='<?php echo esc_attr( $category_value ); ?>' />
 	</td>
 </tr>
-<?php
+	<?php
 }
