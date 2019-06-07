@@ -20,6 +20,27 @@ class SearchingTest extends WP_UnitTestCase {
 	public static $post_count;
 
 	/**
+	 * IDs of the posts generated.
+	 *
+	 * @var array self::$post_ids
+	 */
+	public static $post_ids;
+
+	/**
+	 * IDs of the categories generated.
+	 *
+	 * @var array self::$cat_ids
+	 */
+	public static $cat_ids;
+
+	/**
+	 * IDs of the tags generated.
+	 *
+	 * @var array self::$tag_ids
+	 */
+	public static $tag_ids;
+
+	/**
 	 * Number of users generated.
 	 *
 	 * @var int $this->user_count
@@ -79,14 +100,29 @@ class SearchingTest extends WP_UnitTestCase {
 		update_option( 'relevanssi_fuzzy', 'sometimes' );
 		update_option( 'relevanssi_log_queries', 'on' );
 		update_option( 'relevanssi_index_taxonomies_list', array( 'post_tag', 'category' ) );
+		update_option( 'relevanssi_show_matches', 'on' );
+		update_option( 'relevanssi_hilite_title', 'on' );
+		update_option(
+			'relevanssi_post_type_weights',
+			array(
+				'post'                      => 1,
+				'post_tagged_with_category' => 1,
+				'post_tagged_with_post_tag' => 1,
+				'taxonomy_term_category'    => 1,
+				'taxonomy_term_post_tag'    => 1,
+			)
+		);
+		update_option( 'relevanssi_disable_or_fallback', 'on' );
 
-		$cat_ids    = array();
-		$cat_ids[0] = wp_create_category( 'cat_foo_cat' );
-		$cat_ids[1] = wp_create_category( 'cat_bar_cat' );
-		$cat_ids[2] = wp_create_category( 'cat_baz_cat' );
+		$cat_ids       = array();
+		$cat_ids[0]    = wp_create_category( 'cat_foo_cat' );
+		$cat_ids[1]    = wp_create_category( 'cat_bar_cat' );
+		$cat_ids[2]    = wp_create_category( 'cat_baz_cat' );
+		self::$cat_ids = $cat_ids;
 
 		self::$post_count = 10;
 		$post_ids         = self::factory()->post->create_many( self::$post_count );
+		self::$post_ids   = $post_ids;
 
 		self::$user_count = 10;
 		$user_ids         = self::factory()->user->create_many( self::$user_count );
@@ -99,9 +135,18 @@ class SearchingTest extends WP_UnitTestCase {
 		self::$and_matches      = 0;
 		self::$taxonomy_matches = 0;
 		foreach ( $post_ids as $id ) {
-			if ( $counter < 1 ) {
+			if ( 0 === $counter ) {
 				// Make one post contain a test phrase.
 				$post_content = "words Mikko's test phrase content";
+				$args         = array(
+					'ID'           => $id,
+					'post_content' => $post_content,
+				);
+				wp_update_post( $args );
+			}
+			if ( 1 === $counter ) {
+				// Make another post contain a different test phrase.
+				$post_content = "words Mikko's faktojen maailma content";
 				$args         = array(
 					'ID'           => $id,
 					'post_content' => $post_content,
@@ -135,7 +180,15 @@ class SearchingTest extends WP_UnitTestCase {
 				update_post_meta( $id, 'keywords', 'cat' );
 			}
 
-			$title = substr( md5( rand() ), 0, 7 );
+			$tags          = get_terms( 'post_tag', array( 'hide_empty' => false ) );
+			self::$tag_ids = array_map(
+				function ( $tag ) {
+						return $tag->term_id;
+				},
+				$tags
+			);
+
+			$title = substr( md5( wp_rand() ), 0, 7 );
 
 			$post_date = date( 'Y-m-d', time() - ( $counter * MONTH_IN_SECONDS ) );
 
@@ -203,16 +256,17 @@ class SearchingTest extends WP_UnitTestCase {
 			'post_status' => 'publish',
 		);
 
-		$query = new WP_Query();
-		$query->parse_query( $args );
-		$posts = relevanssi_do_query( $query );
+		// Set this to 0 to see if it gets counted correctly.
+		update_option( 'relevanssi_doc_count', 0 );
+
+		list( 'query' => $query, 'posts' => $posts ) = self::results_from_args( $args );
 
 		// These should both match the number of posts in the index.
 		$this->assertEquals( self::$post_count, $query->found_posts );
 		$this->assertEquals( self::$post_count, count( $posts ) );
 
 		// Check that log is stored correctly.
-		$hits = $wpdb->get_var( $wpdb->prepare( "SELECT hits FROM $relevanssi_log WHERE query = %s", 'content' ) );
+		$hits = $wpdb->get_var( $wpdb->prepare( "SELECT hits FROM $relevanssi_log WHERE query = %s", 'content' ) ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 		// The log should show self::$post_count hits.
 		$this->assertEquals( self::$post_count, $hits );
@@ -233,10 +287,7 @@ class SearchingTest extends WP_UnitTestCase {
 			'post_status' => 'publish',
 		);
 
-		$query = new WP_Query();
-		$query->parse_query( $args );
-		relevanssi_do_query( $query );
-
+		$query = self::results_from_args( $args )['query'];
 		// This should find all the posts.
 		$this->assertEquals( self::$post_count, $query->found_posts );
 
@@ -250,10 +301,7 @@ class SearchingTest extends WP_UnitTestCase {
 			'post_status' => 'publish',
 		);
 
-		$query = new WP_Query();
-		$query->parse_query( $args );
-		relevanssi_do_query( $query );
-
+		$query = self::results_from_args( $args )['query'];
 		// This should find all the posts.
 		$this->assertEquals( self::$post_count, $query->found_posts );
 
@@ -267,10 +315,7 @@ class SearchingTest extends WP_UnitTestCase {
 			'post_status' => 'publish',
 		);
 
-		$query = new WP_Query();
-		$query->parse_query( $args );
-		relevanssi_do_query( $query );
-
+		$query = self::results_from_args( $args )['query'];
 		// This should find nothing.
 		$this->assertEquals( 0, $query->found_posts );
 	}
@@ -289,52 +334,9 @@ class SearchingTest extends WP_UnitTestCase {
 			'post_status' => 'publish',
 		);
 
-		$query = new WP_Query();
-		$query->parse_query( $args );
-		$posts = relevanssi_do_query( $query );
-
+		$query = self::results_from_args( $args )['query'];
 		// This should match the posts with a visible custom field.
 		$this->assertEquals( self::$visible, $query->found_posts );
-	}
-
-	/**
-	 * Tests user search.
-	 *
-	 * Should find user profiles.
-	 */
-	public function test_user_search() {
-		if ( RELEVANSSI_PREMIUM ) {
-			// Search for "user" to find users.
-			$args = array(
-				's'           => 'user',
-				'post_type'   => 'user',
-				'numberposts' => -1,
-				'post_status' => 'publish',
-			);
-
-			$query = new WP_Query();
-			$query->parse_query( $args );
-			$posts = relevanssi_do_query( $query );
-
-			// This should match the number of users.
-			$this->assertEquals( self::$user_count, $query->found_posts );
-
-			$args = array(
-				's'           => 'user',
-				'post_type'   => array( 'user', 'post' ),
-				'numberposts' => -1,
-				'post_status' => 'publish',
-			);
-
-			$query = new WP_Query();
-			$query->parse_query( $args );
-			$posts = relevanssi_do_query( $query );
-
-			// This should match the number of users and posts.
-			$this->assertEquals( self::$user_count + self::$post_count, $query->found_posts );
-		} else {
-			$this->assertTrue( true );
-		}
 	}
 
 	/**
@@ -351,10 +353,7 @@ class SearchingTest extends WP_UnitTestCase {
 			'post_status' => 'publish',
 		);
 
-		$query = new WP_Query();
-		$query->parse_query( $args );
-		$posts = relevanssi_do_query( $query );
-
+		$query = self::results_from_args( $args )['query'];
 		// This should find all posts.
 		$this->assertEquals( self::$post_count, $query->found_posts );
 	}
@@ -366,6 +365,8 @@ class SearchingTest extends WP_UnitTestCase {
 	 * the results still make sense.
 	 */
 	public function test_operators() {
+		update_option( 'relevanssi_implicit_operator', 'AND' );
+
 		// Search for "cat dog" with AND enabled.
 		$args = array(
 			's'           => 'cat dog',
@@ -374,29 +375,29 @@ class SearchingTest extends WP_UnitTestCase {
 			'post_status' => 'publish',
 		);
 
-		$query = new WP_Query();
-		$query->parse_query( $args );
-		$posts = relevanssi_do_query( $query );
-
+		$query = self::results_from_args( $args )['query'];
 		// This should find the posts with both words.
 		$this->assertEquals( self::$and_matches, $query->found_posts );
 
-		if ( RELEVANSSI_PREMIUM ) {
-			// Search for "cat dog" with the OR operator.
-			$args = array(
-				's'           => 'cat dog',
-				'post_type'   => 'post',
-				'numberposts' => -1,
-				'post_status' => 'publish',
-				'operator'    => 'OR',
-			);
+		update_option( 'relevanssi_throttle', 'on' );
+		add_filter(
+			'pre_option_relevanssi_throttle_limit',
+			function( $limit ) {
+				return 2;
+			}
+		);
 
-			$query->parse_query( $args );
-			$posts = relevanssi_do_query( $query );
+		// Search for "cat dog" with AND enabled.
+		$args = array(
+			's'           => 'content user displayname',
+			'post_type'   => 'post',
+			'numberposts' => -1,
+			'post_status' => 'publish',
+		);
 
-			// This should find all posts.
-			$this->assertEquals( self::$post_count, $query->found_posts );
-		}
+		$query = self::results_from_args( $args )['query'];
+		// This should find the posts with both words.
+		$this->assertEquals( 2, $query->found_posts );
 	}
 
 	/**
@@ -420,9 +421,7 @@ class SearchingTest extends WP_UnitTestCase {
 			),
 		);
 
-		$query = new WP_Query();
-		$query->parse_query( $args );
-		$posts = relevanssi_do_query( $query );
+		$posts = self::results_from_args( $args )['posts'];
 
 		// Get the titles of the posts found, sort them in alphabetical order.
 		$titles = array();
@@ -430,6 +429,30 @@ class SearchingTest extends WP_UnitTestCase {
 			$titles[] = $post->post_title;
 		}
 		sort( $titles );
+
+		$first_post       = $posts[0];
+		$first_post_title = $titles[0];
+
+		// First post title should match the first title in alpha order.
+		$this->assertEquals( $first_post_title, $first_post->post_title );
+
+		$args = array(
+			's'           => 'content',
+			'post_type'   => 'post',
+			'numberposts' => -1,
+			'post_status' => 'publish',
+			'orderby'     => 'post_title',
+			'order'       => 'chaotic', // Should fix this to 'desc'.
+		);
+
+		$posts = self::results_from_args( $args )['posts'];
+
+		// Get the titles of the posts found, sort them in alphabetical order.
+		$titles = array();
+		foreach ( $posts as $post ) {
+			$titles[] = $post->post_title;
+		}
+		rsort( $titles );
 
 		$first_post       = $posts[0];
 		$first_post_title = $titles[0];
@@ -464,155 +487,23 @@ class SearchingTest extends WP_UnitTestCase {
 
 		update_option( 'relevanssi_exclude_posts', $exclude_id_option );
 
-		$query = new WP_Query();
-		$query->parse_query( $args );
-		$posts = relevanssi_do_query( $query );
-
+		$query = self::results_from_args( $args )['query'];
 		// This should find all the posts, except the excluded post.
 		$this->assertEquals( self::$post_count - $excluded_posts, $query->found_posts );
 
 		// Now add a comma in the end. This shouldn't break anything.
 		update_option( 'relevanssi_exclude_posts', $exclude_id_option . ',' );
 
-		$query = new WP_Query();
-		$query->parse_query( $args );
-		$posts = relevanssi_do_query( $query );
-
+		$query = self::results_from_args( $args )['query'];
 		// This should find all the posts, except the excluded post.
 		$this->assertEquals( self::$post_count - $excluded_posts, $query->found_posts );
 
 		// Make the setting a string. This should have no effect.
 		update_option( 'relevanssi_exclude_posts', 'start' );
 
-		$query = new WP_Query();
-		$query->parse_query( $args );
-		$posts = relevanssi_do_query( $query );
-
+		$query = self::results_from_args( $args )['query'];
 		// This should find all the posts.
 		$this->assertEquals( self::$post_count, $query->found_posts );
-	}
-
-	/**
-	 * Test post pinning for single keyword and "pin for all".
-	 */
-	public function test_pinning() {
-		if ( RELEVANSSI_PREMIUM ) {
-			// Search for "buzzword".
-			$args = array(
-				's'           => 'buzzword',
-				'post_type'   => 'post',
-				'numberposts' => -1,
-				'post_status' => 'publish',
-			);
-
-			$query = new WP_Query();
-			$query->parse_query( $args );
-			$posts = relevanssi_do_query( $query );
-
-			$buzzword_posts = array();
-			foreach ( $posts as $post ) {
-				array_push( $buzzword_posts, $post->ID );
-			}
-
-			$args = array(
-				'post__not_in' => $buzzword_posts,
-				'numberposts'  => -1,
-				'post_status'  => 'publish',
-				'post_type'    => 'post',
-				'fields'       => 'ids',
-			);
-
-			// These posts don't have "buzzword".
-			$non_buzzword_posts = get_posts( $args );
-
-			// Let's pin one of those for "buzzword".
-			$pinned_post_id = array_shift( $non_buzzword_posts );
-			update_post_meta( $pinned_post_id, '_relevanssi_pin', 'buzzword' );
-
-			// Reindex the post.
-			relevanssi_index_doc( $pinned_post_id, true, relevanssi_get_custom_fields(), true );
-
-			// Search for "buzzword".
-			$args = array(
-				's'           => 'buzzword',
-				'post_type'   => 'post',
-				'numberposts' => -1,
-				'post_status' => 'publish',
-			);
-
-			$query = new WP_Query();
-			$query->parse_query( $args );
-			$posts = relevanssi_do_query( $query );
-
-			$first_result = array_shift( $posts );
-
-			$this->assertEquals( $pinned_post_id, $first_result->ID );
-
-			// Then unpin.
-			delete_post_meta( $pinned_post_id, '_relevanssi_pin' );
-			relevanssi_index_doc( $pinned_post_id, true, relevanssi_get_custom_fields(), true );
-
-			// Let's take another post and pin it for all keywords.
-			$pinned_for_all_post_id = array_shift( $non_buzzword_posts );
-			update_post_meta( $pinned_for_all_post_id, '_relevanssi_pin_for_all', 'on' );
-			update_post_meta( $pinned_for_all_post_id, 'visible', 'buzzword' );
-			relevanssi_index_doc( $pinned_for_all_post_id, true, relevanssi_get_custom_fields(), true );
-
-			// Search for "buzzword".
-			$args = array(
-				's'           => 'buzzword',
-				'post_type'   => 'post',
-				'numberposts' => -1,
-				'post_status' => 'publish',
-			);
-
-			$query = new WP_Query();
-			$query->parse_query( $args );
-			$posts = relevanssi_do_query( $query );
-
-			$first_result = array_shift( $posts );
-
-			$this->assertEquals( $pinned_for_all_post_id, $first_result->ID );
-
-			// Search for "buzzword" using "fields" set to "ids". This should find
-			// the post and not get an error.
-			$args = array(
-				's'           => 'buzzword',
-				'post_type'   => 'post',
-				'numberposts' => -1,
-				'post_status' => 'publish',
-				'fields'      => 'ids',
-			);
-
-			$query = new WP_Query();
-			$query->parse_query( $args );
-			$posts = relevanssi_do_query( $query );
-
-			$first_result = array_shift( $posts );
-
-			// Since we're looking for "ids", we get an ID.
-			$this->assertEquals( $pinned_for_all_post_id, $first_result );
-
-			// Search for "buzzword" using "fields" set to "id=>parent". This should
-			// find the post and not get an error.
-			$args = array(
-				's'           => 'buzzword',
-				'post_type'   => 'post',
-				'numberposts' => -1,
-				'post_status' => 'publish',
-				'fields'      => 'id=>parent',
-			);
-
-			$query = new WP_Query();
-			$query->parse_query( $args );
-			$posts = relevanssi_do_query( $query );
-
-			$first_result = array_shift( $posts );
-
-			$this->assertEquals( $pinned_for_all_post_id, $first_result->ID );
-		} else {
-			$this->assertTrue( true );
-		}
 	}
 
 	/**
@@ -627,11 +518,12 @@ class SearchingTest extends WP_UnitTestCase {
 			'post_status' => 'publish',
 		);
 
-		$query = new WP_Query();
-		$query->parse_query( $args );
-		$posts = relevanssi_do_query( $query );
-		$this->assertEquals( self::$taxonomy_matches, count( $posts ),
-		'Tag search should find correct number of posts.' );
+		$posts = self::results_from_args( $args )['posts'];
+		$this->assertEquals(
+			self::$taxonomy_matches,
+			count( $posts ),
+			'Tag search should find correct number of posts.'
+		);
 
 		// Search for "cat_bar_cat".
 		$args = array(
@@ -641,11 +533,12 @@ class SearchingTest extends WP_UnitTestCase {
 			'post_status' => 'publish',
 		);
 
-		$query = new WP_Query();
-		$query->parse_query( $args );
-		$posts = relevanssi_do_query( $query );
-		$this->assertEquals( self::$taxonomy_matches, count( $posts ),
-		'Category search should find correct number of posts.' );
+		$posts = self::results_from_args( $args )['posts'];
+		$this->assertEquals(
+			self::$taxonomy_matches,
+			count( $posts ),
+			'Category search should find correct number of posts.'
+		);
 	}
 
 	/**
@@ -654,6 +547,7 @@ class SearchingTest extends WP_UnitTestCase {
 	 * Uses both quotes for phrases and the "sentence" parameter.
 	 */
 	public function test_phrase_search() {
+
 		// Search for "test phrase" as a phrase.
 		$args = array(
 			's'           => '"test phrase"',
@@ -662,13 +556,13 @@ class SearchingTest extends WP_UnitTestCase {
 			'post_status' => 'publish',
 		);
 
-		$query = new WP_Query();
-		$query->parse_query( $args );
-		relevanssi_do_query( $query );
-
+		$query = self::results_from_args( $args )['query'];
 		// This should find one post.
-		$this->assertEquals( 1, $query->found_posts,
-		"Searching for phrases isn't working." );
+		$this->assertEquals(
+			1,
+			$query->found_posts,
+			"Searching for phrases isn't working."
+		);
 
 		// Curly quotes should work as well.
 		$args = array(
@@ -678,13 +572,13 @@ class SearchingTest extends WP_UnitTestCase {
 			'post_status' => 'publish',
 		);
 
-		$query = new WP_Query();
-		$query->parse_query( $args );
-		relevanssi_do_query( $query );
-
+		$query = self::results_from_args( $args )['query'];
 		// This should find one post.
-		$this->assertEquals( 1, $query->found_posts,
-		"Searching for phrases with curly quotes isn't working." );
+		$this->assertEquals(
+			1,
+			$query->found_posts,
+			"Searching for phrases with curly quotes isn't working."
+		);
 
 		// Search for "test phrase" with the "sentence" parameter.
 		$args = array(
@@ -695,13 +589,51 @@ class SearchingTest extends WP_UnitTestCase {
 			'sentence'    => '1',
 		);
 
-		$query = new WP_Query();
-		$query->parse_query( $args );
-		relevanssi_do_query( $query );
-
+		$query = self::results_from_args( $args )['query'];
 		// This should find one post.
-		$this->assertEquals( 1, $query->found_posts,
-		"Searching for phrases with sentence isn't working." );
+		$this->assertEquals(
+			1,
+			$query->found_posts,
+			"Searching for phrases with sentence isn't working."
+		);
+
+		// AND search for two phrases should only find posts
+		// with both phrases.
+		$args = array(
+			's'           => '"test phrase" "faktojen maailma"',
+			'post_type'   => 'post',
+			'numberposts' => -1,
+			'post_status' => 'publish',
+		);
+
+		$query = self::results_from_args( $args )['query'];
+		// This should find nothing.
+		$this->assertEquals(
+			0,
+			$query->found_posts,
+			"The AND search for phrases doesn't work as expected."
+		);
+
+		update_option( 'relevanssi_implicit_operator', 'OR' );
+
+		// AND search for two phrases should only find posts
+		// with both phrases.
+		$args = array(
+			's'           => '"test phrase" "faktojen maailma"',
+			'post_type'   => 'post',
+			'numberposts' => -1,
+			'post_status' => 'publish',
+		);
+
+		$query = self::results_from_args( $args )['query'];
+		// This should find two posts.
+		$this->assertEquals(
+			2,
+			$query->found_posts,
+			"The OR search for phrases doesn't work as expected."
+		);
+
+		update_option( 'relevanssi_implicit_operator', 'AND' );
 	}
 
 	/**
@@ -719,13 +651,13 @@ class SearchingTest extends WP_UnitTestCase {
 			'post_status' => 'publish',
 		);
 
-		$query = new WP_Query();
-		$query->parse_query( $args );
-		$posts = relevanssi_do_query( $query );
-
+		$query = self::results_from_args( $args )['query'];
 		// This should find one post.
-		$this->assertEquals( 1, $query->found_posts,
-		"Searching for apostrophe-containing phrases isn't working." );
+		$this->assertEquals(
+			1,
+			$query->found_posts,
+			"Searching for apostrophe-containing phrases isn't working."
+		);
 	}
 
 	/**
@@ -743,12 +675,12 @@ class SearchingTest extends WP_UnitTestCase {
 			'post_parent__not_in' => array( 0 ),
 		);
 
-		$query = new WP_Query();
-		$query->parse_query( $args );
-		relevanssi_do_query( $query );
-		// This should find one post.
-		$this->assertEquals( 1, $query->found_posts,
-		'Searching with post_parent__not_in 0 is not working.' );
+		$query = self::results_from_args( $args )['query'];
+		$this->assertEquals(
+			1,
+			$query->found_posts,
+			'Searching with post_parent__not_in 0 is not working.'
+		);
 
 		$args = array(
 			's'               => 'content',
@@ -758,13 +690,13 @@ class SearchingTest extends WP_UnitTestCase {
 			'post_parent__in' => array( 0 ),
 		);
 
-		$query = new WP_Query();
-		$query->parse_query( $args );
-		relevanssi_do_query( $query );
-
+		$query = self::results_from_args( $args )['query'];
 		// This should find one post.
-		$this->assertEquals( 1, $query->found_posts,
-		'Searching with post_parent__in 0 is not working.' );
+		$this->assertEquals(
+			1,
+			$query->found_posts,
+			'Searching with post_parent__in 0 is not working.'
+		);
 
 		$args = array(
 			's'           => 'content',
@@ -774,49 +706,13 @@ class SearchingTest extends WP_UnitTestCase {
 			'post_parent' => 0,
 		);
 
-		$query = new WP_Query();
-		$query->parse_query( $args );
-		relevanssi_do_query( $query );
-
+		$query = self::results_from_args( $args )['query'];
 		// This should find one post.
-		$this->assertEquals( 1, $query->found_posts,
-		'Searching with post_parent 0 is not working.' );
-	}
-
-	/**
-	 * Tests user searching with a really tight throttle.
-	 *
-	 * If throttle is very tight, user profiles should still be included. This didn't
-	 * work properly pre 2.2.
-	 */
-	public function test_user_throttle() {
-		if ( RELEVANSSI_PREMIUM ) {
-			add_filter( 'pre_option_relevanssi_throttle_limit', function( $limit ) {
-				return 2;
-			} );
-
-			$args = array(
-				's'           => 'displayname user',
-				'numberposts' => -1,
-				'post_type'   => 'any',
-			);
-
-			$query = new WP_Query();
-			$query->parse_query( $args );
-			$posts = relevanssi_do_query( $query );
-
-			$is_user_found = false;
-			foreach ( $posts as $post ) {
-				if ( 'user' === $post->post_type ) {
-					$is_user_found = true;
-					break;
-				}
-			}
-			$this->assertTrue( $is_user_found,
-			'User profile should be found in search.' );
-		} else {
-			$this->assertTrue( true );
-		}
+		$this->assertEquals(
+			1,
+			$query->found_posts,
+			'Searching with post_parent 0 is not working.'
+		);
 	}
 
 	/**
@@ -833,11 +729,12 @@ class SearchingTest extends WP_UnitTestCase {
 			'by_date'     => '1w',
 		);
 
-		$query = new WP_Query();
-		$query->parse_query( $args );
-		relevanssi_do_query( $query );
-		$this->assertEquals( 1, $query->found_posts,
-		'Searching with by_date 1w should find one post.' );
+		$query = self::results_from_args( $args )['query'];
+		$this->assertEquals(
+			1,
+			$query->found_posts,
+			'Searching with by_date 1w should find one post.'
+		);
 	}
 
 	/**
@@ -859,11 +756,12 @@ class SearchingTest extends WP_UnitTestCase {
 			'date_query'  => $date_query,
 		);
 
-		$query = new WP_Query();
-		$query->parse_query( $args );
-		relevanssi_do_query( $query );
-		$this->assertEquals( 1, $query->found_posts,
-		'Searching with date query for posts published this week should find one post.' );
+		$query = self::results_from_args( $args )['query'];
+		$this->assertEquals(
+			1,
+			$query->found_posts,
+			'Searching with date query for posts published this week should find one post.'
+		);
 	}
 
 	/**
@@ -880,11 +778,12 @@ class SearchingTest extends WP_UnitTestCase {
 			'author'      => self::$other_author_id,
 		);
 
-		$query = new WP_Query();
-		$query->parse_query( $args );
-		relevanssi_do_query( $query );
-		$this->assertEquals( 1, $query->found_posts,
-		'Searching with author parameter should find one post.' );
+		$query = self::results_from_args( $args )['query'];
+		$this->assertEquals(
+			1,
+			$query->found_posts,
+			'Searching with author parameter should find one post.'
+		);
 
 		$negative_author = self::$other_author_id * -1;
 
@@ -895,11 +794,12 @@ class SearchingTest extends WP_UnitTestCase {
 			'author'      => "$negative_author,word",
 		);
 
-		$query = new WP_Query();
-		$query->parse_query( $args );
-		relevanssi_do_query( $query );
-		$this->assertEquals( 9, $query->found_posts,
-		'Searching with a negative author parameter should find one post.' );
+		$query = self::results_from_args( $args )['query'];
+		$this->assertEquals(
+			9,
+			$query->found_posts,
+			'Searching with a negative author parameter should find one post.'
+		);
 	}
 
 	/**
@@ -939,11 +839,12 @@ class SearchingTest extends WP_UnitTestCase {
 			'numberposts' => -1,
 		);
 
-		$query = new WP_Query();
-		$query->parse_query( $args );
-		relevanssi_do_query( $query );
-		$this->assertEquals( $private_count, $query->found_posts,
-		'Editor should see all private posts.' );
+		$query = self::results_from_args( $args )['query'];
+		$this->assertEquals(
+			$private_count,
+			$query->found_posts,
+			'Editor should see all private posts.'
+		);
 
 		wp_set_current_user( self::$other_author_id );
 
@@ -953,11 +854,12 @@ class SearchingTest extends WP_UnitTestCase {
 			'numberposts' => -1,
 		);
 
-		$query = new WP_Query();
-		$query->parse_query( $args );
-		relevanssi_do_query( $query );
-		$this->assertEquals( $author_count, $query->found_posts,
-		'Author should see their own private posts.' );
+		$query = self::results_from_args( $args )['query'];
+		$this->assertEquals(
+			$author_count,
+			$query->found_posts,
+			'Author should see their own private posts.'
+		);
 
 		foreach ( $private_post_ids as $private_post_id ) {
 			wp_delete_post( $private_post_id, true );
@@ -965,68 +867,492 @@ class SearchingTest extends WP_UnitTestCase {
 	}
 
 	/**
-	 * Test the NOT operator.
+	 * Test termless search.
 	 */
-	public function test_not_operator() {
-		if ( RELEVANSSI_PREMIUM ) {
-			$args = array(
-				's'           => 'content -words',
-				'post_status' => array( 'publish' ),
-				'numberposts' => -1,
-				'post_type'   => array( 'post' ),
-			);
-
-			$query = new WP_Query();
-			$query->parse_query( $args );
-			relevanssi_do_query( $query );
-			$this->assertEquals( 9, $query->found_posts,
-			'NOT operator should eliminate one post from the results.' );
-		} else {
-			$this->assertTrue( true );
-		}
-	}
-
-	/**
-	 * Test the AND operator.
-	 */
-	public function test_and_operator() {
-		if ( RELEVANSSI_PREMIUM ) {
-			$args = array(
-				's'           => 'content +words',
-				'post_status' => array( 'publish' ),
-				'numberposts' => -1,
-				'post_type'   => array( 'post' ),
-				'operator'    => 'OR',
-			);
-
-			$query = new WP_Query();
-			$query->parse_query( $args );
-			relevanssi_do_query( $query );
-			$this->assertEquals( 1, $query->found_posts,
-			'AND operator should restrict the results to one post.' );
-		} else {
-			$this->assertTrue( true );
-		}
-	}
-
-	/**
-	 * Test tokenizer kills all terms.
-	 */
-	public function test_tokenizer_death() {
+	public function test_termless_search() {
 		$args = array(
-			's' => 'hereupon formerly by bill',
+			's' => 'hereupon formerly by bill', // All stopwords.
 		);
 
+		$query = self::results_from_args( $args )['query'];
+		$this->assertEquals( 0, $query->found_posts, 'Nothing should be found.' );
+
+		$args = array(
+			's' => 'q', // One-letter search term.
+		);
+
+		$query = self::results_from_args( $args )['query'];
+		$this->assertEquals( 0, $query->found_posts, 'Nothing should be found.' );
+
+		$args = array(
+			's'         => '',
+			'tax_query' => array(
+				'relation' => 'AND',
+				array(
+					'terms'    => 'baz',
+					'field'    => 'slug',
+					'taxonomy' => 'post_tag',
+				),
+			),
+		);
+
+		$query = self::results_from_args( $args )['query'];
+		$this->assertEquals(
+			self::$taxonomy_matches,
+			$query->found_posts,
+			'Right number of posts should be found.'
+		);
+	}
+
+	/**
+	 * Test 'paged' and 'offset'.
+	 */
+	public function test_paged_offset() {
+		$args = array(
+			's'              => 'content',
+			'paged'          => 2,
+			'posts_per_page' => 4,
+		);
+
+		list( 'posts' => $posts_1, 'query' => $query ) = self::results_from_args( $args );
+		$this->assertEquals( 4, $query->post_count, 'Should return 4 posts.' );
+
+		$args = array(
+			's'              => 'content',
+			'paged'          => 2,
+			'posts_per_page' => 4,
+			'offset'         => 1,
+		);
+
+		$posts_2 = self::results_from_args( $args )['posts'];
+		$this->assertNotEquals(
+			$posts_1,
+			$posts_2,
+			'Should return different set of posts.'
+		);
+		$this->assertEquals(
+			$posts_1[1],
+			$posts_2[0],
+			'$posts_1[1] and $posts_2[0] should be the same because offset is 1.'
+		);
+
+		$posts_per_page = self::$post_count - 2;
+
+		$args = array(
+			's'              => 'content',
+			'paged'          => 2,
+			'posts_per_page' => $posts_per_page,
+			'post_type'      => 'post',
+		);
+
+		$query = self::results_from_args( $args )['query'];
+		$this->assertEquals( self::$post_count - $posts_per_page, $query->post_count );
+	}
+
+	/**
+	 * Test relevanssi_query().
+	 */
+	public function test_relevanssi_query() {
+		global $wp_the_query;
+
+		$expected_array = array( 'untouched' );
+
+		$actual_array = relevanssi_query( $expected_array, false );
+		$this->assertEquals( $expected_array, $actual_array );
+
+		$query            = new WP_Query();
+		$query->is_search = false;
+		$actual_array     = relevanssi_query( $expected_array, $query );
+		$this->assertEquals( $expected_array, $actual_array );
+
+		$query            = new WP_Query();
+		$query->is_search = true;
+		$query->is_admin  = true;
+		$query->set( 's', '' );
+		$wp_the_query = $query;
+		$actual_array = relevanssi_query( $expected_array, $query );
+		$this->assertEquals( $expected_array, $actual_array );
+
+		$query            = new WP_Query();
+		$query->is_search = true;
+		$query->is_admin  = true;
+		update_option( 'relevanssi_admin_search', 'on' );
+		$query->set( 's', '' );
+		$wp_the_query = $query;
+		$actual_array = relevanssi_query( $expected_array, $query );
+		$this->assertEquals( $expected_array, $actual_array );
+
+		$query            = new WP_Query();
+		$query->is_search = true;
+		$query->set( 'post_type', 'attachment' );
+		$query->set( 'post_status', 'inherit,private' );
+		$query->set( 's', 'term' );
+		$wp_the_query = $query;
+		$actual_array = relevanssi_query( $expected_array, $query );
+		$this->assertEquals( $expected_array, $actual_array );
+
+		global $relevanssi_active;
+		$relevanssi_active = true;
+		$query             = new WP_Query();
+		$query->is_search  = true;
+		$query->set( 'post_type', 'post' );
+		$query->set( 'post_status', 'publish' );
+		$query->set( 's', 'term' );
+		$wp_the_query = $query;
+		$actual_array = relevanssi_query( $expected_array, $query );
+		$this->assertEquals( $expected_array, $actual_array );
+		$relevanssi_active = false;
+
+		$query            = new WP_Query();
+		$query->is_search = true;
+		$query->set( 'post_type', 'post' );
+		$query->set( 'post_status', 'publish' );
+		$query->set( 's', 'term' );
+		$wp_the_query = $query;
+		$actual_array = relevanssi_query( $expected_array, $query );
+		$this->assertEquals( array(), $actual_array );
+	}
+
+	/**
+	 * Test killing everything with a relevanssi_match filter.
+	 */
+	public function test_relevanssi_match_killer() {
+		add_filter(
+			'relevanssi_match',
+			function ( $match ) {
+				$match->weight = 0;
+				return $match;
+			}
+		);
+
+		$args = array(
+			's'              => 'content',
+			'posts_per_page' => -1,
+		);
+
+		$query = self::results_from_args( $args )['query'];
+
+		$this->assertEquals( 0, $query->post_count, 'Should find nothing.' );
+	}
+
+	/**
+	 * Test doing a fallback search.
+	 */
+	public function test_fallback_search() {
+		add_filter(
+			'relevanssi_fallback',
+			function ( $params ) {
+				$id               = self::$post_ids[0];
+				$return           = array(
+					'hits'             => array( get_post( $id ) ),
+					'body_matches'     => array( $id => 1 ),
+					'title_matches'    => array( $id => 0 ),
+					'tag_matches'      => array( $id => 0 ),
+					'category_matches' => array( $id => 0 ),
+					'taxonomy_matches' => array( $id => 0 ),
+					'comment_matches'  => array( $id => 0 ),
+					'link_matches'     => array( $id => 0 ),
+					'term_hits'        => array(
+						$id =>
+							array(
+								'content' => 1,
+							),
+					),
+					'query'            => $params['args']['q'],
+				);
+				$params['return'] = $return;
+				return $params;
+			}
+		);
+
+		$args = array(
+			's'              => 'thisfindsnoresults',
+			'posts_per_page' => -1,
+		);
+
+		$query = self::results_from_args( $args )['query'];
+
+		$this->assertEquals( 1, $query->post_count, 'Should return one post.' );
+	}
+
+	/**
+	 * Test category parameters.
+	 */
+	public function test_category_parameters() {
+		$cat_ids  = self::$cat_ids;
+		$category = get_term_by( 'id', $cat_ids[0], 'category' );
+
+		$args = array(
+			's'              => 'content',
+			'posts_per_page' => -1,
+			'cats'           => $category->term_id,
+		);
+
+		$posts = self::results_from_args( $args )['posts'];
+		$this->assertTrue(
+			self::all_posts_have_category( $posts, $category->term_id ),
+			'There should only be posts from the right category.'
+		);
+
+		$args = array(
+			's'              => 'content',
+			'posts_per_page' => -1,
+			'category_name'  => $category->slug,
+		);
+
+		$posts = self::results_from_args( $args )['posts'];
+		$this->assertTrue(
+			self::all_posts_have_category( $posts, $category->term_id ),
+			'There should only be posts from the right category.'
+		);
+
+		$args = array(
+			's'              => 'content',
+			'posts_per_page' => -1,
+			'category__in'   => array( $category->term_id ),
+		);
+
+		$posts = self::results_from_args( $args )['posts'];
+		$this->assertTrue(
+			self::all_posts_have_category( $posts, $category->term_id ),
+			'There should only be posts from the right category.'
+		);
+
+		$args = array(
+			's'              => 'content',
+			'posts_per_page' => -1,
+			'category__and'  => array( $category->term_id, $cat_ids[1] ),
+		);
+
+		$posts = self::results_from_args( $args )['posts'];
+		$this->assertTrue(
+			self::all_posts_have_category( $posts, $category->term_id )
+			&& self::all_posts_have_category( $posts, $cat_ids[1] ),
+			'There should only be posts from the right category.'
+		);
+
+		$args = array(
+			's'                => 'content',
+			'posts_per_page'   => -1,
+			'category__not_in' => array( $category->term_id ),
+		);
+
+		$posts = self::results_from_args( $args )['posts'];
+		$this->assertTrue(
+			self::no_posts_have_category( $posts, $category->term_id ),
+			'There should not be posts from the restricted category.'
+		);
+
+		update_option( 'relevanssi_excat', (string) $category->term_id );
+
+		$args = array(
+			's'              => 'content',
+			'posts_per_page' => -1,
+		);
+
+		$posts = self::results_from_args( $args )['posts'];
+		$this->assertTrue(
+			self::no_posts_have_category( $posts, $category->term_id ),
+			'There should not be posts from the restricted category.'
+		);
+
+		update_option( 'relevanssi_excat', '' );
+	}
+
+	/**
+	 * Test tag parameters.
+	 */
+	public function test_tag_parameters() {
+		$tag_ids = self::$tag_ids;
+		$tag     = get_term_by( 'id', $tag_ids[0], 'post_tag' );
+
+		$args = array(
+			's'              => 'content',
+			'posts_per_page' => -1,
+			'tags'           => $tag->term_id,
+		);
+
+		$posts = self::results_from_args( $args )['posts'];
+		$this->assertTrue(
+			self::all_posts_have_tag( $posts, $tag->term_id ),
+			'There should only be posts from the right tag.'
+		);
+
+		$args = array(
+			's'              => 'content',
+			'posts_per_page' => -1,
+			'tag_id'         => $tag->term_id,
+		);
+
+		$posts = self::results_from_args( $args )['posts'];
+		$this->assertTrue(
+			self::all_posts_have_tag( $posts, $tag->term_id ),
+			'There should only be posts from the right tag.'
+		);
+
+		$args = array(
+			's'              => 'content',
+			'posts_per_page' => -1,
+			'tag__in'        => array( $tag->term_id ),
+		);
+
+		$posts = self::results_from_args( $args )['posts'];
+		$this->assertTrue(
+			self::all_posts_have_tag( $posts, $tag->term_id ),
+			'There should only be posts from the right tag.'
+		);
+
+		$args = array(
+			's'              => 'content',
+			'posts_per_page' => -1,
+			'tag__and'       => array( $tag->term_id, $tag_ids[1] ),
+		);
+
+		$posts = self::results_from_args( $args )['posts'];
+		$this->assertTrue(
+			self::all_posts_have_tag( $posts, $tag->term_id )
+			&& self::all_posts_have_tag( $posts, $tag_ids[1] ),
+			'There should only be posts from the right tag.'
+		);
+
+		$args = array(
+			's'              => 'content',
+			'posts_per_page' => -1,
+			'tag__not_in'    => array( $tag->term_id ),
+		);
+
+		$posts = self::results_from_args( $args )['posts'];
+		$this->assertTrue(
+			self::no_posts_have_tag( $posts, $tag->term_id ),
+			'There should not be posts from the restricted tag.'
+		);
+
+		update_option( 'relevanssi_extag', (string) $tag->term_id );
+
+		$args = array(
+			's'              => 'content',
+			'posts_per_page' => -1,
+		);
+
+		$posts = self::results_from_args( $args )['posts'];
+		$this->assertTrue(
+			self::no_posts_have_tag( $posts, $tag->term_id ),
+			'There should not be posts from the restricted tag.'
+		);
+
+		update_option( 'relevanssi_extag', '' );
+	}
+
+	/**
+	 * Returns true if no posts have the particular tag.
+	 *
+	 * @param array $posts An array containing post objects.
+	 * @param int   $tag   A tag ID.
+	 *
+	 * @return boolean True, if no posts have that tag.
+	 */
+	private function no_posts_have_tag( $posts, $tag ) {
+		return self::no_posts_have_taxonomy( $posts, $tag, 'post_tag' );
+	}
+
+	/**
+	 * Returns true if all posts have the particular tag.
+	 *
+	 * @param array $posts An array containing post objects.
+	 * @param int   $tag   A tag ID.
+	 *
+	 * @return boolean True, if no posts have that tag.
+	 */
+	private function all_posts_have_tag( $posts, $tag ) {
+		return self::all_posts_have_taxonomy( $posts, $tag, 'post_tag' );
+	}
+
+	/**
+	 * Returns true if no posts have the particular category.
+	 *
+	 * @param array $posts    An array containing post objects.
+	 * @param int   $category A category ID.
+	 *
+	 * @return boolean True, if no posts have that category.
+	 */
+	private function no_posts_have_category( $posts, $category ) {
+		return self::no_posts_have_taxonomy( $posts, $category, 'category' );
+	}
+
+	/**
+	 * Returns true if all posts have the particular category.
+	 *
+	 * @param array $posts    An array containing post objects.
+	 * @param int   $category A category ID.
+	 *
+	 * @return boolean True, if no posts have that category.
+	 */
+	private function all_posts_have_category( $posts, $category ) {
+		return self::all_posts_have_taxonomy( $posts, $category, 'category' );
+	}
+
+	/**
+	 * Returns true if no posts have the particular taxonomy term.
+	 *
+	 * @param array  $posts    An array containing post objects.
+	 * @param int    $term_id  A term ID.
+	 * @param string $taxonomy The name of the taxonomy.
+	 *
+	 * @return boolean True, if no posts have that term.
+	 */
+	private function no_posts_have_taxonomy( $posts, $term_id, $taxonomy ) {
+		return ! array_reduce(
+			$posts,
+			function( $value, $post ) use ( $term_id, $taxonomy ) {
+				return $value || has_term( $term_id, $taxonomy, $post );
+			},
+			false
+		);
+	}
+
+	/**
+	 * Returns true if all posts have the particular taxonomy term.
+	 *
+	 * @param array  $posts    An array containing post objects.
+	 * @param int    $term_id  A term ID.
+	 * @param string $taxonomy The name of the taxonomy.
+	 *
+	 * @return boolean True, if no posts have that term.
+	 */
+	private function all_posts_have_taxonomy( $posts, $term_id, $taxonomy ) {
+		return array_reduce(
+			$posts,
+			function( $value, $post ) use ( $term_id, $taxonomy ) {
+				return $value && has_term( $term_id, $taxonomy, $post );
+			},
+			true
+		);
+	}
+
+	/**
+	 * Helper function that creates a WP_Query, parses the args and runs Relevanssi.
+	 *
+	 * @param array $args The query arguments.
+	 *
+	 * @return array An array containing the posts Relevanssi found and the query.
+	 */
+	private function results_from_args( $args ) {
 		$query = new WP_Query();
 		$query->parse_query( $args );
-		relevanssi_do_query( $query );
-		$this->assertEquals( 0, $query->found_posts, 'Nothing should be found.' );
+		$posts = relevanssi_do_query( $query );
+		return array(
+			'posts' => $posts,
+			'query' => $query,
+		);
 	}
 
 	/**
 	 * Uninstalls Relevanssi.
 	 */
 	public static function wpTearDownAfterClass() {
+		require_once dirname( dirname( __FILE__ ) ) . '/lib/uninstall.php';
+		require_once dirname( dirname( __FILE__ ) ) . '/premium/uninstall.php';
+
 		if ( function_exists( 'relevanssi_uninstall' ) ) {
 			relevanssi_uninstall();
 		}
