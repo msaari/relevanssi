@@ -494,7 +494,27 @@ END;
 			)
 END;
 
-		$this->assertDiscardWhitespace( $target_query_restriction,
+		$this->assertDiscardWhitespace(
+			$target_query_restriction,
+			relevanssi_process_tax_query( 'and', $tax_query )
+		);
+	}
+
+	/**
+	 * Test that an empty tax query returns an empty string.
+	 */
+	public function test_empty_tax_query() {
+		$tax_query = array(
+			'relation' => 'AND',
+			array(
+				'relation' => 'AND',
+			),
+			array(
+				'relation' => 'OR',
+			),
+		);
+		$this->assertEquals(
+			'',
 			relevanssi_process_tax_query( 'and', $tax_query )
 		);
 	}
