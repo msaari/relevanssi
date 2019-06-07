@@ -67,15 +67,18 @@ function relevanssi_process_query_args( $args ) {
 		$query_restrictions .= relevanssi_process_by_date( $args['by_date'] );
 	}
 
-	$phrases = relevanssi_recognize_phrases( $query );
+	$phrases = relevanssi_recognize_phrases( $query, $args['operator'] );
 	if ( $phrases ) {
 		$query_restrictions .= " $phrases";
 		// Clean: $phrases is escaped earlier.
 	}
 
 	if ( $args['post_type'] || $args['include_attachments'] ) {
-		$query_restrictions .= relevanssi_process_post_type( $args['post_type'],
-		$args['admin_search'], $args['include_attachments'] );
+		$query_restrictions .= relevanssi_process_post_type(
+			$args['post_type'],
+			$args['admin_search'],
+			$args['include_attachments']
+		);
 	}
 
 	if ( $args['post_status'] ) {
