@@ -13,7 +13,9 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 }
 
 global $wpdb;
-define( 'RELEVANSSI_PREMIUM', false );
+if ( ! defined( 'RELEVANSSI_PREMIUM' ) ) {
+	define( 'RELEVANSSI_PREMIUM', false );	
+}
 require_once 'lib/uninstall.php';
 
 if ( function_exists( 'is_multisite' ) && is_multisite() ) {
