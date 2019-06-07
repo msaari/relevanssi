@@ -12,6 +12,7 @@
  * @group functions
  */
 class FunctionTest extends WP_UnitTestCase {
+
 	/**
 	 * Installs Relevanssi.
 	 */
@@ -23,11 +24,20 @@ class FunctionTest extends WP_UnitTestCase {
 	 * Test phrase recognition.
 	 */
 	public function test_phrase_recognition() {
+		update_option( 'relevanssi_index_excerpt', 'off' );
+
 		$search_query   = 'Search query "this is a phrase"';
 		$phrase_queries = relevanssi_recognize_phrases( $search_query );
 
 		// $phrase_queries should not be empty.
 		$this->assertNotEmpty( $phrase_queries );
+		$this->assertFalse( stripos( $phrase_queries, 'post_excerpt' ) );
+
+		update_option( 'relevanssi_index_excerpt', 'on' );
+
+		$phrase_queries = relevanssi_recognize_phrases( $search_query, 'BOGUS_OPERATOR' );
+
+		$this->assertNotFalse( stripos( $phrase_queries, 'post_excerpt' ) );
 
 		$search_query   = 'Search query "notaphrase"';
 		$phrase_queries = relevanssi_recognize_phrases( $search_query );
@@ -49,13 +59,18 @@ class FunctionTest extends WP_UnitTestCase {
 		);
 		update_option( 'relevanssi_punctuation', $options );
 
-		add_filter( 'relevanssi_punctuation_filter', function( $array ) {
-			$array['p'] = 'tr';
-			return $array;
-		});
+		add_filter(
+			'relevanssi_punctuation_filter',
+			function ( $array ) {
+				$array['p'] = 'tr';
+				return $array;
+			}
+		);
 
 		$string_post = relevanssi_remove_punct( $string );
 		$this->assertEquals( 'strass 1.50 a b&c', $string_post );
+
+		$this->assertEquals( '', relevanssi_remove_punct( new StdClass() ) );
 	}
 
 	/**
@@ -102,25 +117,40 @@ class FunctionTest extends WP_UnitTestCase {
 	}
 
 	/**
-	 * Test relevanssi_generate_term_cond().
+	 * Test relevanssi_generate_term_where().
 	 */
-	public function test_generate_term_cond() {
-		$term        = 'tavernen';
-		$o_term_cond = "(relevanssi.term LIKE '#term#%' OR relevanssi.term_reverse LIKE CONCAT(REVERSE('#term#'), '%')) ";
+	public function test_generate_term_where() {
+		$term = 'tavernen';
+		update_option( 'relevanssi_fuzzy', 'always' );
 
-		$this->assertEquals( "(relevanssi.term LIKE 'tavernen%' OR relevanssi.term_reverse LIKE CONCAT(REVERSE('tavernen'), '%')) ",
-		relevanssi_generate_term_cond( $term, $o_term_cond ) );
+		$this->assertEquals(
+			"(relevanssi.term LIKE 'tavernen%' OR relevanssi.term_reverse LIKE CONCAT(REVERSE('tavernen'), '%')) ",
+			relevanssi_generate_term_where( $term )
+		);
 
-		$term        = ' 1234';
-		$o_term_cond = " relevanssi.term = '#term#' ";
+		$term = ' 1234';
+		update_option( 'relevanssi_fuzzy', 'never' );
 
-		$this->assertEquals( " relevanssi.term = '1234' ",
-		relevanssi_generate_term_cond( $term, $o_term_cond ) );
+		$this->assertEquals(
+			" relevanssi.term = '1234' ",
+			relevanssi_generate_term_where( $term )
+		);
 
-		$term        = 'a';
-		$o_term_cond = " relevanssi.term = '#term#' ";
+		$term = 'a';
+		update_option( 'relevanssi_fuzzy', 'always' );
 
-		$this->assertEquals( null, relevanssi_generate_term_cond( $term, $o_term_cond ) );
+		$this->assertEquals(
+			null,
+			relevanssi_generate_term_where( $term )
+		);
+
+		add_filter(
+			'relevanssi_block_one_letter_searches',
+			function () {
+				return false;
+			}
+		);
+		$this->assertEquals( " relevanssi.term = 'a' ", relevanssi_generate_term_where( $term ) );
 	}
 
 	/**
@@ -172,41 +202,58 @@ class FunctionTest extends WP_UnitTestCase {
 	public function test_limit_filter() {
 		update_option( 'relevanssi_throttle', 'on' );
 		update_option( 'relevanssi_throttle_limit', 42 );
-		$this->assertEquals( ' ORDER BY tf DESC LIMIT 42', relevanssi_limit_filter( '' ),
-		'Limit should be set.' );
+		$this->assertEquals(
+			' ORDER BY tf DESC LIMIT 42',
+			relevanssi_limit_filter( '' ),
+			'Limit should be set.'
+		);
 
 		update_option( 'relevanssi_throttle', 'off' );
 		update_option( 'relevanssi_throttle_limit', 42 );
-		$this->assertEmpty( relevanssi_limit_filter( '' ),
-		'No limit when the throttle is off.' );
+		$this->assertEmpty(
+			relevanssi_limit_filter( '' ),
+			'No limit when the throttle is off.'
+		);
 
 		update_option( 'relevanssi_throttle', 'on' );
 		update_option( 'relevanssi_throttle_limit', -21 );
-		$this->assertEquals( ' ORDER BY tf DESC LIMIT 500', relevanssi_limit_filter( '' ),
-		'Value less than zero should become 500.' );
+		$this->assertEquals(
+			' ORDER BY tf DESC LIMIT 500',
+			relevanssi_limit_filter( '' ),
+			'Value less than zero should become 500.'
+		);
 
 		update_option( 'relevanssi_throttle', 'on' );
 		update_option( 'relevanssi_throttle_limit', 'string value' );
-		$this->assertEquals( ' ORDER BY tf DESC LIMIT 500', relevanssi_limit_filter( '' ),
-		'Non-numeric value should become 500.' );
+		$this->assertEquals(
+			' ORDER BY tf DESC LIMIT 500',
+			relevanssi_limit_filter( '' ),
+			'Non-numeric value should become 500.'
+		);
 	}
 
 	/**
 	 * Test relevanssi_process_post_query().
 	 */
 	public function test_process_post_query() {
-		$this->assertEquals( ' AND relevanssi.doc NOT IN (4,5,6) AND relevanssi.doc IN (1,2,3)',
-			relevanssi_process_post_query( array(
-				'in'     => array( 1, 2, 3 ),
-				'not in' => array( 4, 5, 6 ),
-			) )
+		$this->assertEquals(
+			' AND relevanssi.doc NOT IN (4,5,6) AND relevanssi.doc IN (1,2,3)',
+			relevanssi_process_post_query(
+				array(
+					'in'     => array( 1, 2, 3 ),
+					'not in' => array( 4, 5, 6 ),
+				)
+			)
 		);
 
-		$this->assertEquals( ' AND relevanssi.doc NOT IN (1,2,3)',
-			relevanssi_process_post_query( array(
-				'in'     => array( 1, 2, 3 ),
-				'not in' => array( 1, 2, 3 ),
-			) )
+		$this->assertEquals(
+			' AND relevanssi.doc NOT IN (1,2,3)',
+			relevanssi_process_post_query(
+				array(
+					'in'     => array( 1, 2, 3 ),
+					'not in' => array( 1, 2, 3 ),
+				)
+			)
 		);
 	}
 
@@ -218,18 +265,22 @@ class FunctionTest extends WP_UnitTestCase {
 
 		$this->assertEquals(
 			" AND relevanssi.doc NOT IN (SELECT ID FROM {$wpdb->prefix}posts WHERE post_parent IN (4,5,6)) AND relevanssi.doc IN (SELECT ID FROM {$wpdb->prefix}posts WHERE post_parent IN (1,2,3))",
-			relevanssi_process_parent_query( array(
-				'parent in'     => array( 1, 2, 3 ),
-				'parent not in' => array( 4, 5, 6 ),
-			) )
+			relevanssi_process_parent_query(
+				array(
+					'parent in'     => array( 1, 2, 3 ),
+					'parent not in' => array( 4, 5, 6 ),
+				)
+			)
 		);
 
 		$this->assertEquals(
 			" AND relevanssi.doc NOT IN (SELECT ID FROM {$wpdb->prefix}posts WHERE post_parent IN (1,2,3))",
-			relevanssi_process_parent_query( array(
-				'parent in'     => array( 1, 2, 3 ),
-				'parent not in' => array( 1, 2, 3 ),
-			) )
+			relevanssi_process_parent_query(
+				array(
+					'parent in'     => array( 1, 2, 3 ),
+					'parent not in' => array( 1, 2, 3 ),
+				)
+			)
 		);
 	}
 
@@ -390,8 +441,10 @@ class FunctionTest extends WP_UnitTestCase {
 	 * Test relevanssi_process_expost().
 	 */
 	public function test_process_expost() {
-		$this->assertEquals( ' AND relevanssi.doc NOT IN (1,2,3,4)',
-		relevanssi_process_expost( '1,2,3,4' ) );
+		$this->assertEquals(
+			' AND relevanssi.doc NOT IN (1,2,3,4)',
+			relevanssi_process_expost( '1,2,3,4' )
+		);
 	}
 
 	/**
@@ -404,7 +457,8 @@ class FunctionTest extends WP_UnitTestCase {
 		 	WHERE posts.post_author IN (1,2))
 			AND relevanssi.doc NOT IN (SELECT DISTINCT(posts.ID) FROM {$wpdb->prefix}posts AS posts
 			WHERE posts.post_author IN (3,4))",
-		relevanssi_process_author( array( '1', '2', '-3', '-4' ) ) );
+			relevanssi_process_author( array( '1', '2', '-3', '-4' ) )
+		);
 	}
 
 	/**
@@ -416,32 +470,38 @@ class FunctionTest extends WP_UnitTestCase {
 		$this->assertDiscardWhitespace(
 			"AND relevanssi.doc IN (SELECT DISTINCT(posts.ID) FROM {$wpdb->prefix}posts AS posts
 			WHERE posts.post_date > DATE_SUB(NOW(), INTERVAL 24 HOUR))",
-		relevanssi_process_by_date( '24h' ) );
+			relevanssi_process_by_date( '24h' )
+		);
 
 		$this->assertDiscardWhitespace(
 			"AND relevanssi.doc IN (SELECT DISTINCT(posts.ID) FROM {$wpdb->prefix}posts AS posts
 			WHERE posts.post_date > DATE_SUB(NOW(), INTERVAL 7 DAY))",
-		relevanssi_process_by_date( '7d' ) );
+			relevanssi_process_by_date( '7d' )
+		);
 
 		$this->assertDiscardWhitespace(
 			"AND relevanssi.doc IN (SELECT DISTINCT(posts.ID) FROM {$wpdb->prefix}posts AS posts
 			WHERE posts.post_date > DATE_SUB(NOW(), INTERVAL 2 WEEK))",
-		relevanssi_process_by_date( '2w' ) );
+			relevanssi_process_by_date( '2w' )
+		);
 
 		$this->assertDiscardWhitespace(
 			"AND relevanssi.doc IN (SELECT DISTINCT(posts.ID) FROM {$wpdb->prefix}posts AS posts
 			WHERE posts.post_date > DATE_SUB(NOW(), INTERVAL 6 MONTH))",
-		relevanssi_process_by_date( '6m' ) );
+			relevanssi_process_by_date( '6m' )
+		);
 
 		$this->assertDiscardWhitespace(
 			"AND relevanssi.doc IN (SELECT DISTINCT(posts.ID) FROM {$wpdb->prefix}posts AS posts
 			WHERE posts.post_date > DATE_SUB(NOW(), INTERVAL 12 YEAR))",
-		relevanssi_process_by_date( '12y' ) );
+			relevanssi_process_by_date( '12y' )
+		);
 
 		$this->assertDiscardWhitespace(
 			"AND relevanssi.doc IN (SELECT DISTINCT(posts.ID) FROM {$wpdb->prefix}posts AS posts
 			WHERE posts.post_date > DATE_SUB(NOW(), INTERVAL 42 DAY))",
-		relevanssi_process_by_date( '42' ) );
+			relevanssi_process_by_date( '42' )
+		);
 	}
 
 	/**
@@ -459,11 +519,13 @@ class FunctionTest extends WP_UnitTestCase {
 
 			$bonus_value = relevanssi_get_recency_bonus();
 			$this->assertEquals(
-				4.2, $bonus_value['bonus'],
+				4.2,
+				$bonus_value['bonus'],
 				'Recency bonus value should be correct.'
 			);
 			$this->assertEquals(
-				time() - DAY_IN_SECONDS * $days, $bonus_value['cutoff'],
+				time() - DAY_IN_SECONDS * $days,
+				$bonus_value['cutoff'],
 				'Recency bonus value should be correct.'
 			);
 
@@ -487,26 +549,38 @@ class FunctionTest extends WP_UnitTestCase {
 			SELECT DISTINCT(posts.ID) FROM {$wpdb->prefix}posts AS posts
 			WHERE posts.post_type IN ('post', 'page', 'attachment')
 			))",
-			relevanssi_process_post_type( 'post,page,attachment', $is_admin,
-			$include_attachments ),
-		'Should produce correct MySQL for a string parameter.');
+			relevanssi_process_post_type(
+				'post,page,attachment',
+				$is_admin,
+				$include_attachments
+			),
+			'Should produce correct MySQL for a string parameter.'
+		);
 
 		$this->assertDiscardWhitespace(
 			"AND (relevanssi.doc IN (
 			SELECT DISTINCT(posts.ID) FROM {$wpdb->prefix}posts AS posts
 			WHERE posts.post_type IN ('post', 'page', 'attachment')
 			))",
-			relevanssi_process_post_type( array( 'post', 'page', 'attachment' ),
-			$is_admin, $include_attachments ),
-		'Should produce correct MySQL for an array parameter.');
+			relevanssi_process_post_type(
+				array( 'post', 'page', 'attachment' ),
+				$is_admin,
+				$include_attachments
+			),
+			'Should produce correct MySQL for an array parameter.'
+		);
 
 		$this->assertDiscardWhitespace(
 			"AND (( relevanssi.doc IN (SELECT DISTINCT(posts.ID) FROM wptests_posts AS posts
 			WHERE posts.post_type NOT IN ('attachment','revision','nav_menu_item','custom_css',
 			'customize_changeset','oembed_cache','user_request','wp_block'))) OR (doc=-1))",
-			relevanssi_process_post_type( '',
-			$is_admin, $include_attachments ),
-		'Should produce correct MySQL if there are no parameters.');
+			relevanssi_process_post_type(
+				'',
+				$is_admin,
+				$include_attachments
+			),
+			'Should produce correct MySQL if there are no parameters.'
+		);
 
 		if ( RELEVANSSI_PREMIUM ) {
 			$this->assertDiscardWhitespace(
@@ -514,16 +588,39 @@ class FunctionTest extends WP_UnitTestCase {
 				SELECT DISTINCT(posts.ID) FROM {$wpdb->prefix}posts AS posts
 				WHERE posts.post_type IN ('post', 'page', 'attachment'))
 				OR (relevanssi.type IN ('user')))",
-				relevanssi_process_post_type( array( 'post', 'page', 'attachment', 'user' ),
-				$is_admin, $include_attachments ),
-			'Should produce correct MySQL for "user" parameter.');
+				relevanssi_process_post_type(
+					array( 'post', 'page', 'attachment', 'user' ),
+					$is_admin,
+					$include_attachments
+				),
+				'Should produce correct MySQL for "user" parameter.'
+			);
 		}
+	}
+
+	/**
+	 * Test getting custom fields
+	 *
+	 * @group new
+	 */
+	public function test_get_custom_fields() {
+		update_option( 'relevanssi_index_fields', 'all' );
+		$this->assertEquals( 'all', relevanssi_get_custom_fields() );
+
+		update_option( 'relevanssi_index_fields', 'foo, bar,baz, bum' );
+		$this->assertEquals(
+			array( 'foo', 'bar', 'baz', 'bum' ),
+			relevanssi_get_custom_fields()
+		);
 	}
 
 	/**
 	 * Uninstalls Relevanssi.
 	 */
 	public static function wpTearDownAfterClass() {
+		include_once dirname( dirname( __FILE__ ) ) . '/lib/uninstall.php';
+		include_once dirname( dirname( __FILE__ ) ) . '/premium/uninstall.php';
+
 		if ( function_exists( 'relevanssi_uninstall' ) ) {
 			relevanssi_uninstall();
 		}
