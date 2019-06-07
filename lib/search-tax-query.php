@@ -17,16 +17,12 @@
  *
  * @uses relevanssi_process_tax_query_row()
  *
- * @global object $wpdb The WP database interface.
- *
  * @param string $tax_query_relation The base tax query relation. Default 'and'.
  * @param array  $tax_query          The tax query array.
  *
  * @return string The query restrictions for the MySQL query.
  */
 function relevanssi_process_tax_query( $tax_query_relation, $tax_query ) {
-	global $wpdb;
-
 	$query_restrictions = '';
 
 	if ( ! isset( $tax_query_relation ) ) {
@@ -272,13 +268,17 @@ function relevanssi_process_term_tax_ids( $term_tax_ids, $not_term_tax_ids, $and
 			)";
 		// Clean: all variables are Relevanssi-generated.
 	}
-	$query_restrictions .= ' AND ';
+
 	if ( count( $query_restriction_parts ) > 1 ) {
 		$query_restrictions .= '(';
 	}
 	$query_restrictions .= implode( ' OR', $query_restriction_parts );
 	if ( count( $query_restriction_parts ) > 1 ) {
 		$query_restrictions .= ')';
+	}
+
+	if ( $query_restrictions ) {
+		$query_restrictions = ' AND ' . $query_restrictions;
 	}
 
 	return $query_restrictions;
