@@ -25,7 +25,6 @@
 function relevanssi_process_tax_query( $tax_query_relation, $tax_query ) {
 	$query_restrictions = '';
 
-	var_dump($tax_query);
 	if ( ! isset( $tax_query_relation ) ) {
 		$tax_query_relation = 'and';
 	}
@@ -71,7 +70,6 @@ function relevanssi_process_tax_query( $tax_query_relation, $tax_query ) {
 		);
 	}
 
-	var_dump($query_restrictions);
 	return $query_restrictions;
 }
 
