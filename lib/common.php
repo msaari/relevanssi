@@ -345,14 +345,16 @@ function relevanssi_extract_phrases( $query ) {
  * @global object $wpdb The WordPress database interface.
  *
  * @param string $search_query The search query.
+ * @param string $operator     The search operator (AND or OR).
  *
  * @return string $queries If not phrase hits are found, an empty string; otherwise
  * MySQL queries to restrict the search.
  */
-function relevanssi_recognize_phrases( $search_query ) {
+function relevanssi_recognize_phrases( $search_query, $operator = 'AND' ) {
 	global $wpdb;
 
 	$phrases = relevanssi_extract_phrases( $search_query );
+	$status  = relevanssi_valid_status_array();
 
 	$all_queries = array();
 	if ( count( $phrases ) > 0 ) {
@@ -375,13 +377,13 @@ function relevanssi_recognize_phrases( $search_query ) {
 
 			$query = "(SELECT ID FROM $wpdb->posts
 				WHERE (post_content LIKE '%$phrase%' OR post_title LIKE '%$phrase%' $excerpt)
-				AND post_status IN ('publish', 'draft', 'private', 'pending', 'future', 'inherit'))";
+				AND post_status IN ($status))";
 
 			$queries[] = $query;
 
 			$query = "(SELECT ID FROM $wpdb->posts as p, $wpdb->term_relationships as r, $wpdb->term_taxonomy as s, $wpdb->terms as t
 				WHERE r.term_taxonomy_id = s.term_taxonomy_id AND s.term_id = t.term_id AND p.ID = r.object_id
-				AND t.name LIKE '%$phrase%' AND p.post_status IN ('publish', 'draft', 'private', 'pending', 'future', 'inherit'))";
+				AND t.name LIKE '%$phrase%' AND p.post_status IN ($status))";
 
 			$queries[] = $query;
 
@@ -389,19 +391,26 @@ function relevanssi_recognize_phrases( $search_query ) {
               FROM $wpdb->posts AS p, $wpdb->postmeta AS m
               WHERE p.ID = m.post_id
               AND m.meta_value LIKE '%$phrase%'
-              AND p.post_status IN ('publish', 'draft', 'private', 'pending', 'future', 'inherit'))";
+              AND p.post_status IN ($status))";
 
 			$queries[] = $query;
 
 			$queries       = implode( ' OR relevanssi.doc IN ', $queries );
-			$queries       = "AND (relevanssi.doc IN $queries)";
+			$queries       = "(relevanssi.doc IN $queries)";
 			$all_queries[] = $queries;
 		}
 	} else {
 		$phrases = '';
 	}
 
-	$all_queries = implode( ' ', $all_queries );
+	$operator = strtoupper( $operator );
+	if ( 'AND' !== $operator && 'OR' !== $operator ) {
+		$operator = 'AND';
+	}
+
+	if ( ! empty( $all_queries ) ) {
+		$all_queries = ' AND ( ' . implode( ' ' . $operator . ' ', $all_queries ) . ' ) ';
+	}
 
 	return $all_queries;
 }
