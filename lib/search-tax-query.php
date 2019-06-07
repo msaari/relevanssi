@@ -25,6 +25,7 @@
 function relevanssi_process_tax_query( $tax_query_relation, $tax_query ) {
 	$query_restrictions = '';
 
+	var_dump($tax_query);
 	if ( ! isset( $tax_query_relation ) ) {
 		$tax_query_relation = 'and';
 	}
@@ -70,6 +71,7 @@ function relevanssi_process_tax_query( $tax_query_relation, $tax_query ) {
 		);
 	}
 
+	var_dump($query_restrictions);
 	return $query_restrictions;
 }
 
@@ -292,11 +294,12 @@ function relevanssi_process_term_tax_ids( $term_tax_ids, $not_term_tax_ids, $and
  *
  * @param string $terms_parameter The 'terms' field from the tax_query row.
  * @param string $taxonomy        The taxonomy name.
+ * @param string $field_name      The field name ('slug', 'name').
  *
  * @return array An array containing numeric terms and the list of sanitized term
  * names.
  */
-function relevanssi_get_term_in( $terms_parameter, $taxonomy ) {
+function relevanssi_get_term_in( $terms_parameter, $taxonomy, $field_name ) {
 	$numeric_terms = array();
 	$names         = array();
 
@@ -304,7 +307,7 @@ function relevanssi_get_term_in( $terms_parameter, $taxonomy ) {
 		$terms_parameter = array( $terms_parameter );
 	}
 	foreach ( $terms_parameter as $name ) {
-		$term = get_term_by( 'name', $name, $taxonomy );
+		$term = get_term_by( $field_name, $name, $taxonomy );
 		if ( ! $term && is_numeric( $name ) ) {
 			$numeric_terms[] = $name;
 		} else {
@@ -334,12 +337,13 @@ function relevanssi_get_term_in( $terms_parameter, $taxonomy ) {
 function relevanssi_term_tax_id_from_row( $row ) {
 	global $wpdb;
 
-	$term_in_results = relevanssi_get_term_in( $row['terms'], $row['taxonomy'] );
+	$type = $row['field'];
+
+	$term_in_results = relevanssi_get_term_in( $row['terms'], $row['taxonomy'], $type );
 	$numeric_terms   = $term_in_results['numeric_terms'];
 	$term_in         = $term_in_results['term_in'];
 	$term_tax_id     = array();
 
-	$type = $row['field'];
 	if ( ! empty( $numeric_terms ) ) {
 		$type    = 'term_id';
 		$term_in = $numeric_terms;
