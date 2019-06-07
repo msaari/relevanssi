@@ -40,9 +40,7 @@ function relevanssi_count_missing_posts() {
  * Counts the total number of posts to index, considering post type restrictions and
  * the valid statuses.
  *
- * @global object $wpdb                 The WordPress database interface.
- * @global array  $relevanssi_variables The Relevanssi global variables array, used
- * for table names.
+ * @global object $wpdb The WordPress database interface.
  *
  * @param boolean $extend If true, count only missing posts. If false, count all
  * posts. Default false.
@@ -50,11 +48,10 @@ function relevanssi_count_missing_posts() {
  * @return int The number of posts to index.
  */
 function relevanssi_indexing_post_counter( $extend = false ) {
-	global $wpdb, $relevanssi_variables;
-	$relevanssi_table = $relevanssi_variables['relevanssi_table'];
-	$restriction      = relevanssi_post_type_restriction();
-	$valid_status     = relevanssi_valid_status_array();
-	$limit            = '';
+	global $wpdb;
+	$restriction  = relevanssi_post_type_restriction();
+	$valid_status = relevanssi_valid_status_array();
+	$limit        = '';
 
 	$query = relevanssi_generate_indexing_query( $valid_status, $extend, $restriction, $limit );
 	$query = str_replace( 'SELECT post.ID', 'SELECT COUNT(post.ID)', $query );
@@ -197,7 +194,7 @@ function relevanssi_post_type_restriction() {
  * a custom post status, you can use the 'relevanssi_valid_status' filter hook to add
  * your own post status to the list of valid statuses.
  *
- * @return string A comma-separated list of valid post statuses.
+ * @return string A comma-separated list of valid post statuses ready for MySQL.
  */
 function relevanssi_valid_status_array() {
 	/**
@@ -273,6 +270,13 @@ function relevanssi_build_index( $extend_offset = false, $verbose = true, $post_
 		if ( function_exists( 'relevanssi_index_users' ) ) {
 			if ( 'on' === get_option( 'relevanssi_index_users' ) ) {
 				relevanssi_index_users();
+			}
+		}
+
+		// Premium feature: index post type archives.
+		if ( function_exists( 'relevanssi_index_post_type_archives' ) ) {
+			if ( 'on' === get_option( 'relevanssi_index_post_type_archives' ) ) {
+				relevanssi_index_post_type_archives();
 			}
 		}
 
