@@ -47,7 +47,6 @@ function relevanssi_indexing_tab() {
 	$fields_select_none    = '';
 	$fields_select_some    = 'selected';
 	$fields_select_visible = '';
-	$original_index_fields = $index_fields;
 
 	if ( empty( $index_fields ) ) {
 		$fields_select_none = 'selected';
