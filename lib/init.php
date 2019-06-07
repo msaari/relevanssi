@@ -70,9 +70,12 @@ function relevanssi_init() {
 
 	$plugin_dir = dirname( plugin_basename( $relevanssi_variables['file'] ) );
 	load_plugin_textdomain( 'relevanssi', false, $plugin_dir . '/languages' );
-	$page = '';
-	if ( isset( $_GET['page'] ) ) {
-		$page = $_GET['page']; // WPCS: CSRF ok; this value is read-only.
+	$on_relevanssi_page = false;
+	if ( isset( $_GET['page'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		$page = sanitize_file_name( wp_unslash( $_GET['page'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
+		if ( plugin_basename( $relevanssi_variables['file'] ) === $page ) {
+			$on_relevanssi_page = true;
+		}
 	}
 
 	if ( 'done' !== get_option( 'relevanssi_indexed' ) ) {
@@ -86,7 +89,7 @@ function relevanssi_init() {
 			}
 			printf( "<div id='relevanssi-warning' class='update-nag'><p><strong>%s</strong></p></div>", esc_html__( 'You do not have an index! Remember to build the index (click the "Build the index" button), otherwise searching won\'t work.', 'relevanssi' ) );
 		}
-		if ( 'options-general.php' === $pagenow && plugin_basename( $relevanssi_variables['file'] ) === $page ) {
+		if ( 'options-general.php' === $pagenow && $on_relevanssi_page ) {
 			add_action( 'admin_notices', 'relevanssi_warning' );
 		}
 	}
@@ -98,7 +101,7 @@ function relevanssi_init() {
 		function relevanssi_mb_warning() {
 			printf( "<div id='relevanssi-warning' class='error'><p><strong>%s</strong></p></div>", esc_html__( 'Multibyte string functions are not available. Relevanssi may not work well without them. Please install (or ask your host to install) the mbstring extension.', 'relevanssi' ) );
 		}
-		if ( 'options-general.php' === $pagenow && plugin_basename( $relevanssi_variables['file'] ) === $page ) {
+		if ( 'options-general.php' === $pagenow && $on_relevanssi_page ) {
 			add_action( 'admin_notices', 'relevanssi_mb_warning' );
 		}
 	}
@@ -160,7 +163,7 @@ function relevanssi_admin_init() {
 	require_once $relevanssi_variables['plugin_dir'] . 'lib/admin-ajax.php';
 
 	add_action( 'admin_enqueue_scripts', 'relevanssi_add_admin_scripts' );
-	add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'relevanssi_action_links' );
+	add_filter( 'plugin_action_links_' . $relevanssi_variables['plugin_basename'], 'relevanssi_action_links' );
 }
 
 /**
@@ -396,7 +399,7 @@ function relevanssi_action_links( $links ) {
 	if ( ! RELEVANSSI_PREMIUM ) {
 		$relevanssi_links[] = '<a href="https://www.relevanssi.com/buy-premium/">' . __( 'Go Premium!', 'relevanssi' ) . '</a>';
 	}
-	return array_merge( $links, $relevanssi_links );
+	return array_merge( $relevanssi_links, $links );
 }
 
 /**
