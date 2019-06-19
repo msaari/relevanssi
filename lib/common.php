@@ -1533,9 +1533,11 @@ function relevanssi_get_post( $post_id, $blog_id = -1 ) {
 
 	global $relevanssi_post_array;
 
+	$post = null;
 	if ( isset( $relevanssi_post_array[ $post_id ] ) ) {
 		$post = $relevanssi_post_array[ $post_id ];
-	} else {
+	}
+	if ( ! $post ) {
 		$post = get_post( $post_id );
 
 		$relevanssi_post_array[ $post_id ] = $post;
