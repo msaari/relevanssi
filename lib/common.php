@@ -981,7 +981,13 @@ function relevanssi_add_synonyms( $query ) {
 				// Skip empty rows.
 				continue;
 			}
+
 			$parts = explode( '=', $pair );
+
+			if ( count( $parts ) < 2 ) {
+				continue;
+			}
+
 			$key   = strval( trim( $parts[0] ) );
 			$value = trim( $parts[1] );
 
