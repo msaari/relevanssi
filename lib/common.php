@@ -260,7 +260,7 @@ function relevanssi_populate_array( $matches ) {
 
 	$ids   = array_keys( array_flip( $ids ) ); // Remove duplicate IDs.
 	$ids   = implode( ', ', $ids );
-	$posts = $wpdb->get_results( "SELECT * FROM $wpdb->posts WHERE id IN ( $ids )" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+	$posts = $wpdb->get_results( "SELECT * FROM $wpdb->posts WHERE id IN ( $ids )", OBJECT ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 	foreach ( $posts as $post ) {
 		$relevanssi_post_array[ $post->ID ] = $post;
