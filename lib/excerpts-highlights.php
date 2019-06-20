@@ -824,7 +824,15 @@ function relevanssi_count_matches( $words, $complete_text ) {
 
 	$count_words = count( $words );
 	for ( $t = 0; $t < $count_words; $t++ ) {
-		$word_slice = relevanssi_strtolower( relevanssi_add_accent_variations( $words[ $t ] ), 'UTF-8' );
+		$word_slice = relevanssi_strtolower(
+			relevanssi_add_accent_variations(
+				preg_quote(
+					$words[ $t ],
+					'/'
+				)
+			),
+			'UTF-8'
+		);
 		if ( $word_boundaries_available ) {
 			if ( 'never' !== get_option( 'relevanssi_fuzzy' ) ) {
 				$regex = "/\b$word_slice|$word_slice\b/";
@@ -1003,6 +1011,8 @@ function relevanssi_add_accent_variations( $word ) {
 	$word = preg_replace( '/s$/', "(s|'s|’s)", $word );
 	$word = preg_replace( '/^o/', "(o|o'|o’)", $word );
 
+	$word = str_replace( '\-?/', '\/', $word );
+
 	return $word;
 }
 
@@ -1035,7 +1045,6 @@ function relevanssi_get_custom_field_content( $post_id ) {
 	if ( is_array( $custom_fields ) ) {
 		$custom_fields = array_unique( $custom_fields ); // No reason to index duplicates.
 
-		$repeater_fields = array();
 		if ( function_exists( 'relevanssi_add_repeater_fields' ) ) {
 			relevanssi_add_repeater_fields( $custom_fields, $post_id );
 		}
