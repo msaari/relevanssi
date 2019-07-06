@@ -238,8 +238,12 @@ function relevanssi_admin_search_format_posts( $posts, $total, $offset, $query )
 				$edit_url = get_edit_term_link( $post->term_id, $post->post_type );
 			}
 		}
-		$view_link       = sprintf( '<a href="%1$s">%2$s %3$s</a>', $permalink, __( 'View', 'relevanssi' ), $post_type );
-		$edit_link       = sprintf( '<a href="%1$s">%2$s %3$s</a>', $edit_url, __( 'Edit', 'relevanssi' ), $post_type );
+		$title     = sprintf( '<a href="%1$s">%2$s %3$s</a>', $permalink, $post->post_title, $post_type );
+		$edit_link = '';
+		if ( current_user_can( 'edit_post', $post->ID ) ) {
+			$edit_link = sprintf( '(<a href="%1$s">%2$s %3$s</a>)', $edit_url, __( 'Edit', 'relevanssi' ), $post_type );
+		}
+
 		$pinning_buttons = '';
 		$pinned          = '';
 
@@ -249,7 +253,7 @@ function relevanssi_admin_search_format_posts( $posts, $total, $offset, $query )
 		}
 
 		$post_element = <<<EOH
-<li>$blog_name <strong>$post->post_title</strong> ($view_link) ($edit_link) $pinning_buttons <br />
+<li>$blog_name <strong>$title</strong> $edit_link $pinning_buttons <br />
 $post->post_excerpt<br />
 $score_label $post->relevance_score $pinned</li>
 EOH;
