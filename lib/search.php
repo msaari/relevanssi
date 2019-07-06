@@ -1219,6 +1219,42 @@ function relevanssi_do_query( &$query ) {
 			$date_query = new WP_Date_Query( $query->query_vars['date_query'] );
 		}
 
+		if ( ! $date_query ) {
+			$date_query = array();
+			if ( ! empty( $query->query_vars['year'] ) ) {
+				$date_query['year'] = intval( $query->query_vars['year'] );
+			}
+			if ( ! empty( $query->query_vars['monthnum'] ) ) {
+				$date_query['month'] = intval( $query->query_vars['monthnum'] );
+			}
+			if ( ! empty( $query->query_vars['w'] ) ) {
+				$date_query['week'] = intval( $query->query_vars['w'] );
+			}
+			if ( ! empty( $query->query_vars['day'] ) ) {
+				$date_query['day'] = intval( $query->query_vars['day'] );
+			}
+			if ( ! empty( $query->query_vars['hour'] ) ) {
+				$date_query['hour'] = intval( $query->query_vars['hour'] );
+			}
+			if ( ! empty( $query->query_vars['minute'] ) ) {
+				$date_query['minute'] = intval( $query->query_vars['minute'] );
+			}
+			if ( ! empty( $query->query_vars['second'] ) ) {
+				$date_query['second'] = intval( $query->query_vars['second'] );
+			}
+			if ( ! empty( $query->query_vars['m'] ) ) {
+				if ( 6 === strlen( $query->query_vars['m'] ) ) {
+					$date_query['year']  = intval( substr( $query->query_vars['m'], 0, 4 ) );
+					$date_query['month'] = intval( substr( $query->query_vars['m'], -2, 2 ) );
+				}
+			}
+			if ( ! empty( $date_query ) ) {
+				$date_query = new WP_Date_Query( $date_query );
+			} else {
+				$date_query = false;
+			}
+		}
+
 		$search_blogs = false;
 		if ( isset( $query->query_vars['search_blogs'] ) ) {
 			$search_blogs = $query->query_vars['search_blogs'];
