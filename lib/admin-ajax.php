@@ -282,19 +282,40 @@ EOH;
  * @since 2.2.0
  */
 function relevanssi_admin_search_debugging_info( $query ) {
-	$result  = '<h3>' . __( 'Query variables', 'relevanssi' ) . '</h3>';
+	$result  = '<div id="debugging">';
+	$result .= '<h3>' . __( 'Query variables', 'relevanssi' ) . '</h3>';
 	$result .= '<ul style="list-style: disc; margin-left: 1.5em">';
 	foreach ( $query->query_vars as $key => $value ) {
-		if ( is_array( $value ) ) {
-			$value = relevanssi_flatten_array( $value );
+		if ( 'tax_query' === $key ) {
+			$result .= '<li>tax_query:<ul style="list-style: disc; margin-left: 1.5em">';
+			$result .= implode(
+				'',
+				array_map(
+					function ( $row ) {
+						$result = '';
+						if ( is_array( $row ) ) {
+							foreach ( $row as $row_key => $row_value ) {
+								$result .= "<li>$row_key: $row_value</li>";
+							}
+						}
+						return $result;
+					},
+					$value
+				)
+			);
+			$result .= '</ul></li>';
+		} else {
+			if ( is_array( $value ) ) {
+				$value = relevanssi_flatten_array( $value );
+			}
+			if ( empty( $value ) ) {
+				continue;
+			}
+			$result .= "<li>$key: $value</li>";
 		}
-		if ( empty( $value ) ) {
-			continue;
-		}
-		$result .= "<li>$key: $value</li>";
 	}
 	if ( ! empty( $query->tax_query ) ) {
-		$result .= '<li><strong>tax_query</strong>:<ul style="list-style: disc; margin-left: 1.5em">';
+		$result .= '<li>tax_query:<ul style="list-style: disc; margin-left: 1.5em">';
 		foreach ( $query->tax_query as $tax_query ) {
 			foreach ( $tax_query as $key => $value ) {
 				if ( is_array( $value ) ) {
@@ -344,6 +365,7 @@ function relevanssi_admin_search_debugging_info( $query ) {
 			$result .= '</ul>';
 		}
 	}
+	$result .= '</div>';
 	$result .= '</div>';
 
 	return $result;
