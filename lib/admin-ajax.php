@@ -173,6 +173,7 @@ function relevanssi_admin_search() {
 	$query = new WP_Query();
 	$query->parse_query( $args );
 	$query->set( 'relevanssi_admin_search', true );
+	$query = apply_filters( 'relevanssi_modify_wp_query', $query );
 	relevanssi_do_query( $query );
 
 	$results = relevanssi_admin_search_debugging_info( $query );
