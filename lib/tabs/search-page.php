@@ -1,22 +1,23 @@
 <?php
 /**
- * /premium/tabs/search-tab.php
+ * /lib/tabs/search-tab.php
  *
- * Prints out the Premium search tab in Relevanssi settings.
+ * Prints out the search tab in Relevanssi settings.
  *
- * @package Relevanssi_Premium
+ * @package Relevanssi
  * @author  Mikko Saari
  * @license https://wordpress.org/about/gpl/ GNU General Public License
  * @see     https://www.relevanssi.com/
  */
 
 /**
- * Prints out the Premium search tab in Relevanssi settings.
+ * Prints out the search tab in Relevanssi settings.
  */
 function relevanssi_search_tab() {
-?>
+	?>
 	<p><?php esc_html_e( 'You can use this search to perform Relevanssi searches without any restrictions from WordPress. You can search all post types here.', 'relevanssi' ); ?></p>
 
+	<form action="" method="get">
 	<table class="form-table">
 	<tr>
 		<th scope="row">
@@ -24,6 +25,33 @@ function relevanssi_search_tab() {
 		</th>
 		<td>
 			<input type='text' name='s' id='s' size='60' />
+		</td>
+	</tr>
+	<tr>
+		<th scope="row">
+			<label for='post_types'><?php esc_html_e( 'Post type', 'relevanssi' ); ?></label>
+		</th>
+		<td>
+			<select name='post_types' id='post_types'>
+				<option value="any"><?php esc_html_e( 'Any', 'relevanssi' ); ?></option>
+	<?php
+		echo implode(
+			' ',
+			array_map( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				function ( $post_type ) {
+					$pt = get_post_type_object( $post_type );
+					if ( $pt ) {
+						$post_type_value = esc_attr( $post_type );
+						$post_type_name  = esc_html( $pt->labels->singular_name );
+						return "<option value='{$post_type_value}'>{$post_type_name}</option>";
+					}
+					return null;
+				},
+				get_option( 'relevanssi_index_post_types' )
+			)
+		);
+	?>
+			</select>
 		</td>
 	</tr>
 	<tr>
@@ -57,7 +85,8 @@ function relevanssi_search_tab() {
 		</td>
 	</tr>
 	</table>
+	</form>
 
 	<div id='results'></div>
-<?php
+	<?php
 }
