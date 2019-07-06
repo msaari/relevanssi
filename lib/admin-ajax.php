@@ -160,6 +160,10 @@ function relevanssi_admin_search() {
 			$args['posts_per_page'] = $posts_per_page;
 		}
 	}
+	if ( isset( $_POST['post_types'] ) ) {
+		$post_type          = $_POST['post_types'];
+		$args['post_types'] = $post_type;
+	}
 	if ( isset( $_POST['offset'] ) ) {
 		$offset = intval( $_POST['offset'] );
 		if ( $offset > 0 ) {
