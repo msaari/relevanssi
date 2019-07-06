@@ -24,7 +24,6 @@
  */
 function relevanssi_process_tax_query( $tax_query_relation, $tax_query ) {
 	$query_restrictions = '';
-
 	if ( ! isset( $tax_query_relation ) ) {
 		$tax_query_relation = 'and';
 	}
@@ -32,12 +31,13 @@ function relevanssi_process_tax_query( $tax_query_relation, $tax_query ) {
 	$term_tax_ids       = array();
 	$not_term_tax_ids   = array();
 	$and_term_tax_ids   = array();
+	$exist_queries      = array();
 
 	$is_sub_row = false;
 	foreach ( $tax_query as $row ) {
 		if ( isset( $row['terms'] ) || ( isset( $row['operator'] ) && ( 'not exists' === strtolower( $row['operator'] ) || 'exists' === strtolower( $row['operator'] ) ) ) ) {
-			list( $query_restrictions, $term_tax_ids, $not_term_tax_ids, $and_term_tax_ids ) =
-			relevanssi_process_tax_query_row( $row, $is_sub_row, $tax_query_relation, $query_restrictions, $tax_query_relation, $term_tax_ids, $not_term_tax_ids, $and_term_tax_ids );
+			list( $query_restrictions, $term_tax_ids, $not_term_tax_ids, $and_term_tax_ids, $exist_queries ) =
+			relevanssi_process_tax_query_row( $row, $is_sub_row, $tax_query_relation, $query_restrictions, $tax_query_relation, $term_tax_ids, $not_term_tax_ids, $and_term_tax_ids, $exist_queries );
 		} else {
 			$row_tax_query_relation = $tax_query_relation;
 			if ( isset( $row['relation'] ) ) {
@@ -47,15 +47,16 @@ function relevanssi_process_tax_query( $tax_query_relation, $tax_query ) {
 				foreach ( $row as $subrow ) {
 					$is_sub_row = true;
 					if ( isset( $subrow['terms'] ) ) {
-						list( $query_restrictions, $term_tax_ids, $not_term_tax_ids, $and_term_tax_ids ) =
-						relevanssi_process_tax_query_row( $subrow, $is_sub_row, $tax_query_relation, $query_restrictions, $row_tax_query_relation, $term_tax_ids, $not_term_tax_ids, $and_term_tax_ids );
+						list( $query_restrictions, $term_tax_ids, $not_term_tax_ids, $and_term_tax_ids, $exist_queries ) =
+						relevanssi_process_tax_query_row( $subrow, $is_sub_row, $tax_query_relation, $query_restrictions, $row_tax_query_relation, $term_tax_ids, $not_term_tax_ids, $and_term_tax_ids, $exist_queries );
 					}
 				}
 				if ( 'or' === $row_tax_query_relation ) {
 					$query_restrictions .= relevanssi_process_term_tax_ids(
 						$term_tax_ids,
 						$not_term_tax_ids,
-						$and_term_tax_ids
+						$and_term_tax_ids,
+						$exist_queries
 					);
 				}
 			}
@@ -66,7 +67,8 @@ function relevanssi_process_tax_query( $tax_query_relation, $tax_query ) {
 		$query_restrictions .= relevanssi_process_term_tax_ids(
 			$term_tax_ids,
 			$not_term_tax_ids,
-			$and_term_tax_ids
+			$and_term_tax_ids,
+			$exist_queries
 		);
 	}
 
@@ -88,11 +90,13 @@ function relevanssi_process_tax_query( $tax_query_relation, $tax_query ) {
  * @param array   $term_tax_ids       Array of term taxonomy IDs.
  * @param array   $not_term_tax_ids   Array of excluded term taxonomy IDs.
  * @param array   $and_term_tax_ids   Array of AND term taxonomy IDs.
+ * @param array   $exist_queries      MySQL queries for EXIST subqueries.
  *
  * @return array Returns an array where the first item is the updated
- * $query_restrictions, then $term_tax_ids, $not_term_tax_ids, and $and_term_tax_ids.
+ * $query_restrictions, then $term_tax_ids, $not_term_tax_ids, $and_term_tax_ids
+ * and $exist_queries.
  */
-function relevanssi_process_tax_query_row( $row, $is_sub_row, $global_relation, $query_restrictions, $tax_query_relation, $term_tax_ids, $not_term_tax_ids, $and_term_tax_ids ) {
+function relevanssi_process_tax_query_row( $row, $is_sub_row, $global_relation, $query_restrictions, $tax_query_relation, $term_tax_ids, $not_term_tax_ids, $and_term_tax_ids, $exist_queries ) {
 	global $wpdb;
 
 	$local_term_tax_ids     = array();
@@ -205,15 +209,18 @@ function relevanssi_process_tax_query_row( $row, $is_sub_row, $global_relation, 
 		if ( 'not exists' === strtolower( $row['operator'] ) ) {
 			$operator = 'NOT IN';
 		}
-		$query_restrictions .= " AND relevanssi.doc $operator (
+		$exist_query_sql = " relevanssi.doc $operator (
 				SELECT DISTINCT(tr.object_id)
 				FROM $wpdb->term_relationships AS tr, $wpdb->term_taxonomy AS tt
 				WHERE tr.term_taxonomy_id = tt.term_taxonomy_id
-				AND tt.taxonomy = '$taxonomy'
-			)";
+				AND tt.taxonomy = '$taxonomy' )";
+		$exist_queries[] = $exist_query_sql;
+		if ( 'and' === $tax_query_relation ) {
+			$query_restrictions .= ' AND ' . $exist_query_sql;
+		}
 	}
 
-	return array( $query_restrictions, $term_tax_ids, $not_term_tax_ids, $and_term_tax_ids );
+	return array( $query_restrictions, $term_tax_ids, $not_term_tax_ids, $and_term_tax_ids, $exist_queries );
 }
 
 /**
@@ -227,10 +234,11 @@ function relevanssi_process_tax_query_row( $row, $is_sub_row, $global_relation, 
  * @param array $term_tax_ids     The regular terms.
  * @param array $not_term_tax_ids The NOT terms.
  * @param array $and_term_tax_ids The AND terms.
+ * @param array $exist_queries    The EXIST queries.
  *
  * @return string The MySQL query restrictions.
  */
-function relevanssi_process_term_tax_ids( $term_tax_ids, $not_term_tax_ids, $and_term_tax_ids ) {
+function relevanssi_process_term_tax_ids( $term_tax_ids, $not_term_tax_ids, $and_term_tax_ids, $exist_queries ) {
 	global $wpdb;
 
 	$query_restriction_parts = array();
@@ -267,6 +275,10 @@ function relevanssi_process_term_tax_ids( $term_tax_ids, $not_term_tax_ids, $and
 				AND tr.object_id = $wpdb->posts.ID ) = $n
 			)";
 		// Clean: all variables are Relevanssi-generated.
+	}
+
+	if ( $exist_queries ) {
+		$query_restriction_parts = array_merge( $query_restriction_parts, $exist_queries );
 	}
 
 	if ( count( $query_restriction_parts ) > 1 ) {
@@ -309,9 +321,10 @@ function relevanssi_get_term_in( $terms_parameter, $taxonomy, $field_name ) {
 		if ( ! $term && is_numeric( $name ) ) {
 			$numeric_terms[] = $name;
 		} else {
-			if ( isset( $term->term_id ) ) {
-				$name    = sanitize_title( $name );
-				$names[] = "'$name'";
+			if ( isset( $term->term_id ) && in_array( $field_name, array( 'slug', 'name' ), true ) ) {
+				$names[] = "'" . esc_sql( $name ) . "'";
+			} else {
+				$numeric_terms[] = $name;
 			}
 		}
 	}
