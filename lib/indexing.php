@@ -479,6 +479,10 @@ function relevanssi_index_doc( $index_post, $remove_first = false, $custom_field
 	// we might end up indexing the post before the updates come in.
 	$post = get_post( $post->ID ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 
+	if ( null === $post ) {
+		return -1;
+	}
+
 	// Post exclusion feature from Relevanssi Premium.
 	if ( function_exists( 'relevanssi_hide_post' ) ) {
 		if ( relevanssi_hide_post( $post->ID ) ) {
