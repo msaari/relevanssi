@@ -150,6 +150,10 @@ function relevanssi_init() {
 	if ( defined( 'WPFD_VERSION' ) ) {
 		require_once 'compatibility/wp-file-download.php';
 	}
+
+	if ( defined( 'WPSEO_FILE' ) ) {
+		require_once 'compatibility/yoast-seo.php';
+	}
 }
 
 /**
