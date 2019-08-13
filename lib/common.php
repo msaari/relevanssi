@@ -214,6 +214,11 @@ function relevanssi_default_post_ok( $post_ok, $post_id ) {
 		$type    = relevanssi_get_post_type( $post_id );
 		$post_ok = $userAccessManager->getAccessHandler()->checkObjectAccess( $type, $post_id ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName
 	}
+	if ( function_exists( 'pmpro_has_membership_access' ) ) {
+		// Paid Membership Pro.
+		$current_user = wp_get_current_user();
+		$post_ok      = pmpro_has_membership_access( $post_id, $current_user->ID );
+	}
 
 	/**
 	 * Filters statuses allowed in admin searches.
