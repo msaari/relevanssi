@@ -78,8 +78,8 @@ function relevanssi_search_tab() {
 		</td>
 	</tr>
 	<tr>
-		<th scope="row">
-		</th>
+		<td>
+		</td>
 		<td>
 			<input type='submit' name='search' id='search' value='<?php echo esc_html_x( 'Search', 'button action', 'relevanssi' ); ?>' class='button' />
 		</td>

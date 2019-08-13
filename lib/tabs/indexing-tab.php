@@ -101,11 +101,11 @@ function relevanssi_indexing_tab() {
 
 	<table class="form-table">
 	<tr>
-		<th scope="row">
+		<td scope="row">
 			<input type='submit' name='submit' value='<?php esc_attr_e( 'Save the options', 'relevanssi' ); ?>' class='button button-primary' /><br /><br />
 			<input type="button" id="build_index" name="index" value="<?php esc_attr_e( 'Build the index', 'relevanssi' ); ?>" class='button-primary' /><br /><br />
 			<input type="button" id="continue_indexing" name="continue" value="<?php esc_attr_e( 'Index unindexed posts', 'relevanssi' ); ?>" class='button-primary' />
-		</th>
+		</td>
 		<td>
 			<div id='indexing_button_instructions'>
 				<?php // Translators: %s is "Build the index". ?>
@@ -122,7 +122,7 @@ function relevanssi_indexing_tab() {
 			<div id='relevanssi-note' style='display: none'></div>
 			<div id='relevanssi-progress' class='rpi-progress'><div class="rpi-indicator"></div></div>
 			<div id='relevanssi-timer'><?php esc_html_e( 'Time elapsed', 'relevanssi' ); ?>: <span id="relevanssi_elapsed">0:00:00</span> | <?php esc_html_e( 'Time remaining', 'relevanssi' ); ?>: <span id="relevanssi_estimated"><?php esc_html_e( 'some time', 'relevanssi' ); ?></span></div>
-			<textarea id='results' rows='10' cols='80'></textarea>
+			<label for="results" class="screen-reader-text"><?php esc_html_e( 'Results', 'relevanssi' ); ?></label><textarea id='results' rows='10' cols='80'></textarea>
 			<div id='relevanssi-indexing-instructions' style='display: none'><?php esc_html_e( "Indexing should respond quickly. If nothing happens in couple of minutes, it's probably stuck. The most common reasons for indexing issues are incompatible shortcodes, so try disabling the shortcode expansion setting and try again. Also, if you've just updated Relevanssi, doing a hard refresh in your browser will make sure your browser is not trying to use an outdated version of the Relevanssi scripts.", 'relevanssi' ); ?></div>
 		</td>
 	</tr>
@@ -187,7 +187,7 @@ function relevanssi_indexing_tab() {
 		}
 		$name_id = 'relevanssi_index_type_' . $type;
 		printf(
-			'<tr><td>%1$s</td><td><input type="checkbox" name="%2$s" id="%2$s" %3$s /></td><td>%4$s</td></tr>',
+			'<tr><td><label for="%2$s">%1$s</label></td><td><input type="checkbox" name="%2$s" id="%2$s" %3$s /></td><td>%4$s</td></tr>',
 			esc_html( $label ),
 			esc_attr( $name_id ),
 			esc_html( $checked ),
@@ -197,7 +197,7 @@ function relevanssi_indexing_tab() {
 	?>
 	<tr style="display:none">
 		<td>
-			Helpful little control field
+			<label for="relevanssi_index_type_bogus">Helper control field to make sure settings are saved if no post types are selected.</label>
 		</td>
 		<td>
 			<input type='checkbox' name='relevanssi_index_type_bogus' id='relevanssi_index_type_bogus' checked="checked" />
@@ -209,6 +209,7 @@ function relevanssi_indexing_tab() {
 	</table>
 		<?php // Translators: %1$s is 'attachment', %2$s opens the link, %3$s closes it. ?>
 		<p class="description"><?php printf( esc_html__( '%1$s includes all attachment types. If you want to index only some attachments, see %2$sControlling attachment types in the Knowledge base%3$s.', 'relevanssi' ), '<code>attachment</code>', '<a href="https://www.relevanssi.com/knowledge-base/controlling-attachment-types-index/">', '</a>' ); ?></p>
+		<p class="description"><?php esc_html_e( "If you want to index a post type that's marked 'Excluded from search', you can do that without worrying about it – but you need to uncheck the 'Respect exclude_from_search' setting from the Searching tab.", 'relevanssi' ); ?></p>
 	</td>
 	</tr>
 
@@ -244,7 +245,7 @@ function relevanssi_indexing_tab() {
 		}
 		$name_id = 'relevanssi_index_taxonomy_' . $taxonomy->name;
 		printf(
-			'<tr><td>%1$s</td><td><input type="checkbox" name="%2$s" id="%2$s" %3$s /></td><td>%4$s</td></tr>',
+			'<tr><td><label for="%2$s">%1$s</label></td><td><input type="checkbox" name="%2$s" id="%2$s" %3$s /></td><td>%4$s</td></tr>',
 			esc_html( $label ),
 			esc_attr( $name_id ),
 			esc_html( $checked ),
@@ -275,7 +276,7 @@ function relevanssi_indexing_tab() {
 
 	<tr>
 		<th scope="row">
-			<label for='relevanssi_index_fields'><?php esc_html_e( 'Custom fields', 'relevanssi' ); ?></label>
+			<label for='relevanssi_index_fields_select'><?php esc_html_e( 'Custom fields', 'relevanssi' ); ?></label>
 		</th>
 		<td>
 			<select name='relevanssi_index_fields_select' id='relevanssi_index_fields_select'>
@@ -307,6 +308,7 @@ function relevanssi_indexing_tab() {
 			}
 			?>
 			>
+				<label for="relevanssi_index_fields" class="screen-reader-text"><?php esc_html__( 'Custom fields to index', 'relevanssi' ); ?></label>
 				<input type='text' name='relevanssi_index_fields' id='relevanssi_index_fields' size='60' value='<?php echo esc_attr( $index_fields ); ?>' />
 				<p class="description"><?php esc_html_e( "Enter a comma-separated list of custom fields to include in the index. With Relevanssi Premium, you can also use 'fieldname_%_subfieldname' notation for ACF repeater fields.", 'relevanssi' ); ?></p>
 				<p class="description"><?php esc_html_e( "You can use 'relevanssi_index_custom_fields' filter hook to adjust which custom fields are indexed.", 'relevanssi' ); ?></p>
@@ -320,7 +322,7 @@ function relevanssi_indexing_tab() {
 
 	<tr>
 		<th scope="row">
-			<label for='relevanssi_index_author'><?php esc_html_e( 'Author display names', 'relevanssi' ); ?></label>
+			<?php esc_html_e( 'Author display names', 'relevanssi' ); ?>
 		</th>
 		<td>
 		<fieldset>
@@ -336,7 +338,7 @@ function relevanssi_indexing_tab() {
 
 	<tr>
 		<th scope="row">
-			<label for='relevanssi_index_excerpt'><?php esc_html_e( 'Excerpts', 'relevanssi' ); ?></label>
+			<?php esc_html_e( 'Excerpts', 'relevanssi' ); ?>
 		</th>
 		<td>
 		<fieldset>
@@ -360,7 +362,7 @@ function relevanssi_indexing_tab() {
 	<table class="form-table">
 	<tr>
 		<th scope="row">
-			<label for='relevanssi_expand_shortcodes'><?php esc_html_e( 'Expand shortcodes', 'relevanssi' ); ?></label>
+			<?php esc_html_e( 'Expand shortcodes', 'relevanssi' ); ?>
 		</th>
 		<td>
 		<fieldset>

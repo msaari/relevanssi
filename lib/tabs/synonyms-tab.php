@@ -27,7 +27,7 @@ function relevanssi_synonyms_tab() {
 <table class="form-table">
 <tr>
 	<th scope="row">
-		<?php esc_html_e( 'Synonyms', 'relevanssi' ); ?>
+		<label for="relevanssi_synonyms"><?php esc_html_e( 'Synonyms', 'relevanssi' ); ?></label>
 	</th>
 	<td>
 		<p class="description"><?php esc_html_e( 'Add synonyms here to make the searches find better results. If you notice your users frequently misspelling a product name, or for other reasons use many names for one thing, adding synonyms will make the results better.', 'relevanssi' ); ?></p>
@@ -36,11 +36,11 @@ function relevanssi_synonyms_tab() {
 		<br />
 		<textarea name='relevanssi_synonyms' id='relevanssi_synonyms' rows='9' cols='60'><?php echo esc_textarea( $synonyms ); ?></textarea>
 
-		<p class="description"><?php _e( 'The format here is <code>key = value</code>. If you add <code>dog = hound</code> to the list of synonyms, searches for <code>dog</code> automatically become a search for <code>dog hound</code> and will thus match to posts that include either <code>dog</code> or <code>hound</code>. This only works in OR searches: in AND searches the synonyms only restrict the search, as now the search only finds posts that contain <strong>both</strong> <code>dog</code> and <code>hound</code>.', 'relevanssi' ); // WPCS: XSS ok. ?></p>
+		<p class="description"><?php _e( 'The format here is <code>key = value</code>. If you add <code>dog = hound</code> to the list of synonyms, searches for <code>dog</code> automatically become a search for <code>dog hound</code> and will thus match to posts that include either <code>dog</code> or <code>hound</code>. This only works in OR searches: in AND searches the synonyms only restrict the search, as now the search only finds posts that contain <strong>both</strong> <code>dog</code> and <code>hound</code>.', 'relevanssi' ); // phpcs:ignore WordPress.Security.EscapeOutput.UnsafePrintingFunction ?></p>
 
-		<p class="description"><?php _e( 'The synonyms are one direction only. If you want both directions, add the synonym again, reversed: <code>hound = dog</code>.', 'relevanssi' ); // WPCS: XSS ok. ?></p>
+		<p class="description"><?php _e( 'The synonyms are one direction only. If you want both directions, add the synonym again, reversed: <code>hound = dog</code>.', 'relevanssi' ); // phpcs:ignore WordPress.Security.EscapeOutput.UnsafePrintingFunction ?></p>
 
-		<p class="description"><?php _e( "It's possible to use phrases for the value, but not for the key. <code>dog = \"great dane\"</code> works, but <code>\"great dane\" = dog</code> doesn't.", 'relevanssi' ); // WPCS: XSS ok. ?></p>
+		<p class="description"><?php _e( "It's possible to use phrases for the value, but not for the key. <code>dog = \"great dane\"</code> works, but <code>\"great dane\" = dog</code> doesn't.", 'relevanssi' ); // phpcs:ignore WordPress.Security.EscapeOutput.UnsafePrintingFunction ?></p>
 
 		<?php if ( RELEVANSSI_PREMIUM ) : ?>
 			<p class="description"><?php esc_html_e( 'If you want to use synonyms in AND searches, enable synonym indexing on the Indexing tab.', 'relevanssi' ); ?></p>

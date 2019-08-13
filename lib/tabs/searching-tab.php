@@ -143,7 +143,7 @@ function relevanssi_searching_tab() {
 			</thead>
 			<tr>
 				<td>
-					<?php esc_html_e( 'Content', 'relevanssi' ); ?>
+					<label for="relevanssi_content_boost"><?php esc_html_e( 'Content', 'relevanssi' ); ?></label>
 				</td>
 				<td class="col-2">
 					<input type='text' name='relevanssi_content_boost' id='relevanssi_content_boost' size='4' value='<?php echo esc_attr( $content_boost ); ?>' />
@@ -151,7 +151,7 @@ function relevanssi_searching_tab() {
 			</tr>
 			<tr>
 				<td>
-					<?php esc_html_e( 'Titles', 'relevanssi' ); ?>
+					<label for="relevanssi_title_boost"><?php esc_html_e( 'Titles', 'relevanssi' ); ?></label>
 				</td>
 				<td class="col-2">
 					<input type='text' name='relevanssi_title_boost' id='relevanssi_title_boost' size='4' value='<?php echo esc_attr( $title_boost ); ?>' />
@@ -164,7 +164,7 @@ function relevanssi_searching_tab() {
 			?>
 			<tr>
 				<td>
-					<?php esc_html_e( 'Comment text', 'relevanssi' ); ?>
+					<label for="relevanssi_comment_boost"><?php esc_html_e( 'Comment text', 'relevanssi' ); ?></label>
 				</td>
 				<td class="col-2">
 					<input type='text' name='relevanssi_comment_boost' id='relevanssi_comment_boost' size='4' value='<?php echo esc_attr( $comment_boost ); ?>' />
@@ -193,7 +193,7 @@ function relevanssi_searching_tab() {
 	?>
 	<tr>
 		<th scope="row">
-		<label for='relevanssi_exact_match_bonus'><?php esc_html_e( 'Boost exact matches', 'relevanssi' ); ?></label>
+		<?php esc_html_e( 'Boost exact matches', 'relevanssi' ); ?>
 		</th>
 		<td>
 		<fieldset>
@@ -212,7 +212,7 @@ function relevanssi_searching_tab() {
 		?>
 	<tr>
 		<th scope="row">
-		<label for='relevanssi_wpml_only_current'><?php esc_html_e( 'WPML', 'relevanssi' ); ?></label>
+		<?php esc_html_e( 'WPML', 'relevanssi' ); ?>
 		</th>
 		<td>
 		<fieldset>
@@ -229,7 +229,7 @@ function relevanssi_searching_tab() {
 	<?php if ( function_exists( 'pll_get_post' ) ) { ?>
 	<tr>
 		<th scope="row">
-		<label for='relevanssi_polylang_all_languages'><?php esc_html_e( 'Polylang', 'relevanssi' ); ?></label>
+		<?php esc_html_e( 'Polylang', 'relevanssi' ); ?>
 		</th>
 		<td>
 		<fieldset>
@@ -245,7 +245,7 @@ function relevanssi_searching_tab() {
 	<?php } // Polylang. ?>
 	<tr>
 		<th scope="row">
-		<label for='relevanssi_admin_search'><?php esc_html_e( 'Admin search', 'relevanssi' ); ?></label>
+		<?php esc_html_e( 'Admin search', 'relevanssi' ); ?>
 		</th>
 		<td>
 		<fieldset>
@@ -261,7 +261,7 @@ function relevanssi_searching_tab() {
 	<tr>
 		<th scope="row">
 			<?php // Translators: %s is 'exclude_from_search'. ?>
-			<label for='relevanssi_respect_exclude'><?php printf( esc_html__( 'Respect %s', 'relevanssi' ), 'exclude_from_search' ); ?></label>
+			<?php printf( esc_html__( 'Respect %s', 'relevanssi' ), 'exclude_from_search' ); ?>
 		</th>
 		<td>
 		<fieldset>
@@ -296,7 +296,7 @@ function relevanssi_searching_tab() {
 	</tr>
 	<tr>
 		<th scope="row">
-			<label for='relevanssi_throttle'><?php esc_html_e( 'Throttle searches', 'relevanssi' ); ?></label>
+			<?php esc_html_e( 'Throttle searches', 'relevanssi' ); ?>
 		</th>
 		<td id="throttlesearches">
 		<div id="throttle_disabled"
@@ -331,11 +331,13 @@ function relevanssi_searching_tab() {
 	</tr>
 	<tr>
 		<th scope="row">
-			<label for='relevanssi_cat'><?php esc_html_e( 'Category restriction', 'relevanssi' ); ?></label>
+			<?php esc_html_e( 'Category restriction', 'relevanssi' ); ?>
 		</th>
 		<td>
 			<div class="categorydiv" style="max-width: 400px">
 			<div class="tabs-panel">
+			<fieldset>
+				<legend class="screen-reader-text"><?php esc_html_e( 'Category restriction', 'relevanssi' ); ?></legend>
 			<ul id="category_inclusion_checklist">
 			<?php
 				$selected_cats = explode( ',', $cat );
@@ -351,6 +353,7 @@ function relevanssi_searching_tab() {
 				);
 			?>
 			</ul>
+			</fieldset>
 			<input type="hidden" name="relevanssi_cat_active" value="1" />
 			</div>
 			</div>
@@ -359,11 +362,13 @@ function relevanssi_searching_tab() {
 	</tr>
 	<tr>
 		<th scope="row">
-			<label for='relevanssi_excat'><?php esc_html_e( 'Category exclusion', 'relevanssi' ); ?></label>
+			<?php esc_html_e( 'Category exclusion', 'relevanssi' ); ?>
 		</th>
 		<td>
 			<div class="categorydiv" style="max-width: 400px">
 			<div class="tabs-panel">
+			<fieldset>
+				<legend class="screen-reader-text"><?php esc_html_e( 'Category exclusion', 'relevanssi' ); ?></legend>
 			<ul id="category_exclusion_checklist">
 			<?php
 				$selected_cats = explode( ',', $excat );
@@ -380,6 +385,7 @@ function relevanssi_searching_tab() {
 			?>
 			</ul>
 			<input type="hidden" name="relevanssi_excat_active" value="1" />
+			</fieldset>
 			</div>
 			</div>
 			<p class="description"><?php esc_html_e( 'Posts in these categories are not included in search results. To exclude the posts completely from the index, see Help.', 'relevanssi' ); ?></p>

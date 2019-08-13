@@ -30,7 +30,7 @@ function relevanssi_logging_tab() {
 	<table class="form-table">
 	<tr>
 		<th scope="row">
-			<label for='relevanssi_log_queries'><?php esc_html_e( 'Enable logs', 'relevanssi' ); ?></label>
+			<?php esc_html_e( 'Enable logs', 'relevanssi' ); ?>
 		</th>
 		<td>
 		<fieldset>
@@ -54,7 +54,7 @@ function relevanssi_logging_tab() {
 	</tr>
 	<tr>
 		<th scope="row">
-			<label for='relevanssi_log_queries_with_ip'><?php esc_html_e( 'Log user IP', 'relevanssi' ); ?></label>
+			<?php esc_html_e( 'Log user IP', 'relevanssi' ); ?>
 		</th>
 		<td>
 		<fieldset>
@@ -66,7 +66,7 @@ function relevanssi_logging_tab() {
 		</fieldset>
 		<p class="description"><?php esc_html_e( "If enabled, Relevanssi will log user's IP adress with the queries. Note that this may be illegal where you live, and in EU will create a person registry that falls under the GDPR.", 'relevanssi' ); ?></p>
 		</td>
-	</tr>	
+	</tr>
 	<tr>
 		<th scope="row">
 			<label for='relevanssi_omit_from_logs'><?php esc_html_e( 'Exclude users', 'relevanssi' ); ?></label>
@@ -105,7 +105,7 @@ function relevanssi_logging_tab() {
 
 	<tr>
 		<th scope="row">
-			<label for='relevanssi_export_logs'><?php esc_html_e( 'Export logs', 'relevanssi' ); ?></label>
+			<?php esc_html_e( 'Export logs', 'relevanssi' ); ?>
 		</th>
 		<td>
 			<?php submit_button( __( 'Export the log as a CSV file', 'relevanssi' ), 'secondary', 'relevanssi_export' ); ?>

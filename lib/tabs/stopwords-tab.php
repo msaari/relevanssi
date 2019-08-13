@@ -98,6 +98,7 @@ function relevanssi_show_stopwords() {
 		<?php esc_html_e( 'Exportable list of stopwords', 'relevanssi' ); ?>
 	</th>
 	<td>
+		<label for="stopwords" class="screen-reader-text"><?php esc_html_e( 'Exportable list of stopwords', 'relevanssi' ); ?></label>
 		<textarea name="stopwords" id="stopwords" rows="2" cols="80"><?php echo esc_textarea( $exportlist ); ?></textarea>
 		<p class="description"><?php esc_html_e( 'You can copy the list of stopwords here if you want to back up the list, copy it to a different blog or otherwise need the list.', 'relevanssi' ); ?></p>
 	</td>
