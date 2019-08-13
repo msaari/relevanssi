@@ -311,16 +311,16 @@ function relevanssi_create_database_tables( $relevanssi_db_version ) {
 		$docs_exists                        = false;
 		$typeitem_exists                    = false;
 		foreach ( $indices as $index ) {
-			if ( 'terms' === $index->Key_name ) {
+			if ( 'terms' === $index->Key_name ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName
 				$terms_exists = true;
 			}
-			if ( 'relevanssi_term_reverse_idx' === $index->Key_name ) {
+			if ( 'relevanssi_term_reverse_idx' === $index->Key_name ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName
 				$relevanssi_term_reverse_idx_exists = true;
 			}
-			if ( 'docs' === $index->Key_name ) {
+			if ( 'docs' === $index->Key_name ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName
 				$docs_exists = true;
 			}
-			if ( 'typeitem' === $index->Key_name ) {
+			if ( 'typeitem' === $index->Key_name ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName
 				$typeitem_exists = true;
 			}
 		}
@@ -365,7 +365,7 @@ function relevanssi_create_database_tables( $relevanssi_db_version ) {
 
 		$query_exists = false;
 		foreach ( $indices as $index ) {
-			if ( 'query' === $index->Key_name ) {
+			if ( 'query' === $index->Key_name ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName
 				$query_exists = true;
 			}
 		}
@@ -378,7 +378,7 @@ function relevanssi_create_database_tables( $relevanssi_db_version ) {
 		update_option( 'relevanssi_db_version', $relevanssi_db_version );
 	}
 
-	if ( $wpdb->get_var( "SELECT COUNT(*) FROM $relevanssi_stopword_table WHERE 1" ) < 1 ) { // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.NoCaching
+	if ( $wpdb->get_var( "SELECT COUNT(*) FROM $relevanssi_stopword_table WHERE 1" ) < 1 ) { // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.NoCaching
 		relevanssi_populate_stopwords();
 	}
 }
