@@ -1672,6 +1672,7 @@ function relevanssi_get_forbidden_post_types() {
 		'amp_validated_url',    // AMP.
 		'jp_pay_order',         // Jetpack.
 		'jp_pay_product',       // Jetpack.
+		'jp_mem_plan',          // Jetpack.
 		'tablepress_table',     // TablePress.
 		'shop_order',           // WooCommerce.
 		'shop_order_refund',    // WooCommerce.
