@@ -106,7 +106,7 @@ function relevanssi_get_next_key( &$orderby ) {
 	if ( 'rand' === $key ) {
 		if ( is_numeric( $dir ) ) {
 			// A specific random seed is requested.
-			mt_srand( $dir );
+			mt_srand( $dir ); // phpcs:ignore WordPress.WP.AlternativeFunctions
 		}
 	} else {
 		$dir = strtolower( $dir );
@@ -140,8 +140,8 @@ function relevanssi_get_next_key( &$orderby ) {
 function relevanssi_get_compare_values( $key, $item_1, $item_2 ) {
 	if ( 'rand' === $key ) {
 		do {
-			$key1 = rand();
-			$key2 = rand();
+			$key1 = wp_rand();
+			$key2 = wp_rand();
 		} while ( $key1 === $key2 );
 		$keys = array(
 			'key1' => $key1,
@@ -399,7 +399,6 @@ function relevanssi_object_sort( &$data, $orderby, $meta_query ) {
 			$relevanssi_compares[] = $values['compare'];
 		}
 	} while ( ! empty( $values['key'] ) );
-	$primary_key = $relevanssi_keys[0];
 
 	usort( $data, 'relevanssi_cmp_function' );
 }
