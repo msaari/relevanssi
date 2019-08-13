@@ -50,7 +50,12 @@ function relevanssi_polylang_filter( $query ) {
 			// Tax queries can be here as well, so let's sweep this one too.
 			$ok_queries = array();
 			foreach ( $query->query_vars['tax_query'] as $tax_query ) {
-				if ( 'language' !== $tax_query['taxonomy'] ) {
+				if ( isset( $tax_query['taxonomy'] ) ) {
+					if ( 'language' !== $tax_query['taxonomy'] ) {
+						$ok_queries[] = $tax_query;
+					}
+				} else {
+					// Relation parameter most likely.
 					$ok_queries[] = $tax_query;
 				}
 			}
