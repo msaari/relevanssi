@@ -1102,23 +1102,23 @@ function relevanssi_remove_page_builder_shortcodes( $content ) {
 		'relevanssi_page_builder_shortcodes',
 		array(
 			// Remove content.
-			'/\[et_pb_code.*?\].*\[\/et_pb_code\]/',
-			'/\[et_pb_sidebar.*?\].*\[\/et_pb_sidebar\]/',
-			'/\[et_pb_fullwidth_slider.*?\].*\[\/et_pb_fullwidth_slider\]/',
-			'/\[vc_raw_html.*?\].*\[\/vc_raw_html\]/',
+			'/\[et_pb_code.*?\].*\[\/et_pb_code\]/ims',
+			'/\[et_pb_sidebar.*?\].*\[\/et_pb_sidebar\]/ims',
+			'/\[et_pb_fullwidth_slider.*?\].*\[\/et_pb_fullwidth_slider\]/ims',
+			'/\[vc_raw_html.*?\].*\[\/vc_raw_html\]/ims',
 			// Remove only the tags.
-			'/\[\/?et_pb.*?\]/',
-			'/\[\/?vc.*?\]/',
-			'/\[\/?mk.*?\]/',
-			'/\[\/?cs_.*?\]/',
-			'/\[\/?av_.*?\]/',
-			'/\[\/?fusion_.*?\]/',
+			'/\[\/?et_pb.*?\]/ims',
+			'/\[\/?vc.*?\]/ims',
+			'/\[\/?mk.*?\]/ims',
+			'/\[\/?cs_.*?\]/ims',
+			'/\[\/?av_.*?\]/ims',
+			'/\[\/?fusion_.*?\]/ims',
 			// Max Mega Menu doesn't work in excerpts.
-			'/\[maxmegamenu.*?\]/',
+			'/\[maxmegamenu.*?\]/ims',
 			// All-in-one Events Calendar shortcode doesn't look good.
-			'/\[ai1ec.*?\]/',
+			'/\[ai1ec.*?\]/ims',
 			// Events Made Easy Calendar shortcodes should be removed.
-			'/\[eme_.*?\]/',
+			'/\[eme_.*?\]/ims',
 		)
 	);
 	$content      = preg_replace( $search_array, '', $content );
