@@ -57,6 +57,7 @@ $relevanssi_variables['post_type_index_defaults']              = array( 'post', 
 $relevanssi_variables['database_version']                      = 5;
 $relevanssi_variables['file']                                  = __FILE__;
 $relevanssi_variables['plugin_dir']                            = plugin_dir_path( __FILE__ );
+$relevanssi_variables['plugin_basename']                       = plugin_basename( __FILE__ );
 
 require_once 'lib/admin-ajax.php';
 require_once 'lib/common.php';
