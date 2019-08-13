@@ -633,14 +633,14 @@ function relevanssi_query_log() {
 		print( "<form method='post'>" );
 		wp_nonce_field( 'relevanssi_reset_logs', '_relresnonce', true, true );
 		printf(
-			'<p>%s</p></form>',
+			'<p><label for="relevanssi_reset_code">%s</label></p></form>',
 			sprintf(
 				// Translators: %1$s is the input field, %2$s is the submit button.
 				__( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					'To reset the logs, type "reset" into the box here %1$s and click %2$s',
 					'relevanssi'
 				),
-				' <input type="text" name="relevanssi_reset_code" />',
+				' <input type="text" id="relevanssi_reset_code" name="relevanssi_reset_code" />',
 				' <input type="submit" name="relevanssi_reset" value="Reset" class="button" />'
 			)
 		);
