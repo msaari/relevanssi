@@ -3,9 +3,9 @@ Contributors: msaari
 Donate link: https://www.relevanssi.com/buy-premium/
 Tags: search, relevance, better search
 Requires at least: 4.8.3
-Tested up to: 5.2.1
+Tested up to: 5.2.2
 Requires PHP: 5.6
-Stable tag: 4.2.0
+Stable tag: 4.3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -129,6 +129,22 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.3.0 =
+* New feature: Multi-phrase searches now respect AND and OR operators. If multiple phrases are included in an OR search, any posts with at least one phrase will be included. In AND search, all phrases must be included.
+* New feature: Admin search has been improved: there's a post type dropdown and the search is triggered when you press enter. The debug information has a `div` tag around it with the id `debugging`, so you can hide them with CSS if you want to. The numbering of results also makes more sense.
+* New feature: The date parameters (`year`, `monthnum`, `w`, `day`, `hour`, `minute`, `second`, `m`) are now supported.
+* New feature: New filter hook `relevanssi_indexing_limit` filters the default number of posts to index (10). If you have issues with indexing timing out, you can try adjusting this to a smaller number like 5 or 1.
+* New feature: Support for Paid Membership Pro added.
+* New feature: WordPress SEO support, posts marked "noindex" in WordPress SEO are no longer indexed by Relevanssi by default.
+* Removed feature: qTranslate is no longer supported.
+* Major fix: Tax query searching had some bugs in it, manifesting especially into Polylang not limiting the languages correctly. Some problems with the test suites were found and fixed, and similar problems won't happen again.
+* Minor fix: Admin search only shows editing options to users with enough capabilities to use them.
+* Minor fix: Phrase searching now uses filterable post statuses instead of a hard-coded set of post statuses.
+* Minor fix: The plugin action links were missing on the Plugins page list, they're back now.
+* Minor fix: Search terms with slashes won't cause errors anymore.
+* Minor fix: Relevanssi admin pages have been examined for accessibility and form labels have been improved in many places.
+* Deprecated: `relevanssi_get_term_taxonomy()` function is deprecated and will be removed at some point in the future.
+
 = 4.2.0 =
 * New feature: The search form shortcode has a new parameter `dropdown` which can be used to add a category dropdown, like this: `[searchform dropdown="category"]`.
 * New feature: Relevanssi can now use the contents of the PDF files indexed with WP File Download.
@@ -145,90 +161,9 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: The Did you mean broke with search terms longer than 255 characters.
 * Minor fix: Phrases with numbers and one word like "team 17" didn't work, because numbers weren't counted as words.
 
-= 4.1.4 =
-* `EXISTS` and `NOT EXISTS` didn’t work for taxonomy terms in searches.
-* WPML post type handling has been improved. If post type allows fallback for default language, Relevanssi will support that.
-* Relevanssi now reminds you to set up automatic trimming for the logs. It’s a really good idea, otherwise the logs will become bloated, which will hurt search performance.
-* The Groups posts filter is only applied to public posts to avoid drafts being shown to people who shouldn’t see them.
-* The `posts_per_page` query variable didn’t work; it’s now added to the introduced query variables so that it works.
-* Relevanssi won’t log empty queries anymore.
-* The default tax query relation was switched from `OR` to `AND` to match the WP_Query default behaviour.
-* When used with WP 5.1, Relevanssi will now use `wp_insert_site` instead of the now-deprecated `wpmu_new_blog`.
-* Multisite blog creation is handled better in WP 5.1+.
-* Relevanssi now supports Restrict Content Pro permissions.
-
-= 4.1.3 =
-* Improvements to meta key sorting.
-* Relevanssi settings page won't let you exclude categories you have restricted the search to.
-* Members plugin compatibility has been improved: it's only used if the 'content permissions' feature has been enabled.
-* The excerpt settings page was a bit buggy.
-* Slimstat analytics is now added to the blocked shortcodes list.
-* New filter: `relevanssi_search_form` works exactly like `get_search_form`, but only applies to the Relevanssi shortcode search forms.
-* New JetPack taxonomies and post types have been added to the block list so they won't appear in Relevanssi settings.
-
-= 4.1.2 =
-* Choosing "CSS Style" for highlighting was not possible. That is now fixed.
-* Gutenberg reusable block indexing was fatally broken with the latest Gutenberg version. That has been updated.
-* Relevanssi now by default respects the WooCommerce "exclude from search" setting.
-* `post__not_in` still didn't work properly, it does now.
-* New filter: `relevanssi_comparison_order` can be used to define the sorting order when sorting the results by post type.
-* "Did you mean" process included a very slow query. It is now cached, leading in some cases to massive performance improvements (we're talking about several seconds here).
-* Highlights inside `code` and similar blocks are handled better now.
-
-= 4.1.1.2 =
-* Fixes the broken User searches page.
-
-= 4.1.1.1 =
-* Adding the missing Gutenberg compatibility file.
-
-= 4.1.1 =
-* Relevanssi can now index Gutenberg reusable blocks. (This functionality broke once already before release, so that can happen, since Gutenberg is still in very active development.)
-* The `post__in` and `post__not_in` parameters didn't work, and are now fixed. `post_parent__in` and `post_parent__not_in` are also improved.
-* You can use named meta queries for sorting posts. Meta query sorting is improved in other ways as well.
-* Log export didn't work properly.
-* Adding stopwords from the common word list has been fixed.
-* The `relevanssi_get_words_having` filter hook is now also applied to the free version Did you mean queries.
-* New filters: `relevanssi_1day` and `relevanssi_7days` can be used to adjust the number of days for log displays, so instead of 1, 7 and 30 days you can have anything you want.
-
-= 4.1.0.1 =
-* Actually working admin search.
-
-= 4.1 =
-* New feature: You can now export the search log as a CSV file.
-* New feature: Admin Search page allows you to perform searches in WP admin using Relevanssi.
-* New filter: `relevanssi_admin_search_capability` can be used to adjust who sees the admin search page.
-* New filter: `relevanssi_entities_inside_pre` and `relevanssi_entities_inside_code` adjust how HTML entities are handled inside `pre` and `code` tags.
-* Numeric meta values (`meta_value_num`) are now sorted as numbers and not strings.
-* Pinned posts have `$post->relevanssi_pinned` set to 1 for debugging purposes, but you can also use this for styling the posts in the search results templates.
-* The Did you mean feature has been toned down a bit, to make the suggestions slightly less weird in some cases.
-* Post parent parameters now accept 0 as a value, making it easier to search for children of any post or posts without a parent.
-* Polylang compatibility has been improved.
-* Phrases with apostrophes inside work better.
-* The `relevanssi_excerpt` filter hook got a second parameter that holds the post ID.
-* Custom field sorting actually works now.
-* WP Search Suggest compatibility added.
-
 == Upgrade notice ==
+= 4.3.0 =
+* Major bug fixes for taxonomy queries, new features and smaller improvements.
+
 = 4.2.0 =
 * New features, bug fixes, smaller improvements.
-
-= 4.1.4 =
-* Restrict Content Pro support, bug fixes and small improvements.
-
-= 4.1.3 =
-* Small improvements here and there.
-
-= 4.1.2 =
-* Better compatibility with Gutenberg, new features.
-
-= 4.1.1.2 =
-* Fixes the broken User searches page.
-
-= 4.1.1.1 =
-* Adding the missing Gutenberg compatibility file.
-
-= 4.1.1 =
-* Minor improvements here and there, particularly in custom field sorting.
-
-= 4.1 =
-* New features and plenty of small fixes.
