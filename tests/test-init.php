@@ -48,7 +48,9 @@ class InitTest extends WP_UnitTestCase {
 	 */
 	public static function wpTearDownAfterClass() {
 		require_once dirname( dirname( __FILE__ ) ) . '/lib/uninstall.php';
-		require_once dirname( dirname( __FILE__ ) ) . '/premium/uninstall.php';
+		if ( RELEVANSSI_PREMIUM ) {
+			require_once dirname( dirname( __FILE__ ) ) . '/premium/uninstall.php';
+		}
 
 		if ( function_exists( 'relevanssi_uninstall' ) ) {
 			relevanssi_uninstall();

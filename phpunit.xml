@@ -6,11 +6,11 @@
 	convertNoticesToExceptions="true"
 	convertWarningsToExceptions="true"
 	>
-<php>
-         <ini name="display_errors" value="true"/>
+	<php>
+    	<ini name="display_errors" value="true"/>
     </php>
 	<testsuites>
-		<testsuite>
+		<testsuite name="relevanssi">
 			<directory prefix="test-" suffix=".php">./tests/</directory>
 		</testsuite>
 	</testsuites>
