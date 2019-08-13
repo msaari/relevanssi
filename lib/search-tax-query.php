@@ -318,7 +318,7 @@ function relevanssi_get_term_in( $terms_parameter, $taxonomy, $field_name ) {
 	}
 	foreach ( $terms_parameter as $name ) {
 		$term = get_term_by( $field_name, $name, $taxonomy );
-		if ( ! $term && is_numeric( $name ) ) {
+		if ( ! $term && ctype_digit( strval( $name ) ) ) {
 			$numeric_terms[] = $name;
 		} else {
 			if ( isset( $term->term_id ) && in_array( $field_name, array( 'slug', 'name' ), true ) ) {
