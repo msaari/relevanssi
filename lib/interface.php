@@ -1002,6 +1002,9 @@ function relevanssi_add_admin_scripts( $hook ) {
 	if ( ! RELEVANSSI_PREMIUM ) {
 		wp_localize_script( 'relevanssi_admin_js', 'nonce', $nonce );
 	}
+
+	$indexing_limit = apply_filters( 'relevanssi_indexing_limit', 10 );
+	wp_localize_script( 'relevanssi_admin_js', 'relevanssi_params', array( 'indexing_limit' => $indexing_limit ) );
 }
 
 /**
