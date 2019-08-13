@@ -210,15 +210,17 @@ function relevanssi_admin_search() {
  */
 function relevanssi_admin_search_format_posts( $posts, $total, $offset, $query ) {
 	$result = '<h3>' . __( 'Results', 'relevanssi' ) . '</h3>';
+	$start  = $offset + 1;
+	$end    = $offset + count( $posts );
 	// Translators: %1$d is the total number of posts found, %2$d is the current search result count, %3$d is the offset.
-	$result .= '<p>' . sprintf( __( 'Found a total of %1$d posts, showing %2$d posts from offset %3$s.', 'relevanssi' ), $total, count( $posts ), '<span id="offset">' . $offset . '</span>' ) . '</p>';
+	$result .= '<p>' . sprintf( __( 'Found a total of %1$d posts, showing posts %2$d–%3$s.', 'relevanssi' ), $total, $start, '<span id="offset">' . $end . '</span>' ) . '</p>';
 	if ( $offset > 0 ) {
 		$result .= sprintf( '<button type="button" id="prev_page">%s</button>', __( 'Previous page', 'relevanssi' ) );
 	}
 	if ( count( $posts ) + $offset < $total ) {
 		$result .= sprintf( '<button type="button" id="next_page">%s</button>', __( 'Next page', 'relevanssi' ) );
 	}
-	$result .= '<ol>';
+	$result .= '<ol start="' . $start . '">';
 
 	$score_label = __( 'Score:', 'relevanssi' );
 
@@ -325,6 +327,9 @@ function relevanssi_admin_search_debugging_info( $query ) {
 	if ( ! empty( $query->tax_query ) ) {
 		$result .= '<li>tax_query:<ul style="list-style: disc; margin-left: 1.5em">';
 		foreach ( $query->tax_query as $tax_query ) {
+			if ( ! is_array( $tax_query ) ) {
+				continue;
+			}
 			foreach ( $tax_query as $key => $value ) {
 				if ( is_array( $value ) ) {
 					$value = relevanssi_flatten_array( $value );
