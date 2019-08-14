@@ -5,7 +5,7 @@ Tags: search, relevance, better search
 Requires at least: 4.8.3
 Tested up to: 5.2.2
 Requires PHP: 5.6
-Stable tag: 4.3.1
+Stable tag: 4.3.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -129,6 +129,9 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.3.1.1 =
+* Remove notice about undefined index.
+
 = 4.3.1 =
 * Adding a missing file.
 
@@ -165,6 +168,9 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: Phrases with numbers and one word like "team 17" didn't work, because numbers weren't counted as words.
 
 == Upgrade notice ==
+= 4.3.1.1 =
+* Remove an error notice.
+
 = 4.3.1 =
 * Fixes the broken 4.3.0 release.
 
