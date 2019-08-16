@@ -139,15 +139,7 @@ function relevanssi_search_form( $atts ) {
 				$additional_fields[] = "<input type='hidden' name='$key' value='$value' />";
 			}
 		}
-		$search  = array(
-			'<input type="submit"',
-			'<button type="submit"',
-		);
-		$replace = array(
-			implode( "\n", $additional_fields ) . '<input type="submit"',
-			implode( "\n", $additional_fields ) . '<button type="submit"',
-		);
-		$form    = str_replace( $search, $replace, $form );
+		$form = str_replace( '</form>', implode( "\n", $additional_fields ) . '</form>', $form );
 	}
 	/**
 	 * Filters the Relevanssi shortcode search form before it's used.
