@@ -24,7 +24,7 @@ add_filter( 'relevanssi_do_not_index', 'relevanssi_yoast_noindex', 10, 2 );
  */
 function relevanssi_yoast_noindex( $do_not_index, $post_id ) {
 	$noindex = get_post_meta( $post_id, '_yoast_wpseo_meta-robots-noindex', true );
-	if ( $noindex ) {
+	if ( '1' === $noindex ) {
 		$do_not_index = true;
 	}
 	return $do_not_index;
