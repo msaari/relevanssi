@@ -922,13 +922,29 @@ function relevanssi_get_post_type( $post_id ) {
  * @param string  $separator The separator between items, default ', '.
  * @param string  $after     What is printed after the tags, default ''.
  * @param boolean $echo      If true, echo, otherwise return the result. Default true.
+ * @param int     $post_id   The post ID. Default current post ID (in the Loop).
  */
-function relevanssi_the_tags( $before = null, $separator = ', ', $after = '', $echo = true ) {
-	$tags = relevanssi_highlight_terms( get_the_tag_list( $before, $separator, $after ), get_search_query() );
+function relevanssi_the_tags( $before = null, $separator = ', ', $after = '', $echo = true, $post_id = null ) {
+	$tag_list = get_the_tag_list( $before, $separator, $after, $post_id );
+	$found    = preg_match_all( '~<a href=".*?" rel="tag">(.*?)</a>~', $tag_list, $matches );
+	if ( $found ) {
+		$originals   = $matches[0];
+		$tag_names   = $matches[1];
+		$highlighted = array();
+
+		$count = count( $matches[0] );
+		for ( $i = 0; $i < $count; $i++ ) {
+			$highlighted_tag_name = relevanssi_highlight_terms( $tag_names[ $i ], get_search_query() );
+			$highlighted[ $i ]    = str_replace( '>' . $tag_names[ $i ] . '<', '>' . $highlighted_tag_name . '<', $originals[ $i ] );
+		}
+
+		$tag_list = str_replace( $originals, $highlighted, $tag_list );
+	}
+
 	if ( $echo ) {
-		echo $tags; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo $tag_list; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	} else {
-		return $tags;
+		return $tag_list;
 	}
 }
 
@@ -941,9 +957,10 @@ function relevanssi_the_tags( $before = null, $separator = ', ', $after = '', $e
  * @param string $before    What is printed before the tags, default null.
  * @param string $separator The separator between items, default ', '.
  * @param string $after     What is printed after the tags, default ''.
+ * @param int    $post_id   The post ID. Default current post ID (in the Loop).
  */
-function relevanssi_get_the_tags( $before = null, $separator = ', ', $after = '' ) {
-	return relevanssi_the_tags( $before, $separator, $after, false );
+function relevanssi_get_the_tags( $before = null, $separator = ', ', $after = '', $post_id = null ) {
+	return relevanssi_the_tags( $before, $separator, $after, false, $post_id );
 }
 
 /**
