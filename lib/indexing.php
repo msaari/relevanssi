@@ -8,6 +8,8 @@
  * @see     https://www.relevanssi.com/
  */
 
+add_filter( 'relevanssi_index_get_post_type', 'relevanssi_index_get_post_type', 1, 2 );
+
 /**
  * Returns the total number of posts to index.
  *
@@ -952,10 +954,16 @@ function relevanssi_index_doc( $index_post, $remove_first = false, $custom_field
 		}
 	}
 
-	$type = 'post';
-	if ( 'attachment' === $post->post_type ) {
-		$type = 'attachment';
-	}
+	/**
+	 * Sets the indexed post 'type' column in the index.
+	 *
+	 * Default value is 'post', but other common values include 'attachment',
+	 * 'user' and taxonomy name.
+	 *
+	 * @param string Type value.
+	 * @param object The post object for the current post.
+	 */
+	$type = apply_filters( 'relevanssi_index_get_post_type', 'post', $post );
 
 	/**
 	 * Filters the indexing data before it is converted to INSERT queries.
@@ -1058,9 +1066,6 @@ function relevanssi_index_doc( $index_post, $remove_first = false, $custom_field
  * @return array Updated insert query data array.
  */
 function relevanssi_index_taxonomy_terms( $post = null, $taxonomy = '', $insert_data ) {
-	global $wpdb, $relevanssi_variables;
-	$relevanssi_table = $relevanssi_variables['relevanssi_table'];
-
 	$n = 0;
 
 	if ( null === $post || empty( $taxonomy ) ) {
@@ -1069,41 +1074,46 @@ function relevanssi_index_taxonomy_terms( $post = null, $taxonomy = '', $insert_
 
 	$min_word_length     = get_option( 'relevanssi_min_word_length', 3 );
 	$post_taxonomy_terms = get_the_terms( $post->ID, $taxonomy );
-	if ( false !== $post_taxonomy_terms ) {
-		$tag_string = '';
-		foreach ( $post_taxonomy_terms as $post_tag ) {
-			if ( is_object( $post_tag ) ) {
-				$tag_string .= $post_tag->name . ' ';
-			}
-		}
-		$tag_string = apply_filters( 'relevanssi_tag_before_tokenize', trim( $tag_string ) );
-		$tag_tokens = relevanssi_tokenize( $tag_string, true, $min_word_length );
-		if ( count( $tag_tokens ) > 0 ) {
-			foreach ( $tag_tokens as $token => $count ) {
-				$n++;
 
-				if ( 'post_tag' === $taxonomy ) {
-					$insert_data[ $token ]['tag'] = $count;
-				} elseif ( 'category' === $taxonomy ) {
-					$insert_data[ $token ]['category'] = $count;
-				} else {
-					if ( ! isset( $insert_data[ $token ]['taxonomy'] ) ) {
-						$insert_data[ $token ]['taxonomy'] = 0;
-					}
-					$insert_data[ $token ]['taxonomy'] += $count;
-				}
-				if ( isset( $insert_data[ $token ]['taxonomy_detail'] ) ) {
-					$tax_detail = json_decode( $insert_data[ $token ]['taxonomy_detail'], true );
-				} else {
-					$tax_detail = array();
-				}
-				if ( isset( $tax_detail[ $taxonomy ] ) ) {
-					$tax_detail[ $taxonomy ] += $count;
-				} else {
-					$tax_detail[ $taxonomy ] = $count;
-				}
-				$insert_data[ $token ]['taxonomy_detail'] = wp_json_encode( $tax_detail );
+	if ( false === $post_taxonomy_terms ) {
+		return $insert_data;
+	}
+
+	$tag_string = '';
+	foreach ( $post_taxonomy_terms as $post_tag ) {
+		if ( is_object( $post_tag ) ) {
+			$tag_string .= $post_tag->name . ' ';
+		}
+	}
+	$tag_string = apply_filters( 'relevanssi_tag_before_tokenize', trim( $tag_string ) );
+	$tag_tokens = relevanssi_tokenize( $tag_string, true, $min_word_length );
+	if ( count( $tag_tokens ) > 0 ) {
+		foreach ( $tag_tokens as $token => $count ) {
+			$n++;
+
+			switch ( $taxonomy ) {
+				case 'post_tag':
+					$type = 'tag';
+					break;
+				case 'category':
+					$type = 'category';
+					break;
+				default:
+					$type = 'taxonomy';
 			}
+
+			$insert_data[ $token ][ $type ] = isset( $insert_data[ $token ][ $type ] )
+				? $insert_data[ $token ][ $type ] + $count : $count;
+
+			$tax_detail = array();
+			if ( isset( $insert_data[ $token ]['taxonomy_detail'] ) ) {
+				$tax_detail = json_decode( $insert_data[ $token ]['taxonomy_detail'], true );
+			}
+
+			$tax_detail[ $taxonomy ] = isset( $tax_detail[ $taxonomy ] )
+				? $tax_detail[ $taxonomy ] + $count : $count;
+
+			$insert_data[ $token ]['taxonomy_detail'] = wp_json_encode( $tax_detail );
 		}
 	}
 	return $insert_data;
@@ -1112,39 +1122,66 @@ function relevanssi_index_taxonomy_terms( $post = null, $taxonomy = '', $insert_
 /**
  * Updates child posts when a parent post changes status.
  *
- * Called from 'transition_post_status' action hook when a post is edited, published,
- * or deleted. Will do the appropriate indexing action on the child posts and
- * attachments.
- *
- * @global object $wpdb The WP database interface.
+ * Called from 'transition_post_status' action hook when a post is edited,
+ * published, or deleted. Will do the appropriate indexing action on the child
+ * posts and attachments.
  *
  * @author renaissancehack
  *
  * @param string $new_status The new status.
  * @param string $old_status The old status.
  * @param object $post       The post object.
+ *
+ * @return null|array Null in problem cases, an array of 'removed' and
+ * 'indexed' values that show how many posts were indexed and removed.
  */
 function relevanssi_update_child_posts( $new_status, $old_status, $post ) {
-	global $wpdb;
-
 	// Safety check, for WordPress Editorial Calendar incompatibility.
 	if ( ! isset( $post ) || ! isset( $post->ID ) ) {
 		return;
 	}
 
 	/** Documented in lib/indexing.php. */
-	$index_statuses = apply_filters( 'relevanssi_valid_status', array( 'publish', 'private', 'draft', 'pending', 'future' ) );
-	if ( ( $new_status === $old_status ) || ( in_array( $new_status, $index_statuses, true ) && in_array( $old_status, $index_statuses, true ) ) || ( in_array( $post->post_type, array( 'attachment', 'revision' ), true ) ) ) {
-		/**
-		 * Either:
-		 *
-		 * 1. New status equals old status.
-		 * 2. Both new and old status are in the list of stati to index.
-		 * 3. The post is an attachment or a revision.
-		 *
-		 * In any of these cases, do nothing.
-		 */
-		return;
+	$index_statuses = apply_filters(
+		'relevanssi_valid_status',
+		array( 'publish', 'private', 'draft', 'pending', 'future' )
+	);
+	/**
+	 * Filters the attachment and revision post types.
+	 *
+	 * If you want attachment indexing to cover other post types than just
+	 * attachment, you need to include the new post type in the array with
+	 * this filter.
+	 *
+	 * @param array Array of post types, default 'attachment' and 'revision'.
+	 */
+	$attachment_revision_types = apply_filters(
+		'relevanssi_index_attachment_revision_types',
+		array( 'attachment', 'revision' )
+	);
+
+	$did_nothing = array(
+		'removed' => 0,
+		'indexed' => 0,
+	);
+
+	/**
+	 * Either:
+	 *
+	 * 1. New status equals old status.
+	 * 2. Both new and old status are in the list of stati to index.
+	 * 3. The post is an attachment or a revision.
+	 *
+	 * In any of these cases, do nothing.
+	 */
+	if ( $new_status === $old_status ) {
+		return $did_nothing;
+	}
+	if ( in_array( $new_status, $index_statuses, true ) && in_array( $old_status, $index_statuses, true ) ) {
+		return $did_nothing;
+	}
+	if ( in_array( $post->post_type, $attachment_revision_types, true ) ) {
+		return $did_nothing;
 	}
 
 	$post_types  = get_option( 'relevanssi_index_post_types' );
@@ -1152,18 +1189,27 @@ function relevanssi_update_child_posts( $new_status, $old_status, $post ) {
 		'post_parent' => $post->ID,
 		'post_type'   => $post_types,
 	);
+	$removed     = 0;
+	$indexed     = 0;
 	$child_posts = get_children( $args );
+
 	if ( ! empty( $child_posts ) ) {
 		if ( ! in_array( $new_status, $index_statuses, true ) ) {
 			foreach ( $child_posts as $post ) {
 				relevanssi_remove_doc( $post->ID );
+				$removed++;
 			}
 		} else {
 			foreach ( $child_posts as $post ) {
 				relevanssi_publish( $post->ID );
+				$indexed++;
 			}
 		}
 	}
+	return array(
+		'removed' => $removed,
+		'indexed' => $indexed,
+	);
 }
 
 /**
@@ -1452,4 +1498,19 @@ function relevanssi_remove_doc( $post_id, $keep_internal_links = false ) {
 			update_option( 'relevanssi_doc_count', $doc_count - $rows_updated );
 		}
 	}
+}
+
+/**
+ * Filter that allows you to set the index type based on the post type.
+ *
+ * @param string $type The index 'type' column value, default 'post'.
+ * @param object $post The post object containing the post being indexed.
+ *
+ * @return string The index 'type' column value, default 'post'.
+ */
+function relevanssi_index_get_post_type( $type, $post ) {
+	if ( 'attachment' === $post->post_type ) {
+		$type = 'attachment';
+	}
+	return $type;
 }
