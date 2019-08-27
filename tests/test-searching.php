@@ -1958,34 +1958,36 @@ class SearchingTest extends WP_UnitTestCase {
 			'date_query is not interpreted correctly.'
 		);
 
-		$args = array(
-			's'        => 'content',
-			'operator' => 'or',
-		);
+		if ( RELEVANSSI_PREMIUM ) {
+			$args = array(
+				's'        => 'content',
+				'operator' => 'or',
+			);
 
-		$query->parse_query( $args );
-		$search_params = relevanssi_compile_search_args( $query, $args['s'] );
+			$query->parse_query( $args );
+			$search_params = relevanssi_compile_search_args( $query, $args['s'] );
 
-		$this->assertEquals(
-			'OR',
-			$search_params['operator'],
-			'operator is not interpreted correctly.'
-		);
+			$this->assertEquals(
+				'OR',
+				$search_params['operator'],
+				'operator is not interpreted correctly.'
+			);
 
-		update_option( 'relevanssi_implicit_operator', 'AND' );
-		$args = array(
-			's'        => 'content',
-			'operator' => 'smooth',
-		);
+			update_option( 'relevanssi_implicit_operator', 'AND' );
+			$args = array(
+				's'        => 'content',
+				'operator' => 'smooth',
+			);
 
-		$query->parse_query( $args );
-		$search_params = relevanssi_compile_search_args( $query, $args['s'] );
+			$query->parse_query( $args );
+			$search_params = relevanssi_compile_search_args( $query, $args['s'] );
 
-		$this->assertEquals(
-			'AND',
-			$search_params['operator'],
-			'operator is not interpreted correctly.'
-		);
+			$this->assertEquals(
+				'AND',
+				$search_params['operator'],
+				'operator is not interpreted correctly.'
+			);
+		}
 
 		$args = array(
 			's'                       => 'content',

@@ -255,23 +255,14 @@ class IndexingTest extends WP_UnitTestCase {
 		wp_set_post_terms( $post_id, $cat_ids, 'category', true );
 		wp_set_post_terms( $post_id, array( 'foo', 'bar', 'baz' ), 'post_tag', true );
 		wp_set_post_terms( $post_id, array( 'scifi', 'fantasy', 'detective' ), 'genre', true );
-
 		$tag_array['tag'] = 1;
-		if ( RELEVANSSI_PREMIUM ) {
-			$tag_array['taxonomy_detail'] = '{"post_tag":1}';
-		}
+		$tag_array['taxonomy_detail'] = '{"post_tag":1}';
 		$cat_array['category'] = 1;
-		if ( RELEVANSSI_PREMIUM ) {
-			$cat_array['taxonomy_detail'] = '{"category":1}';
-		}
+		$cat_array['taxonomy_detail'] = '{"category":1}';
 		$genre_array_pre['taxonomy'] = 1;
-		if ( RELEVANSSI_PREMIUM ) {
-			$genre_array_pre['taxonomy_detail'] = '{"genre":1}';
-		}
+		$genre_array_pre['taxonomy_detail'] = '{"genre":1}';
 		$genre_array_post['taxonomy'] = 2;
-		if ( RELEVANSSI_PREMIUM ) {
-			$genre_array_post['taxonomy_detail'] = '{"genre":2}';
-		}
+		$genre_array_post['taxonomy_detail'] = '{"genre":2}';
 
 		$this->assertEquals(
 			array(
