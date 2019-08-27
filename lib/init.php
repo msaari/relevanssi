@@ -154,6 +154,45 @@ function relevanssi_init() {
 	if ( defined( 'WPSEO_FILE' ) ) {
 		require_once 'compatibility/yoast-seo.php';
 	}
+
+	if ( function_exists( 'seopress_get_toggle_titles_option' ) && '1' === seopress_get_toggle_titles_option() ) {
+		require_once 'compatibility/seopress.php';
+	}
+
+	if ( function_exists( 'members_content_permissions_enabled' ) ) {
+		require_once 'compatibility/members.php';
+	}
+
+	if ( defined( 'GROUPS_CORE_VERSION' ) ) {
+		require_once 'compatibility/groups.php';
+	}
+
+	if ( class_exists( 'MeprUpdateCtrl', false ) && MeprUpdateCtrl::is_activated() ) {
+		require_once 'compatibility/memberpress.php';
+	}
+
+	if ( defined( 'SIMPLE_WP_MEMBERSHIP_VER' ) ) {
+		require_once 'compatibility/simplemembership.php';
+	}
+
+	if ( function_exists( 'wp_jv_prg_user_can_see_a_post' ) ) {
+		require_once 'compatibility/wpjvpostreadinggroups.php';
+	}
+
+	if ( function_exists( 'rcp_user_can_access' ) ) {
+		require_once 'compatibility/restrictcontentpro.php';
+	}
+
+	// phpcs:disable WordPress.NamingConventions.ValidVariableName
+	global $userAccessManager;
+	if ( isset( $userAccessManager ) ) {
+		require_once 'compatibility/useraccessmanager.php';
+	}
+	// phpcs:enable WordPress.NamingConventions.ValidVariableName
+
+	if ( function_exists( 'pmpro_has_membership_access' ) ) {
+		require_once 'compatibility/paidmembershippro.php';
+	}
 }
 
 /**

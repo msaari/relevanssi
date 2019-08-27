@@ -175,62 +175,24 @@ function relevanssi_default_post_ok( $post_ok, $post_id ) {
 				$post_ok = true;
 			}
 		}
-		if ( function_exists( 'members_content_permissions_enabled' ) && function_exists( 'members_can_current_user_view_post' ) ) {
-			// Members. Only use if 'content permissions' feature is enabled.
-			if ( members_content_permissions_enabled() ) {
-				$post_ok = members_can_current_user_view_post( $post_id );
-			}
-		}
-	}
-	if ( defined( 'GROUPS_CORE_VERSION' ) && 'publish' === $status ) {
-		// Groups. Only apply to published posts, don't apply to drafts.
-		$current_user = wp_get_current_user();
-		$post_ok      = Groups_Post_Access::user_can_read_post( $post_id, $current_user->ID );
-	}
-	if ( class_exists( 'MeprUpdateCtrl', false ) && MeprUpdateCtrl::is_activated() ) { // False, because class_exists() can be really slow sometimes otherwise.
-		// Memberpress.
-		$post = get_post( $post_id );
-		if ( MeprRule::is_locked( $post ) ) {
-			$post_ok = false;
-		}
-	}
-	if ( defined( 'SIMPLE_WP_MEMBERSHIP_VER' ) ) {
-		// Simple Membership.
-		$access_ctrl = SwpmAccessControl::get_instance();
-		$post        = get_post( $post_id );
-		$post_ok     = $access_ctrl->can_i_read_post( $post );
-	}
-	if ( function_exists( 'wp_jv_prg_user_can_see_a_post' ) ) {
-		// WP JV Post Reading Groups.
-		$post_ok = wp_jv_prg_user_can_see_a_post( get_current_user_id(), $post_id );
-	}
-	if ( function_exists( 'rcp_user_can_access' ) ) {
-		// Restrict Content Pro.
-		$post_ok = rcp_user_can_access( get_current_user_id(), $post_id );
-	}
-	// User Access Manager.
-	global $userAccessManager; // phpcs:ignore WordPress.NamingConventions.ValidVariableName
-	if ( isset( $userAccessManager ) ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName
-		$type    = relevanssi_get_post_type( $post_id );
-		$post_ok = $userAccessManager->getAccessHandler()->checkObjectAccess( $type, $post_id ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName
-	}
-	if ( function_exists( 'pmpro_has_membership_access' ) ) {
-		// Paid Membership Pro.
-		$current_user = wp_get_current_user();
-		$post_ok      = pmpro_has_membership_access( $post_id, $current_user->ID );
 	}
 
-	/**
-	 * Filters statuses allowed in admin searches.
-	 *
-	 * By default, admin searches may show posts that have 'draft', 'pending' and
-	 * 'future' status (in addition to 'publish' and 'private'). If you use custom
-	 * statuses and want them included in the admin search, you can add the statuses
-	 * using this filter.
-	 *
-	 * @param array $statuses Array of statuses to accept.
-	 */
-	if ( in_array( $status, apply_filters( 'relevanssi_valid_admin_status', array( 'draft', 'pending', 'future' ) ), true ) && is_admin() ) {
+	if ( in_array(
+		$status,
+		/**
+		 * Filters statuses allowed in admin searches.
+		 *
+		 * By default, admin searches may show posts that have 'draft',
+		 * 'pending' and 'future' status (in addition to 'publish' and
+		 * 'private'). If you use custom statuses and want them included in the
+		 * admin search, you can add the statuses using this filter.
+		 *
+		 * @param array $statuses Array of statuses to accept.
+		 */
+		apply_filters( 'relevanssi_valid_admin_status', array( 'draft', 'pending', 'future' ) ),
+		true
+	)
+	&& is_admin() ) {
 		// Only show drafts, pending and future posts in admin search.
 		$post_ok = true;
 	}
