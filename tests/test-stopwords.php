@@ -42,7 +42,7 @@ class StopwordTest extends WP_UnitTestCase {
 		$relevanssi_table = $relevanssi_variables['relevanssi_table'];
 		// phpcs:disable WordPress.WP.PreparedSQL
 
-		$word_content_count = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(DISTINCT(doc)) FROM $relevanssi_table WHERE term = %s", 'content' ) );
+		$word_content_count = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(DISTINCT(doc)) FROM $relevanssi_table WHERE term = %s", 'content' ) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		// Every posts should have the word 'content'.
 		$this->assertEquals( self::$post_count, $word_content_count );
 
@@ -50,7 +50,7 @@ class StopwordTest extends WP_UnitTestCase {
 		// Adding the stopword should be successful.
 		$this->assertTrue( $success );
 
-		$word_content_count = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(DISTINCT(doc)) FROM $relevanssi_table WHERE term = %s", 'content' ) );
+		$word_content_count = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(DISTINCT(doc)) FROM $relevanssi_table WHERE term = %s", 'content' ) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		// No posts should have the word 'content'.
 		$this->assertEquals( 0, $word_content_count );
 

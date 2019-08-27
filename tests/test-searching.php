@@ -101,7 +101,8 @@ class SearchingTest extends WP_UnitTestCase {
 		update_option( 'relevanssi_log_queries', 'on' );
 		update_option( 'relevanssi_index_taxonomies_list', array( 'post_tag', 'category' ) );
 		update_option( 'relevanssi_show_matches', 'on' );
-		update_option( 'relevanssi_hilite_title', 'on' );
+		update_option( 'relevanssi_hilite_title', 'off' );
+		update_option( 'relevanssi_excerpts', false );
 		update_option(
 			'relevanssi_post_type_weights',
 			array(
@@ -765,6 +766,29 @@ class SearchingTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Tests the date parameters.
+	 *
+	 * The test posts are generated with dates starting from current time and each
+	 * post is dated one month earlier than the last.
+	 */
+	public function test_date_parameter_search() {
+		$args = array(
+			's'           => 'content',
+			'post_type'   => 'post',
+			'numberposts' => -1,
+			'year'        => date( 'Y' ),
+			'w'           => date( 'W' ),
+		);
+
+		$query = self::results_from_args( $args )['query'];
+		$this->assertEquals(
+			1,
+			$query->found_posts,
+			'Searching with date parameters for posts published this week should find one post.'
+		);
+	}
+
+	/**
 	 * Tests the author parameter.
 	 *
 	 * The test posts are generated with one post having self::$other_author_id as
@@ -1156,6 +1180,22 @@ class SearchingTest extends WP_UnitTestCase {
 			'There should not be posts from the restricted category.'
 		);
 
+		global $relevanssi_test_admin;
+		$relevanssi_test_admin = true;
+
+		$args = array(
+			's'              => 'content',
+			'posts_per_page' => -1,
+		);
+
+		$posts = self::results_from_args( $args )['posts'];
+		$this->assertFalse(
+			self::no_posts_have_category( $posts, $category->term_id ),
+			'There should be posts from the restricted category.'
+		);
+
+		$relevanssi_test_admin = false;
+
 		update_option( 'relevanssi_excat', '' );
 	}
 
@@ -1241,6 +1281,740 @@ class SearchingTest extends WP_UnitTestCase {
 		);
 
 		update_option( 'relevanssi_extag', '' );
+	}
+
+	/**
+	 * Tests EXISTS meta_query.
+	 *
+	 * @group meta
+	 */
+	public function test_exists_meta_query() {
+		$args = array(
+			's'              => 'content',
+			'posts_per_page' => -1,
+			'meta_query'     => array(
+				array(
+					'key'     => '_invisible',
+					'compare' => 'EXISTS',
+				),
+			),
+		);
+
+		$posts = self::results_from_args( $args )['posts'];
+		$this->assertEquals( count( $posts ), 5, 'There should be five posts found with the meta query.' );
+	}
+
+	/**
+	 * Checks that the search parameters are interpreted correctly.
+	 */
+	public function test_compile_search_args() {
+		$args = array(
+			's'    => 'content',
+			'cats' => '1,2,3',
+		);
+
+		$query = new WP_Query();
+		$query->parse_query( $args );
+		$search_params = relevanssi_compile_search_args( $query, $args['s'] );
+
+		$this->assertEquals(
+			array(
+				'taxonomy' => 'category',
+				'field'    => 'id',
+				'terms'    => array( 1, 2, 3 ),
+			),
+			$search_params['tax_query'][0],
+			'cats is not interpreted correctly.'
+		);
+
+		update_option( 'relevanssi_excat', '4' );
+		$args = array(
+			's' => 'content',
+		);
+
+		$query->parse_query( $args );
+		$search_params = relevanssi_compile_search_args( $query, $args['s'] );
+
+		$this->assertEquals(
+			array(
+				'taxonomy' => 'category',
+				'field'    => 'id',
+				'terms'    => '4',
+				'operator' => 'NOT IN',
+			),
+			$search_params['tax_query'][0],
+			'relevanssi_excat is not interpreted correctly.'
+		);
+		update_option( 'relevanssi_excat', '' );
+
+		$args = array(
+			's'             => 'content',
+			'category_name' => 'Felix',
+		);
+
+		$query->parse_query( $args );
+		$search_params = relevanssi_compile_search_args( $query, $args['s'] );
+
+		$this->assertEquals(
+			array(
+				'taxonomy'         => 'category',
+				'field'            => 'slug',
+				'terms'            => array( 'Felix' ),
+				'operator'         => 'IN',
+				'include_children' => true,
+			),
+			$search_params['tax_query'][0],
+			'category_name is not interpreted correctly.'
+		);
+
+		$args = array(
+			's'            => 'content',
+			'category__in' => array( 1, 2, 3 ),
+		);
+
+		$query->parse_query( $args );
+		$search_params = relevanssi_compile_search_args( $query, $args['s'] );
+
+		$this->assertEquals(
+			array(
+				'taxonomy'         => 'category',
+				'field'            => 'term_id',
+				'terms'            => array( 1, 2, 3 ),
+				'operator'         => 'IN',
+				'include_children' => false,
+			),
+			$search_params['tax_query'][0],
+			'category__in is not interpreted correctly.'
+		);
+
+		$args = array(
+			's'                => 'content',
+			'category__not_in' => array( 1, 2, 3 ),
+		);
+
+		$query->parse_query( $args );
+		$search_params = relevanssi_compile_search_args( $query, $args['s'] );
+
+		$this->assertEquals(
+			array(
+				'taxonomy'         => 'category',
+				'field'            => 'term_id',
+				'terms'            => array( 1, 2, 3 ),
+				'operator'         => 'NOT IN',
+				'include_children' => false,
+			),
+			$search_params['tax_query'][0],
+			'category__not_in is not interpreted correctly.'
+		);
+
+		$args = array(
+			's'             => 'content',
+			'category__and' => array( 1, 2, 3 ),
+		);
+
+		$query->parse_query( $args );
+		$search_params = relevanssi_compile_search_args( $query, $args['s'] );
+
+		$this->assertEquals(
+			array(
+				'taxonomy'         => 'category',
+				'field'            => 'term_id',
+				'terms'            => array( 1, 2, 3 ),
+				'operator'         => 'AND',
+				'include_children' => false,
+			),
+			$search_params['tax_query'][0],
+			'category__and is not interpreted correctly.'
+		);
+
+		$args = array(
+			's'    => 'content',
+			'tags' => '1,2',
+		);
+
+		$query->parse_query( $args );
+		$search_params = relevanssi_compile_search_args( $query, $args['s'] );
+
+		$this->assertEquals(
+			array(
+				'taxonomy' => 'post_tag',
+				'field'    => 'id',
+				'terms'    => array( 1, 2 ),
+				'operator' => 'OR',
+			),
+			$search_params['tax_query'][0],
+			'tags is not interpreted correctly.'
+		);
+
+		$args = array(
+			's'    => 'content',
+			'tags' => '1+2',
+		);
+
+		$query->parse_query( $args );
+		$search_params = relevanssi_compile_search_args( $query, $args['s'] );
+
+		$this->assertEquals(
+			array(
+				'taxonomy' => 'post_tag',
+				'field'    => 'id',
+				'terms'    => array( 1, 2 ),
+				'operator' => 'AND',
+			),
+			$search_params['tax_query'][0],
+			'tags is not interpreted correctly.'
+		);
+
+		update_option( 'relevanssi_extag', '1' );
+		$args = array(
+			's' => 'content',
+		);
+
+		$query->parse_query( $args );
+		$search_params = relevanssi_compile_search_args( $query, $args['s'] );
+
+		$this->assertEquals(
+			array(
+				'taxonomy' => 'post_tag',
+				'field'    => 'id',
+				'terms'    => '1',
+				'operator' => 'NOT IN',
+			),
+			$search_params['tax_query'][0],
+			'relevanssi_extag is not interpreted correctly.'
+		);
+		update_option( 'relevanssi_extag', '' );
+
+		$args = array(
+			's'      => 'content',
+			'tag_id' => 42,
+		);
+
+		$query->parse_query( $args );
+		$search_params = relevanssi_compile_search_args( $query, $args['s'] );
+
+		$this->assertEquals(
+			array(
+				'taxonomy'         => 'post_tag',
+				'field'            => 'term_id',
+				'terms'            => array( 42 ),
+				'include_children' => true,
+				'operator'         => 'IN',
+			),
+			$search_params['tax_query'][0],
+			'tag_id is not interpreted correctly.'
+		);
+
+		$args = array(
+			's'       => 'content',
+			'tag__in' => 42,
+		);
+
+		$query->parse_query( $args );
+		$search_params = relevanssi_compile_search_args( $query, $args['s'] );
+
+		$this->assertEquals(
+			array(
+				'taxonomy'         => 'post_tag',
+				'field'            => 'term_id',
+				'terms'            => array( 42 ),
+				'include_children' => true,
+				'operator'         => 'IN',
+			),
+			$search_params['tax_query'][0],
+			'tag__in is not interpreted correctly.'
+		);
+
+		$args = array(
+			's'           => 'content',
+			'tag__not_in' => 42,
+		);
+
+		$query->parse_query( $args );
+		$search_params = relevanssi_compile_search_args( $query, $args['s'] );
+
+		$this->assertEquals(
+			array(
+				'taxonomy'         => 'post_tag',
+				'field'            => 'term_id',
+				'terms'            => array( 42 ),
+				'include_children' => true,
+				'operator'         => 'NOT IN',
+			),
+			$search_params['tax_query'][0],
+			'tag__not_in is not interpreted correctly.'
+		);
+
+		$args = array(
+			's'        => 'content',
+			'tag__and' => array( 1, 2, 3 ),
+		);
+
+		$query->parse_query( $args );
+		$search_params = relevanssi_compile_search_args( $query, $args['s'] );
+
+		$this->assertEquals(
+			array(
+				'taxonomy'         => 'post_tag',
+				'field'            => 'term_id',
+				'terms'            => array( 1, 2, 3 ),
+				'include_children' => true,
+				'operator'         => 'AND',
+			),
+			$search_params['tax_query'][0],
+			'tag__and is not interpreted correctly.'
+		);
+
+		$args = array(
+			's'            => 'content',
+			'tag_slug__in' => 'chickpea',
+		);
+
+		$query->parse_query( $args );
+		$search_params = relevanssi_compile_search_args( $query, $args['s'] );
+
+		$this->assertEquals(
+			array(
+				'taxonomy'         => 'post_tag',
+				'field'            => 'slug',
+				'terms'            => array( 'chickpea' ),
+				'include_children' => true,
+				'operator'         => 'IN',
+			),
+			$search_params['tax_query'][0],
+			'tag_slug__in is not interpreted correctly.'
+		);
+
+		$args = array(
+			's'                => 'content',
+			'tag_slug__not_in' => 'limabean',
+		);
+
+		$query->parse_query( $args );
+		$search_params = relevanssi_compile_search_args( $query, $args['s'] );
+
+		$this->assertEquals(
+			array(
+				'taxonomy' => 'post_tag',
+				'field'    => 'slug',
+				'terms'    => 'limabean',
+				'operator' => 'NOT IN',
+			),
+			$search_params['tax_query'][0],
+			'tag_slug__not_in is not interpreted correctly.'
+		);
+
+		$args = array(
+			's'             => 'content',
+			'tag_slug__and' => array( 'chickpea', 'kidney_bean' ),
+		);
+
+		$query->parse_query( $args );
+		$search_params = relevanssi_compile_search_args( $query, $args['s'] );
+
+		$this->assertEquals(
+			array(
+				'taxonomy'         => 'post_tag',
+				'field'            => 'slug',
+				'terms'            => array( 'chickpea', 'kidney_bean' ),
+				'include_children' => true,
+				'operator'         => 'AND',
+			),
+			$search_params['tax_query'][0],
+			'tag_slug__and is not interpreted correctly.'
+		);
+
+		$args = array(
+			's'        => 'content',
+			'taxonomy' => 'post_tag',
+			'term'     => 'chickpea',
+		);
+
+		$query->parse_query( $args );
+		$search_params = relevanssi_compile_search_args( $query, $args['s'] );
+
+		$this->assertEquals(
+			array(
+				'taxonomy'         => 'post_tag',
+				'field'            => 'slug',
+				'terms'            => array( 'chickpea' ),
+				'include_children' => true,
+				'operator'         => 'IN',
+			),
+			$search_params['tax_query'][0],
+			'taxonomy is not interpreted correctly.'
+		);
+
+		$args = array(
+			's'      => 'content',
+			'author' => '1,2,3',
+		);
+
+		$query->parse_query( $args );
+		$search_params = relevanssi_compile_search_args( $query, $args['s'] );
+
+		$this->assertEquals(
+			array( 1, 2, 3 ),
+			$search_params['author'],
+			'author is not interpreted correctly.'
+		);
+
+		$user = get_user_by( 'id', self::$post_author_id );
+		$args = array(
+			's'           => 'content',
+			'author_name' => $user->user_nicename,
+		);
+
+		$query->parse_query( $args );
+		$search_params = relevanssi_compile_search_args( $query, $args['s'] );
+
+		$this->assertEquals(
+			array( self::$post_author_id ),
+			$search_params['author'],
+			'author_name is not interpreted correctly.'
+		);
+
+		$args = array(
+			's' => 'content',
+			'p' => 123,
+		);
+
+		$query->parse_query( $args );
+		$search_params = relevanssi_compile_search_args( $query, $args['s'] );
+
+		$this->assertEquals(
+			array( 'in' => array( 123 ) ),
+			$search_params['post_query'],
+			'p is not interpreted correctly.'
+		);
+
+		$args = array(
+			's'       => 'content',
+			'page_id' => 123,
+		);
+
+		$query->parse_query( $args );
+		$search_params = relevanssi_compile_search_args( $query, $args['s'] );
+
+		$this->assertEquals(
+			array( 'in' => array( 123 ) ),
+			$search_params['post_query'],
+			'page_id is not interpreted correctly.'
+		);
+
+		$args = array(
+			's'        => 'content',
+			'post__in' => array( 1, 2, 3 ),
+		);
+
+		$query->parse_query( $args );
+		$search_params = relevanssi_compile_search_args( $query, $args['s'] );
+
+		$this->assertEquals(
+			array( 'in' => array( 1, 2, 3 ) ),
+			$search_params['post_query'],
+			'post__in is not interpreted correctly.'
+		);
+
+		$args = array(
+			's'            => 'content',
+			'post__not_in' => array( 1, 2, 3 ),
+		);
+
+		$query->parse_query( $args );
+		$search_params = relevanssi_compile_search_args( $query, $args['s'] );
+
+		$this->assertEquals(
+			array( 'not in' => array( 1, 2, 3 ) ),
+			$search_params['post_query'],
+			'post__not_in is not interpreted correctly.'
+		);
+
+		$args = array(
+			's'           => 'content',
+			'post_parent' => 123,
+		);
+
+		$query->parse_query( $args );
+		$search_params = relevanssi_compile_search_args( $query, $args['s'] );
+
+		$this->assertEquals(
+			array( 'parent in' => array( 123 ) ),
+			$search_params['parent_query'],
+			'post_parent is not interpreted correctly.'
+		);
+
+		$args = array(
+			's'               => 'content',
+			'post_parent__in' => array( 1, 2, 3 ),
+		);
+
+		$query->parse_query( $args );
+		$search_params = relevanssi_compile_search_args( $query, $args['s'] );
+
+		$this->assertEquals(
+			array( 'parent in' => array( 1, 2, 3 ) ),
+			$search_params['parent_query'],
+			'post_parent__in is not interpreted correctly.'
+		);
+
+		$args = array(
+			's'                   => 'content',
+			'post_parent__not_in' => array( 1, 2, 3 ),
+		);
+
+		$query->parse_query( $args );
+		$search_params = relevanssi_compile_search_args( $query, $args['s'] );
+
+		$this->assertEquals(
+			array( 'parent not in' => array( 1, 2, 3 ) ),
+			$search_params['parent_query'],
+			'post_parent__not_in is not interpreted correctly.'
+		);
+
+		$args = array(
+			's'                 => 'content',
+			'customfield_key'   => 'customfield',
+			'customfield_value' => 'meta_value',
+		);
+
+		$query->parse_query( $args );
+		$search_params = relevanssi_compile_search_args( $query, $args['s'] );
+
+		$this->assertEquals(
+			array(
+				'key'     => 'customfield',
+				'value'   => 'meta_value',
+				'compare' => '=',
+			),
+			$search_params['meta_query'][0],
+			'customfield_key is not interpreted correctly.'
+		);
+
+		$args = array(
+			's'            => 'content',
+			'meta_key'     => 'customfield',
+			'meta_value'   => 'meta_value',
+			'meta_compare' => '!=',
+		);
+
+		$query->parse_query( $args );
+		$search_params = relevanssi_compile_search_args( $query, $args['s'] );
+
+		$this->assertEquals(
+			array(
+				'key'     => 'customfield',
+				'value'   => 'meta_value',
+				'compare' => '!=',
+			),
+			$search_params['meta_query'][0],
+			'meta_key is not interpreted correctly.'
+		);
+
+		$args = array(
+			's'              => 'content',
+			'meta_key'       => 'customfield',
+			'meta_value_num' => 3,
+			'meta_compare'   => '!=',
+		);
+
+		$query->parse_query( $args );
+		$search_params = relevanssi_compile_search_args( $query, $args['s'] );
+
+		$this->assertEquals(
+			array(
+				'key'     => 'customfield',
+				'value'   => 3,
+				'compare' => '!=',
+			),
+			$search_params['meta_query'][0],
+			'meta_val_num is not interpreted correctly.'
+		);
+
+		$args = array(
+			's'          => 'content',
+			'date_query' => array(
+				'after'  => array(
+					'year'  => 2019,
+					'month' => 1,
+					'day'   => 1,
+				),
+				'before' => array(
+					'year'  => 2019,
+					'month' => 12,
+					'day'   => 31,
+				),
+			),
+		);
+
+		$query->parse_query( $args );
+		$search_params = relevanssi_compile_search_args( $query, $args['s'] );
+
+		$date_query = new WP_Date_Query(
+			array(
+				'after'  => array(
+					'year'  => 2019,
+					'month' => 1,
+					'day'   => 1,
+				),
+				'before' => array(
+					'year'  => 2019,
+					'month' => 12,
+					'day'   => 31,
+				),
+			)
+		);
+
+		$this->assertEquals(
+			$date_query,
+			$search_params['date_query'],
+			'date_query is not interpreted correctly.'
+		);
+
+		$args = array(
+			's' => 'content',
+		);
+
+		$query->parse_query( $args );
+		$query->date_query = $date_query;
+		$search_params     = relevanssi_compile_search_args( $query, $args['s'] );
+
+		$this->assertEquals(
+			$date_query,
+			$search_params['date_query'],
+			'date_query is not interpreted correctly.'
+		);
+
+		$args = array(
+			's'        => 'content',
+			'year'     => 2019,
+			'monthnum' => 6,
+			'day'      => 15,
+			'hour'     => 12,
+			'minute'   => 30,
+			'second'   => 45,
+		);
+
+		$query = new WP_Query();
+		$query->parse_query( $args );
+		$search_params = relevanssi_compile_search_args( $query, $args['s'] );
+
+		$date_query = new WP_Date_Query(
+			array(
+				'year'   => 2019,
+				'month'  => 6,
+				'day'    => 15,
+				'hour'   => 12,
+				'minute' => 30,
+				'second' => 45,
+			)
+		);
+		$this->assertEquals(
+			$date_query,
+			$search_params['date_query'],
+			'date_query is not interpreted correctly.'
+		);
+
+		$args = array(
+			's'    => 'content',
+			'year' => 2019,
+			'w'    => 45,
+		);
+
+		$query = new WP_Query();
+		$query->parse_query( $args );
+		$search_params = relevanssi_compile_search_args( $query, $args['s'] );
+
+		$date_query = new WP_Date_Query(
+			array(
+				'year' => 2019,
+				'week' => 45,
+			)
+		);
+		$this->assertEquals(
+			$date_query,
+			$search_params['date_query'],
+			'date_query is not interpreted correctly.'
+		);
+
+		$args = array(
+			's' => 'content',
+			'm' => 201910,
+		);
+
+		$query = new WP_Query();
+		$query->parse_query( $args );
+		$search_params = relevanssi_compile_search_args( $query, $args['s'] );
+
+		$date_query = new WP_Date_Query(
+			array(
+				'year'  => 2019,
+				'month' => 10,
+			)
+		);
+		$this->assertEquals(
+			$date_query,
+			$search_params['date_query'],
+			'date_query is not interpreted correctly.'
+		);
+
+		$args = array(
+			's'        => 'content',
+			'operator' => 'or',
+		);
+
+		$query->parse_query( $args );
+		$search_params = relevanssi_compile_search_args( $query, $args['s'] );
+
+		$this->assertEquals(
+			'OR',
+			$search_params['operator'],
+			'operator is not interpreted correctly.'
+		);
+
+		update_option( 'relevanssi_implicit_operator', 'AND' );
+		$args = array(
+			's'        => 'content',
+			'operator' => 'smooth',
+		);
+
+		$query->parse_query( $args );
+		$search_params = relevanssi_compile_search_args( $query, $args['s'] );
+
+		$this->assertEquals(
+			'AND',
+			$search_params['operator'],
+			'operator is not interpreted correctly.'
+		);
+
+		$args = array(
+			's'                       => 'content',
+			'relevanssi_admin_search' => true,
+		);
+
+		$query->parse_query( $args );
+		$search_params = relevanssi_compile_search_args( $query, $args['s'] );
+
+		$this->assertEquals(
+			true,
+			$search_params['admin_search'],
+			'relevanssi_admin_search is not interpreted correctly.'
+		);
+
+		$args = array(
+			's'                   => 'content',
+			'include_attachments' => true,
+		);
+
+		$query->parse_query( $args );
+		$search_params = relevanssi_compile_search_args( $query, $args['s'] );
+
+		$this->assertEquals(
+			true,
+			$search_params['include_attachments'],
+			'include_attachments is not interpreted correctly.'
+		);
+
 	}
 
 	/**

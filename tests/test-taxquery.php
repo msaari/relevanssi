@@ -53,7 +53,7 @@ class TaxQueryTest extends WP_UnitTestCase {
 	public static function wpSetUpBeforeClass() {
 		relevanssi_install();
 
-		self::$books_id = wp_create_category( 'books' );
+		self::$books_id = wp_create_category( 'Books and periodicals' );
 		self::$games_id = wp_create_category( 'games' );
 
 		self::$puzzles_id = wp_create_category( 'puzzles', self::$games_id );
@@ -135,6 +135,25 @@ END;
 	 * Test EXISTS queries.
 	 */
 	public function test_exists_queries() {
+		global $wpdb;
+
+		$tax_query = array(
+			array(
+				'taxonomy' => 'category',
+				'operator' => 'EXISTS',
+			),
+		);
+
+		$target_query_restriction = <<<END
+			AND relevanssi.doc IN (SELECT DISTINCT(tr.object_id)
+				FROM {$wpdb->prefix}term_relationships AS tr, {$wpdb->prefix}term_taxonomy AS tt
+				WHERE tr.term_taxonomy_id=tt.term_taxonomy_id AND tt.taxonomy='category')
+END;
+		$this->assertDiscardWhitespace(
+			$target_query_restriction,
+			relevanssi_process_tax_query( 'and', $tax_query )
+		);
+
 		global $wpdb;
 
 		$tax_query = array(
@@ -227,7 +246,7 @@ END;
 			array(
 				'taxonomy' => 'category',
 				'field'    => 'slug',
-				'terms'    => 'books',
+				'terms'    => 'books-and-periodicals',
 			),
 			array(
 				'taxonomy'         => 'category',
@@ -278,7 +297,7 @@ END;
 			array(
 				'taxonomy' => 'category',
 				'field'    => 'name',
-				'terms'    => 'books',
+				'terms'    => 'Books and periodicals',
 			),
 			array(
 				'relation' => 'OR',
@@ -325,7 +344,7 @@ END;
 			array(
 				'taxonomy' => 'category',
 				'field'    => 'name',
-				'terms'    => 'books',
+				'terms'    => 'Books and periodicals',
 			),
 			array(
 				'relation' => 'OR',
@@ -368,6 +387,47 @@ END;
 			relevanssi_process_tax_query( 'and', $tax_query )
 		);
 	}
+
+	/**
+	 * Test parallel NOT EXISTS query.
+	 */
+	public function test_parallel_not_exists() {
+		global $wpdb;
+
+		$games_id = self::$games_id;
+
+		$tax_query = array(
+			'relation' => 'OR',
+			array(
+				'taxonomy'         => 'category',
+				'field'            => 'term_taxonomy_id',
+				'terms'            => $games_id,
+				'include_children' => false,
+			),
+			array(
+				'taxonomy' => 'category',
+				'operator' => 'NOT EXISTS',
+			),
+		);
+
+		$target_query_restriction = <<<END
+			AND (
+				relevanssi.doc IN (SELECT DISTINCT(tr.object_id)
+					FROM {$wpdb->prefix}term_relationships AS tr
+					WHERE tr.term_taxonomy_id IN ({$games_id}))
+				OR relevanssi.doc NOT IN (SELECT DISTINCT(tr.object_id)
+					FROM {$wpdb->prefix}term_relationships AS tr,
+					{$wpdb->prefix}term_taxonomy AS tt
+					WHERE tr.term_taxonomy_id=tt.term_taxonomy_id
+					AND tt.taxonomy='category')
+				)
+END;
+		$this->assertDiscardWhitespace(
+			$target_query_restriction,
+			relevanssi_process_tax_query( 'or', $tax_query )
+		);
+	}
+
 
 	/**
 	 * Test name with numeric parameter.
@@ -434,7 +494,7 @@ END;
 			array(
 				'taxonomy' => 'category',
 				'field'    => 'slug',
-				'terms'    => 'books',
+				'terms'    => 'books-and-periodicals',
 				'operator' => 'NOT IN',
 			),
 			array(

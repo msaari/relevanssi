@@ -8,8 +8,6 @@
 
 /**
  * Test Relevanssi init functions pages.
- *
- * @group new
  */
 class InitTest extends WP_UnitTestCase {
 	/**
@@ -17,9 +15,6 @@ class InitTest extends WP_UnitTestCase {
 	 */
 	public static function wpSetUpBeforeClass() {
 		relevanssi_install();
-
-		// Truncate the index.
-		// relevanssi_truncate_index();
 	}
 
 	/**
@@ -40,9 +35,6 @@ class InitTest extends WP_UnitTestCase {
 		);
 	}
 
-	/**
-	 *
-	 */
 	/**
 	 * Uninstalls Relevanssi.
 	 */

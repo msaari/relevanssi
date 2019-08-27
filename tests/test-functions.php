@@ -600,8 +600,6 @@ class FunctionTest extends WP_UnitTestCase {
 
 	/**
 	 * Test getting custom fields
-	 *
-	 * @group new
 	 */
 	public function test_get_custom_fields() {
 		update_option( 'relevanssi_index_fields', 'all' );
@@ -615,10 +613,49 @@ class FunctionTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Test Yoast SEO indexing filter.
+	 */
+	public function test_wordpress_seo_indexing() {
+		$post_id = self::factory()->post->create();
+		require_once dirname( dirname( __FILE__ ) ) . '/lib/compatibility/yoast-seo.php';
+		$this->assertFalse( relevanssi_yoast_noindex( false, $post_id ) );
+		update_post_meta( $post_id, '_yoast_wpseo_meta-robots-noindex', '1' );
+		$this->assertTrue( relevanssi_yoast_noindex( false, $post_id ) );
+		update_post_meta( $post_id, '_yoast_wpseo_meta-robots-noindex', '2' );
+		$this->assertFalse( relevanssi_yoast_noindex( false, $post_id ) );
+	}
+
+	/**
+	 * Test post status processing.
+	 */
+	public function test_post_status_processing() {
+		global $wpdb, $relevanssi_admin_test;
+
+		$this->assertDiscardWhitespace(
+			"AND ((relevanssi.doc IN (SELECT DISTINCT(posts.ID) FROM {$wpdb->prefix}posts AS posts	WHERE posts.post_status IN ('publish', 'pending'))) OR (doc = -1))",
+			relevanssi_process_post_status( array( 'publish', 'pending' ) )
+		);
+
+		$this->assertDiscardWhitespace(
+			"AND ((relevanssi.doc IN (SELECT DISTINCT(posts.ID) FROM {$wpdb->prefix}posts AS posts	WHERE posts.post_status IN ('pending'))) OR (doc = -1))",
+			relevanssi_process_post_status( 'pending' )
+		);
+
+		$relevanssi_admin_test = true;
+
+		$this->assertDiscardWhitespace(
+			"AND ((relevanssi.doc IN (SELECT DISTINCT(posts.ID) FROM {$wpdb->prefix}posts AS posts	WHERE posts.post_status IN ('publish', 'pending'))))",
+			relevanssi_process_post_status( array( 'publish', 'pending' ) )
+		);
+
+		$relevanssi_admin_test = false;
+	}
+
+	/**
 	 * Uninstalls Relevanssi.
 	 */
 	public static function wpTearDownAfterClass() {
-		include_once dirname( dirname( __FILE__ ) ) . '/lib/uninstall.php';
+		require_once dirname( dirname( __FILE__ ) ) . '/lib/uninstall.php';
 		if ( RELEVANSSI_PREMIUM ) {
 			require_once dirname( dirname( __FILE__ ) ) . '/premium/uninstall.php';
 		}
