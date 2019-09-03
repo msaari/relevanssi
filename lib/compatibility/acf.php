@@ -66,7 +66,7 @@ function relevanssi_index_acf( &$insert_data, $post_id, $field_name, $field_valu
 	}
 
 	$value = $field_object['choices'][ $field_value ];
-	if ( $value ) {
+	if ( $value && ! is_array( $value ) && ! is_object( $value ) ) {
 		if ( ! isset( $insert_data[ $value ]['customfield'] ) ) {
 			$insert_data[ $value ]['customfield'] = 0;
 		}
