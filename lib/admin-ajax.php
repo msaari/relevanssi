@@ -372,6 +372,9 @@ function relevanssi_admin_search_debugging_info( $query ) {
 			$result .= '<ul style="list-style: disc; margin-left: 1.5em">';
 			foreach ( $wp_filter[ $filter ] as $priority => $functions ) {
 				foreach ( $functions as $function ) {
+					if ( $function['function'] instanceof Closure ) {
+						$function['function'] = 'Anonymous function';
+					}
 					$result .= "<li>$priority: " . $function['function'] . '</li>';
 				}
 			}
