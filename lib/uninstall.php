@@ -85,7 +85,6 @@ function relevanssi_uninstall_free() {
 	delete_option( 'relevanssi_index_drafts' );
 	delete_option( 'relevanssi_index_excerpt' );
 	delete_option( 'relevanssi_index_fields' );
-	delete_option( 'relevanssi_index_limit' );
 	delete_option( 'relevanssi_index_post_types' );
 	delete_option( 'relevanssi_index_taxonomies' );
 	delete_option( 'relevanssi_index_taxonomies_list' );
@@ -118,6 +117,7 @@ function relevanssi_uninstall_free() {
 	delete_option( 'relevanssi_enable_cache' );
 	delete_option( 'relevanssi_hidesponsor' );
 	delete_option( 'relevanssi_index_attachments' );
+	delete_option( 'relevanssi_index_limit' );
 	delete_option( 'relevanssi_index_type' );
 	delete_option( 'relevanssi_show_matches_txt' );
 	delete_option( 'relevanssi_tag_boost' );

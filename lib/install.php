@@ -100,7 +100,6 @@ function _relevanssi_install() {
 	add_option( 'relevanssi_index_comments', 'none' );
 	add_option( 'relevanssi_index_excerpt', 'off' );
 	add_option( 'relevanssi_index_fields', '' );
-	add_option( 'relevanssi_index_limit', '500' );
 	add_option( 'relevanssi_index_post_types', array( 'post', 'page' ) );
 	add_option( 'relevanssi_index_taxonomies_list', array() );
 	add_option( 'relevanssi_indexed', '' );
