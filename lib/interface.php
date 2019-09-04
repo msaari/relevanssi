@@ -425,9 +425,6 @@ function update_relevanssi_options() {
 	if ( isset( $_REQUEST['relevanssi_omit_from_logs'] ) ) {
 		update_option( 'relevanssi_omit_from_logs', $_REQUEST['relevanssi_omit_from_logs'] );
 	}
-	if ( isset( $_REQUEST['relevanssi_index_limit'] ) ) {
-		update_option( 'relevanssi_index_limit', $_REQUEST['relevanssi_index_limit'] );
-	}
 	if ( isset( $_REQUEST['relevanssi_disable_or_fallback'] ) ) {
 		update_option( 'relevanssi_disable_or_fallback', $_REQUEST['relevanssi_disable_or_fallback'] );
 	}
@@ -1003,8 +1000,40 @@ function relevanssi_add_admin_scripts( $hook ) {
 		wp_localize_script( 'relevanssi_admin_js', 'nonce', $nonce );
 	}
 
+	/**
+	 * Sets the indexing limit, ie. how many posts are indexed at once.
+	 *
+	 * Relevanssi starts by indexing this many posts at once. If the process
+	 * goes fast enough, Relevanssi will then increase the limit and if the
+	 * process is slow, the limit will be decreased. If necessary, you can
+	 * use the relevanssi_indexing_adjust filter hook to disable that
+	 * adjustment.
+	 *
+	 * @param int The indexing limit, default 10.
+	 */
 	$indexing_limit = apply_filters( 'relevanssi_indexing_limit', 10 );
-	wp_localize_script( 'relevanssi_admin_js', 'relevanssi_params', array( 'indexing_limit' => $indexing_limit ) );
+
+	/**
+	 * Sets the indexing adjustment.
+	 *
+	 * Relevanssi will adjust the number of posts indexed at once to speed
+	 * up the process if it goes fast and to slow down, if the posts are
+	 * slow to index. You can use this filter to stop that behaviour, making
+	 * Relevanssi index posts at constant pace. That's generally slower, but
+	 * more reliable.
+	 *
+	 * @param boolean Should the limit be adjusted, default true.
+	 */
+	$indexing_adjust = apply_filters( 'relevanssi_indexing_adjust', true );
+
+	wp_localize_script(
+		'relevanssi_admin_js',
+		'relevanssi_params',
+		array(
+			'indexing_limit'  => $indexing_limit,
+			'indexing_adjust' => $indexing_adjust,
+		)
+	);
 }
 
 /**
