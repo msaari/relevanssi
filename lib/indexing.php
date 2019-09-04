@@ -126,6 +126,7 @@ function relevanssi_generate_indexing_query( $valid_status, $extend = false, $re
 					OR (post.post_parent=0)
 				)
 			))
+		AND post.ID NOT IN (SELECT post_id FROM $wpdb->postmeta WHERE meta_key = '_relevanssi_hide_post' AND meta_value = 'on')
 		$restriction ORDER BY post.ID DESC $limit";
 	} else {
 		$q = "SELECT post.ID
@@ -144,6 +145,7 @@ function relevanssi_generate_indexing_query( $valid_status, $extend = false, $re
 				)
 			)
 		)
+		AND post.ID NOT IN (SELECT post_id FROM $wpdb->postmeta WHERE meta_key = '_relevanssi_hide_post' AND meta_value = 'on')
 		$restriction ORDER BY post.ID DESC $limit";
 	}
 
