@@ -332,7 +332,7 @@ function relevanssi_search( $args ) {
 					$added_post_ids = array_diff( array_keys( $include_these_posts ), $existing_ids );
 					if ( count( $added_post_ids ) > 0 ) {
 						$offset       = 0;
-						$slice_length = 1;
+						$slice_length = 20;
 						$total_ids    = count( $added_post_ids );
 						do {
 							$current_slice   = array_slice( $added_post_ids, $offset, $slice_length );
