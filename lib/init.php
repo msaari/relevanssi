@@ -79,18 +79,16 @@ function relevanssi_init() {
 	}
 
 	if ( 'done' !== get_option( 'relevanssi_indexed' ) ) {
-		/**
-		 * Prints out the "You do not have an index!" warning.
-		 */
-		function relevanssi_warning() {
-			$plugin = 'relevanssi';
-			if ( RELEVANSSI_PREMIUM ) {
-				$plugin = 'relevanssi-premium';
-			}
-			printf( "<div id='relevanssi-warning' class='update-nag'><p><strong>%s</strong></p></div>", esc_html__( 'You do not have an index! Remember to build the index (click the "Build the index" button), otherwise searching won\'t work.', 'relevanssi' ) );
-		}
 		if ( 'options-general.php' === $pagenow && $on_relevanssi_page ) {
-			add_action( 'admin_notices', 'relevanssi_warning' );
+			add_action(
+				'admin_notices',
+				function() {
+					printf(
+						"<div id='relevanssi-warning' class='update-nag'><p><strong>%s</strong></p></div>",
+						esc_html__( 'You do not have an index! Remember to build the index (click the "Build the index" button), otherwise searching won\'t work.', 'relevanssi' )
+					);
+				}
+			);
 		}
 	}
 
