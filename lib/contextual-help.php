@@ -28,9 +28,9 @@ function relevanssi_admin_help() {
 				'<li>' . sprintf( __( "To adjust the post order, you can use the %1\$s query parameter. With %1\$s, you can use multiple layers of different sorting methods. See <a href='%2\$s'>WordPress Codex</a> for more details on using arrays for orderby.", 'relevanssi' ), '<code>orderby</code>', 'https://codex.wordpress.org/Class_Reference/WP_Query#Order_.26_Orderby_Parameters' ) . '</li>' .
 				'<li>' . __( "Inside-word matching is disabled by default, because it increases garbage results that don't really match the search term. If you want to enable it, add the following function to your theme functions.php:", 'relevanssi' ) .
 				'<pre>add_filter( \'relevanssi_fuzzy_query\', \'rlv_partial_inside_words\' );
-	function rlv_partial_inside_words( $query ) {
-		return "(term LIKE \'%#term#%\')";
-	}</pre></li>' .
+function rlv_partial_inside_words( $query ) {
+	return "(relevanssi.term LIKE \'%#term#%\')";
+}</pre></li>' .
 				// Translators: %s is 'Uncheck this if you use non-ASCII characters' option name.
 				'<li>' . sprintf( __( 'To get inside-word highlights, uncheck the "%s" option. That has a side-effect of enabling the inside-word highlights.', 'relevanssi' ), __( 'Uncheck this if you use non-ASCII characters', 'relevanssi' ) ) . '</li>' .
 				// Translators: %s is 'relevanssi_throttle_limit'.
