@@ -1672,3 +1672,14 @@ function relevanssi_get_forbidden_taxonomies() {
 		'product_visibility',     // WooCommerce.
 	);
 }
+
+/**
+ * Returns "off".
+ *
+ * Useful for returning "off" to filters easily.
+ *
+ * @return string A string with value "off".
+ */
+function relevanssi_return_off() {
+	return 'off';
+}
