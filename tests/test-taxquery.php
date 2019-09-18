@@ -52,6 +52,7 @@ class TaxQueryTest extends WP_UnitTestCase {
 	 */
 	public static function wpSetUpBeforeClass() {
 		relevanssi_install();
+		relevanssi_init();
 
 		self::$books_id = wp_create_category( 'Books and periodicals' );
 		self::$games_id = wp_create_category( 'games' );

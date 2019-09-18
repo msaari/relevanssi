@@ -18,6 +18,7 @@ class FunctionTest extends WP_UnitTestCase {
 	 */
 	public static function wpSetUpBeforeClass() {
 		relevanssi_install();
+		relevanssi_init();
 	}
 
 	/**
