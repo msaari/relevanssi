@@ -33,9 +33,16 @@ function relevanssi_wpml_filter( $data ) {
 		$current_blog_language = get_bloginfo( 'language' );
 		$filtered_hits         = array();
 		foreach ( $data[0] as $hit ) {
-			if ( is_integer( $hit ) ) {
+			$original_hit = $hit;
+			if ( is_numeric( $hit ) ) {
 				// In case "fields" is set to "ids", fetch the post object we need.
-				$hit = get_post( $hit );
+				$original_hit = $hit;
+				$hit          = get_post( $hit );
+			}
+			if ( ! isset( $hit->post_content ) ) {
+				// The "fields" is set to "id=>parent".
+				$original_hit = $hit;
+				$hit          = get_post( $hit->ID );
 			}
 
 			if ( isset( $hit->blog_id ) ) {
@@ -63,16 +70,16 @@ function relevanssi_wpml_filter( $data ) {
 					// This is a post in a translated post type.
 					if ( intval( $hit->ID ) === intval( $id ) ) {
 						// The post exists in the current language, and can be included.
-						$filtered_hits[] = $hit;
+						$filtered_hits[] = $original_hit;
 					}
 				} else {
 					// This is not a translated post type, so include all posts.
-					$filtered_hits[] = $hit;
+					$filtered_hits[] = $original_hit;
 				}
 			} elseif ( get_bloginfo( 'language' ) === $current_blog_language ) {
 				// If there is no WPML but the target blog has identical language with current blog,
 				// we use the hits. Note en-US is not identical to en-GB!
-				$filtered_hits[] = $hit;
+				$filtered_hits[] = $original_hit;
 			}
 
 			if ( isset( $hit->blog_id ) ) {
