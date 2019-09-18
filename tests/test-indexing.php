@@ -100,7 +100,7 @@ class IndexingTest extends WP_UnitTestCase {
 
 		// Get a post ID and add some comments to it.
 		$comment_post_id = array_pop( $post_ids );
-		$comment_ids     = $this->factory->comment->create_many( 10, array( 'comment_post_ID' => $comment_post_id ) );
+		$this->factory->comment->create_many( 10, array( 'comment_post_ID' => $comment_post_id ) );
 
 		$comment_rows = $wpdb->get_var( "SELECT COUNT(*) FROM $relevanssi_table WHERE term='comment'" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$this->assertEquals( 1, $comment_rows, 'There should be one post with comments in the index.' );
@@ -135,6 +135,8 @@ class IndexingTest extends WP_UnitTestCase {
 
 		$foo_rows = $wpdb->get_var( "SELECT COUNT(*) FROM $relevanssi_table WHERE term='foo'" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$this->assertEquals( 1, $foo_rows, 'Term "foo" should be found on one row.' );
+
+		update_option( 'relevanssi_index_taxonomies_list', array() );
 
 		return $post_ids;
 	}
@@ -171,6 +173,8 @@ class IndexingTest extends WP_UnitTestCase {
 
 		$foo_rows = $wpdb->get_var( "SELECT COUNT(*) FROM $relevanssi_table WHERE term='foobar' AND tag > 0" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$this->assertEquals( 1, $foo_rows, 'There should be one row with term "foobar" and "tag" > 0.' );
+
+		update_option( 'relevanssi_index_taxonomies_list', array() );
 	}
 
 	/**
@@ -236,18 +240,22 @@ class IndexingTest extends WP_UnitTestCase {
 		);
 
 		$post_id = $this->factory->post->create();
-		$post    = get_post( $post_id );
 		$data    = array();
+
+		ob_start();
+		$n = relevanssi_index_taxonomy_terms( $data, null, 'post_tag', true );
 		$this->assertEquals(
-			$data,
-			relevanssi_index_taxonomy_terms( null, 'post_tag', $data ),
+			0,
+			$n,
 			"relevanssi_index_taxonomy_terms() doesn't handle null post parameter correctly."
 		);
+		$n = relevanssi_index_taxonomy_terms( $data, $post_id, '', true );
 		$this->assertEquals(
-			$data,
-			relevanssi_index_taxonomy_terms( $post, '', $data ),
+			0,
+			$n,
 			"relevanssi_index_taxonomy_terms() doesn't handle empty taxonomy parameter correctly."
 		);
+		ob_end_clean();
 
 		$cat_ids    = array();
 		$cat_ids[0] = wp_create_category( 'foo' );
@@ -256,23 +264,48 @@ class IndexingTest extends WP_UnitTestCase {
 		wp_set_post_terms( $post_id, $cat_ids, 'category', true );
 		wp_set_post_terms( $post_id, array( 'foo', 'bar', 'baz' ), 'post_tag', true );
 		wp_set_post_terms( $post_id, array( 'scifi', 'fantasy', 'detective' ), 'genre', true );
-		$tag_array['tag'] = 1;
-		$tag_array['taxonomy_detail'] = '{"post_tag":1}';
-		$cat_array['category'] = 1;
-		$cat_array['taxonomy_detail'] = '{"category":1}';
-		$genre_array_pre['taxonomy'] = 1;
-		$genre_array_pre['taxonomy_detail'] = '{"genre":1}';
-		$genre_array_post['taxonomy'] = 2;
+		$tag_array['tag']                    = 1;
+		$tag_array['taxonomy_detail']        = '{"post_tag":1}';
+		$cat_array['category']               = 1;
+		$cat_array['taxonomy_detail']        = '{"category":1}';
+		$genre_array_pre['taxonomy']         = 1;
+		$genre_array_pre['taxonomy_detail']  = '{"genre":1}';
+		$genre_array_post['taxonomy']        = 2;
 		$genre_array_post['taxonomy_detail'] = '{"genre":2}';
 
+		ob_start();
+		$n      = relevanssi_index_taxonomy_terms( $data, $post_id, 'post_tag', true );
+		$output = ob_get_clean();
+
+		$this->assertEquals(
+			3,
+			$n,
+			"relevanssi_index_taxonomy_terms() doesn't handle tags correctly."
+		);
 		$this->assertEquals(
 			array(
 				'bar' => $tag_array,
 				'baz' => $tag_array,
 				'foo' => $tag_array,
 			),
-			relevanssi_index_taxonomy_terms( $post, 'post_tag', $data ),
+			$data,
 			"relevanssi_index_taxonomy_terms() doesn't handle tags correctly."
+		);
+		$this->assertContains(
+			'Taxonomy term content for post_tag: bar baz foo',
+			$output,
+			"relevanssi_index_taxonomy_terms() doesn't handle tags correctly."
+		);
+
+		$data = array();
+		ob_start();
+		$n      = relevanssi_index_taxonomy_terms( $data, $post_id, 'category', true );
+		$output = ob_get_clean();
+
+		$this->assertEquals(
+			4,
+			$n,
+			"relevanssi_index_taxonomy_terms() doesn't handle cats correctly."
 		);
 		$this->assertEquals(
 			array(
@@ -281,7 +314,12 @@ class IndexingTest extends WP_UnitTestCase {
 				'foo'           => $cat_array,
 				'uncategorized' => $cat_array,
 			),
-			relevanssi_index_taxonomy_terms( $post, 'category', $data ),
+			$data,
+			"relevanssi_index_taxonomy_terms() doesn't handle cats correctly."
+		);
+		$this->assertContains(
+			'Taxonomy term content for category: bar baz foo Uncategorized',
+			$output,
 			"relevanssi_index_taxonomy_terms() doesn't handle cats correctly."
 		);
 
@@ -290,21 +328,32 @@ class IndexingTest extends WP_UnitTestCase {
 			'fantasy'   => $genre_array_pre,
 			'detective' => $genre_array_pre,
 		);
+		ob_start();
+		$n      = relevanssi_index_taxonomy_terms( $data, $post_id, 'genre', true );
+		$output = ob_get_clean();
+		$this->assertEquals(
+			3,
+			$n,
+			"relevanssi_index_taxonomy_terms() doesn't handle custom taxonomy correctly."
+		);
 		$this->assertEquals(
 			array(
 				'scifi'     => $genre_array_post,
 				'fantasy'   => $genre_array_post,
 				'detective' => $genre_array_post,
 			),
-			relevanssi_index_taxonomy_terms( $post, 'genre', $data ),
+			$data,
+			"relevanssi_index_taxonomy_terms() doesn't handle custom taxonomy correctly."
+		);
+		$this->assertContains(
+			'Taxonomy term content for genre: detective fantasy scifi',
+			$output,
 			"relevanssi_index_taxonomy_terms() doesn't handle custom taxonomy correctly."
 		);
 	}
 
 	/**
 	 * Test relevanssi_update_child_posts().
-	 *
-	 * @group new
 	 */
 	public function test_update_child_posts() {
 		$this->assertNull(
@@ -365,6 +414,618 @@ class IndexingTest extends WP_UnitTestCase {
 			relevanssi_update_child_posts( 'publish', 'secret', $post ),
 			"relevanssi_update_child_posts() isn't switching from secret to public correctly."
 		);
+	}
+
+	/**
+	 * Tests relevanssi_build_index().
+	 */
+	public function test_build_index() {
+		global $wpdb, $relevanssi_variables;
+		$relevanssi_table = $relevanssi_variables['relevanssi_table'];
+
+		$this->delete_all_posts();
+
+		$this->factory->post->create_many( 100 );
+
+		$return = relevanssi_build_index( false, null, 1, false );
+
+		$this->assertEquals(
+			array( false, 1 ),
+			$return,
+			"The return array isn't correct."
+		);
+
+		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$posts = $wpdb->get_var( "SELECT COUNT(DISTINCT(doc)) FROM $relevanssi_table" );
+		$this->assertEquals( 1, $posts, 'Only one post should be indexed.' );
+
+		$return = relevanssi_build_index( true, null, 2, false );
+
+		$this->assertEquals(
+			array( false, 2 ),
+			$return,
+			"The return array isn't correct."
+		);
+
+		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$posts = $wpdb->get_var( "SELECT COUNT(DISTINCT(doc)) FROM $relevanssi_table" );
+		$this->assertEquals( 3, $posts, 'Only three posts should be indexed.' );
+
+		$return = relevanssi_build_index( 3, null, 3, false );
+
+		$this->assertEquals(
+			array( false, 3 ),
+			$return,
+			"The return array isn't correct."
+		);
+
+		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$posts = $wpdb->get_var( "SELECT COUNT(DISTINCT(doc)) FROM $relevanssi_table" );
+		$this->assertEquals( 6, $posts, 'Only six posts should be indexed.' );
+
+		$ajax_return = relevanssi_build_index( false, null, 101, true );
+		$this->assertEquals(
+			array(
+				'indexing_complete' => true,
+				'indexed'           => 100,
+			),
+			$ajax_return,
+			"The return array isn't correct."
+		);
+	}
+
+	/**
+	 * Tests relevanssi_indexing_query_args().
+	 */
+	public function test_indexing_query_args() {
+		$return = relevanssi_indexing_query_args( false, 10 );
+		$this->assertEquals(
+			array(
+				'limit'  => ' LIMIT 10',
+				'extend' => false,
+				'size'   => 10,
+			),
+			$return,
+			"Testing relevanssi_indexing_query_args( false, 10 ) doesn't return correct value."
+		);
+
+		$return = relevanssi_indexing_query_args( true, null );
+		$this->assertEquals(
+			array(
+				'limit'  => ' LIMIT 200',
+				'extend' => true,
+				'size'   => 200,
+			),
+			$return,
+			"Testing relevanssi_indexing_query_args( true, null ) doesn't return correct value."
+		);
+
+		$return = relevanssi_indexing_query_args( 42, null );
+		$this->assertEquals(
+			array(
+				'limit'  => ' LIMIT 200 OFFSET 42',
+				'extend' => false,
+				'size'   => 200,
+			),
+			$return,
+			"Testing relevanssi_indexing_query_args( 42, null ) doesn't return correct value."
+		);
+	}
+
+	/**
+	 * Tests relevanssi_index_doc().
+	 *
+	 * @group new
+	 */
+	public function test_index_doc() {
+		// phpcs:disable WordPress.Security.NonceVerification
+
+		$this->delete_all_posts();
+
+		$post_id = $this->factory->post->create();
+		$this->factory->comment->create( array( 'comment_post_ID' => $post_id ) );
+		$arg = array(
+			'ID'          => $post_id,
+			'post_author' => 1,
+		);
+		wp_update_post( $arg );
+
+		update_option( 'relevanssi_index_comments', 'all' );
+		update_option( 'relevanssi_index_author', 'on' );
+		update_option( 'relevanssi_index_taxonomies_list', array() );
+
+		global $_REQUEST;
+		$_REQUEST['contact-form-id'] = 1;
+
+		$return = relevanssi_index_doc( null, true, false, true, true );
+		$this->assertEquals(
+			-1,
+			$return,
+			"relevanssi_index_doc() doesn't stop when contact-form-id is set."
+		);
+
+		unset( $_REQUEST['contact-form-id'] );
+
+		$return = relevanssi_index_doc( null, true, false, true, true );
+		$this->assertEquals(
+			-1,
+			$return,
+			"relevanssi_index_doc() doesn't fail correctly."
+		);
+
+		global $post;
+		$post = get_post( $post_id );
+
+		update_option( 'relevanssi_min_word_length', 4 );
+		ob_start();
+		$return = relevanssi_index_doc( $post_id, true, false, true, true );
+		$output = ob_get_clean();
+
+		$this->assertEquals(
+			7,
+			$return,
+			"relevanssi_index_doc() can't index a post correctly."
+		);
+		$this->assertContains(
+			'Removed the post from the index.',
+			$output,
+			"relevanssi_index_doc() doesn't remove the post."
+		);
+		$this->assertContains(
+			'Comment content',
+			$output,
+			"relevanssi_index_doc() doesn't index comment content."
+		);
+		$this->assertContains(
+			'Final indexing query',
+			$output,
+			"relevanssi_index_doc() doesn't display the final indexing query."
+		);
+		update_option( 'relevanssi_min_word_length', 3 );
+
+		if ( RELEVANSSI_PREMIUM ) {
+			update_post_meta( $post_id, '_relevanssi_hide_post', 'on' );
+			ob_start();
+			$return = relevanssi_index_doc( $post_id, true, false, true, true );
+			$output = ob_get_clean();
+			$this->assertEquals(
+				'hide',
+				$return,
+				"relevanssi_index_doc() doesn't handle _relevanssi_hide_post correctly."
+			);
+			$this->assertContains(
+				'relevanssi_hide_post() returned true.',
+				$output,
+				"Output for hiding posts doesn't work."
+			);
+			delete_post_meta( $post_id, '_relevanssi_hide_post' );
+		}
+
+		add_filter( 'relevanssi_do_not_index', '__return_true' );
+
+		ob_start();
+		$return = relevanssi_index_doc( $post_id, true, false, true, true );
+		$output = ob_get_clean();
+		$this->assertEquals(
+			'donotindex',
+			$return,
+			"relevanssi_index_doc() doesn't handle relevanssi_do_not_index correctly."
+		);
+		$this->assertContains(
+			'relevanssi_do_not_index returned true.',
+			$output,
+			"Output for relevanssi_do_not_index doesn't work."
+		);
+
+		remove_filter( 'relevanssi_do_not_index', '__return_true' );
+
+	}
+
+	/**
+	 * Tests relevanssi_index_comments().
+	 */
+	public function test_index_comments() {
+		$this->delete_all_posts();
+
+		update_option( 'relevanssi_index_comments', 'all' );
+		$post_id = $this->factory->post->create();
+		$this->factory->comment->create( array( 'comment_post_ID' => $post_id ) );
+
+		ob_start();
+		$data   = array();
+		$n      = relevanssi_index_comments( $data, $post_id, 4, true );
+		$output = ob_get_clean();
+
+		$this->assertEquals(
+			array(
+				'commenter' => array( 'comment' => 1 ),
+				'comment'   => array( 'comment' => 1 ),
+			),
+			$data,
+			"relevanssi_index_comments() doesn't handle tags correctly."
+		);
+		$this->assertEquals(
+			2,
+			$n,
+			"relevanssi_index_comments() doesn't count correctly."
+		);
+		$this->assertContains(
+			'Comment content',
+			$output,
+			"relevanssi_index_comments() doesn't debug comment content correctly."
+		);
+		$this->assertContains(
+			'This is a comment',
+			$output,
+			"relevanssi_index_comments() doesn't debug comment content correctly."
+		);
+
+		update_option( 'relevanssi_index_comments', 'none' );
+	}
+
+	/**
+	 * Tests relevanssi_index_author().
+	 */
+	public function test_index_author() {
+		$this->delete_all_posts();
+
+		$post_id = $this->factory->post->create();
+		$arg     = array(
+			'ID'          => $post_id,
+			'post_author' => 1,
+		);
+		wp_update_post( $arg );
+
+		ob_start();
+		$post   = get_post( $post_id );
+		$data   = array();
+		$n      = relevanssi_index_author( $data, $post->post_author, 3, true );
+		$output = ob_get_clean();
+
+		$this->assertEquals(
+			1,
+			$n,
+			"relevanssi_index_author() doesn't count correctly."
+		);
+		$this->assertEquals(
+			array(
+				'admin' => array( 'author' => 1 ),
+			),
+			$data,
+			"relevanssi_index_author() doesn't handle tags correctly."
+		);
+		$this->assertContains(
+			'Indexing post author as: admin',
+			$output,
+			"relevanssi_index_author() doesn't debug comment content correctly."
+		);
+
+		update_option( 'relevanssi_index_author', 'none' );
+	}
+
+	/**
+	 * Tests relevanssi_index_custom_fields().
+	 */
+	public function test_index_custom_fields() {
+		$this->delete_all_posts();
+
+		$post_id = $this->factory->post->create();
+		update_post_meta( $post_id, 'visible', 'foo' );
+		update_post_meta( $post_id, '_invisible', 'bar' );
+		update_post_meta( $post_id, 'array_field', array( 'key' => 'value' ) );
+
+		ob_start();
+		$data   = array();
+		$n      = relevanssi_index_custom_fields( $data, $post_id, 'all', 3, true );
+		$output = ob_get_clean();
+
+		$result_array = array(
+			'foo'   => array( 'customfield' => 1 ),
+			'bar'   => array( 'customfield' => 1 ),
+			'value' => array( 'customfield' => 1 ),
+		);
+		if ( RELEVANSSI_PREMIUM ) {
+			$result_array['foo']['customfield_detail']   = '{"visible":1}';
+			$result_array['bar']['customfield_detail']   = '{"_invisible":1}';
+			$result_array['value']['customfield_detail'] = '{"array_field":1}';
+		}
+
+		$this->assertEquals(
+			$result_array,
+			$data,
+			"relevanssi_index_custom_fields() doesn't produce correct results."
+		);
+		$this->assertEquals(
+			3,
+			$n,
+			"relevanssi_index_custom_fields() doesn't count correctly."
+		);
+		$this->assertContains(
+			'_invisible',
+			$output,
+			"relevanssi_index_custom_fields() doesn't print right debugging info."
+		);
+		$this->assertContains(
+			'Custom fields to index',
+			$output,
+			"relevanssi_index_custom_fields() doesn't print right debugging info."
+		);
+
+		ob_start();
+		$data   = array();
+		$n      = relevanssi_index_custom_fields( $data, $post_id, 'visible', 3, true );
+		$output = ob_get_clean();
+
+		$result_array = array(
+			'foo'   => array( 'customfield' => 1 ),
+			'value' => array( 'customfield' => 1 ),
+		);
+		if ( RELEVANSSI_PREMIUM ) {
+			$result_array['foo']['customfield_detail']   = '{"visible":1}';
+			$result_array['value']['customfield_detail'] = '{"array_field":1}';
+		}
+
+		$this->assertEquals(
+			$result_array,
+			$data,
+			"relevanssi_index_custom_fields() doesn't produce correct results for visible fields."
+		);
+		$this->assertEquals(
+			2,
+			$n,
+			"relevanssi_index_custom_fields() doesn't count correctly."
+		);
+		$this->assertNotContains(
+			'_invisible',
+			$output,
+			"relevanssi_index_custom_fields() doesn't print right debugging info."
+		);
+
+		add_filter( 'relevanssi_index_custom_fields', '__return_false' );
+		$this->assertEquals(
+			0,
+			relevanssi_index_custom_fields( $data, $post_id, 'visible', 3, true ),
+			"relevanssi_index_custom_fields() doesn't handle broken filter correctly."
+		);
+		remove_filter( 'relevanssi_index_custom_fields', '__return_false' );
+
+		$data = array();
+		update_post_meta( $post_id, 'pods', array( 'post_title' => 'pods' ) );
+
+		ob_start();
+		$data   = array();
+		$n      = relevanssi_index_custom_fields( $data, $post_id, array( 'pods' ), 3, true );
+		$output = ob_get_clean();
+
+		$result_array = array(
+			'pods' => array( 'customfield' => 1 ),
+		);
+		if ( RELEVANSSI_PREMIUM ) {
+			$result_array['pods']['customfield_detail'] = '{"pods":1}';
+		}
+
+		$this->assertEquals(
+			$result_array,
+			$data,
+			"relevanssi_index_custom_fields() doesn't handle PODS fields correctly."
+		);
+	}
+
+	/**
+	 * Tests relevanssi_index_excerpt().
+	 */
+	public function test_index_excerpt() {
+		$this->delete_all_posts();
+
+		$post_id = $this->factory->post->create();
+		$arg     = array(
+			'ID'           => $post_id,
+			'post_excerpt' => 'foo bar baz',
+		);
+		wp_update_post( $arg );
+		$post = get_post( $post_id );
+
+		ob_start();
+		$data   = array();
+		$n      = relevanssi_index_excerpt( $data, $post->post_excerpt, 3, true );
+		$output = ob_get_clean();
+
+		$result_array = array(
+			'foo' => array( 'excerpt' => 1 ),
+			'bar' => array( 'excerpt' => 1 ),
+			'baz' => array( 'excerpt' => 1 ),
+		);
+
+		$this->assertEquals(
+			$result_array,
+			$data,
+			"relevanssi_index_excerpt() doesn't produce correct results."
+		);
+		$this->assertEquals(
+			3,
+			$n,
+			"relevanssi_index_excerpt() doesn't count correctly."
+		);
+		$this->assertContains(
+			'Indexing post excerpt: foo bar baz',
+			$output,
+			"relevanssi_index_excerpt() doesn't print out correct debug output"
+		);
+	}
+
+	/**
+	 * Tests relevanssi_index_title().
+	 */
+	public function test_index_title() {
+		$this->delete_all_posts();
+
+		$post_id          = $this->factory->post->create();
+		$post             = get_post( $post_id );
+		$post->post_title = 'foo bar baz';
+
+		ob_start();
+		$data   = array();
+		$n      = relevanssi_index_title( $data, $post, 3, true );
+		$output = ob_get_clean();
+
+		$result_array = array(
+			'foo' => array( 'title' => 1 ),
+			'bar' => array( 'title' => 1 ),
+			'baz' => array( 'title' => 1 ),
+		);
+
+		$this->assertEquals(
+			$result_array,
+			$data,
+			"relevanssi_index_title() doesn't produce correct results."
+		);
+		$this->assertEquals(
+			3,
+			$n,
+			"relevanssi_index_title() doesn't count correctly."
+		);
+		$this->assertContains(
+			'Title, tokenized: foo bar baz',
+			$output,
+			"relevanssi_index_title() doesn't print out correct debug output"
+		);
+
+		add_filter( 'relevanssi_index_titles', '__return_false' );
+		$this->assertEquals(
+			0,
+			relevanssi_index_title( $data, $post, 3, false ),
+			"relevanssi_index_title() doesn't handle relevanssi_index_titles filter correctly."
+		);
+		remove_filter( 'relevanssi_index_titles', '__return_false' );
+
+		$post->post_title = '';
+
+		$this->assertEquals(
+			0,
+			relevanssi_index_title( $data, $post, 3, false ),
+			"relevanssi_index_title() doesn't handle an empty title."
+		);
+	}
+
+	/**
+	 * Tests relevanssi_index_content().
+	 *
+	 * @group newnew
+	 */
+	public function test_index_content() {
+		$this->delete_all_posts();
+
+		$post_id            = $this->factory->post->create();
+		$post               = get_post( $post_id );
+		$post->post_content = 'foo bar baz';
+
+		ob_start();
+		$data   = array();
+		$n      = relevanssi_index_content( $data, $post, 3, true );
+		$output = ob_get_clean();
+
+		update_option( 'relevanssi_expand_shortcodes', 'off' );
+
+		$result_array = array(
+			'foo' => array( 'content' => 1 ),
+			'bar' => array( 'content' => 1 ),
+			'baz' => array( 'content' => 1 ),
+		);
+
+		$this->assertEquals(
+			$result_array,
+			$data,
+			"relevanssi_index_content() doesn't produce correct results."
+		);
+		$this->assertEquals(
+			3,
+			$n,
+			"relevanssi_index_content() doesn't count correctly."
+		);
+		$this->assertContains(
+			'foo bar baz',
+			$output,
+			"relevanssi_index_content() doesn't print out correct debug output"
+		);
+		$this->assertNotContains(
+			'testing',
+			$output,
+			"relevanssi_index_content() is expanding shortcodes when it shouldn't."
+		);
+
+		add_filter( 'relevanssi_index_content', '__return_false' );
+		$this->assertEquals(
+			0,
+			relevanssi_index_content( $data, $post, 3, false ),
+			"relevanssi_index_content() doesn't handle relevanssi_index_content filter correctly."
+		);
+		remove_filter( 'relevanssi_index_content', '__return_false' );
+
+		$post->post_content = '';
+
+		$this->assertEquals(
+			0,
+			relevanssi_index_content( $data, $post, 3, false ),
+			"relevanssi_index_content() doesn't handle empty content."
+		);
+
+		update_option( 'relevanssi_expand_shortcodes', 'on' );
+		add_shortcode(
+			'testcode',
+			function() {
+				return 'testing';
+			}
+		);
+
+		$post->post_content = '[testcode]';
+
+		ob_start();
+		$data   = array();
+		$n      = relevanssi_index_content( $data, $post, 3, true );
+		$output = ob_get_clean();
+
+		$this->assertContains(
+			'testing',
+			$output,
+			"relevanssi_index_content() doesn't expand shortcodes correctly."
+		);
+
+		add_filter(
+			'relevanssi_content_to_index',
+			function() {
+				return 'filtered';
+			},
+			56
+		);
+
+		ob_start();
+		$data   = array();
+		$n      = relevanssi_index_content( $data, $post, 3, true );
+		$output = ob_get_clean();
+
+		$this->assertContains(
+			'filtered',
+			$output,
+			"relevanssi_index_content() doesn't handle relevanssi_content_to_index correctly."
+		);
+
+		global $wp_filter;
+		unset( $wp_filter['relevanssi_content_to_index']->callbacks[56] );
+
+		ob_start();
+		$data   = array();
+		$n      = relevanssi_index_content( $data, $post, 3, true );
+		$output = ob_get_clean();
+	}
+
+	/**
+	 * Helper function that deletes all the posts in the database.
+	 */
+	private function delete_all_posts() {
+		$post_ids = get_posts( array( 'numberposts' => -1 ) );
+		foreach ( $post_ids as $post ) {
+			wp_delete_post( $post->ID );
+		}
 	}
 
 	/**
