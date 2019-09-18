@@ -87,9 +87,12 @@ function relevanssi_polylang_filter( $query ) {
  * @since 2.1.6
  */
 function relevanssi_polylang_where_include_terms( $where ) {
-	$current_language = pll_current_language();
-	$languages        = get_terms( array( 'taxonomy' => 'language' ) );
-	$language_id      = 0;
+	$current_language = substr( get_locale(), 0, 2 );
+	if ( function_exists( 'pll_current_language' ) ) {
+		$current_language = pll_current_language();
+	}
+	$languages   = get_terms( array( 'taxonomy' => 'language' ) );
+	$language_id = 0;
 	foreach ( $languages as $language ) {
 		if ( ! is_wp_error( $language ) && $language instanceof WP_Term && $language->slug === $current_language ) {
 			$language_id = intval( $language->term_id );
@@ -125,8 +128,11 @@ function relevanssi_polylang_where_include_terms( $where ) {
 function relevanssi_polylang_term_filter( $hits ) {
 	$polylang_allow_all = get_option( 'relevanssi_polylang_all_languages' );
 	if ( 'on' !== $polylang_allow_all ) {
-		$current_language = pll_current_language();
-		$accepted_hits    = array();
+		$current_language = substr( get_locale(), 0, 2 );
+		if ( function_exists( 'pll_current_language' ) ) {
+			$current_language = pll_current_language();
+		}
+		$accepted_hits = array();
 		foreach ( $hits[0] as $hit ) {
 			if ( -1 === $hit->ID && isset( $hit->term_id ) ) {
 				$term_id      = intval( $hit->term_id );
