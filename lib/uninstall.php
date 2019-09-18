@@ -29,17 +29,19 @@ function relevanssi_drop_database_tables() {
 	$stopword_table   = $wpdb->prefix . 'relevanssi_stopwords';
 	$log_table        = $wpdb->prefix . 'relevanssi_log';
 
-	if ( $wpdb->get_var( "SHOW TABLES LIKE '$stopword_table'" ) === $stopword_table ) { // WPCS: unprepared SQL ok.
-		$wpdb->query( "DROP TABLE $stopword_table" ); // WPCS: unprepared SQL ok.
+	// phpcs:disable WordPress.DB.PreparedSQL
+	if ( $wpdb->get_var( "SHOW TABLES LIKE '$stopword_table'" ) === $stopword_table ) {
+		$wpdb->query( "DROP TABLE $stopword_table" );
 	}
 
-	if ( $wpdb->get_var( "SHOW TABLES LIKE '$relevanssi_table'" ) === $relevanssi_table ) { // WPCS: unprepared SQL ok.
-		$wpdb->query( "DROP TABLE $relevanssi_table" ); // WPCS: unprepared SQL ok.
+	if ( $wpdb->get_var( "SHOW TABLES LIKE '$relevanssi_table'" ) === $relevanssi_table ) {
+		$wpdb->query( "DROP TABLE $relevanssi_table" );
 	}
 
-	if ( $wpdb->get_var( "SHOW TABLES LIKE '$log_table'" ) === $log_table ) { // WPCS: unprepared SQL ok.
-		$wpdb->query( "DROP TABLE $log_table" ); // WPCS: unprepared SQL ok.
+	if ( $wpdb->get_var( "SHOW TABLES LIKE '$log_table'" ) === $log_table ) {
+		$wpdb->query( "DROP TABLE $log_table" );
 	}
+	// phpcs:enable WordPress.DB.PreparedSQL
 }
 
 /**
@@ -53,10 +55,10 @@ function relevanssi_uninstall_free() {
 	delete_option( 'relevanssi_admin_search' );
 	delete_option( 'relevanssi_bg_col' );
 	delete_option( 'relevanssi_cat' );
-	delete_option( 'relevanssi_comment_boost' );
-	delete_option( 'relevanssi_css' );
 	delete_option( 'relevanssi_class' );
+	delete_option( 'relevanssi_comment_boost' );
 	delete_option( 'relevanssi_content_boost' );
+	delete_option( 'relevanssi_css' );
 	delete_option( 'relevanssi_db_version' );
 	delete_option( 'relevanssi_default_orderby' );
 	delete_option( 'relevanssi_disable_or_fallback' );
@@ -64,25 +66,24 @@ function relevanssi_uninstall_free() {
 	delete_option( 'relevanssi_doc_count' );
 	delete_option( 'relevanssi_exact_match_bonus' );
 	delete_option( 'relevanssi_excat' );
-	delete_option( 'relevanssi_extag' );
-	delete_option( 'relevanssi_excerpt_length' );
-	delete_option( 'relevanssi_excerpt_type' );
 	delete_option( 'relevanssi_excerpt_allowable_tags' );
 	delete_option( 'relevanssi_excerpt_custom_fields' );
+	delete_option( 'relevanssi_excerpt_length' );
+	delete_option( 'relevanssi_excerpt_type' );
 	delete_option( 'relevanssi_excerpts' );
 	delete_option( 'relevanssi_exclude_posts' );
 	delete_option( 'relevanssi_expand_shortcodes' );
+	delete_option( 'relevanssi_extag' );
 	delete_option( 'relevanssi_fuzzy' );
 	delete_option( 'relevanssi_hide_branding' );
+	delete_option( 'relevanssi_highlight' );
 	delete_option( 'relevanssi_highlight_comments' );
 	delete_option( 'relevanssi_highlight_docs' );
-	delete_option( 'relevanssi_highlight' );
 	delete_option( 'relevanssi_hilite_title' );
 	delete_option( 'relevanssi_implicit_operator' );
 	delete_option( 'relevanssi_index' );
 	delete_option( 'relevanssi_index_author' );
 	delete_option( 'relevanssi_index_comments' );
-	delete_option( 'relevanssi_index_drafts' );
 	delete_option( 'relevanssi_index_excerpt' );
 	delete_option( 'relevanssi_index_fields' );
 	delete_option( 'relevanssi_index_post_types' );
@@ -99,14 +100,15 @@ function relevanssi_uninstall_free() {
 	delete_option( 'relevanssi_post_type_weights' );
 	delete_option( 'relevanssi_punctuation' );
 	delete_option( 'relevanssi_respect_exclude' );
-	delete_option( 'relevanssi_show_matches_text' );
 	delete_option( 'relevanssi_show_matches' );
+	delete_option( 'relevanssi_show_matches_text' );
 	delete_option( 'relevanssi_show_post_controls' );
 	delete_option( 'relevanssi_synonyms' );
 	delete_option( 'relevanssi_thousand_separator' );
 	delete_option( 'relevanssi_throttle' );
 	delete_option( 'relevanssi_throttle_limit' );
 	delete_option( 'relevanssi_title_boost' );
+	delete_option( 'relevanssi_trim_logs' );
 	delete_option( 'relevanssi_txt_col' );
 	delete_option( 'relevanssi_word_boundaries' );
 	delete_option( 'relevanssi_wpml_only_current' );
@@ -117,6 +119,7 @@ function relevanssi_uninstall_free() {
 	delete_option( 'relevanssi_enable_cache' );
 	delete_option( 'relevanssi_hidesponsor' );
 	delete_option( 'relevanssi_index_attachments' );
+	delete_option( 'relevanssi_index_drafts' );
 	delete_option( 'relevanssi_index_limit' );
 	delete_option( 'relevanssi_index_type' );
 	delete_option( 'relevanssi_show_matches_txt' );
