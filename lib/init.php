@@ -193,6 +193,9 @@ function relevanssi_init() {
 	if ( function_exists( 'pmpro_has_membership_access' ) ) {
 		require_once 'compatibility/paidmembershippro.php';
 	}
+
+	// Always required, the functions check if TablePress is active.
+	require_once 'compatibility/tablepress.php';
 }
 
 /**
