@@ -23,9 +23,11 @@ function relevanssi_process_query_args( $args ) {
 	$query_restrictions = '';
 	$query_join         = '';
 	$query              = '';
+	$query_no_synonyms  = '';
 
 	if ( function_exists( 'wp_encode_emoji' ) ) {
-		$query = wp_encode_emoji( $args['q'] );
+		$query             = wp_encode_emoji( $args['q'] );
+		$query_no_synonyms = wp_encode_emoji( $args['q_no_synonyms'] );
 	}
 
 	if ( $args['sentence'] ) {
@@ -89,6 +91,7 @@ function relevanssi_process_query_args( $args ) {
 		'query_restrictions' => $query_restrictions,
 		'query_join'         => $query_join,
 		'query_query'        => $query,
+		'query_no_synonyms'  => $query_no_synonyms,
 	);
 }
 

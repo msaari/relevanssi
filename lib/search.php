@@ -129,6 +129,7 @@ function relevanssi_search( $args ) {
 	$query_restrictions = $query_data['query_restrictions'];
 	$query_join         = $query_data['query_join'];
 	$q                  = $query_data['query_query'];
+	$q_no_synonyms      = $query_data['query_no_synonyms'];
 
 	/**
 	 * Filters whether stopwords are removed from titles.
@@ -470,7 +471,7 @@ function relevanssi_search( $args ) {
 
 				if ( $exact_match_bonus ) {
 					$post    = relevanssi_get_post( $match->doc );
-					$clean_q = str_replace( array( '"', '”', '“' ), '', $q );
+					$clean_q = str_replace( array( '"', '”', '“' ), '', $q_no_synonyms );
 					if ( $post && $clean_q ) {
 						if ( stristr( $post->post_title, $clean_q ) !== false ) {
 							$match->weight *= $exact_match_boost['title'];
@@ -668,8 +669,9 @@ function relevanssi_search( $args ) {
 			global $wp_query;
 			$wp_query->set( 'operator', 'OR' );
 
-			$or_args['q'] = relevanssi_add_synonyms( $q );
-			$return       = relevanssi_search( $or_args );
+			$or_args['q_no_synonyms'] = $q;
+			$or_args['q']             = relevanssi_add_synonyms( $q );
+			$return                   = relevanssi_search( $or_args );
 
 			$hits             = $return['hits'];
 			$body_matches     = $return['body_matches'];
@@ -1245,8 +1247,6 @@ function relevanssi_compile_search_args( $query, $q ) {
 				'operator' => 'NOT IN',
 			);
 		}
-
-		$query->tax_query = $tax_query;
 	}
 
 	$author = false;
@@ -1458,6 +1458,7 @@ function relevanssi_compile_search_args( $query, $q ) {
 
 	// Add synonyms.
 	// This is done here so the new terms will get highlighting.
+	$q_no_synonyms = $q;
 	if ( 'OR' === $operator ) {
 		// Synonyms are only used in OR queries.
 		$q = relevanssi_add_synonyms( $q );
@@ -1465,6 +1466,7 @@ function relevanssi_compile_search_args( $query, $q ) {
 
 	$search_params = array(
 		'q'                   => $q,
+		'q_no_synonyms'       => $q_no_synonyms,
 		'tax_query'           => $tax_query,
 		'tax_query_relation'  => $tax_query_relation,
 		'post_query'          => $post_query,
