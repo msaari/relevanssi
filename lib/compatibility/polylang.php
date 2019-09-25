@@ -134,14 +134,26 @@ function relevanssi_polylang_term_filter( $hits ) {
 		}
 		$accepted_hits = array();
 		foreach ( $hits[0] as $hit ) {
+			$original_hit = $hit;
+			if ( is_numeric( $hit ) ) {
+				// In case "fields" is set to "ids", fetch the post object we need.
+				$original_hit = $hit;
+				$hit          = get_post( $hit );
+			}
+			if ( ! isset( $hit->post_content ) ) {
+				// The "fields" is set to "id=>parent".
+				$original_hit = $hit;
+				$hit          = get_post( $hit->ID );
+			}
+
 			if ( -1 === $hit->ID && isset( $hit->term_id ) ) {
 				$term_id      = intval( $hit->term_id );
 				$translations = pll_get_term_translations( $term_id );
 				if ( isset( $translations[ $current_language ] ) && $translations[ $current_language ] === $term_id ) {
-					$accepted_hits[] = $hit;
+					$accepted_hits[] = $original_hit;
 				}
 			} else {
-				$accepted_hits[] = $hit;
+				$accepted_hits[] = $original_hit;
 			}
 		}
 		$hits[0] = $accepted_hits;
