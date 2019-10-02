@@ -41,6 +41,13 @@ define( 'RELEVANSSI_PREMIUM', false );
 
 add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'relevanssi_action_links' );
 
+global $wp_version;
+if ( version_compare( $wp_version, '5.1', '>=' ) ) {
+	add_action( 'wp_insert_site', 'relevanssi_new_blog', 10, 1 );
+} else {
+	add_action( 'wpmu_new_blog', 'relevanssi_new_blog', 10, 1 );
+}
+
 global $relevanssi_variables;
 global $wpdb;
 
