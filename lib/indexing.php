@@ -129,12 +129,17 @@ function relevanssi_generate_indexing_query( $valid_status, $extend = false, $re
 		AND post.ID NOT IN (SELECT post_id FROM $wpdb->postmeta WHERE meta_key = '_relevanssi_hide_post' AND meta_value = 'on')
 		$restriction ORDER BY post.ID DESC $limit";
 	} else {
+		$processed_post_filter = 'r.doc is null';
+		if ( 'noindex' !== get_option( 'relevanssi_internal_links', 'noindex' ) ) {
+			$processed_post_filter = "(r.doc is null OR r.doc NOT IN (SELECT DISTINCT(doc) FROM $relevanssi_table WHERE link = 0))";
+		}
+
 		$q = "SELECT post.ID
 		FROM $wpdb->posts post
 		LEFT JOIN $wpdb->posts parent ON (post.post_parent=parent.ID)
 		LEFT JOIN $relevanssi_table r ON (post.ID=r.doc)
 		WHERE
-		r.doc is null
+		$processed_post_filter
 		AND
 			(post.post_status IN ($valid_status)
 			OR
