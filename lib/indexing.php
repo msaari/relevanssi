@@ -203,9 +203,14 @@ function relevanssi_post_type_restriction() {
  * a custom post status, you can use the 'relevanssi_valid_status' filter hook to add
  * your own post status to the list of valid statuses.
  *
- * @return string A comma-separated list of valid post statuses ready for MySQL.
+ * @param boolean $return_array If true, return array; default false, return
+ * string.
+ *
+ * @return string|array A comma-separated list of escaped valid post statuses
+ * ready for MySQL, or an unfiltered array, depending on the $return_array
+ * parameter.
  */
-function relevanssi_valid_status_array() {
+function relevanssi_valid_status_array( $return_array = false ) {
 	/**
 	 * Filters the valid status array.
 	 *
@@ -215,7 +220,12 @@ function relevanssi_valid_status_array() {
 	 * @return array Array of post statuses.
 	 */
 	$valid_status_array = apply_filters( 'relevanssi_valid_status', array( 'publish', 'draft', 'private', 'pending', 'future' ) );
-	$valid_status       = array();
+
+	if ( $return_array ) {
+		return $valid_status_array;
+	}
+
+	$valid_status = array();
 
 	if ( is_array( $valid_status_array ) && count( $valid_status_array ) > 0 ) {
 		foreach ( $valid_status_array as $status ) {
