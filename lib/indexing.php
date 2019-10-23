@@ -382,6 +382,9 @@ function relevanssi_build_index( $extend_offset = false, $verbose = null, $post_
  * Default false.
  * @param boolean    $debug              If true, echo out debugging information.
  * Default false.
+ *
+ * @return string|int Number of insert queries run, or -1 if the indexing fails,
+ * or 'hide' in case the post is hidden or 'donotindex' if a filter blocks this.
  */
 function relevanssi_index_doc( $index_post, $remove_first = false, $custom_fields = '', $bypass_global_post = false, $debug = false ) {
 	global $wpdb, $post, $relevanssi_variables;
@@ -721,16 +724,22 @@ function relevanssi_update_child_posts( $new_status, $old_status, $post ) {
  * Indexes a published post.
  *
  * @param int     $post_id            The post ID.
- * @param boolean $bypass_global_post If tru, bypass the global $post object. Default false.
+ * @param boolean $bypass_global_post If true, bypass the global $post object.
+ * Default false.
+ *
+ * @return string|int Returns 'auto-draft' if the post is an auto draft and
+ * thus skipped, or the relevanssi_index_doc() return value.
+ *
+ * @see relevanssi_index_doc()
  */
 function relevanssi_publish( $post_id, $bypass_global_post = false ) {
 	$post_status = get_post_status( $post_id );
 	if ( 'auto-draft' === $post_status ) {
-		return;
+		return 'auto-draft';
 	}
 
 	$custom_fields = relevanssi_get_custom_fields();
-	relevanssi_index_doc( $post_id, true, $custom_fields, $bypass_global_post );
+	return relevanssi_index_doc( $post_id, true, $custom_fields, $bypass_global_post );
 }
 
 /**
@@ -745,13 +754,19 @@ function relevanssi_publish( $post_id, $bypass_global_post = false ) {
  * @global object $wpdb The WP database interface.
  *
  * @param int $post_id The post ID.
+ *
+ * @return string|int Returns 'auto-draft' if the post is an auto draft and
+ * thus skipped, 'removed' if the post is removed or the relevanssi_index_doc()
+ * return value from relevanssi_publish().
+ *
+ * @see relevanssi_publish()
  */
 function relevanssi_insert_edit( $post_id ) {
 	global $wpdb;
 
 	$post_status = get_post_status( $post_id );
 	if ( 'auto-draft' === $post_status ) {
-		return;
+		return 'auto-draft';
 	}
 
 	if ( 'inherit' === $post_status ) {
@@ -773,20 +788,24 @@ function relevanssi_insert_edit( $post_id ) {
 		}
 	}
 
-	$index_statuses = apply_filters( 'relevanssi_valid_status', array( 'publish', 'private', 'draft', 'future', 'pending' ) );
+	$return_array   = true;
+	$index_statuses = relevanssi_valid_status_array( $return_array );
 	if ( ! in_array( $post_status, $index_statuses, true ) ) {
 		$index_this_post = false;
 	}
 
 	if ( $index_this_post ) {
 		$bypass_global_post = true;
-		relevanssi_publish( $post_id, $bypass_global_post );
+		$return_value       = relevanssi_publish( $post_id, $bypass_global_post );
 	} else {
 		// The post isn't supposed to be indexed anymore, remove it from index.
 		relevanssi_remove_doc( $post_id );
+		$return_value = 'removed';
 	}
 
 	relevanssi_update_doc_count();
+
+	return $return_value;
 }
 
 /**
