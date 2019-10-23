@@ -1456,6 +1456,10 @@ function relevanssi_compile_search_args( $query, $q ) {
 		$include_attachments = $query->query_vars['include_attachments'];
 	}
 
+	if ( function_exists( 'relevanssi_extract_specifier' ) ) {
+		$q = relevanssi_extract_specifier( $q );
+	}
+
 	// Add synonyms.
 	// This is done here so the new terms will get highlighting.
 	$q_no_synonyms = $q;
