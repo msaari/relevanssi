@@ -323,51 +323,91 @@ function relevanssi_recognize_phrases( $search_query, $operator = 'AND' ) {
 	$phrases = relevanssi_extract_phrases( $search_query );
 	$status  = relevanssi_valid_status_array();
 
+	// Add "inherit" to the list of allowed statuses to include attachments.
+	if ( ! strstr( $status, 'inherit' ) ) {
+		$status .= ",'inherit'";
+	}
+
 	$all_queries = array();
-	if ( count( $phrases ) > 0 ) {
-		foreach ( $phrases as $phrase ) {
-			$queries = array();
-			$phrase  = $wpdb->esc_like( $phrase );
-			$phrase  = str_replace( '‘', '_', $phrase );
-			$phrase  = str_replace( '’', '_', $phrase );
-			$phrase  = str_replace( "'", '_', $phrase );
-			$phrase  = str_replace( '"', '_', $phrase );
-			$phrase  = str_replace( '”', '_', $phrase );
-			$phrase  = str_replace( '“', '_', $phrase );
-			$phrase  = str_replace( '„', '_', $phrase );
-			$phrase  = str_replace( '´', '_', $phrase );
-			$phrase  = esc_sql( $phrase );
-			$excerpt = '';
-			if ( 'on' === get_option( 'relevanssi_index_excerpt' ) ) {
-				$excerpt = " OR post_excerpt LIKE '%$phrase%'";
-			}
+	if ( 0 === count( $phrases ) ) {
+		return $all_queries;
+	}
 
-			$query = "(SELECT ID FROM $wpdb->posts
-				WHERE (post_content LIKE '%$phrase%' OR post_title LIKE '%$phrase%' $excerpt)
-				AND post_status IN ($status))";
+	foreach ( $phrases as $phrase ) {
+		$queries = array();
+		$phrase  = $wpdb->esc_like( $phrase );
+		$phrase  = str_replace( '‘', '_', $phrase );
+		$phrase  = str_replace( '’', '_', $phrase );
+		$phrase  = str_replace( "'", '_', $phrase );
+		$phrase  = str_replace( '"', '_', $phrase );
+		$phrase  = str_replace( '”', '_', $phrase );
+		$phrase  = str_replace( '“', '_', $phrase );
+		$phrase  = str_replace( '„', '_', $phrase );
+		$phrase  = str_replace( '´', '_', $phrase );
+		$phrase  = esc_sql( $phrase );
 
-			$queries[] = $query;
+		$excerpt = '';
+		if ( 'on' === get_option( 'relevanssi_index_excerpt' ) ) {
+			$excerpt = " OR post_excerpt LIKE '%$phrase%'";
+		}
+
+		$query = "(SELECT ID FROM $wpdb->posts
+			WHERE (post_content LIKE '%$phrase%' OR post_title LIKE '%$phrase%' $excerpt)
+			AND post_status IN ($status))";
+
+		$queries[] = $query;
+
+		$taxonomies = get_option( 'relevanssi_index_taxonomies_list', array() );
+		if ( $taxonomies ) {
+			$taxonomies_escaped = implode( "','", array_map( 'esc_sql', $taxonomies ) );
+			$taxonomies_sql     = "AND s.taxonomy IN ('$taxonomies_escaped')";
 
 			$query = "(SELECT ID FROM $wpdb->posts as p, $wpdb->term_relationships as r, $wpdb->term_taxonomy as s, $wpdb->terms as t
 				WHERE r.term_taxonomy_id = s.term_taxonomy_id AND s.term_id = t.term_id AND p.ID = r.object_id
+				$taxonomies_sql
 				AND t.name LIKE '%$phrase%' AND p.post_status IN ($status))";
 
 			$queries[] = $query;
+		}
+
+		$custom_fields = relevanssi_get_custom_fields();
+		if ( $custom_fields ) {
+			$keys = '';
+
+			if ( is_array( $custom_fields ) ) {
+				$custom_fields_escaped = implode( "','", array_map( 'esc_sql', $custom_fields ) );
+				$keys                  = "AND m.meta_key IN ('$custom_fields_escaped')";
+			}
+
+			if ( 'visible' === $custom_fields ) {
+				$keys = "AND (m.meta_key NOT LIKE '_%' OR m.meta_key = '_relevanssi_pdf_content')";
+			}
 
 			$query = "(SELECT ID
-              FROM $wpdb->posts AS p, $wpdb->postmeta AS m
-              WHERE p.ID = m.post_id
-              AND m.meta_value LIKE '%$phrase%'
-              AND p.post_status IN ($status))";
+				FROM $wpdb->posts AS p, $wpdb->postmeta AS m
+				WHERE p.ID = m.post_id
+				$keys
+				AND m.meta_value LIKE '%$phrase%'
+				AND p.post_status IN ($status))";
 
 			$queries[] = $query;
-
-			$queries       = implode( ' OR relevanssi.doc IN ', $queries );
-			$queries       = "(relevanssi.doc IN $queries)";
-			$all_queries[] = $queries;
 		}
-	} else {
-		$phrases = '';
+
+		if ( 'on' === get_option( 'relevanssi_index_pdf_parent' ) ) {
+			$query = "(SELECT parent.ID
+			FROM $wpdb->posts AS p, $wpdb->postmeta AS m, $wpdb->posts AS parent
+			WHERE p.ID = m.post_id
+			AND p.post_parent = parent.ID
+			AND m.meta_key = '_relevanssi_pdf_content'
+			AND m.meta_value LIKE '%$phrase%'
+			AND p.post_status = 'inherit')";
+
+			$queries[] = $query;
+		}
+
+		$queries       = implode( ' OR relevanssi.doc IN ', $queries );
+		$queries       = "(relevanssi.doc IN $queries)";
+		$all_queries[] = $queries;
 	}
 
 	$operator = strtoupper( $operator );
