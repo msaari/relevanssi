@@ -936,7 +936,7 @@ function relevanssi_the_tags( $before = null, $separator = ', ', $after = '', $e
 
 		$count = count( $matches[0] );
 		for ( $i = 0; $i < $count; $i++ ) {
-			$highlighted_tag_name = relevanssi_highlight_terms( $tag_names[ $i ], get_search_query() );
+			$highlighted_tag_name = relevanssi_highlight_terms( $tag_names[ $i ], get_search_query(), true );
 			$highlighted[ $i ]    = str_replace( '>' . $tag_names[ $i ] . '<', '>' . $highlighted_tag_name . '<', $originals[ $i ] );
 		}
 
