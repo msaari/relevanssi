@@ -22,8 +22,13 @@ add_filter( 'relevanssi_post_ok', 'relevanssi_paidmembershippro_compatibility', 
  * otherwise false.
  */
 function relevanssi_paidmembershippro_compatibility( $post_ok, $post_id ) {
-	$current_user = wp_get_current_user();
-	$post_ok      = pmpro_has_membership_access( $post_id, $current_user->ID );
+	$status = relevanssi_get_post_status( $post_id );
+
+	if ( 'publish' === $status ) {
+		// Only apply to published posts, don't apply to drafts.
+		$current_user = wp_get_current_user();
+		$post_ok      = pmpro_has_membership_access( $post_id, $current_user->ID );
+	}
 
 	return $post_ok;
 }
