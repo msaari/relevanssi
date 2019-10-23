@@ -1723,3 +1723,26 @@ function relevanssi_get_forbidden_taxonomies() {
 function relevanssi_return_off() {
 	return 'off';
 }
+
+/**
+ * Filters out unwanted custom fields.
+ *
+ * Added to the relevanssi_custom_field_value filter hook.
+ *
+ * @see relevanssi_index_custom_fields()
+ *
+ * @param array  $values The custom field values.
+ * @param string $field  The custom field name.
+ *
+ * @return array Empty array for unwanted custom fields.
+ */
+function relevanssi_filter_custom_fields( $values, $field ) {
+	$unwanted_custom_fields = array(
+		'classic-editor-remember' => true,
+		'php_everywhere_code'     => true,
+	);
+	if ( isset( $unwanted_custom_fields[ $field ] ) ) {
+		$values = array();
+	}
+	return $values;
+}
