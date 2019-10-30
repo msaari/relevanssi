@@ -181,15 +181,19 @@ function relevanssi_search( $args ) {
 
 	$total_hits = 0;
 
-	$title_matches    = array();
-	$tag_matches      = array();
-	$comment_matches  = array();
-	$link_matches     = array();
-	$body_matches     = array();
-	$category_matches = array();
-	$taxonomy_matches = array();
-	$scores           = array();
-	$term_hits        = array();
+	$title_matches       = array();
+	$tag_matches         = array();
+	$comment_matches     = array();
+	$link_matches        = array();
+	$body_matches        = array();
+	$category_matches    = array();
+	$taxonomy_matches    = array();
+	$customfield_matches = array();
+	$mysqlcolumn_matches = array();
+	$author_matches      = array();
+	$excerpt_matches     = array();
+	$scores              = array();
+	$term_hits           = array();
 
 	$fuzzy = get_option( 'relevanssi_fuzzy' );
 
@@ -503,13 +507,29 @@ function relevanssi_search( $args ) {
 				if ( ! isset( $comment_matches[ $match->doc ] ) ) {
 					$comment_matches[ $match->doc ] = 0;
 				}
-				$body_matches[ $match->doc ]     += $match->content;
-				$title_matches[ $match->doc ]    += $match->title;
-				$link_matches[ $match->doc ]     += $match->link;
-				$tag_matches[ $match->doc ]      += $match->tag;
-				$category_matches[ $match->doc ] += $match->category;
-				$taxonomy_matches[ $match->doc ] += $match->taxonomy;
-				$comment_matches[ $match->doc ]  += $match->comment;
+				if ( ! isset( $customfield_matches[ $match->doc ] ) ) {
+					$customfield_matches[ $match->doc ] = 0;
+				}
+				if ( ! isset( $author_matches[ $match->doc ] ) ) {
+					$author_matches[ $match->doc ] = 0;
+				}
+				if ( ! isset( $excerpt_matches[ $match->doc ] ) ) {
+					$excerpt_matches[ $match->doc ] = 0;
+				}
+				if ( ! isset( $mysqlcolumn_matches[ $match->doc ] ) ) {
+					$mysqlcolumn_matches[ $match->doc ] = 0;
+				}
+				$body_matches[ $match->doc ]        += $match->content;
+				$title_matches[ $match->doc ]       += $match->title;
+				$link_matches[ $match->doc ]        += $match->link;
+				$tag_matches[ $match->doc ]         += $match->tag;
+				$category_matches[ $match->doc ]    += $match->category;
+				$taxonomy_matches[ $match->doc ]    += $match->taxonomy;
+				$comment_matches[ $match->doc ]     += $match->comment;
+				$customfield_matches[ $match->doc ] += $match->customfield;
+				$author_matches[ $match->doc ]      += $match->author;
+				$excerpt_matches[ $match->doc ]     += $match->excerpt;
+				$mysqlcolumn_matches[ $match->doc ] += $match->mysqlcolumn;
 
 				/* Post type weights. */
 				$type = null;
@@ -673,16 +693,20 @@ function relevanssi_search( $args ) {
 			$or_args['q']             = relevanssi_add_synonyms( $q );
 			$return                   = relevanssi_search( $or_args );
 
-			$hits             = $return['hits'];
-			$body_matches     = $return['body_matches'];
-			$title_matches    = $return['title_matches'];
-			$tag_matches      = $return['tag_matches'];
-			$category_matches = $return['category_matches'];
-			$taxonomy_matches = $return['taxonomy_matches'];
-			$comment_matches  = $return['comment_matches'];
-			$link_matches     = $return['link_matches'];
-			$term_hits        = $return['term_hits'];
-			$q                = $return['query'];
+			$hits                = $return['hits'];
+			$body_matches        = $return['body_matches'];
+			$title_matches       = $return['title_matches'];
+			$tag_matches         = $return['tag_matches'];
+			$category_matches    = $return['category_matches'];
+			$taxonomy_matches    = $return['taxonomy_matches'];
+			$comment_matches     = $return['comment_matches'];
+			$link_matches        = $return['link_matches'];
+			$author_matches      = $return['author_matches'];
+			$customfield_matches = $return['customfield_matches'];
+			$mysqlcolumn_matches = $return['mysqlcolumn_matches'];
+			$excerpt_matches     = $return['excerpt_matches'];
+			$term_hits           = $return['term_hits'];
+			$q                   = $return['query'];
 		}
 		$params = array( 'args' => $args );
 		/**
@@ -697,18 +721,21 @@ function relevanssi_search( $args ) {
 		$params = apply_filters( 'relevanssi_fallback', $params );
 		$args   = $params['args'];
 		if ( isset( $params['return'] ) ) {
-			$return           = $params['return'];
-			$hits             = $return['hits'];
-			$body_matches     = $return['body_matches'];
-			$title_matches    = $return['title_matches'];
-			$tag_matches      = $return['tag_matches'];
-			$category_matches = $return['category_matches'];
-			$taxonomy_matches = $return['taxonomy_matches'];
-			$comment_matches  = $return['comment_matches'];
-			$body_matches     = $return['body_matches'];
-			$link_matches     = $return['link_matches'];
-			$term_hits        = $return['term_hits'];
-			$q                = $return['query'];
+			$return              = $params['return'];
+			$hits                = $return['hits'];
+			$body_matches        = $return['body_matches'];
+			$title_matches       = $return['title_matches'];
+			$tag_matches         = $return['tag_matches'];
+			$category_matches    = $return['category_matches'];
+			$taxonomy_matches    = $return['taxonomy_matches'];
+			$comment_matches     = $return['comment_matches'];
+			$link_matches        = $return['link_matches'];
+			$author_matches      = $return['author_matches'];
+			$customfield_matches = $return['customfield_matches'];
+			$mysqlcolumn_matches = $return['mysqlcolumn_matches'];
+			$excerpt_matches     = $return['excerpt_matches'];
+			$term_hits           = $return['term_hits'];
+			$q                   = $return['query'];
 		}
 	}
 
@@ -755,17 +782,21 @@ function relevanssi_search( $args ) {
 		}
 	}
 	$return = array(
-		'hits'             => $hits,
-		'body_matches'     => $body_matches,
-		'title_matches'    => $title_matches,
-		'tag_matches'      => $tag_matches,
-		'category_matches' => $category_matches,
-		'taxonomy_matches' => $taxonomy_matches,
-		'comment_matches'  => $comment_matches,
-		'scores'           => $scores,
-		'term_hits'        => $term_hits,
-		'query'            => $q,
-		'link_matches'     => $link_matches,
+		'hits'                => $hits,
+		'body_matches'        => $body_matches,
+		'title_matches'       => $title_matches,
+		'tag_matches'         => $tag_matches,
+		'category_matches'    => $category_matches,
+		'comment_matches'     => $comment_matches,
+		'taxonomy_matches'    => $taxonomy_matches,
+		'link_matches'        => $link_matches,
+		'customfield_matches' => $customfield_matches,
+		'mysqlcolumn_matches' => $mysqlcolumn_matches,
+		'author_matches'      => $author_matches,
+		'excerpt_matches'     => $excerpt_matches,
+		'scores'              => $scores,
+		'term_hits'           => $term_hits,
+		'query'               => $q,
 	);
 
 	return $return;
@@ -922,6 +953,9 @@ function relevanssi_do_query( &$query ) {
 				restore_current_blog();
 			}
 		}
+		if ( empty( $search_params['fields'] ) ) {
+			relevanssi_add_matches( $post, $return );
+		}
 		if ( 'on' === get_option( 'relevanssi_show_matches' ) && empty( $search_params['fields'] ) ) {
 			$post_id = $post->ID;
 			if ( 'user' === $post->post_type ) {
@@ -934,7 +968,7 @@ function relevanssi_do_query( &$query ) {
 			if ( isset( $post->blog_id ) ) {
 				$post_id = $post->blog_id . '|' . $post->ID;
 			}
-			$post->post_excerpt .= relevanssi_show_matches( $return, $post_id );
+			$post->post_excerpt .= relevanssi_show_matches( $post );
 		}
 
 		if ( empty( $search_params['fields'] ) ) {

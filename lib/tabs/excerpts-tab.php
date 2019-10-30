@@ -434,7 +434,7 @@ function relevanssi_excerpts_tab() {
 			}
 			?>
 			><?php echo esc_attr( $show_matches_text ); ?></textarea>
-			<p class="description"><?php esc_html_e( 'Use %body%, %title%, %tags% and %comments% to display the number of hits (in different parts of the post), %total% for total hits, %score% to display the document weight and %terms% to show how many hits each search term got.', 'relevanssi' ); /* phpcs:ignore WordPress.WP.I18n */ ?></p>
+			<p class="description"><?php esc_html_e( 'Use %body%, %title%, %categories%, %tags%, %taxonomies%, %comments%, %customfields%, %author%, %excerpt% and %mysqlcolumns% to display the number of hits (in different parts of the post), %total% for total hits, %score% to display the document weight and %terms% to show how many hits each search term got.', 'relevanssi' ); /* phpcs:ignore WordPress.WP.I18n */ ?></p>
 		</td>
 	</tr>
 	</table>

@@ -51,68 +51,121 @@ function relevanssi_strtolower( $string ) {
 }
 
 /**
+ * Adds the search result match breakdown to the post object.
+ *
+ * Reads in the number of matches and stores it in the relevanssi_hits filed
+ * of the post object. The post object is passed as a reference and modified
+ * on the fly.
+ *
+ * @param object $post The post object, passed as a reference.
+ * @param array  $data The source data.
+ */
+function relevanssi_add_matches( &$post, $data ) {
+	$hits = array(
+		'body'        => 0,
+		'title'       => 0,
+		'comment'     => 0,
+		'author'      => 0,
+		'excerpt'     => 0,
+		'customfield' => 0,
+		'mysqlcolumn' => 0,
+		'taxonomy'    => array(
+			'tag'      => 0,
+			'category' => 0,
+			'taxonomy' => 0,
+		),
+		'score'       => 0,
+		'terms'       => array(),
+	);
+	if ( isset( $data['body_matches'][ $post->ID ] ) ) {
+		$hits['body'] = $data['body_matches'][ $post->ID ];
+	}
+	if ( isset( $data['title_matches'][ $post->ID ] ) ) {
+		$hits['title'] = $data['title_matches'][ $post->ID ];
+	}
+	if ( isset( $data['tag_matches'][ $post->ID ] ) ) {
+		$hits['taxonomy']['tag'] = $data['tag_matches'][ $post->ID ];
+	}
+	if ( isset( $data['category_matches'][ $post->ID ] ) ) {
+		$hits['taxonomy']['category'] = $data['category_matches'][ $post->ID ];
+	}
+	if ( isset( $data['taxonomy_matches'][ $post->ID ] ) ) {
+		$hits['taxonomy']['taxonomy'] = $data['taxonomy_matches'][ $post->ID ];
+	}
+	if ( isset( $data['comment_matches'][ $post->ID ] ) ) {
+		$hits['comment'] = $data['comment_matches'][ $post->ID ];
+	}
+	if ( isset( $data['author_matches'][ $post->ID ] ) ) {
+		$hits['author'] = $data['author_matches'][ $post->ID ];
+	}
+	if ( isset( $data['excerpt_matches'][ $post->ID ] ) ) {
+		$hits['excerpt'] = $data['excerpt_matches'][ $post->ID ];
+	}
+	if ( isset( $data['customfield_matches'][ $post->ID ] ) ) {
+		$hits['customfield'] = $data['customfield_matches'][ $post->ID ];
+	}
+	if ( isset( $data['mysqlcolumn_matches'][ $post->ID ] ) ) {
+		$hits['mysqlcolumn'] = $data['mysqlcolumn_matches'][ $post->ID ];
+	}
+	if ( isset( $data['scores'][ $post->ID ] ) ) {
+		$hits['score'] = round( $data['scores'][ $post->ID ], 2 );
+	}
+	if ( isset( $data['term_hits'][ $post->ID ] ) ) {
+		$hits['terms'] = $data['term_hits'][ $post->ID ];
+		arsort( $hits['terms'] );
+	}
+	$post->relevanssi_hits = $hits;
+}
+
+/**
  * Generates the search result breakdown added to the search results.
  *
- * Gets the source data, generates numbers of it and then replaces the placeholders
+ * Gets the source data from the post object and then replaces the placeholders
  * in the breakdown template with the data.
  *
- * @param array $data The source data.
- * @param int   $hit  The post ID.
+ * @param object $post The post object.
  *
  * @return string The search results breakdown for the post.
  */
-function relevanssi_show_matches( $data, $hit ) {
-	if ( isset( $data['body_matches'][ $hit ] ) ) {
-		$body = $data['body_matches'][ $hit ];
-	} else {
-		$body = 0;
-	}
-	if ( isset( $data['title_matches'][ $hit ] ) ) {
-		$title = $data['title_matches'][ $hit ];
-	} else {
-		$title = 0;
-	}
-	if ( isset( $data['tag_matches'][ $hit ] ) ) {
-		$tag = $data['tag_matches'][ $hit ];
-	} else {
-		$tag = 0;
-	}
-	if ( isset( $data['category_matches'][ $hit ] ) ) {
-		$category = $data['category_matches'][ $hit ];
-	} else {
-		$category = 0;
-	}
-	if ( isset( $data['taxonomy_matches'][ $hit ] ) ) {
-		$taxonomy = $data['taxonomy_matches'][ $hit ];
-	} else {
-		$taxonomy = 0;
-	}
-	if ( isset( $data['comment_matches'][ $hit ] ) ) {
-		$comment = $data['comment_matches'][ $hit ];
-	} else {
-		$comment = 0;
-	}
-	if ( isset( $data['scores'][ $hit ] ) ) {
-		$score = round( $data['scores'][ $hit ], 2 );
-	} else {
-		$score = 0;
-	}
-	if ( isset( $data['term_hits'][ $hit ] ) ) {
-		$term_hits_array = $data['term_hits'][ $hit ];
-		arsort( $term_hits_array );
-	} else {
-		$term_hits_array = array();
-	}
+function relevanssi_show_matches( $post ) {
 	$term_hits  = '';
 	$total_hits = 0;
-	foreach ( $term_hits_array as $term => $hits ) {
+	foreach ( $post->relevanssi_hits['terms'] as $term => $hits ) {
 		$term_hits  .= " $term: $hits";
 		$total_hits += $hits;
 	}
 
 	$text          = stripslashes( get_option( 'relevanssi_show_matches_text' ) );
-	$replace_these = array( '%body%', '%title%', '%tags%', '%categories%', '%taxonomies%', '%comments%', '%score%', '%terms%', '%total%' );
-	$replacements  = array( $body, $title, $tag, $category, $taxonomy, $comment, $score, $term_hits, $total_hits );
+	$replace_these = array(
+		'%body%',
+		'%title%',
+		'%tags%',
+		'%categories%',
+		'%taxonomies%',
+		'%comments%',
+		'%customfields%',
+		'%author%',
+		'%excerpt%',
+		'%mysqlcolumns%',
+		'%score%',
+		'%terms%',
+		'%total%',
+	);
+	$replacements  = array(
+		$post->relevanssi_hits['body'],
+		$post->relevanssi_hits['title'],
+		$post->relevanssi_hits['taxonomy']['tag'],
+		$post->relevanssi_hits['taxonomy']['category'],
+		$post->relevanssi_hits['taxonomy']['taxonomy'],
+		$post->relevanssi_hits['comment'],
+		$post->relevanssi_hits['customfield'],
+		$post->relevanssi_hits['author'],
+		$post->relevanssi_hits['excerpt'],
+		$post->relevanssi_hits['mysqlcolumn'],
+		$post->relevanssi_hits['score'],
+		$term_hits,
+		$total_hits,
+	);
 	$result        = ' ' . str_replace( $replace_these, $replacements, $text );
 
 	/**
