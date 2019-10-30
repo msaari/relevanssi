@@ -809,99 +809,48 @@ function relevanssi_insert_edit( $post_id ) {
 }
 
 /**
- * Triggers comment indexing when a comment is edited.
- *
- * @author OdditY
- *
- * @param int $comment_id Comment id.
- */
-function relevanssi_comment_edit( $comment_id ) {
-	$action = 'update';
-	relevanssi_index_comment( $comment_id, $action );
-}
-
-/**
- * Triggers comment indexing when a comment is deleted.
- *
- * @author OdditY
- *
- * @param int $comment_id Comment ID.
- */
-function relevanssi_comment_remove( $comment_id ) {
-	$action = 'remove';
-	relevanssi_index_comment( $comment_id, $action );
-}
-
-/**
  * Updates comment indexing when comments are added, edited or deleted.
  *
  * @author OdditY
  *
- * @param int    $comment_id Commend ID.
- * @param string $action     What to do: 'add', 'update', 'remove'. Default 'add'.
+ * @param int $comment_id Commend ID.
+ *
+ * @see relevanssi_comment_remove
+ * @see relevanssi_comment_edit
+ * @see relevanssi_publish
+ *
+ * @return int|string The relevanssi_publish return value, "nocommentfound" if
+ * the comment doesn't exist or "donotindex" if it cannot be indexed.
+ * comment indexing is disabled.
  */
-function relevanssi_index_comment( $comment_id, $action = 'add' ) {
-	global $wpdb;
-
+function relevanssi_index_comment( $comment_id ) {
 	$comment_indexing_type = get_option( 'relevanssi_index_comments' );
 	$no_pingbacks          = false;
 	$post_id               = null;
 
-	switch ( $comment_indexing_type ) {
-		case 'all':
-			// All.
-			break;
-		case 'normal':
-			// Exclude trackbacks and pingbacks.
-			$no_pingbacks = true;
-			break;
-		default:
-			// No indexing.
-			return;
+	if ( 'normal' === $comment_indexing_type ) {
+		$no_pingbacks = true;
 	}
-	switch ( $action ) {
-		case 'update':
-			// Update, reindex the post.
-			$comment = get_comment( $comment_id );
-			if ( $no_pingbacks && ! empty( $comment->comment_type ) ) {
-				break;
-			}
-			$post_id = $comment->comment_post_ID;
-			break;
-		case 'remove':
-			// Remove, empty the comment and reindex the post.
-			$comment = get_comment( $comment_id );
-			if ( $no_pingbacks && ! empty( $comment->comment_type ) ) {
-				break;
-			}
-			$post_id = $comment->comment_post_ID;
-			if ( $post_id ) {
-				// Empty comment_content and reindex, then let WP delete the empty comment.
-				$wpdb->query( $wpdb->prepare( "UPDATE $wpdb->comments SET comment_content='' WHERE comment_ID=%d", $comment_id ) );
-			}
-			break;
-		default:
-			// Add new comment.
-			$comment = get_comment( $comment_id );
-			if ( $no_pingbacks && ! empty( $comment->comment_type ) ) {
-				break;
-			}
-			if ( 1 !== intval( $comment->comment_approved ) ) {
-				// Comment isn't approved, do not index.
-				break;
-			}
-			$post_id = $comment->comment_post_ID;
-			break;
+	if ( 'normal' !== $comment_indexing_type && 'all' !== $comment_indexing_type ) {
+		return 'donotindex';
 	}
-	if ( $post_id ) {
-		relevanssi_publish( $post_id );
+
+	$comment = get_comment( $comment_id );
+	if ( ! $comment ) {
+		return 'nocommentfound';
 	}
+	if ( $no_pingbacks && ! empty( $comment->comment_type ) ) {
+		return 'donotindex';
+	}
+	if ( 1 !== intval( $comment->comment_approved ) ) {
+		// Comment isn't approved, do not index.
+		return 'donotindex';
+	}
+	return relevanssi_publish( $comment->comment_post_ID );
 }
 
 /**
  * Returns the comment text for a post.
- *
- * @global object $wpdb The WordPress database interface.
  *
  * @param int $post_id The post ID.
  *
@@ -909,8 +858,6 @@ function relevanssi_index_comment( $comment_id, $action = 'add' ) {
  * and the comment text.
  */
 function relevanssi_get_comments( $post_id ) {
-	global $wpdb;
-
 	/**
 	 * If this filter returns true, the comments for the post are not indexed.
 	 *
@@ -943,7 +890,6 @@ function relevanssi_get_comments( $post_id ) {
 			'type'   => $comment_types,
 		);
 		$comments = get_approved_comments( $post_id, $args );
-
 		if ( count( $comments ) === 0 ) {
 			break;
 		}

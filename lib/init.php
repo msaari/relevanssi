@@ -26,8 +26,9 @@ add_action( 'delete_post', 'relevanssi_remove_doc' );
 
 // Comment indexing.
 add_action( 'comment_post', 'relevanssi_index_comment' );
-add_action( 'edit_comment', 'relevanssi_comment_edit' );
-add_action( 'delete_comment', 'relevanssi_comment_remove' );
+add_action( 'edit_comment', 'relevanssi_index_comment' );
+add_action( 'trashed_comment', 'relevanssi_index_comment' );
+add_action( 'deleted_comment', 'relevanssi_index_comment' );
 
 // Attachment indexing.
 add_action( 'delete_attachment', 'relevanssi_remove_doc' );
