@@ -195,6 +195,10 @@ function relevanssi_init() {
 
 	// Always required, the functions check if TablePress is active.
 	require_once 'compatibility/tablepress.php';
+
+	if ( defined( 'NINJA_TABLES_VERSION' ) ) {
+		require_once 'compatibility/ninjatables.php';
+	}
 }
 
 /**
