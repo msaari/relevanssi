@@ -1746,9 +1746,19 @@ function relevanssi_get_forbidden_post_types() {
 		'jp_pay_product',       // Jetpack.
 		'jp_mem_plan',          // Jetpack.
 		'tablepress_table',     // TablePress.
+		'ninja-table',          // Ninja Tables.
 		'shop_order',           // WooCommerce.
 		'shop_order_refund',    // WooCommerce.
 		'shop_webhook',         // WooCommerce.
+		'et_theme_builder',     // Divi.
+		'et_template',          // Divi.
+		'et_header_layout',     // Divi.
+		'et_body_layout',       // Divi.
+		'et_footer_layout',     // Divi.
+		'wpforms',              // WP Forms.
+		'amn_wpforms',          // WP Forms.
+		'wpforms_log',          // WP Forms.
+		'dlm_download_version', // Download Monitor.
 	);
 }
 
@@ -1763,6 +1773,7 @@ function relevanssi_get_forbidden_taxonomies() {
 		'link_category',          // Link categories.
 		'amp_validation_error',   // AMP.
 		'product_visibility',     // WooCommerce.
+		'wpforms_log_type',       // WP Forms.
 	);
 }
 
