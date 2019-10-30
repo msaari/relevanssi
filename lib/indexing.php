@@ -203,10 +203,11 @@ function relevanssi_post_type_restriction() {
 /**
  * Generates a list of valid post statuses.
  *
- * Generates a list of valid post statuses to use in indexing. By default, Relevanssi
- * accepts 'publish', 'draft', 'private', 'pending', and 'future'. If you need to use
- * a custom post status, you can use the 'relevanssi_valid_status' filter hook to add
- * your own post status to the list of valid statuses.
+ * Generates a list of valid post statuses to use in indexing. By default,
+ * Relevanssi accepts 'publish', 'draft', 'private', 'pending', and 'future'. If
+ * you need to use a custom post status, you can use the
+ * 'relevanssi_valid_status' filter hook to add your own post status to the list
+ * of valid statuses.
  *
  * @param boolean $return_array If true, return array; default false, return
  * string.
@@ -249,21 +250,23 @@ function relevanssi_valid_status_array( $return_array = false ) {
  * Builds the index.
  *
  * @global object $wpdb                 The WordPress database interface.
- * @global array  $relevanssi_variables The Relevanssi global variables array, used
- * for table names.
+ * @global array  $relevanssi_variables The Relevanssi global variables array,
+ * used for table names.
  *
  * @param boolean|int $extend_offset If numeric, offsets the indexing by that
- * amount. If true, doesn't truncate the index before indexing. If false, truncates
- * index before indexing. Default false.
- * @param boolean     $verbose       Not used anymore, kept for backwards compatibility.
- * @param int         $post_limit    How many posts to index. Default null, no limit.
+ * amount. If true, doesn't truncate the index before indexing. If false,
+ * truncates index before indexing. Default false.
+ * @param boolean     $verbose       Not used anymore, kept for backwards
+ * compatibility.
+ * @param int         $post_limit    How many posts to index. Default null, no
+ * limit.
  * @param boolean     $is_ajax       If true, indexing is done in AJAX context.
  * Default false.
  *
- * @return array In AJAX context, returns array with two values: 'indexing_complete'
- * tells whether indexing is completed or not, and 'indexed' returns the number of
- * posts indexed. Outside AJAX context, these values are returned as an array in
- * format of array(completed, posts indexed).
+ * @return array In AJAX context, returns array with two values:
+ * 'indexing_complete' tells whether indexing is completed or not, and 'indexed'
+ * returns the number of posts indexed. Outside AJAX context, these values are
+ * returned as an array in format of array(completed, posts indexed).
  */
 function relevanssi_build_index( $extend_offset = false, $verbose = null, $post_limit = null, $is_ajax = false ) {
 	global $wpdb, $relevanssi_variables;
