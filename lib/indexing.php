@@ -154,7 +154,12 @@ function relevanssi_generate_indexing_query( $valid_status, $extend = false, $re
 		$restriction ORDER BY post.ID DESC $limit";
 	}
 
-	return $q;
+	/**
+	 * Filters the Relevanssi indexing query.
+	 *
+	 * @param string $q The indexing MySQL query.
+	 */
+	return apply_filters( 'relevanssi_indexing_query', $q );
 }
 
 /**
