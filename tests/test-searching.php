@@ -137,8 +137,10 @@ class SearchingTest extends WP_UnitTestCase {
 		self::$and_matches      = 0;
 		self::$taxonomy_matches = 0;
 		foreach ( $post_ids as $id ) {
+			$title = '';
 			if ( 0 === $counter ) {
-				// Make one post contain a test phrase.
+				// Make one post contain a test phrase and specific title.
+				$title        = 'astatke';
 				$post_content = "words Mikko's test phrase content";
 				$args         = array(
 					'ID'           => $id,
@@ -182,7 +184,12 @@ class SearchingTest extends WP_UnitTestCase {
 				update_post_meta( $id, 'keywords', 'cat' );
 			}
 
-			$tags          = get_terms( 'post_tag', array( 'hide_empty' => false ) );
+			$tags          = get_terms(
+				array(
+					'taxonomy'   => 'post_tag',
+					'hide_empty' => false,
+				)
+			);
 			self::$tag_ids = array_map(
 				function ( $tag ) {
 						return $tag->term_id;
@@ -190,7 +197,9 @@ class SearchingTest extends WP_UnitTestCase {
 				$tags
 			);
 
-			$title = substr( md5( wp_rand() ), 0, 7 );
+			if ( empty( $title ) ) {
+				$title = substr( md5( wp_rand() ), 0, 7 );
+			}
 
 			$post_date = date( 'Y-m-d', time() - ( $counter * MONTH_IN_SECONDS ) );
 
@@ -1069,21 +1078,25 @@ class SearchingTest extends WP_UnitTestCase {
 			function ( $params ) {
 				$id               = self::$post_ids[0];
 				$return           = array(
-					'hits'             => array( get_post( $id ) ),
-					'body_matches'     => array( $id => 1 ),
-					'title_matches'    => array( $id => 0 ),
-					'tag_matches'      => array( $id => 0 ),
-					'category_matches' => array( $id => 0 ),
-					'taxonomy_matches' => array( $id => 0 ),
-					'comment_matches'  => array( $id => 0 ),
-					'link_matches'     => array( $id => 0 ),
-					'term_hits'        => array(
+					'hits'                => array( get_post( $id ) ),
+					'body_matches'        => array( $id => 1 ),
+					'title_matches'       => array( $id => 0 ),
+					'tag_matches'         => array( $id => 0 ),
+					'category_matches'    => array( $id => 0 ),
+					'taxonomy_matches'    => array( $id => 0 ),
+					'comment_matches'     => array( $id => 0 ),
+					'author_matches'      => array( $id => 0 ),
+					'customfield_matches' => array( $id => 0 ),
+					'mysqlcolumn_matches' => array( $id => 0 ),
+					'excerpt_matches'     => array( $id => 0 ),
+					'link_matches'        => array( $id => 0 ),
+					'term_hits'           => array(
 						$id =>
 							array(
 								'content' => 1,
 							),
 					),
-					'query'            => $params['args']['q'],
+					'query'               => $params['args']['q'],
 				);
 				$params['return'] = $return;
 				return $params;
@@ -2018,6 +2031,31 @@ class SearchingTest extends WP_UnitTestCase {
 			'include_attachments is not interpreted correctly.'
 		);
 
+	}
+
+	/**
+	 * Tests that relevanssi_do_query() does title highlights correctly.
+	 */
+	public function test_title_highlights() {
+		update_option( 'relevanssi_hilite_title', 'on' );
+		update_option( 'relevanssi_highlight', 'mark' );
+
+		$args = array(
+			's'           => 'astatke',
+			'post_type'   => 'post',
+			'numberposts' => 1,
+			'post_status' => 'publish',
+		);
+
+		$posts = self::results_from_args( $args )['posts'];
+
+		$this->assertEquals(
+			'<mark>astatke</mark>',
+			$posts[0]->post_highlighted_title,
+			"The title highlighting doesn't work correctly."
+		);
+
+		update_option( 'relevanssi_hilite_title', 'off' );
 	}
 
 	/**

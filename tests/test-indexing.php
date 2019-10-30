@@ -514,8 +514,6 @@ class IndexingTest extends WP_UnitTestCase {
 
 	/**
 	 * Tests relevanssi_index_doc().
-	 *
-	 * @group new
 	 */
 	public function test_index_doc() {
 		// phpcs:disable WordPress.Security.NonceVerification
@@ -909,8 +907,6 @@ class IndexingTest extends WP_UnitTestCase {
 
 	/**
 	 * Tests relevanssi_index_content().
-	 *
-	 * @group newnew
 	 */
 	public function test_index_content() {
 		$this->delete_all_posts();
@@ -1011,11 +1007,265 @@ class IndexingTest extends WP_UnitTestCase {
 
 		global $wp_filter;
 		unset( $wp_filter['relevanssi_content_to_index']->callbacks[56] );
+	}
 
-		ob_start();
-		$data   = array();
-		$n      = relevanssi_index_content( $data, $post, 3, true );
-		$output = ob_get_clean();
+	/**
+	 * Tests relevanssi_publish().
+	 */
+	public function test_publish() {
+		update_option( 'relevanssi_index_taxonomies_list', array() );
+
+		$post_id = wp_insert_post(
+			array(
+				'post_title'  => 'auto-draft',
+				'post_status' => 'auto-draft',
+			)
+		);
+		$this->assertEquals(
+			'auto-draft',
+			relevanssi_publish( $post_id, false ),
+			"relevanssi_publish() doesn't recognise auto-drafts correctly."
+		);
+
+		wp_insert_post(
+			array(
+				'ID'          => $post_id,
+				'post_title'  => 'auto-draft',
+				'post_status' => 'draft',
+			)
+		);
+		$this->assertEquals(
+			2,
+			relevanssi_publish( $post_id, false ),
+			"relevanssi_publish() doesn't produce the correct result for valid post."
+		);
+
+		relevanssi_remove_doc( $post_id );
+		wp_delete_post( $post_id );
+	}
+
+	/**
+	 * Tests relevanssi_insert_edit().
+	 */
+	public function test_insert_edit() {
+		update_option( 'relevanssi_index_taxonomies_list', array() );
+
+		$post_id = wp_insert_post(
+			array(
+				'post_title'  => 'auto-draft',
+				'post_status' => 'auto-draft',
+			)
+		);
+		$this->assertEquals(
+			'auto-draft',
+			relevanssi_insert_edit( $post_id ),
+			"relevanssi_insert_edit() doesn't recognise auto-drafts correctly."
+		);
+
+		add_filter( 'relevanssi_indexing_restriction', 'insert_edit_test_filter' );
+
+		wp_insert_post(
+			array(
+				'ID'          => $post_id,
+				'post_title'  => 'auto-draft',
+				'post_status' => 'draft',
+			)
+		);
+		$this->assertEquals(
+			'removed',
+			relevanssi_insert_edit( $post_id ),
+			"relevanssi_insert_edit() doesn't handle indexing restriction filter correctly."
+		);
+
+		remove_filter( 'relevanssi_indexing_restriction', 'insert_edit_test_filter' );
+
+		$this->assertEquals(
+			2,
+			relevanssi_insert_edit( $post_id ),
+			"relevanssi_insert_edit() doesn't produce the correct result for valid post."
+		);
+
+		relevanssi_remove_doc( $post_id );
+		wp_delete_post( $post_id );
+	}
+
+	/**
+	 * Tests relevanssi_generate_indexing_query().
+	 */
+	public function test_generate_indexing_query() {
+		global $wpdb;
+
+		$query = relevanssi_generate_indexing_query( 'publish', false, 'AND restriction=true', '' );
+		$this->assertDiscardWhitespace(
+			$query,
+			"SELECT post.ID FROM {$wpdb->prefix}posts post
+			LEFT JOIN {$wpdb->prefix}posts parent ON (post.post_parent=parent.ID)
+			WHERE (post.post_status IN (publish)
+			OR (post.post_status='inherit' AND(
+					(parent.ID is not null AND (parent.post_status IN (publish)))
+					OR (post.post_parent=0)
+				)
+			)) AND post.ID NOT IN (SELECT post_id FROM {$wpdb->prefix}postmeta WHERE meta_key = '_relevanssi_hide_post' AND meta_value = 'on')
+		 	AND restriction=true ORDER BY post.ID DESC"
+		);
+
+		$query = relevanssi_generate_indexing_query( 'publish', true, '', 'LIMIT 3' );
+		$this->assertDiscardWhitespace(
+			$query,
+			"SELECT post.ID FROM {$wpdb->prefix}posts post
+			LEFT JOIN {$wpdb->prefix}posts parent ON (post.post_parent=parent.ID)
+			LEFT JOIN {$wpdb->prefix}relevanssi r ON (post.ID=r.doc)
+			WHERE r.doc is null AND (post.post_status IN (publish)
+			OR (post.post_status='inherit' AND(
+				(parent.ID is not null AND (parent.post_status IN (publish)))
+				OR (post.post_parent=0)
+				)
+			)) AND post.ID NOT IN (SELECT post_id FROM {$wpdb->prefix}postmeta WHERE meta_key='_relevanssi_hide_post' AND meta_value='on')
+			ORDER BY post.ID DESC LIMIT 3"
+		);
+
+		update_option( 'relevanssi_internal_links', 'target' );
+
+		$query = relevanssi_generate_indexing_query( 'publish', true, '', '' );
+		$this->assertDiscardWhitespace(
+			$query,
+			"SELECT post.ID FROM {$wpdb->prefix}posts post
+			LEFT JOIN {$wpdb->prefix}posts parent ON (post.post_parent=parent.ID)
+			LEFT JOIN {$wpdb->prefix}relevanssi r ON (post.ID=r.doc)
+			WHERE (r.doc is null OR r.doc NOT IN (SELECT DISTINCT(doc) FROM {$wpdb->prefix}relevanssi WHERE link = 0))
+			AND (post.post_status IN (publish)
+			OR (post.post_status='inherit' AND(
+				(parent.ID is not null AND (parent.post_status IN (publish)))
+				OR (post.post_parent=0)
+				)
+			)) AND post.ID NOT IN (SELECT post_id FROM {$wpdb->prefix}postmeta WHERE meta_key='_relevanssi_hide_post' AND meta_value='on')
+			ORDER BY post.ID DESC"
+		);
+
+		update_option( 'relevanssi_internal_links', 'noindex' );
+	}
+
+	/**
+	 * Tests relevanssi_index_comment, relevanssi_comment_edit and
+	 * relevanssi_comment_update.
+	 */
+	public function test_relevanssi_index_comment() {
+		update_option( 'relevanssi_index_comments', 'all' );
+		update_option( 'relevanssi_index_taxonomies_list', array() );
+
+		$this->assertEquals(
+			'nocommentfound',
+			relevanssi_index_comment( 123456 ),
+			"relevanssi_index_comment doesn't return the correct response for adding a non-existing comment ID."
+		);
+
+		$post_data    = array(
+			'post_title'   => 'title',
+			'post_content' => 'content',
+			'post_status'  => 'publish',
+		);
+		$parent_post  = wp_insert_post( $post_data );
+		$comment_data = array(
+			'comment_content' => 'comment',
+			'comment_post_ID' => $parent_post,
+		);
+		$comment_id   = wp_insert_comment( $comment_data );
+
+		$this->assertEquals(
+			3,
+			relevanssi_index_comment( $comment_id ),
+			"relevanssi_index_comment doesn't return correct result for indexing a comment."
+		);
+
+		$comment_data['comment_ID']      = $comment_id;
+		$comment_data['comment_content'] = 'content schmontent';
+
+		wp_update_comment( $comment_data );
+
+		$this->assertEquals(
+			4,
+			relevanssi_index_comment( $comment_id ),
+			"relevanssi_index_comment doesn't return correct result for indexing an edited comment."
+		);
+
+		$comment_data['comment_approved'] = 'trash';
+		wp_update_comment( $comment_data );
+
+		$this->assertEquals(
+			'donotindex',
+			relevanssi_index_comment( $comment_id ),
+			"relevanssi_index_comment doesn't return correct result for a trashed comment."
+		);
+
+		update_option( 'relevanssi_index_comments', 'normal' );
+
+		$pingback_data = array(
+			'comment_type'    => 'pingback',
+			'comment_post_ID' => $parent_post,
+		);
+		$pingback_id   = wp_insert_comment( $pingback_data );
+
+		$this->assertEquals(
+			'donotindex',
+			relevanssi_index_comment( $pingback_id, 'add' ),
+			"relevanssi_index_comment doesn't block pingback when it should."
+		);
+
+		update_option( 'relevanssi_index_comments', 'none' );
+
+		$this->assertEquals(
+			'donotindex',
+			relevanssi_index_comment( 123456, 'add' ),
+			"relevanssi_index_comment doesn't return the correct response for a disabled comment indexing."
+		);
+
+		wp_delete_comment( $pingback_id );
+		wp_delete_comment( $comment_id );
+		wp_delete_post( $parent_post );
+	}
+
+	/**
+	 * Tests the relevanssi_get_comments() function.
+	 */
+	public function test_get_comments() {
+		update_option( 'relevanssi_index_comments', 'all' );
+
+		$post_data    = array(
+			'post_title'   => 'title',
+			'post_content' => 'content',
+			'post_status'  => 'publish',
+		);
+		$parent_post  = wp_insert_post( $post_data );
+		$comment_data = array(
+			'comment_content' => 'comment',
+			'comment_post_ID' => $parent_post,
+		);
+		wp_insert_comment( $comment_data );
+
+		$this->assertEquals(
+			'  comment',
+			relevanssi_get_comments( $parent_post ),
+			"relevanssi_get_comments() doesn't return the correct result."
+		);
+
+		add_filter( 'relevanssi_index_comments_exclude', '__return_true' );
+
+		$this->assertEquals(
+			'',
+			relevanssi_get_comments( $parent_post ),
+			"relevanssi_get_comments() doesn't apply the exclusion filter correctly."
+		);
+
+		remove_filter( 'relevanssi_index_comments_exclude', '__return_true' );
+
+		update_option( 'relevanssi_index_comments', 'none' );
+
+		$this->assertEquals(
+			'',
+			relevanssi_get_comments( $parent_post ),
+			"relevanssi_get_comments() doesn't return correct results for disabled comment indexing."
+		);
+
 	}
 
 	/**
@@ -1044,4 +1294,11 @@ class IndexingTest extends WP_UnitTestCase {
 			relevanssi_uninstall_free();
 		}
 	}
+}
+
+/**
+ * Helper function for insert_edit test.
+ */
+function insert_edit_test_filter() {
+	return " AND post_title != 'auto-draft' ";
 }
