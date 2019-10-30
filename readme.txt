@@ -3,9 +3,9 @@ Contributors: msaari
 Donate link: https://www.relevanssi.com/buy-premium/
 Tags: search, relevance, better search
 Requires at least: 4.8.3
-Tested up to: 5.2.3
+Tested up to: 5.3
 Requires PHP: 5.6
-Stable tag: 4.3.3
+Stable tag: 4.3.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -129,6 +129,18 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.3.4 =
+* New feature: You can now give Gutenberg blocks a CSS class `relevanssi_noindex` to exclude them from being indexed. Relevanssi will not index Gutenberg blocks that have the class.
+* New feature: Relevanssi automatically skips some custom fields from common plugins that only contain unnecessary metadata.
+* New feature: The search results breakdown is added to the post objects and can be found in $post->relevanssi_hits. The data also includes new fields and the breakdown from the excerpt settings page can now show author, excerpt, custom field and MySQL column hits.
+* New feature: Relevanssi can now index Ninja Tables table content. This is something of an experimental feature right now, feedback is welcome.
+* New feature: New filter hook `relevanssi_indexing_query` filters the indexing query and is mostly interesting for debugging reasons.
+* Minor fix: Deleted and trashed comment contents were not deindexed when the comment was removed. That has been corrected now.
+* Minor fix: Phrase matching is now applied to attachments as well, including the attachments indexed for parent post.
+* Minor fix: Phrase matching only looks at custom fields that are indexed by Relevanssi.
+* Minor fix: Exact match bonus now uses the original query without synonyms added for the exact match check.
+* Minor fix: Paid Membership Pro filtering is only applied to published posts to prevent drafts from showing up in the search results.
+
 = 4.3.3 =
 * New feature: New filter hook `relevanssi_indexing_adjust` can be used to stop Relevanssi from adjusting the number of posts indexed at once during the indexing.
 * New feature: New filter hook `relevanssi_acf_field_value` filters ACF field values before they are indexed.
@@ -171,6 +183,9 @@ Each document database is full of useless words. All the little words that appea
 * Deprecated: `relevanssi_get_term_taxonomy()` function is deprecated and will be removed at some point in the future.
 
 == Upgrade notice ==
+= 4.3.4 =
+* Comment indexing bug fix, compatibility improvements and minor bug fixes and improvements.
+
 = 4.3.3 =
 * Bug fixes and overall improvements.
 
