@@ -1000,7 +1000,9 @@ function relevanssi_do_query( &$query ) {
  * @return string The query with the LIMIT parameter added, if necessary.
  */
 function relevanssi_limit_filter( $query ) {
-	if ( 'on' === get_option( 'relevanssi_throttle', 'on' ) ) {
+	$termless_search = strstr( $query, 'relevanssi.term = relevanssi.term' );
+
+	if ( $termless_search || 'on' === get_option( 'relevanssi_throttle', 'on' ) ) {
 		$limit = get_option( 'relevanssi_throttle_limit', 500 );
 		if ( ! is_numeric( $limit ) ) {
 			$limit = 500;
