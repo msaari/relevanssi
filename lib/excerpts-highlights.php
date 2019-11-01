@@ -408,6 +408,10 @@ function relevanssi_highlight_terms( $content, $query, $in_docs = false ) {
 
 	$remove_stopwords = true;
 	$terms            = array_keys( relevanssi_tokenize( $query, $remove_stopwords, $min_word_length ) );
+
+	$untokenized_terms = explode( ' ', $query );
+	$terms             = array_unique( array_merge( $untokenized_terms, $terms ) );
+
 	array_walk( $terms, 'relevanssi_array_walk_trim' ); // Numeric search terms begin with a space.
 
 	if ( is_array( $query ) ) {
