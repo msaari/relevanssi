@@ -1759,6 +1759,19 @@ function relevanssi_get_forbidden_post_types() {
 		'amn_wpforms',          // WP Forms.
 		'wpforms_log',          // WP Forms.
 		'dlm_download_version', // Download Monitor.
+		'wpcf7_contact_form',   // WP Contact Form 7.
+		'amn_exact-metrics',    // Google Analytics Dashboard.
+		'edd_commission',       // Easy Digital Downloads.
+		'edd_payment',          // Easy Digital Downloads.
+		'edd_discount',         // Easy Digital Downloads.
+		'eddpointslog',         // Easy Digital Downloads.
+		'edd_log',              // Easy Digital Downloads.
+		'edd-zapier-sub',       // Easy Digital Downloads.
+		'pys_event',            // Pixel Your Site.
+		'wp-types-group',       // WP Types.
+		'wp-types-term-group',  // WP Types.
+		'wp-types-user-group',  // WP Types.
+
 	);
 }
 
@@ -1774,6 +1787,9 @@ function relevanssi_get_forbidden_taxonomies() {
 		'amp_validation_error',   // AMP.
 		'product_visibility',     // WooCommerce.
 		'wpforms_log_type',       // WP Forms.
+		'amp_template',           // AMP.
+		'edd_commission_status',  // Easy Digital Downloads.
+		'edd_log_type',           // Easy Digital Downloads.
 	);
 }
 
