@@ -61,6 +61,13 @@ function relevanssi_do_excerpt( $t_post, $query ) {
 	// Minimum word length is -1, we don't care about it right now.
 	$terms = relevanssi_tokenize( $query, $remove_stopwords, -1 );
 
+	if ( is_array( $query ) ) {
+		$untokenized_terms = array_filter( $query );
+	} else {
+		$untokenized_terms = array_filter( explode( ' ', $query ) );
+	}
+	$terms = array_unique( array_merge( array_flip( $untokenized_terms ), $terms ) );
+
 	// These shortcodes cause problems with Relevanssi excerpts.
 	$problem_shortcodes = array( 'layerslider', 'responsive-flipbook', 'breadcrumb', 'robogallery', 'gravityview', 'wp_show_posts' );
 	/**
@@ -409,9 +416,28 @@ function relevanssi_highlight_terms( $content, $query, $in_docs = false ) {
 	$remove_stopwords = true;
 	$terms            = array_keys( relevanssi_tokenize( $query, $remove_stopwords, $min_word_length ) );
 
-	$untokenized_terms = explode( ' ', $query );
-	$terms             = array_unique( array_merge( $untokenized_terms, $terms ) );
-
+	if ( is_array( $query ) ) {
+		$untokenized_terms = array_filter(
+			$query,
+			function( $value ) use ( $min_word_length ) {
+				if ( relevanssi_strlen( $value ) > $min_word_length ) {
+					return true;
+				}
+				return false;
+			}
+		);
+	} else {
+		$untokenized_terms = array_filter(
+			explode( ' ', $query ),
+			function( $value ) use ( $min_word_length ) {
+				if ( relevanssi_strlen( $value ) > $min_word_length ) {
+					return true;
+				}
+				return false;
+			}
+		);
+	}
+	$terms = array_unique( array_merge( $untokenized_terms, $terms ) );
 	array_walk( $terms, 'relevanssi_array_walk_trim' ); // Numeric search terms begin with a space.
 
 	if ( is_array( $query ) ) {
@@ -756,9 +782,9 @@ function relevanssi_count_matches( $words, $complete_text ) {
 	$lowercase_text = relevanssi_strtolower( $complete_text, 'UTF-8' );
 	$text           = '';
 
-	$word_boundaries_available = true;
+	$word_boundaries_available = false;
 	if ( 'on' === get_option( 'relevanssi_word_boundaries', 'off' ) ) {
-		$word_boundaries_available = false;
+		$word_boundaries_available = true;
 	}
 
 	$count_words = count( $words );
@@ -781,6 +807,7 @@ function relevanssi_count_matches( $words, $complete_text ) {
 		} else {
 			$regex = "/$word_slice/";
 		}
+		var_dump($regex);
 		$lines = preg_split( $regex, $lowercase_text );
 		if ( count( $lines ) > 1 ) {
 			$count_lines = count( $lines );
@@ -936,7 +963,6 @@ function relevanssi_extract_relevant_words( $terms, $content, $excerpt_length = 
 
 		$excerpt_slice = array_slice( $words, $offset, $excerpt_length );
 		$excerpt_slice = ' ' . implode( ' ', $excerpt_slice );
-
 		$count_matches = relevanssi_count_matches( $terms, $excerpt_slice );
 		if ( $count_matches > 0 && $count_matches > $best_excerpt_term_hits ) {
 			$best_excerpt_term_hits = $count_matches;
@@ -999,8 +1025,8 @@ function relevanssi_add_accent_variations( $word ) {
 	$replacement_arrays = apply_filters(
 		'relevanssi_accents_replacement_arrays',
 		array(
-			'from' => array( 'a', 'c', 'e', 'i', 'o', 'u', 'n', 'ss' ),
-			'to'   => array( '(a|á|à|â)', '(c|ç)', '(e|é|è|ê|ë)', '(i|í|ì|î|ï)', '(o|ó|ò|ô|õ)', '(u|ú|ù|ü|û)', '(n|ñ)', '(ss|ß)' ),
+			'from' => array( 'a', 'c', 'e', 'i', 'o', 'u', 'n', "'" ),
+			'to'   => array( '(a|á|à|â)', '(c|ç)', '(e|é|è|ê|ë)', '(i|í|ì|î|ï)', '(o|ó|ò|ô|õ)', '(u|ú|ù|ü|û)', '(n|ñ)', "('|’)?" ),
 		)
 	);
 
@@ -1015,7 +1041,6 @@ function relevanssi_add_accent_variations( $word ) {
 	$word = str_ireplace( $replacement_arrays['from'], $replacement_arrays['to'], $word );
 
 	$word = preg_replace( '/s$/', "(s|'s|’s)", $word );
-	$word = preg_replace( '/^o/', "(o|o'|o’)", $word );
 
 	$word = str_replace( '\-?/', '\/', $word );
 
