@@ -807,7 +807,6 @@ function relevanssi_count_matches( $words, $complete_text ) {
 		} else {
 			$regex = "/$word_slice/";
 		}
-		var_dump($regex);
 		$lines = preg_split( $regex, $lowercase_text );
 		if ( count( $lines ) > 1 ) {
 			$count_lines = count( $lines );
