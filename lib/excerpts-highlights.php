@@ -66,7 +66,7 @@ function relevanssi_do_excerpt( $t_post, $query ) {
 	} else {
 		$untokenized_terms = array_filter( explode( ' ', $query ) );
 	}
-	$terms = array_unique( array_merge( array_flip( $untokenized_terms ), $terms ) );
+	$terms = array_merge( array_flip( $untokenized_terms ), $terms );
 
 	// These shortcodes cause problems with Relevanssi excerpts.
 	$problem_shortcodes = array( 'layerslider', 'responsive-flipbook', 'breadcrumb', 'robogallery', 'gravityview', 'wp_show_posts' );
@@ -959,7 +959,6 @@ function relevanssi_extract_relevant_words( $terms, $content, $excerpt_length = 
 				$offset = 0;
 			}
 		}
-
 		$excerpt_slice = array_slice( $words, $offset, $excerpt_length );
 		$excerpt_slice = ' ' . implode( ' ', $excerpt_slice );
 		$count_matches = relevanssi_count_matches( $terms, $excerpt_slice );
@@ -1036,11 +1035,8 @@ function relevanssi_add_accent_variations( $word ) {
 		$word_array[] = $char;
 	}
 	$word = implode( '-?', $word_array );
-
 	$word = str_ireplace( $replacement_arrays['from'], $replacement_arrays['to'], $word );
-
 	$word = preg_replace( '/s$/', "(s|'s|’s)", $word );
-
 	$word = str_replace( '\-?/', '\/', $word );
 
 	return $word;
