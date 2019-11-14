@@ -131,6 +131,10 @@ function update_relevanssi_options() {
 		if ( ! isset( $_REQUEST['relevanssi_expand_shortcodes'] ) ) {
 			$_REQUEST['relevanssi_expand_shortcodes'] = 'off';
 		}
+
+		if ( ! isset( $_REQUEST['relevanssi_index_image_files'] ) ) {
+			$_REQUEST['relevanssi_index_image_files'] = 'off';
+		}
 	}
 
 	if ( 'searching' === $_REQUEST['tab'] ) {
@@ -412,6 +416,9 @@ function update_relevanssi_options() {
 	}
 	if ( isset( $_REQUEST['relevanssi_index_excerpt'] ) ) {
 		update_option( 'relevanssi_index_excerpt', $_REQUEST['relevanssi_index_excerpt'] );
+	}
+	if ( isset( $_REQUEST['relevanssi_index_image_files'] ) ) {
+		update_option( 'relevanssi_index_image_files', $_REQUEST['relevanssi_index_image_files'] );
 	}
 	if ( isset( $_REQUEST['relevanssi_fuzzy'] ) ) {
 		update_option( 'relevanssi_fuzzy', $_REQUEST['relevanssi_fuzzy'] );

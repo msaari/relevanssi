@@ -99,6 +99,14 @@ function relevanssi_generate_indexing_query( $valid_status, $extend = false, $re
 	global $wpdb, $relevanssi_variables;
 	$relevanssi_table = $relevanssi_variables['relevanssi_table'];
 
+	if ( 'off' === get_option( 'relevanssi_index_image_files', 'off' ) ) {
+		$restriction = "
+		AND post.ID NOT IN (
+		SELECT ID FROM $wpdb->posts WHERE post_type = 'attachment'
+		AND post_mime_type LIKE 'image%' )
+	";
+	}
+
 	/**
 	 * Filters the WHERE restriction for indexing queries.
 	 *

@@ -25,6 +25,7 @@ function relevanssi_indexing_tab() {
 	$index_fields          = get_option( 'relevanssi_index_fields' );
 	$index_author          = get_option( 'relevanssi_index_author' );
 	$index_excerpt         = get_option( 'relevanssi_index_excerpt' );
+	$index_image_files     = get_option( 'relevanssi_index_image_files' );
 	$expand_shortcodes     = get_option( 'relevanssi_expand_shortcodes' );
 	$punctuation           = get_option( 'relevanssi_punctuation' );
 	$min_word_length       = get_option( 'relevanssi_min_word_length' );
@@ -39,6 +40,7 @@ function relevanssi_indexing_tab() {
 	$expand_shortcodes     = relevanssi_check( $expand_shortcodes );
 	$index_author          = relevanssi_check( $index_author );
 	$index_excerpt         = relevanssi_check( $index_excerpt );
+	$index_image_files     = relevanssi_check( $index_image_files );
 	$index_comments_all    = relevanssi_select( $index_comments, 'all' );
 	$index_comments_normal = relevanssi_select( $index_comments, 'normal' );
 	$index_comments_none   = relevanssi_select( $index_comments, 'none' );
@@ -207,10 +209,32 @@ function relevanssi_indexing_tab() {
 		</td>
 	</tr>
 	</table>
-		<?php // Translators: %1$s is 'attachment', %2$s opens the link, %3$s closes it. ?>
-		<p class="description"><?php printf( esc_html__( '%1$s includes all attachment types. If you want to index only some attachments, see %2$sControlling attachment types in the Knowledge base%3$s.', 'relevanssi' ), '<code>attachment</code>', '<a href="https://www.relevanssi.com/knowledge-base/controlling-attachment-types-index/">', '</a>' ); ?></p>
 		<p class="description"><?php esc_html_e( "If you want to index a post type that's marked 'Excluded from search', you can do that without worrying about it – but you need to uncheck the 'Respect exclude_from_search' setting from the Searching tab.", 'relevanssi' ); ?></p>
 	</td>
+	</tr>
+
+	<tr id="row_index_image_files"
+	<?php
+	if ( ! in_array( 'attachment', $index_post_types, true ) ) {
+		echo 'style="display: none"';
+	}
+	?>
+	>
+		<th scope="row">
+			<?php esc_html_e( 'Index image files', 'relevanssi' ); ?>
+		</th>
+		<td>
+		<fieldset>
+			<legend class="screen-reader-text"><?php esc_html_e( 'Index image attachments', 'relevanssi' ); ?></legend>
+			<label for='relevanssi_index_image_files'>
+				<input type='checkbox' name='relevanssi_index_image_files' id='relevanssi_index_image_files' <?php echo esc_attr( $index_image_files ); ?> />
+				<?php esc_html_e( 'Index image attachments', 'relevanssi' ); ?>
+			</label>
+			<p class="description"><?php esc_html_e( 'If this option is enabled, Relevanssi will include image attachments in the index. If the option is disabled, only other attachment types are included.', 'relevanssi' ); ?></p>
+			<?php // Translators: %1$s opens the link, %2$s closes it. ?>
+			<p class="description"><?php printf( esc_html__( 'For more detailed control over the attachment type indexing, see %1$sControlling attachment types in the Knowledge base%2$s.', 'relevanssi' ), '<a href="https://www.relevanssi.com/knowledge-base/controlling-attachment-types-index/">', '</a>' ); ?></p>
+		</fieldset>
+		</td>
 	</tr>
 
 	<tr>
