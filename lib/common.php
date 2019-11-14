@@ -1749,6 +1749,8 @@ function relevanssi_get_forbidden_post_types() {
 		'ninja-table',          // Ninja Tables.
 		'shop_order',           // WooCommerce.
 		'shop_order_refund',    // WooCommerce.
+		'wc_order_status',      // WooCommerce.
+		'wc_order_email',       // WooCommerce.
 		'shop_webhook',         // WooCommerce.
 		'et_theme_builder',     // Divi.
 		'et_template',          // Divi.
@@ -1771,6 +1773,10 @@ function relevanssi_get_forbidden_post_types() {
 		'wp-types-group',       // WP Types.
 		'wp-types-term-group',  // WP Types.
 		'wp-types-user-group',  // WP Types.
+		'vc_grid_item',         // Visual Composer.
+		'bigcommerce_task',     // BigCommerce.
+		'slides',               // Qoda slides.
+		'carousels',            // Qoda carousels.
 
 	);
 }
