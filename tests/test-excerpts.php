@@ -256,7 +256,8 @@ nulla. Pharetra vel turpis nunc eget lorem dolor. Tristique senectus et netus
 et malesuada.
 EOT;
 
-		update_option( 'relevanssi_word_boundaries', 'off' );
+		update_option( 'relevanssi_word_boundaries', 'on' );
+
 		$this->assertEquals(
 			3,
 			relevanssi_count_matches( array( 'fringilla', 'sagittis' ), $text ),
@@ -277,7 +278,7 @@ EOT;
 			"relevanssi_count_matches() isn't doing fuzzy matching correctly"
 		);
 
-		update_option( 'relevanssi_word_boundaries', 'on' );
+		update_option( 'relevanssi_word_boundaries', 'off' );
 		$this->assertEquals(
 			3,
 			relevanssi_count_matches( array( 'fringilla', 'sagittis' ), $text ),
@@ -714,6 +715,7 @@ EOT;
 		}
 
 		update_option( 'relevanssi_highlight', 'mark' );
+		add_filter( 'relevanssi_allow_one_letter_highlights', '__return_false' );
 
 		$content = 'A e i o u';
 		$query   = 'i';
@@ -724,6 +726,7 @@ EOT;
 			"relevanssi_highlight_term() one-letter highlights appear when they shouldn't."
 		);
 
+		remove_filter( 'relevanssi_allow_one_letter_highlights', '__return_false' );
 		add_filter( 'relevanssi_allow_one_letter_highlights', '__return_true' );
 		$excerpt = relevanssi_highlight_terms( $content, $query, false );
 		$this->assertEquals(
