@@ -21,4 +21,3 @@ require_once './vendor/autoload.php';
  * Load and install Relevanssi.
  */
 require_once dirname( __DIR__ ) . '/relevanssi.php';
-relevanssi_install();
