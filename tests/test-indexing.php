@@ -1265,7 +1265,47 @@ class IndexingTest extends WP_UnitTestCase {
 			relevanssi_get_comments( $parent_post ),
 			"relevanssi_get_comments() doesn't return correct results for disabled comment indexing."
 		);
+	}
 
+	/**
+	 * Tests the relevanssi_no_image_attachments function and feature.
+	 */
+	public function test_no_image_attachments() {
+		$this->delete_all_posts();
+
+		$image_attachment = array(
+			'post_title'     => 'cat gif',
+			'post_mime_type' => 'image/gif',
+			'post_type'      => 'attachment',
+			'post_status'    => 'publish',
+		);
+		wp_insert_post( $image_attachment );
+
+		$pdf_attachment = array(
+			'post_title'     => 'cat pdf',
+			'post_mime_type' => 'application/pdf',
+			'post_type'      => 'attachment',
+			'post_status'    => 'publish',
+		);
+		wp_insert_post( $pdf_attachment );
+
+		update_option( 'relevanssi_index_post_types', array( 'attachment' ) );
+
+		update_option( 'relevanssi_index_image_files', 'off' );
+		$return = relevanssi_build_index( false, null, null, true );
+		$this->assertEquals(
+			1,
+			$return['indexed'],
+			"With image files excluded, the number of posts indexed isn't correct."
+		);
+
+		update_option( 'relevanssi_index_image_files', 'on' );
+		$return = relevanssi_build_index( false, null, null, true );
+		$this->assertEquals(
+			2,
+			$return['indexed'],
+			"With image files included, the number of posts indexed isn't correct."
+		);
 	}
 
 	/**
