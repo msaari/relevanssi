@@ -2,7 +2,7 @@
 Contributors: msaari
 Donate link: https://www.relevanssi.com/buy-premium/
 Tags: search, relevance, better search
-Requires at least: 4.8.3
+Requires at least: 4.9
 Tested up to: 5.3
 Requires PHP: 5.6
 Stable tag: 4.3.4
@@ -29,6 +29,7 @@ Do note that using Relevanssi may require large amounts (hundreds of megabytes) 
 * Search comments, tags, categories and custom fields.
 * Multisite friendly.
 * bbPress support.
+* Gutenberg friendly.
 
 = Advanced features =
 * Adjust the weighting for titles, tags and comments.
@@ -38,7 +39,7 @@ Do note that using Relevanssi may require large amounts (hundreds of megabytes) 
 * Index the contents of shortcodes.
 * Google-style "Did you mean?" suggestions based on successful user searches.
 * Support for [WPML multi-language plugin](http://wpml.org/) and [Polylang](https://wordpress.org/plugins/polylang/).
-* Support for [s2member membership plugin](http://www.s2member.com/), [Members](https://wordpress.org/plugins/members/), [Groups](https://wordpress.org/plugins/groups/) and [Simple Membership](https://wordpress.org/plugins/simple-membership/).
+* Support for [s2member membership plugin](http://www.s2member.com/), [Members](https://wordpress.org/plugins/members/), [Groups](https://wordpress.org/plugins/groups/), [Simple Membership](https://wordpress.org/plugins/simple-membership/) and other membership plugins.
 * Advanced filtering to help hacking the search results the way you want.
 * Search result throttling to improve performance on large databases.
 * Disable indexing of post content and post titles with a simple filter hook.
@@ -55,7 +56,8 @@ Do note that using Relevanssi may require large amounts (hundreds of megabytes) 
 * Let the user choose between AND and OR searches, use + and - operator (AND and NOT).
 * Export and import settings.
 * [WP CLI commands](https://www.relevanssi.com/user-manual/wp-cli/).
-* Related posts.
+* [Related posts](https://www.relevanssi.com/knowledge-base/related-posts/).
+* [Redirects for searches](https://www.relevanssi.com/user-manual/redirects/).
 
 = Relevanssi in Facebook =
 You can find [Relevanssi in Facebook](https://www.facebook.com/relevanssi).
@@ -120,6 +122,8 @@ Thus, the weight of the word for a document increases the more often it appears 
 = What are stop words? =
 
 Each document database is full of useless words. All the little words that appear in just about every document are completely useless for information retrieval purposes. Basically, their inverted document frequency is really low, so they never have much power in matching. Also, removing those words helps to make the index smaller and searching faster.
+
+[](http://coderisk.com/wp/plugin/relevanssi/RIPS-XC1ekC4JKr)
 
 == Thanks ==
 * Cristian Damm for tag indexing, comment indexing, post/page exclusion and general helpfulness.
