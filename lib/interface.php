@@ -313,7 +313,7 @@ function update_relevanssi_options() {
 		}
 		if ( 'some' === $_REQUEST['relevanssi_index_fields_select'] ) {
 			if ( isset( $_REQUEST['relevanssi_index_fields'] ) ) {
-				$fields_option = $_REQUEST['relevanssi_index_fields'];
+				$fields_option = rtrim( $_REQUEST['relevanssi_index_fields'], " \t\n\r\0\x0B," );
 			}
 		}
 		update_option( 'relevanssi_index_fields', $fields_option );
@@ -637,16 +637,15 @@ function relevanssi_query_log() {
 		print( "<form method='post'>" );
 		wp_nonce_field( 'relevanssi_reset_logs', '_relresnonce', true, true );
 		printf(
-			'<p><label for="relevanssi_reset_code">%s</label></p></form>',
-			sprintf(
-				// Translators: %1$s is the input field, %2$s is the submit button.
-				__( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-					'To reset the logs, type "reset" into the box here %1$s and click %2$s',
-					'relevanssi'
-				),
-				' <input type="text" id="relevanssi_reset_code" name="relevanssi_reset_code" />',
-				' <input type="submit" name="relevanssi_reset" value="Reset" class="button" />'
-			)
+			'<p><label for="relevanssi_reset_code">%s</label>
+			<input type="text" id="relevanssi_reset_code" name="relevanssi_reset_code" />
+			<input type="submit" name="relevanssi_reset" value="%s" class="button" /></p></form>',
+			// Translators: do not translate "reset".
+			esc_html__(
+				'To reset the logs, type "reset" into the box here and click the Reset button',
+				'relevanssi'
+			),
+			esc_html__( 'Reset', 'relevanssi' )
 		);
 	}
 
@@ -985,6 +984,7 @@ function relevanssi_add_admin_scripts( $hook ) {
 		'reload_state'         => __( 'Reload the page to refresh the state of the index.', 'relevanssi' ),
 		'pdf_reset_confirm'    => __( 'Are you sure you want to delete all attachment content from the index?', 'relevanssi' ),
 		'pdf_reset_done'       => __( 'Relevanssi attachment data wiped clean.', 'relevanssi' ),
+		'pdf_reset_problems'   => __( 'There were problems wiping the Relevanssi attachment data clean.', 'relevanssi' ),
 		'hour'                 => __( 'hour', 'relevanssi' ),
 		'hours'                => __( 'hours', 'relevanssi' ),
 		'about'                => __( 'about', 'relevanssi' ),

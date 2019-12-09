@@ -49,16 +49,11 @@ function relevanssi_stopwords_tab() {
  * Displays a list of stopwords.
  *
  * Displays the list of stopwords and gives the controls for adding new stopwords.
- *
- * @global object $wpdb                 The WP database interface.
- * @global array  $relevanssi_variables The global Relevanssi variables array.
  */
 function relevanssi_show_stopwords() {
-	global $wpdb, $relevanssi_variables;
-
 	printf( '<p>%s</p>', esc_html__( 'Enter a word here to add it to the list of stopwords. The word will automatically be removed from the index, so re-indexing is not necessary. You can enter many words at the same time, separate words with commas.', 'relevanssi' ) );
 	?>
-<table class="form-table">
+<table class="form-table" role="presentation">
 <tr>
 	<th scope="row">
 		<label for="addstopword"><p><?php esc_html_e( 'Stopword(s) to add', 'relevanssi' ); ?>
@@ -71,25 +66,27 @@ function relevanssi_show_stopwords() {
 </table>
 <p><?php esc_html_e( "Here's a list of stopwords in the database. Click a word to remove it from stopwords. Removing stopwords won't automatically return them to index, so you need to re-index all posts after removing stopwords to get those words back to index.", 'relevanssi' ); ?></p>
 
-<table class="form-table">
+<table class="form-table" role="presentation">
 <tr>
 	<th scope="row">
 		<?php esc_html_e( 'Current stopwords', 'relevanssi' ); ?>
 	</th>
 	<td>
+		<ul>
 	<?php
-	echo '<ul>';
-	$results    = $wpdb->get_results( 'SELECT * FROM ' . $relevanssi_variables['stopword_table'] );  // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
-	$exportlist = array();
-	foreach ( $results as $stopword ) {
-		$sw = stripslashes( $stopword->stopword );
-		printf( '<li style="display: inline;"><input type="submit" name="removestopword" value="%s"/></li>', esc_attr( $sw ) );
-		array_push( $exportlist, $sw );
-	}
-	echo '</ul>';
+	$stopword_list  = get_option( 'relevanssi_stopwords', '' );
+	$stopword_array = array_map( 'stripslashes', explode( ',', $stopword_list ) );
+	sort( $stopword_array );
+	array_walk(
+		$stopword_array,
+		function ( $term ) {
+			printf( '<li style="display: inline;"><input type="submit" name="removestopword" value="%s"/></li>', esc_attr( $term ) );
+		}
+	);
 
-	$exportlist = htmlspecialchars( implode( ', ', $exportlist ) );
+	$exportlist = htmlspecialchars( str_replace( ',', ', ', $stopword_list ) );
 	?>
+	</ul>
 	<p><input type="submit" id="removeallstopwords" name="removeallstopwords" value="<?php esc_attr_e( 'Remove all stopwords', 'relevanssi' ); ?>" class='button' /></p>
 	</td>
 </tr>

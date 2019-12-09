@@ -60,7 +60,7 @@ function relevanssi_searching_tab() {
 	$docs_count = $wpdb->get_var( 'SELECT COUNT(DISTINCT doc) FROM ' . $relevanssi_variables['relevanssi_table'] . ' WHERE doc != -1' );  // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
 	?>
 
-	<table class="form-table">
+	<table class="form-table" role="presentation">
 	<tr>
 		<th scope="row">
 			<label for='relevanssi_implicit_operator'><?php esc_html_e( 'Default operator', 'relevanssi' ); ?></label>
@@ -81,7 +81,7 @@ function relevanssi_searching_tab() {
 	</tr>
 	<tr id="orfallback" class='<?php echo esc_attr( $orfallback_visibility ); ?>'>
 		<th scope="row">
-			<label for='relevanssi_disable_or_fallback'><?php esc_html_e( 'Fallback to OR', 'relevanssi' ); ?></label>
+			<?php esc_html_e( 'Fallback to OR', 'relevanssi' ); ?>
 		</th>
 		<td>
 		<fieldset>

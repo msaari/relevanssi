@@ -27,7 +27,7 @@ function relevanssi_logging_tab() {
 	$trim_logs           = get_option( 'relevanssi_trim_logs' );
 
 	?>
-	<table class="form-table">
+	<table class="form-table" role="presentation">
 	<tr>
 		<th scope="row">
 			<?php esc_html_e( 'Enable logs', 'relevanssi' ); ?>

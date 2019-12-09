@@ -18,7 +18,7 @@ function relevanssi_search_tab() {
 	<p><?php esc_html_e( 'You can use this search to perform Relevanssi searches without any restrictions from WordPress. You can search all post types here.', 'relevanssi' ); ?></p>
 
 	<form action="" method="get">
-	<table class="form-table">
+	<table class="form-table" role="presentation">
 	<tr>
 		<th scope="row">
 			<label for='s'><?php esc_html_e( 'Search terms', 'relevanssi' ); ?></label>

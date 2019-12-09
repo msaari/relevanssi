@@ -24,7 +24,7 @@ function relevanssi_synonyms_tab() {
 	?>
 	<h3 id="synonyms"><?php esc_html_e( 'Synonyms', 'relevanssi' ); ?></h3>
 
-<table class="form-table">
+<table class="form-table" role="presentation">
 <tr>
 	<th scope="row">
 		<label for="relevanssi_synonyms"><?php esc_html_e( 'Synonyms', 'relevanssi' ); ?></label>
