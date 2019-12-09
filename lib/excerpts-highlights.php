@@ -1109,51 +1109,6 @@ function relevanssi_get_custom_field_content( $post_id ) {
 }
 
 /**
- * Removes page builder short codes from content.
- *
- * Page builder shortcodes cause problems in excerpts. This function cleans them
- * out.
- *
- * @param string $content The content to clean.
- *
- * @return string The content without page builder shortcodes.
- */
-function relevanssi_remove_page_builder_shortcodes( $content ) {
-	/**
-	 * Filters the page builder shortcode.
-	 *
-	 * @param array An array of page builder shortcode regexes.
-	 */
-	$search_array = apply_filters(
-		'relevanssi_page_builder_shortcodes',
-		array(
-			// Remove content.
-			'/\[et_pb_code.*?\].*\[\/et_pb_code\]/im',
-			'/\[et_pb_sidebar.*?\].*\[\/et_pb_sidebar\]/im',
-			'/\[et_pb_fullwidth_slider.*?\].*\[\/et_pb_fullwidth_slider\]/im',
-			'/\[vc_raw_html.*?\].*\[\/vc_raw_html\]/im',
-			// Remove only the tags.
-			'/\[\/?et_pb.*?\]/im',
-			'/\[\/?vc.*?\]/im',
-			'/\[\/?mk.*?\]/im',
-			'/\[\/?cs_.*?\]/im',
-			'/\[\/?av_.*?\]/im',
-			'/\[\/?fusion_.*?\]/im',
-			// Max Mega Menu doesn't work in excerpts.
-			'/\[maxmegamenu.*?\]/im',
-			// All-in-one Events Calendar shortcode doesn't look good.
-			'/\[ai1ec.*?\]/im',
-			// Events Made Easy Calendar shortcodes should be removed.
-			'/\[eme_.*?\]/im',
-			// Layer Slider.
-			'/\[layerslider.*?\]/im',
-		)
-	);
-	$content      = preg_replace( $search_array, '', $content );
-	return $content;
-}
-
-/**
  * Kills the autoembed filter hook on 'the_content'.
  *
  * @global array $wp_filter The global filter array.

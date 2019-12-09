@@ -523,11 +523,8 @@ function relevanssi_get_custom_fields() {
 		} elseif ( 'visible' === $custom_fields ) {
 			return $custom_fields;
 		} else {
-			$custom_fields       = explode( ',', $custom_fields );
-			$count_custom_fields = count( $custom_fields );
-			for ( $i = 0; $i < $count_custom_fields; $i++ ) {
-				$custom_fields[ $i ] = trim( $custom_fields[ $i ] );
-			}
+			$custom_fields_raw = explode( ',', $custom_fields );
+			$custom_fields     = array_filter( array_map( 'trim', $custom_fields_raw ) );
 		}
 	} else {
 		$custom_fields = false;
@@ -1299,7 +1296,6 @@ function relevanssi_switch_blog( $new_blog, $prev_blog ) {
 	}
 
 	$relevanssi_variables['relevanssi_table'] = $wpdb->prefix . 'relevanssi';
-	$relevanssi_variables['stopword_table']   = $wpdb->prefix . 'relevanssi_stopwords';
 	$relevanssi_variables['log_table']        = $wpdb->prefix . 'relevanssi_log';
 }
 
@@ -1532,7 +1528,7 @@ function relevanssi_simple_generate_suggestion( $query ) {
 	$data = get_transient( 'relevanssi_didyoumean_query' );
 	if ( empty( $data ) ) {
 		$data = $wpdb->get_results( $q ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-		set_transient( 'relevanssi_didyoumean_query', $data, 60 * 60 * 24 * 7 );
+		set_transient( 'relevanssi_didyoumean_query', $data, MONTH_IN_SECONDS );
 	}
 
 	$query            = htmlspecialchars_decode( $query, ENT_QUOTES );
@@ -1834,4 +1830,52 @@ function relevanssi_filter_custom_fields( $values, $field ) {
 		$values = array();
 	}
 	return $values;
+}
+
+
+/**
+ * Removes page builder short codes from content.
+ *
+ * Page builder shortcodes cause problems in excerpts and add junk to posts in
+ * indexing. This function cleans them out.
+ *
+ * @param string $content The content to clean.
+ *
+ * @return string The content without page builder shortcodes.
+ */
+function relevanssi_remove_page_builder_shortcodes( $content ) {
+	$context = current_filter();
+	/**
+	 * Filters the page builder shortcode.
+	 *
+	 * @param array  An array of page builder shortcode regexes.
+	 * @param string Context, ie. the current filter hook, if you want your
+	 * changes to only count for indexing or for excerpts. In indexing, this
+	 * is 'relevanssi_post_content', for excerpts it's
+	 * 'relevanssi_pre_excerpt_content'.
+	 */
+	$search_array = apply_filters(
+		'relevanssi_page_builder_shortcodes',
+		array(
+			// Remove content.
+			'/\[et_pb_code.*?\].*\[\/et_pb_code\]/im',
+			'/\[et_pb_sidebar.*?\].*\[\/et_pb_sidebar\]/im',
+			'/\[et_pb_fullwidth_slider.*?\].*\[\/et_pb_fullwidth_slider\]/im',
+			'/\[vc_raw_html.*?\].*\[\/vc_raw_html\]/im',
+			// Remove only the tags.
+			'/\[\/?et_pb.*?\]/im',
+			'/\[\/?vc.*?\]/im',
+			'/\[\/?mk.*?\]/im',
+			'/\[\/?cs_.*?\]/im',
+			'/\[\/?av_.*?\]/im',
+			'/\[\/?fusion_.*?\]/im',
+			'/\[maxmegamenu.*?\]/im',
+			'/\[ai1ec.*?\]/im',
+			'/\[eme_.*?\]/im',
+			'/\[layerslider.*?\]/im',
+		),
+		$context
+	);
+	$content      = preg_replace( $search_array, ' ', $content );
+	return $content;
 }

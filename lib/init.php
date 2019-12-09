@@ -45,8 +45,9 @@ add_filter( 'relevanssi_query_filter', 'relevanssi_limit_filter' );
 add_action( 'relevanssi_trim_logs', 'relevanssi_trim_logs' );
 add_action( 'relevanssi_custom_field_value', 'relevanssi_filter_custom_fields', 10, 2 );
 
-// Plugin and theme compatibility.
+// Page builder shortcodes.
 add_filter( 'relevanssi_pre_excerpt_content', 'relevanssi_remove_page_builder_shortcodes', 9 );
+add_filter( 'relevanssi_post_content', 'relevanssi_remove_page_builder_shortcodes', 9 );
 
 // Permalink handling.
 add_filter( 'the_permalink', 'relevanssi_permalink', 10, 2 );
