@@ -23,9 +23,26 @@ class DidYouMeanTest extends WP_UnitTestCase {
 		$post_count = 10;
 		$post_ids   = self::factory()->post->create_many( $post_count );
 
+		// Source: Early Lives of Charlemagne by Eginhard and the Monk of St Gall.
+		$content = 'Then that strict lover of truth bade him come out, and said, “I intend you to have the bishopric; but you must be very careful to spend more and make fuller provision for that same long and unreturning journey both for yourself and for me.';
+
+		/**
+		 * Update the relevanssi_words option with the words, because it's now
+		 * updated as an ajax action and that doesn't work in the testing
+		 * context.
+		 *
+		 * @since 2.5.0
+		 */
+		$content_tokenized = relevanssi_tokenize( $content );
+		update_option(
+			'relevanssi_words',
+			array(
+				'words'  => $content_tokenized,
+				'expire' => time() + 10000,
+			)
+		);
+
 		foreach ( $post_ids as $id ) {
-			// Source: Early Lives of Charlemagne by Eginhard and the Monk of St Gall.
-			$content = 'Then that strict lover of truth bade him come out, and said, “I intend you to have the bishopric; but you must be very careful to spend more and make fuller provision for that same long and unreturning journey both for yourself and for me.';
 
 			// Set the post content.
 			$args = array(
@@ -45,7 +62,7 @@ class DidYouMeanTest extends WP_UnitTestCase {
 		$query = new WP_Query();
 		$query->parse_query( $args );
 		for ( $i = 0; $i < 10; $i++ ) {
-			$posts = relevanssi_do_query( $query );
+			relevanssi_do_query( $query );
 		}
 	}
 
