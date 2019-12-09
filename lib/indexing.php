@@ -1184,6 +1184,8 @@ function relevanssi_index_custom_fields( &$insert_data, $post_id, $custom_fields
 		relevanssi_add_repeater_fields( $custom_fields, $post_id );
 	}
 
+	$custom_fields = array_filter( $custom_fields );
+
 	if ( $debug ) {
 		relevanssi_debug_echo( 'Custom fields to index: ' . implode( ', ', $custom_fields ) );
 	}
