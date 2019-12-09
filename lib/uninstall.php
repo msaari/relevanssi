@@ -104,6 +104,7 @@ function relevanssi_uninstall_free() {
 	delete_option( 'relevanssi_show_matches' );
 	delete_option( 'relevanssi_show_matches_text' );
 	delete_option( 'relevanssi_show_post_controls' );
+	delete_option( 'relevanssi_stopwords' );
 	delete_option( 'relevanssi_synonyms' );
 	delete_option( 'relevanssi_thousand_separator' );
 	delete_option( 'relevanssi_throttle' );

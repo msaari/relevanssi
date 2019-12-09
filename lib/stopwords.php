@@ -9,13 +9,14 @@
  */
 
 /**
- * Reads automatically the correct stopwords for the current language set in WPLANG.
+ * Reads automatically the correct stopwords for the current language set in
+ * WPLANG.
  *
  * @global object $wpdb                 The WordPress database interface.
  * @global array  $relevanssi_variables The global Relevanssi variables array.
  */
 function relevanssi_populate_stopwords() {
-	global $wpdb, $relevanssi_variables;
+	global $relevanssi_variables;
 
 	$lang = get_option( 'WPLANG' );
 	if ( empty( $lang ) && defined( 'WPLANG' ) && '' !== WPLANG ) {
@@ -28,10 +29,8 @@ function relevanssi_populate_stopwords() {
 	if ( file_exists( $relevanssi_variables['plugin_dir'] . 'stopwords/stopwords.' . $lang ) ) {
 		include $relevanssi_variables['plugin_dir'] . 'stopwords/stopwords.' . $lang;
 
-		if ( is_array( $stopwords ) && count( $stopwords ) > 0 ) {
-			foreach ( $stopwords as $word ) {
-				$wpdb->query( $wpdb->prepare( 'INSERT IGNORE INTO ' . $relevanssi_variables['stopword_table'] . ' (stopword) VALUES (%s)', trim( $word ) ) ); // WPCS: unprepared SQL ok.
-			}
+		if ( is_array( $stopwords ) ) {
+			array_walk( $stopwords, 'relevanssi_add_single_stopword' );
 		}
 	}
 }
@@ -39,29 +38,15 @@ function relevanssi_populate_stopwords() {
 /**
  * Fetches the list of stopwords.
  *
- * Gets the list of stopwords from $relevanssi_variables, but if it's empty, fills
- * the array from the database table.
- *
- * @global object $wpdb                 The WordPress database interface.
- * @global array  $relevanssi_variables The global Relevanssi variables array.
+ * Gets the list of stopwords from the relevanssi_stopwords option.
  *
  * @return array An array of stopwords.
  */
 function relevanssi_fetch_stopwords() {
-	global $wpdb, $relevanssi_variables;
+	$stopwords     = get_option( 'relevanssi_stopwords', '' );
+	$stopword_list = explode( ',', $stopwords );
 
-	if ( ! isset( $relevanssi_variables['stopword_list'] ) ) {
-		$relevanssi_variables['stopword_list'] = array();
-	}
-
-	if ( count( $relevanssi_variables['stopword_list'] ) < 1 ) {
-		$results = $wpdb->get_results( 'SELECT stopword FROM ' . $relevanssi_variables['stopword_table'] ); // WPCS: unprepared SQL ok.
-		foreach ( $results as $word ) {
-			$relevanssi_variables['stopword_list'][] = $word->stopword;
-		}
-	}
-
-	return $relevanssi_variables['stopword_list'];
+	return $stopword_list;
 }
 
 /**
@@ -126,37 +111,44 @@ function relevanssi_add_stopword( $term, $verbose = true ) {
  * @return boolean True if success, false if not.
  */
 function relevanssi_add_single_stopword( $term ) {
-	global $wpdb, $relevanssi_variables;
 	if ( empty( $term ) ) {
 		return false;
 	}
 
-	$term = stripslashes( $term );
-	$term = esc_sql( $wpdb->esc_like( $term ) );
+	$term = stripslashes( relevanssi_strtolower( $term ) );
 
-	$success = $wpdb->query( $wpdb->prepare( 'INSERT IGNORE INTO ' . $relevanssi_variables['stopword_table'] . ' (stopword) VALUES (%s)', $term ) ); // WPCS: unprepared SQL ok, Relevanssi table name.
+	$stopwords = get_option( 'relevanssi_stopwords', '' );
+	if ( ! empty( $stopwords ) ) {
+		$stopwords .= ',';
 
-	if ( $success ) {
-		// Remove from index.
-		$wpdb->query( $wpdb->prepare( 'DELETE FROM ' . $relevanssi_variables['relevanssi_table'] . ' WHERE term=%s', $term ) ); // WPCS: unprepared SQL ok, Relevanssi table name.
-		return true;
-	} else {
+	}
+	$stopwords .= $term;
+	$success    = update_option( 'relevanssi_stopwords', $stopwords );
+
+	if ( ! $success ) {
 		return false;
 	}
+
+	global $wpdb, $relevanssi_variables;
+
+	// Remove from index.
+	$wpdb->query(
+		$wpdb->prepare(
+			'DELETE FROM ' . $relevanssi_variables['relevanssi_table'] . ' WHERE term=%s', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+			$term
+		)
+	);
+
+	return true;
 }
 
 /**
  * Removes all stopwords.
  *
- * Truncates the wp_relevanssi_stopwords database table.
- *
- * @global object $wpdb                 The WP database interface.
- * @global array  $relevanssi_variables The global Relevanssi variables.
+ * Empties the relevanssi_stopwords option.
  */
 function relevanssi_remove_all_stopwords() {
-	global $wpdb, $relevanssi_variables;
-
-	$success = $wpdb->query( 'TRUNCATE ' . $relevanssi_variables['stopword_table'] ); // WPCS: unprepared SQL ok, Relevanssi table name.
+	$success = update_option( 'relevanssi_stopwords', '' );
 
 	if ( $success ) {
 		printf( "<div id='message' class='updated fade'><p>%s</p></div>", esc_html__( 'All stopwords removed! Remember to re-index.', 'relevanssi' ) );
@@ -177,9 +169,18 @@ function relevanssi_remove_all_stopwords() {
  * @return boolean True if success, false if not.
  */
 function relevanssi_remove_stopword( $term, $verbose = true ) {
-	global $wpdb, $relevanssi_variables;
+	$stopwords = get_option( 'relevanssi_stopwords', '' );
 
-	$success = $wpdb->query( $wpdb->prepare( 'DELETE FROM ' . $relevanssi_variables['stopword_table'] . ' WHERE stopword=%s', $term ) ); // WPCS: unprepared SQL ok, Relevanssi table name.
+	$stopwords_array = explode( ',', $stopwords );
+	$stopwords_array = array_filter(
+		$stopwords_array,
+		function( $v ) use ( $term ) {
+			return $v !== $term;
+		}
+	);
+
+	$stopwords = implode( ',', $stopwords_array );
+	$success   = update_option( 'relevanssi_stopwords', $stopwords );
 
 	if ( $success ) {
 		if ( $verbose ) {

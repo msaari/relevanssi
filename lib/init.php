@@ -424,7 +424,7 @@ function relevanssi_create_database_tables( $relevanssi_db_version ) {
 		update_option( 'relevanssi_db_version', $relevanssi_db_version );
 	}
 
-	if ( $wpdb->get_var( "SELECT COUNT(*) FROM $relevanssi_stopword_table WHERE 1" ) < 1 ) { // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.NoCaching
+	if ( empty( get_option( 'relevanssi_stopwords', '' ) ) ) {
 		relevanssi_populate_stopwords();
 	}
 }
