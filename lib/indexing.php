@@ -1526,6 +1526,7 @@ function relevanssi_disable_shortcodes() {
 		'gravityform', // Gravity Forms.
 		'sdm_latest_downloads', // SDM Simple Download Monitor.
 		'slimstat', // Slimstat Analytics.
+		'ninja_tables', // Ninja Tables.
 	);
 
 	$disable_shortcodes = get_option( 'relevanssi_disable_shortcodes' );
