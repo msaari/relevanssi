@@ -5,7 +5,7 @@ Tags: search, relevance, better search
 Requires at least: 4.9
 Tested up to: 5.3
 Requires PHP: 5.6
-Stable tag: 4.3.4
+Stable tag: 4.4.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -133,6 +133,17 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.4.0 =
+* New feature: It's now possible to exclude image attachments from the index with a simple setting on the indexing settings page.
+* New feature: Page builder short codes are now removed in Relevanssi indexing. This should reduce the amount of garbage data indexed for posts in Divi, Avada and other page builder themes.
+* Changed behaviour: The `relevanssi_page_builder_shortcodes` filter hook is now applied both in indexing and excerpts, and has a second parameter that will inform you of the current context.
+* Minor fix: Stopwords weren't case insensitive like they should. They are now. Also, stopwords are no longer stored in the `wp_relevanssi_stopwords` database table, but are now stored in the `relevanssi_stopwords` option.
+* Minor fix: A comma at the end of the custom field indexing setting made Relevanssi index all custom fields. This doesn't happen anymore and trailing commas are automatically removed, too.
+* Minor fix: Accessibility improvements all around the admin interface. Screen reader support should be better, feel free to report any further ways to make this better.
+* Minor fix: Doing searches without search terms and with the throttle disabled could cause problems. Relevanssi now makes sure throttle is always on when doing termless searches.
+* Minor fix: Untokenized search terms are used for building excerpts, which makes highlighting in excerpts work better.
+* Minor fix: Indexing did not adjust the number of posts indexed at one go like it should.
+
 = 4.3.4 =
 * New feature: You can now give Gutenberg blocks a CSS class `relevanssi_noindex` to exclude them from being indexed. Relevanssi will not index Gutenberg blocks that have the class.
 * New feature: Relevanssi automatically skips some custom fields from common plugins that only contain unnecessary metadata.
@@ -187,6 +198,9 @@ Each document database is full of useless words. All the little words that appea
 * Deprecated: `relevanssi_get_term_taxonomy()` function is deprecated and will be removed at some point in the future.
 
 == Upgrade notice ==
+= 4.4.0 =
+* Changes in relevanssi_page_builder_shortcodes filter hook, page builder indexing and image attachments.
+
 = 4.3.4 =
 * Comment indexing bug fix, compatibility improvements and minor bug fixes and improvements.
 
