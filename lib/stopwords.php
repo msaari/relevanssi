@@ -16,21 +16,21 @@
  * @global array  $relevanssi_variables The global Relevanssi variables array.
  */
 function relevanssi_populate_stopwords() {
-	global $relevanssi_variables;
+	global $relevanssi_variables, $wpdb;
 
-	$lang = get_option( 'WPLANG' );
-	if ( empty( $lang ) && defined( 'WPLANG' ) && '' !== WPLANG ) {
-		$lang = WPLANG;
-	}
-	if ( empty( $lang ) ) {
-		$lang = 'en_US';
-	}
+	$stopword_table       = $relevanssi_variables['stopword_table'];
+	$stopwords_from_table = $wpdb->get_col( "SELECT * FROM $stopword_table" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+	if ( count( $stopwords_from_table ) > 1 ) {
+		array_walk( $stopwords_from_table, 'relevanssi_add_single_stopword' );
+	} else {
+		$lang = get_option( 'WPLANG', 'en_US' );
 
-	if ( file_exists( $relevanssi_variables['plugin_dir'] . 'stopwords/stopwords.' . $lang ) ) {
-		include $relevanssi_variables['plugin_dir'] . 'stopwords/stopwords.' . $lang;
+		if ( file_exists( $relevanssi_variables['plugin_dir'] . 'stopwords/stopwords.' . $lang ) ) {
+			include $relevanssi_variables['plugin_dir'] . 'stopwords/stopwords.' . $lang;
 
-		if ( is_array( $stopwords ) ) {
-			array_walk( $stopwords, 'relevanssi_add_single_stopword' );
+			if ( is_array( $stopwords ) ) {
+				array_walk( $stopwords, 'relevanssi_add_single_stopword' );
+			}
 		}
 	}
 }
@@ -170,17 +170,20 @@ function relevanssi_remove_all_stopwords() {
  */
 function relevanssi_remove_stopword( $term, $verbose = true ) {
 	$stopwords = get_option( 'relevanssi_stopwords', '' );
+	$success   = false;
 
 	$stopwords_array = explode( ',', $stopwords );
-	$stopwords_array = array_filter(
-		$stopwords_array,
-		function( $v ) use ( $term ) {
-			return $v !== $term;
-		}
-	);
+	if ( is_array( $stopwords_array ) ) {
+		$stopwords_array = array_filter(
+			$stopwords_array,
+			function( $v ) use ( $term ) {
+				return $v !== $term;
+			}
+		);
 
-	$stopwords = implode( ',', $stopwords_array );
-	$success   = update_option( 'relevanssi_stopwords', $stopwords );
+		$stopwords = implode( ',', $stopwords_array );
+		$success   = update_option( 'relevanssi_stopwords', $stopwords );
+	}
 
 	if ( $success ) {
 		if ( $verbose ) {

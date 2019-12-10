@@ -201,6 +201,11 @@ function relevanssi_init() {
 	if ( defined( 'NINJA_TABLES_VERSION' ) ) {
 		require_once 'compatibility/ninjatables.php';
 	}
+
+	// For problems in 2.5.0 / 4.4.0. Remove eventually.
+	if ( empty( get_option( 'relevanssi_stopwords', '' ) ) ) {
+		relevanssi_populate_stopwords();
+	}
 }
 
 /**

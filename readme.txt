@@ -5,7 +5,7 @@ Tags: search, relevance, better search
 Requires at least: 4.9
 Tested up to: 5.3
 Requires PHP: 5.6
-Stable tag: 4.4.0
+Stable tag: 4.4.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -133,6 +133,9 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.4.1 =
+* Major fix: Returns the missing stopwords.
+
 = 4.4.0 =
 * New feature: It's now possible to exclude image attachments from the index with a simple setting on the indexing settings page.
 * New feature: Page builder short codes are now removed in Relevanssi indexing. This should reduce the amount of garbage data indexed for posts in Divi, Avada and other page builder themes.
@@ -198,6 +201,9 @@ Each document database is full of useless words. All the little words that appea
 * Deprecated: `relevanssi_get_term_taxonomy()` function is deprecated and will be removed at some point in the future.
 
 == Upgrade notice ==
+= 4.4.1 =
+* Fixes missing stopwords problem in 4.4.0.
+
 = 4.4.0 =
 * Changes in relevanssi_page_builder_shortcodes filter hook, page builder indexing and image attachments.
 
