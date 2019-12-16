@@ -51,6 +51,30 @@ function relevanssi_strtolower( $string ) {
 }
 
 /**
+ * Multibyte friendly substr.
+ *
+ * If multibyte string functions are available, returns mb_substr() and falls
+ * back to substr() if multibyte functions are not available.
+ *
+ * @param string $string The source string.
+ * @param int    $start  If start is non-negative, the returned string will
+ * start at the start'th position in str, counting from zero. If start is
+ * negative, the returned string will start at the start'th character from the
+ * end of string.
+ * @param int    $length Maximum number of characters to use from string. If
+ * omitted or null is passed, extract all characters to the end of the string.
+ *
+ * @return string $string The string in lowercase.
+ */
+function relevanssi_substr( $string, $start, $length = null ) {
+	if ( ! function_exists( 'mb_substr' ) ) {
+		return substr( $string, $start, $length );
+	} else {
+		return mb_substr( $string, $start, $length );
+	}
+}
+
+/**
  * Adds the search result match breakdown to the post object.
  *
  * Reads in the number of matches and stores it in the relevanssi_hits filed

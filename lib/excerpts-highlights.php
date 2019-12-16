@@ -1028,10 +1028,19 @@ function relevanssi_add_accent_variations( $word ) {
 		)
 	);
 
-	$len        = mb_strlen( $word );
+	$len        = relevanssi_strlen( $word );
 	$word_array = array();
+	$escaped    = false;
 	for ( $i = 0; $i < $len; $i++ ) {
-		$char         = mb_substr( $word, $i, 1 );
+		$char = relevanssi_substr( $word, $i, 1 );
+		if ( '\\' === $char ) {
+			$escaped = true;
+			continue;
+		}
+		if ( $escaped ) {
+			$escaped = false;
+			$char    = '\\' . $char;
+		}
 		$word_array[] = $char;
 	}
 	$word = implode( '-?', $word_array );
