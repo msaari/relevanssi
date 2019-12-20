@@ -1103,7 +1103,7 @@ function relevanssi_get_custom_field_content( $post_id ) {
 
 				// Flatten other array data.
 				if ( is_array( $value ) ) {
-					$value = implode( ' ', $value );
+					$value = @implode( ' ', $value );
 				}
 				$custom_field_content .= ' ' . $value;
 			}
