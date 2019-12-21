@@ -1023,8 +1023,10 @@ function relevanssi_add_accent_variations( $word ) {
 	$replacement_arrays = apply_filters(
 		'relevanssi_accents_replacement_arrays',
 		array(
-			'from' => array( 'a', 'c', 'e', 'i', 'o', 'u', 'n', "'" ),
-			'to'   => array( '(a|á|à|â)', '(c|ç)', '(e|é|è|ê|ë)', '(i|í|ì|î|ï)', '(o|ó|ò|ô|õ)', '(u|ú|ù|ü|û)', '(n|ñ)', "('|’)?" ),
+			'from'    => array( 'a', 'c', 'e', 'i', 'o', 'u', 'n' ),
+			'to'      => array( '(a|á|à|â)', '(c|ç)', '(e|é|è|ê|ë)', '(i|í|ì|î|ï)', '(o|ó|ò|ô|õ)', '(u|ú|ù|ü|û)', '(n|ñ)' ),
+			'from_re' => array( "/(s)('|’)?$/i", "/[^\(\|]('|’)/" ),
+			'to_re'   => array( "(('|’)?\\1|\\1('|’)?)$", "('|’)?" ),
 		)
 	);
 
@@ -1045,8 +1047,7 @@ function relevanssi_add_accent_variations( $word ) {
 	}
 	$word = implode( '-?', $word_array );
 	$word = str_ireplace( $replacement_arrays['from'], $replacement_arrays['to'], $word );
-	$word = preg_replace( '/s$/', "(s|'s|’s)", $word );
-	$word = str_replace( '\-?/', '\/', $word );
+	$word = preg_replace( $replacement_arrays['from_re'], $replacement_arrays['to_re'], $word );
 
 	return $word;
 }
