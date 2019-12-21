@@ -851,6 +851,15 @@ function relevanssi_tokenize( $string, $remove_stops = true, $min_word_length = 
 		$stopword_list = array_merge( $stopword_list, relevanssi_fetch_body_stopwords() );
 	}
 
+	/**
+	 * Disables stopwords completely.
+	 *
+	 * @param boolean If true, stopwords are not used. Default false.
+	 */
+	if ( apply_filters( 'relevanssi_disable_stopwords', false ) ) {
+		$stopword_list = array();
+	}
+
 	if ( function_exists( 'relevanssi_apply_thousands_separator' ) ) {
 		// A Premium feature.
 		$string = relevanssi_apply_thousands_separator( $string );
