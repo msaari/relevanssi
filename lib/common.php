@@ -455,6 +455,7 @@ function relevanssi_recognize_phrases( $search_query, $operator = 'AND' ) {
 			$keys = '';
 
 			if ( is_array( $custom_fields ) ) {
+				array_push( $custom_fields, '_relevanssi_pdf_content' );
 				$custom_fields_escaped = implode( "','", array_map( 'esc_sql', $custom_fields ) );
 				$keys                  = "AND m.meta_key IN ('$custom_fields_escaped')";
 			}
@@ -471,6 +472,18 @@ function relevanssi_recognize_phrases( $search_query, $operator = 'AND' ) {
 				AND p.post_status IN ($status))";
 
 			$queries[] = $query;
+		} elseif ( RELEVANSSI_PREMIUM ) {
+			$index_post_types = get_option( 'relevanssi_index_post_types', array() );
+			if ( in_array( 'attachment', $index_post_types, true ) ) {
+				$query = "(SELECT ID
+				FROM $wpdb->posts AS p, $wpdb->postmeta AS m
+				WHERE p.ID = m.post_id
+				AND m.meta_key = '_relevanssi_pdf_content'
+				AND m.meta_value LIKE '%$phrase%'
+				AND p.post_status IN ($status))";
+
+				$queries[] = $query;
+			}
 		}
 
 		if ( 'on' === get_option( 'relevanssi_index_pdf_parent' ) ) {
