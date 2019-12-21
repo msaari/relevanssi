@@ -548,7 +548,10 @@ function relevanssi_get_custom_fields() {
 			return $custom_fields;
 		} else {
 			$custom_fields_raw = explode( ',', $custom_fields );
-			$custom_fields     = array_filter( array_map( 'trim', $custom_fields_raw ) );
+			$custom_fields     = false;
+			if ( is_array( $custom_fields_raw ) ) {
+				$custom_fields = array_filter( array_map( 'trim', $custom_fields_raw ) );
+			}
 		}
 	} else {
 		$custom_fields = false;
