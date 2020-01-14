@@ -58,8 +58,17 @@ function relevanssi_do_excerpt( $t_post, $query ) {
 	 */
 	$query = apply_filters( 'relevanssi_excerpt_query', $query );
 
-	// Minimum word length is -1, we don't care about it right now.
-	$terms = relevanssi_tokenize( $query, $remove_stopwords, -1 );
+	$min_word_length = 2;
+	/**
+	 * Allows creating one-letter highlights.
+	 *
+	 * @param boolean Set to true to enable one-letter highlights.
+	 */
+	if ( apply_filters( 'relevanssi_allow_one_letter_highlights', false ) ) {
+		$min_word_length = 1;
+	}
+
+	$terms = relevanssi_tokenize( $query, $remove_stopwords, $min_word_length );
 
 	if ( is_array( $query ) ) {
 		$untokenized_terms = array_filter( $query );
@@ -241,7 +250,7 @@ function relevanssi_create_excerpt( $content, $terms, $query ) {
 
 	$excerpt = '';
 	$content = ' ' . preg_replace( '/\s+/u', ' ', $content );
-
+	$content = html_entity_decode( $content );
 	// Finds all the phrases in the query.
 	$phrases = relevanssi_extract_phrases( stripslashes( $query ) );
 
@@ -640,7 +649,7 @@ function relevanssi_fix_entities( $excerpt, $in_docs ) {
  * @param string $content The content.
  * @param string $tag     The tag.
  *
- * @return string $content The content with HTML code inside the $tag tags
+ * @return string $content The content with HTML code inside the $tag tags
  * ran through htmlentities().
  */
 function relevanssi_entities_inside( $content, $tag ) {
@@ -808,7 +817,7 @@ function relevanssi_count_matches( $words, $complete_text ) {
 			$regex = "/$word_slice/";
 		}
 		$lines = preg_split( $regex, $lowercase_text );
-		if ( count( $lines ) > 1 ) {
+		if ( $lines && count( $lines ) > 1 ) {
 			$count_lines = count( $lines );
 			for ( $tt = 0; $tt < $count_lines; $tt++ ) {
 				if ( $tt < ( count( $lines ) - 1 ) ) {
@@ -1025,8 +1034,8 @@ function relevanssi_add_accent_variations( $word ) {
 		array(
 			'from'    => array( 'a', 'c', 'e', 'i', 'o', 'u', 'n' ),
 			'to'      => array( '(a|á|à|â)', '(c|ç)', '(e|é|è|ê|ë)', '(i|í|ì|î|ï)', '(o|ó|ò|ô|õ)', '(u|ú|ù|ü|û)', '(n|ñ)' ),
-			'from_re' => array( "/(s)('|’)?$/i", "/[^\(\|]('|’)/" ),
-			'to_re'   => array( "(('|’)?\\1|\\1('|’)?)$", "('|’)?" ),
+			'from_re' => array( "/(s)('|’)?$/", "/[^\(\|]('|’)/" ),
+			'to_re'   => array( "(('|’)?\\1|\\1('|’)?)", "?('|’)?" ),
 		)
 	);
 

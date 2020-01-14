@@ -35,6 +35,7 @@ class ExcerptTest extends WP_UnitTestCase {
 		update_option( 'relevanssi_excerpt_type', 'words' );
 		update_option( 'relevanssi_highlight', 'strong' );
 		update_option( 'relevanssi_excerpt_custom_fields', 'on' );
+		update_option( 'relevanssi_minimum_word_length', 3 );
 
 		// Truncate the index.
 		relevanssi_truncate_index();
@@ -49,8 +50,8 @@ facilisis sed odio morbi quis commodo. Urna et pharetra pharetra massa massa
 ultricies mi quis hendrerit. Sed ullamcorper morbi tincidunt ornare massa eget. At
 tellus at urna condimentum mattis pellentesque id. Fermentum et sollicitudin ac orci
 phasellus egestas tellus rutrum tellus. Nec tincidunt praesent semper feugiat nibh
-sed pulvinar proin gravida. Id cursus metus aliquam eleifend mi. Adipiscing diam
-donec adipiscing tristique risus. Vel pretium lectus quam id leo. Id nibh tortor id
+sed pulvinar proin gravida. Id cursus metus' aliquam eleifend mi. Adipiscing diam
+donec adipiscing tristique risu's. Vel pretium lectus quam id leo. Id nibh tortor id
 aliquet lectus proin nibh nisl condimentum. Interdum posuere lorem ipsum dolor.
 
 Purus viverra accumsan in nisl nisi scelerisque eu ultrices vitae. Nulla aliquet
@@ -60,6 +61,7 @@ Molestie a iaculis at erat pellentesque adipiscing commodo elit at. Proin libero
 consequat interdum varius sit. Eget nunc lobortis mattis aliquam faucibus purus in
 massa. Vehicula ipsum a arcu cursus vitae congue. Accumsan lacus vel facilisis
 volutpat est. Keyword ornare massa eget egestas purus viverra accumsan in nisl.
+O'connell.
 END;
 		$args         = array(
 			'ID'           => $post_id,
@@ -161,6 +163,58 @@ END;
 		// Now the excerpt should start/ with an ellipsis.
 		$excerpt_first_three_letters = substr( $post->post_excerpt, 0, 3 );
 		$this->assertEquals( '...', $excerpt_first_three_letters, 'Excerpt should start with an ellipsis.' );
+	}
+
+	/**
+	 * Tests that excerpt creation and highlights work for apostrophes and for
+	 * words ending in s and 's and s'.
+	 *
+	 * @group new
+	 */
+	public function test_apostrophes() {
+		$query = new WP_Query();
+
+		$args = array(
+			's'           => "o'connell",
+			'post_type'   => 'post',
+			'numberposts' => -1,
+			'post_status' => 'publish',
+		);
+
+		$query->parse_query( $args );
+		$posts = relevanssi_do_query( $query );
+		$post  = $posts[0];
+
+		$word_location = stripos( $post->post_excerpt, '<strong>o&rsquo;connell</strong>' );
+		$this->assertNotFalse( $word_location );
+
+		$args = array(
+			's'           => "risu's",
+			'post_type'   => 'post',
+			'numberposts' => -1,
+			'post_status' => 'publish',
+		);
+
+		$query->parse_query( $args );
+		$posts = relevanssi_do_query( $query );
+		$post  = $posts[0];
+
+		$word_location = stripos( $post->post_excerpt, '<strong>risu&rsquo;s</strong>' );
+		$this->assertNotFalse( $word_location );
+
+		$args = array(
+			's'           => "metus'",
+			'post_type'   => 'post',
+			'numberposts' => -1,
+			'post_status' => 'publish',
+		);
+
+		$query->parse_query( $args );
+		$posts = relevanssi_do_query( $query );
+		$post  = $posts[0];
+
+		$word_location = stripos( $post->post_excerpt, '<strong>metus&rsquo;</strong>' );
+		$this->assertNotFalse( $word_location );
 	}
 
 	/**
