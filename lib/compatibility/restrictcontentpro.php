@@ -22,6 +22,10 @@ add_filter( 'relevanssi_post_ok', 'relevanssi_restrictcontentpro_compatibility',
  * otherwise false.
  */
 function relevanssi_restrictcontentpro_compatibility( $post_ok, $post_id ) {
+	if ( ! $post_ok ) {
+		return $post_ok;
+	}
+
 	$post_ok = rcp_user_can_access( get_current_user_id(), $post_id );
 
 	return $post_ok;
