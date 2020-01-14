@@ -835,11 +835,13 @@ function relevanssi_prevent_default_request( $request, $query ) {
  *
  * @param string|array   $string          The string, or an array of strings, to
  *                                        tokenize.
- * @param boolean|string $remove_stops    If true, stopwords are removed. If 'body',
- *                                        also removes the body stopwords. Default
- *                                        true.
+ * @param boolean|string $remove_stops    If true, stopwords are removed. If
+ * 'body', also removes the body stopwords. Default true.
  * @param int            $min_word_length The minimum word length to include.
- *                                        Default -1.
+ * Default -1.
+ *
+ * @return int[] An array of tokens as the keys and their frequency as the
+ * value.
  */
 function relevanssi_tokenize( $string, $remove_stops = true, $min_word_length = -1 ) {
 	$tokens = array();

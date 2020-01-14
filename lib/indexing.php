@@ -1227,7 +1227,7 @@ function relevanssi_index_custom_fields( &$insert_data, $post_id, $custom_fields
 			}
 
 			if ( $debug ) {
-				relevanssi_debug_echo( "\tKey: " . $field . ' – value: ' . $value );
+				relevanssi_debug_echo( "\tKey: " . $field . ' - value: ' . $value );
 			}
 
 			/** This filter is documented in lib/indexing.php */
