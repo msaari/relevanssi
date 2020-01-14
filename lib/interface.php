@@ -749,7 +749,12 @@ function relevanssi_date_queries( $days, $title, $version = 'good' ) {
 		$url = get_bloginfo( 'url' );
 		foreach ( $queries as $query ) {
 			$search_parameter = rawurlencode( $query->query );
-			$query_url        = $url . '/?s=' . $search_parameter;
+			/**
+			 * Filters the query URL for the user searches page.
+			 *
+			 * @param string Query URL.
+			 */
+			$query_url = apply_filters( 'relevanssi_user_searches_query_url', $url . '/?s=' . $search_parameter );
 			printf(
 				"<tr><td><a href='%s'>%s</a></td><td style='padding: 3px 5px; text-align: center'>%d</td><td style='padding: 3px 5px; text-align: center'>%d</td></tr>",
 				esc_attr( $query_url ),
