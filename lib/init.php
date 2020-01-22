@@ -66,10 +66,9 @@ register_activation_hook( $relevanssi_variables['file'], 'relevanssi_install' );
  *
  * @global string $pagenow              Current admin page.
  * @global array  $relevanssi_variables The global Relevanssi variables array.
- * @global object $wpdb                 The WP database interface.
  */
 function relevanssi_init() {
-	global $pagenow, $relevanssi_variables, $wpdb;
+	global $pagenow, $relevanssi_variables;
 
 	$plugin_dir = dirname( plugin_basename( $relevanssi_variables['file'] ) );
 	load_plugin_textdomain( 'relevanssi', false, $plugin_dir . '/languages' );
