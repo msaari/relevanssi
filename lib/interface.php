@@ -67,6 +67,12 @@ function relevanssi_options() {
 			relevanssi_remove_all_stopwords();
 		}
 
+		if ( isset( $_REQUEST['repopulatestopwords'] ) ) {
+			check_admin_referer( plugin_basename( $relevanssi_variables['file'] ), 'relevanssi_options' );
+			$verbose = true;
+			relevanssi_populate_stopwords( $verbose );
+		}
+
 		if ( isset( $_REQUEST['addbodystopword'] ) ) {
 			check_admin_referer( plugin_basename( $relevanssi_variables['file'] ), 'relevanssi_options' );
 			relevanssi_add_body_stopword( $_REQUEST['addbodystopword'] );

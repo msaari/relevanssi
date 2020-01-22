@@ -87,7 +87,22 @@ function relevanssi_show_stopwords() {
 	$exportlist = htmlspecialchars( str_replace( ',', ', ', $stopword_list ) );
 	?>
 	</ul>
-	<p><input type="submit" id="removeallstopwords" name="removeallstopwords" value="<?php esc_attr_e( 'Remove all stopwords', 'relevanssi' ); ?>" class='button' /></p>
+	<p>
+		<input
+			type="submit"
+			id="removeallstopwords"
+			name="removeallstopwords"
+			value="<?php esc_attr_e( 'Remove all stopwords', 'relevanssi' ); ?>"
+			class='button'
+		/>
+		<input
+			type="submit"
+			id="repopulatestopwords"
+			name="repopulatestopwords"
+			value="<?php esc_attr_e( 'Add default stopwords', 'relevanssi' ); ?>"
+			class='button'
+		/>
+	</p>
 	</td>
 </tr>
 <tr>
