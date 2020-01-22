@@ -957,11 +957,11 @@ function relevanssi_extract_relevant_words( $terms, $content, $excerpt_length = 
 	$tries       = 0;
 	$excerpt     = '';
 	$count_words = count( $words );
-	$start       = false;
 
 	$best_excerpt_term_hits = -1;
 
 	while ( $offset < $count_words ) {
+		$start = false;
 		if ( $offset + $excerpt_length > $count_words ) {
 			$offset = $count_words - $excerpt_length;
 			if ( $offset < 0 ) {
