@@ -409,7 +409,7 @@ function update_relevanssi_options() {
 		update_option( 'relevanssi_class', $_REQUEST['relevanssi_class'] );
 	}
 	if ( isset( $_REQUEST['relevanssi_expst'] ) ) {
-		update_option( 'relevanssi_exclude_posts', $_REQUEST['relevanssi_expst'] );
+		update_option( 'relevanssi_exclude_posts', trim( $_REQUEST['relevanssi_expst'], ' ,' ) );
 	}
 	if ( isset( $_REQUEST['relevanssi_hilite_title'] ) ) {
 		update_option( 'relevanssi_hilite_title', $_REQUEST['relevanssi_hilite_title'] );

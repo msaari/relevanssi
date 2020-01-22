@@ -265,7 +265,7 @@ function relevanssi_process_date_query( $date_query ) {
  */
 function relevanssi_process_expost( $expost ) {
 	$posts_to_exclude            = '';
-	$excluded_post_ids_unchecked = explode( ',', $expost );
+	$excluded_post_ids_unchecked = explode( ',', trim( $expost, ' ,' ) );
 	$excluded_post_ids           = array();
 	foreach ( $excluded_post_ids_unchecked as $excluded_post_id ) {
 		$excluded_post_ids[] = intval( trim( $excluded_post_id, ' -' ) );
