@@ -134,7 +134,7 @@ Each document database is full of useless words. All the little words that appea
 
 == Changelog ==
 = 4.5.0 =
-* New feature: New filter hook `relevanssi_disable_shortcodes` can be used to disable stopwords completely. Just add a filter function that returns `true`.
+* New feature: New filter hook `relevanssi_disable_stopwords` can be used to disable stopwords completely. Just add a filter function that returns `true`.
 * Changed behaviour: Stopwords are no longer automatically restored if emptied. It's now possible to empty the stopword list. If you want to restore the stopwords from the file (or from the database, if you're upgrading from an earlier version of Relevanssi and find your stopwords missing), just click the button on the stopwords settings page that restores the stopwords.
 * Changed behaviour: Changes to post weights in the `relevanssi_results` hook did not affect the relevance scores shown in excerpts. That's changed now, and the displayed scores are now taken from the `$doc_weight` array, which is returned in the return value array from `relevanssi_search()`.
 * Changed behaviour: Excerpt length and type are now checked outside the loop that goes through the posts. This reduces the number of database calls required.
