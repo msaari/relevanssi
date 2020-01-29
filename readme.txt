@@ -3,9 +3,9 @@ Contributors: msaari
 Donate link: https://www.relevanssi.com/buy-premium/
 Tags: search, relevance, better search
 Requires at least: 4.9
-Tested up to: 5.3
+Tested up to: 5.3.2
 Requires PHP: 5.6
-Stable tag: 4.4.1
+Stable tag: 4.5.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -133,6 +133,16 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.5.0 =
+* New feature: New filter hook `relevanssi_disable_shortcodes` can be used to disable stopwords completely. Just add a filter function that returns `true`.
+* Changed behaviour: Stopwords are no longer automatically restored if emptied. It's now possible to empty the stopword list. If you want to restore the stopwords from the file (or from the database, if you're upgrading from an earlier version of Relevanssi and find your stopwords missing), just click the button on the stopwords settings page that restores the stopwords.
+* Changed behaviour: Changes to post weights in the `relevanssi_results` hook did not affect the relevance scores shown in excerpts. That's changed now, and the displayed scores are now taken from the `$doc_weight` array, which is returned in the return value array from `relevanssi_search()`.
+* Changed behaviour: Excerpt length and type are now checked outside the loop that goes through the posts. This reduces the number of database calls required.
+* Minor fix: Searching for regex special characters (for example parentheses, brackets) caused problems in excerpts.
+* Minor fix: Improvements in handling highlighting for words with apostrophes.
+* Minor fix: Disregard hanging commas at the end of post exclusion settings.
+* Minor fix: Sometimes excerpts wouldn't have an ellipsis in the beginning even though they should.
+
 = 4.4.1 =
 * Major fix: Returns the missing stopwords.
 
@@ -147,80 +157,12 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: Untokenized search terms are used for building excerpts, which makes highlighting in excerpts work better.
 * Minor fix: Indexing did not adjust the number of posts indexed at one go like it should.
 
-= 4.3.4 =
-* New feature: You can now give Gutenberg blocks a CSS class `relevanssi_noindex` to exclude them from being indexed. Relevanssi will not index Gutenberg blocks that have the class.
-* New feature: Relevanssi automatically skips some custom fields from common plugins that only contain unnecessary metadata.
-* New feature: The search results breakdown is added to the post objects and can be found in $post->relevanssi_hits. The data also includes new fields and the breakdown from the excerpt settings page can now show author, excerpt, custom field and MySQL column hits.
-* New feature: Relevanssi can now index Ninja Tables table content. This is something of an experimental feature right now, feedback is welcome.
-* New feature: New filter hook `relevanssi_indexing_query` filters the indexing query and is mostly interesting for debugging reasons.
-* Minor fix: Deleted and trashed comment contents were not deindexed when the comment was removed. That has been corrected now.
-* Minor fix: Phrase matching is now applied to attachments as well, including the attachments indexed for parent post.
-* Minor fix: Phrase matching only looks at custom fields that are indexed by Relevanssi.
-* Minor fix: Exact match bonus now uses the original query without synonyms added for the exact match check.
-* Minor fix: Paid Membership Pro filtering is only applied to published posts to prevent drafts from showing up in the search results.
-
-= 4.3.3 =
-* New feature: New filter hook `relevanssi_indexing_adjust` can be used to stop Relevanssi from adjusting the number of posts indexed at once during the indexing.
-* New feature: New filter hook `relevanssi_acf_field_value` filters ACF field values before they are indexed.
-* New feature: New filter hook `relevanssi_disabled_shortcodes` filters the array containing shortcodes that are disabled when indexing.
-* Removed feature: The `relevanssi_indexing_limit` option wasn't really used anymore, so it has been removed.
-* Changed behaviour: Indexing exclusions from Yoast SEO and SEOPress are applied in a different way in the indexing, making for a smoother indexing process.
-* Changed behaviour: WP Table Reloaded support has been removed; you really shouldn't be using WP Table Reloaded anymore.
-* Minor fix: Relevanssi won't choke on ACF fields with array or object values anymore.
-* Minor fix: Relevanssi uninstall process left couple of Relevanssi options in the database.
-* Minor fix: WPML language filter didn't work when `fields` was set to `ids` or `id=>parent`.
-
-= 4.3.2 =
-* New feature: SEOPress support, posts marked "noindex" in SEOPress are no longer indexed by Relevanssi by default.
-* Changed behaviour: Membership plugin compatibility is removed from `relevanssi_default_post_ok` function and has been moved to individual compatibility functions for each supported membership plugin. This makes it much easier to for example disable the membership plugin features if required.
-* Minor fix: The `searchform` shortcode now works better with different kinds of search forms.
-* Minor fix: Yoast SEO compatibility won't block indexing of posts with explicitly allowed indexing.
-* Minor fix: The `relevanssi_the_tags()` function printed out plain text, not HTML code like it should. The function now also accepts the post ID as a parameter.
-* Minor fix: Excerpt creation and highlighting have been improved a little.
-
-= 4.3.1.1 =
-* Remove notice about undefined index.
-
-= 4.3.1 =
-* Adding a missing file.
-
-= 4.3.0 =
-* New feature: Multi-phrase searches now respect AND and OR operators. If multiple phrases are included in an OR search, any posts with at least one phrase will be included. In AND search, all phrases must be included.
-* New feature: Admin search has been improved: there's a post type dropdown and the search is triggered when you press enter. The debug information has a `div` tag around it with the id `debugging`, so you can hide them with CSS if you want to. The numbering of results also makes more sense.
-* New feature: The date parameters (`year`, `monthnum`, `w`, `day`, `hour`, `minute`, `second`, `m`) are now supported.
-* New feature: New filter hook `relevanssi_indexing_limit` filters the default number of posts to index (10). If you have issues with indexing timing out, you can try adjusting this to a smaller number like 5 or 1.
-* New feature: Support for Paid Membership Pro added.
-* New feature: WordPress SEO support, posts marked "noindex" in WordPress SEO are no longer indexed by Relevanssi by default.
-* Removed feature: qTranslate is no longer supported.
-* Major fix: Tax query searching had some bugs in it, manifesting especially into Polylang not limiting the languages correctly. Some problems with the test suites were found and fixed, and similar problems won't happen again.
-* Minor fix: Admin search only shows editing options to users with enough capabilities to use them.
-* Minor fix: Phrase searching now uses filterable post statuses instead of a hard-coded set of post statuses.
-* Minor fix: The plugin action links were missing on the Plugins page list, they're back now.
-* Minor fix: Search terms with slashes won't cause errors anymore.
-* Minor fix: Relevanssi admin pages have been examined for accessibility and form labels have been improved in many places.
-* Deprecated: `relevanssi_get_term_taxonomy()` function is deprecated and will be removed at some point in the future.
-
 == Upgrade notice ==
+= 4.5.0 =
+* Bug fixes and improvements to stopword management.
+
 = 4.4.1 =
 * Fixes missing stopwords problem in 4.4.0.
 
 = 4.4.0 =
 * Changes in relevanssi_page_builder_shortcodes filter hook, page builder indexing and image attachments.
-
-= 4.3.4 =
-* Comment indexing bug fix, compatibility improvements and minor bug fixes and improvements.
-
-= 4.3.3 =
-* Bug fixes and overall improvements.
-
-= 4.3.2 =
-* Yoast SEO compatibility fix, minor updates.
-
-= 4.3.1.1 =
-* Remove an error notice.
-
-= 4.3.1 =
-* Fixes the broken 4.3.0 release.
-
-= 4.3.0 =
-* Major bug fixes for taxonomy queries, new features and smaller improvements.
