@@ -131,8 +131,8 @@ function relevanssi_add_matches( &$post, $data ) {
 	if ( isset( $data['mysqlcolumn_matches'][ $post->ID ] ) ) {
 		$hits['mysqlcolumn'] = $data['mysqlcolumn_matches'][ $post->ID ];
 	}
-	if ( isset( $data['scores'][ $post->ID ] ) ) {
-		$hits['score'] = round( $data['scores'][ $post->ID ], 2 );
+	if ( isset( $data['doc_weights'][ $post->ID ] ) ) {
+		$hits['score'] = round( $data['doc_weights'][ $post->ID ], 2 );
 	}
 	if ( isset( $data['term_hits'][ $post->ID ] ) ) {
 		$hits['terms'] = $data['term_hits'][ $post->ID ];

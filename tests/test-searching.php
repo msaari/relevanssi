@@ -1090,6 +1090,7 @@ class SearchingTest extends WP_UnitTestCase {
 					'mysqlcolumn_matches' => array( $id => 0 ),
 					'excerpt_matches'     => array( $id => 0 ),
 					'link_matches'        => array( $id => 0 ),
+					'doc_weights'         => array( $id => 0 ),
 					'term_hits'           => array(
 						$id =>
 							array(
