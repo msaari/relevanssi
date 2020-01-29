@@ -168,8 +168,6 @@ END;
 	/**
 	 * Tests that excerpt creation and highlights work for apostrophes and for
 	 * words ending in s and 's and s'.
-	 *
-	 * @group new
 	 */
 	public function test_apostrophes() {
 		$query = new WP_Query();
@@ -857,20 +855,19 @@ EOT;
 		$query = 'sclerisque "amet nisl"';
 		$terms = relevanssi_tokenize( $query, true );
 
-		update_option( 'relevanssi_excerpt_length', 30 );
-		update_option( 'relevanssi_excerpt_type', 'words' );
+		$length = 30;
+		$type   = 'words';
 
-		$response = relevanssi_create_excerpt( $content, $terms, $query );
+		$response = relevanssi_create_excerpt( $content, $terms, $query, $length, $type );
 		$this->assertEquals(
 			30,
 			count( explode( ' ', trim( $response[0] ) ) ),
 			'relevanssi_create_excerpt() returns wrong word excerpt length.'
 		);
 
-		update_option( 'relevanssi_excerpt_length', 300 );
-		update_option( 'relevanssi_excerpt_type', 'words' );
+		$length = 300;
 
-		$response = relevanssi_create_excerpt( $content, $terms, $query );
+		$response = relevanssi_create_excerpt( $content, $terms, $query, $length, $type );
 		$this->assertEquals(
 			count( explode( ' ', trim( $content ) ) ),
 			count( explode( ' ', trim( $response[0] ) ) ),
@@ -907,11 +904,11 @@ EOT;
 		$query   = 'dolor';
 		$terms   = relevanssi_tokenize( $query, true );
 
-		update_option( 'relevanssi_excerpt_length', 3 );
-		update_option( 'relevanssi_excerpt_type', 'words' );
+		$length = 3;
+		$type   = 'words';
 		add_filter( 'relevanssi_optimize_excerpts', '__return_false' );
 
-		$response = relevanssi_create_excerpt( $content, $terms, $query );
+		$response = relevanssi_create_excerpt( $content, $terms, $query, $length, $type );
 		$this->assertEquals(
 			'dolor dolor dolor.',
 			trim( $response[0] ),
@@ -921,7 +918,7 @@ EOT;
 		remove_filter( 'relevanssi_optimize_excerpts', '__return_false' );
 		add_filter( 'relevanssi_optimize_excerpts', '__return_true' );
 
-		$response = relevanssi_create_excerpt( $content, $terms, $query );
+		$response = relevanssi_create_excerpt( $content, $terms, $query, $length, $type );
 		$this->assertEquals(
 			'Lorem ipsum dolor',
 			trim( $response[0] ),
@@ -933,20 +930,19 @@ EOT;
 		$query = 'nonexisting';
 		$terms = relevanssi_tokenize( $query, true );
 
-		update_option( 'relevanssi_excerpt_length', 5 );
-		update_option( 'relevanssi_excerpt_type', 'words' );
+		$length = 5;
 
-		$response = relevanssi_create_excerpt( $content, $terms, $query );
+		$response = relevanssi_create_excerpt( $content, $terms, $query, $length, $type );
 		$this->assertEquals(
 			'Lorem ipsum dolor sit amet,',
 			trim( $response[0] ),
 			'relevanssi_create_excerpt() fails when search term is not found.'
 		);
 
-		update_option( 'relevanssi_excerpt_length', 100 );
-		update_option( 'relevanssi_excerpt_type', 'chars' );
+		$length = 100;
+		$type   = 'chars';
 
-		$response = relevanssi_create_excerpt( $content, $terms, $query );
+		$response = relevanssi_create_excerpt( $content, $terms, $query, $length, $type );
 		$this->assertTrue(
 			strlen( trim( $response[0] ) ) <= 100,
 			'relevanssi_create_excerpt() returns wrong character excerpt length.'
