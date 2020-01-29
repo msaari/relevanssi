@@ -943,12 +943,26 @@ function relevanssi_do_query( &$query ) {
 			}
 		}
 
+		/*
+		 * If you need to modify these on the go, use
+		 * 'pre_option_relevanssi_excerpt_length' and
+		 * pre_option_relevanssi_excerpt_type' filters.
+		 */
+		$excerpt_length = get_option( 'relevanssi_excerpt_length' );
+		$excerpt_type   = get_option( 'relevanssi_excerpt_type' );
+
 		if ( 'on' === $make_excerpts && empty( $search_params['fields'] ) ) {
 			if ( isset( $post->blog_id ) ) {
 				switch_to_blog( $post->blog_id );
 			}
 			$post->original_excerpt = $post->post_excerpt;
-			$post->post_excerpt     = relevanssi_do_excerpt( $post, $q );
+			$post->post_excerpt     = relevanssi_do_excerpt(
+				$post,
+				$q,
+				$excerpt_length,
+				$excerpt_type
+			);
+
 			if ( isset( $post->blog_id ) ) {
 				restore_current_blog();
 			}
