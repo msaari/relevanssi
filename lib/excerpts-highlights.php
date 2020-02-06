@@ -1194,7 +1194,14 @@ function relevanssi_get_custom_field_content( $post_id ) {
 
 				// Flatten other array data.
 				if ( is_array( $value ) ) {
-					$value = implode( ' ', $value );
+					$value_as_string = '';
+					array_walk_recursive(
+						$value,
+						function( $val ) use ( &$value_as_string ) {
+							$value_as_string .= ' ' . $val;
+						}
+					);
+					$value = $value_as_string;
 				}
 				$custom_field_content .= ' ' . $value;
 			}
