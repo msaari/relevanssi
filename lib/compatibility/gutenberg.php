@@ -10,8 +10,31 @@
  * @see     https://www.relevanssi.com/
  */
 
-if ( RELEVANSSI_PREMIUM ) {
-	add_action( 'rest_after_insert_post', 'relevanssi_save_gutenberg_postdata' );
+/**
+ * Registers rest_after_insert_{post_type} actions for all indexed post types.
+ *
+ * Runs on `admin_init` action hook and registers the function
+ * `relevanssi_save_gutenberg_postdata` for all indexed post types.
+ *
+ * @see relevanssi_save_gutenberg_postdata
+ */
+function relevanssi_register_gutenberg_actions() {
+	if ( ! RELEVANSSI_PREMIUM ) {
+		return;
+	}
+	$index_post_types = get_option( 'relevanssi_index_post_types' );
+	array_walk(
+		$index_post_types,
+		function ( $post_type ) {
+			if ( 'bogus' !== $post_type ) {
+				add_action(
+					'rest_after_insert_' . $post_type,
+					'relevanssi_save_gutenberg_postdata'
+				);
+			}
+
+		}
+	);
 }
 
 add_filter( 'relevanssi_post_content', 'relevanssi_gutenberg_block_rendering', 10 );
