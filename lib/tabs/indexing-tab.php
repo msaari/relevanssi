@@ -275,14 +275,14 @@ function relevanssi_indexing_tab() {
 			$checked = 'checked="checked"';
 		}
 
-		// Translators: %s is the post type name.
+		// Translators: %s is the taxonomy name.
 		$screen_reader_label = sprintf( __( 'Index taxonomy %s', 'relevanssi' ), $taxonomy->name );
 		$public              = __( 'no', 'relevanssi' );
-		// Translators: %s is the post type name.
+		// Translators: %s is the taxonomy name.
 		$screen_reader_public = sprintf( __( 'Taxonomy %s is not public', 'relevanssi' ), $taxonomy->name );
 		if ( $taxonomy->public ) {
 			$public = __( 'yes', 'relevanssi' );
-			// Translators: %s is the post type name.
+			// Translators: %s is the taxonomy name.
 			$screen_reader_public = sprintf( __( 'Taxonomy %s is public', 'relevanssi' ), $taxonomy->name );
 		}
 
