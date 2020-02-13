@@ -22,7 +22,7 @@ function relevanssi_register_gutenberg_actions() {
 	if ( ! RELEVANSSI_PREMIUM ) {
 		return;
 	}
-	$index_post_types = get_option( 'relevanssi_index_post_types' );
+	$index_post_types = get_option( 'relevanssi_index_post_types', array() );
 	array_walk(
 		$index_post_types,
 		function ( $post_type ) {
