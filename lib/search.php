@@ -130,6 +130,7 @@ function relevanssi_search( $args ) {
 	$query_join         = $query_data['query_join'];
 	$q                  = $query_data['query_query'];
 	$q_no_synonyms      = $query_data['query_no_synonyms'];
+	$phrase_queries     = $query_data['phrase_queries'];
 
 	/**
 	 * Filters whether stopwords are removed from titles.
@@ -269,9 +270,17 @@ function relevanssi_search( $args ) {
 			if ( null === $term_cond ) {
 				continue;
 			}
+
+			$this_query_restrictions = relevanssi_add_phrase_restrictions(
+				$query_restrictions,
+				$phrase_queries,
+				$term,
+				$operator
+			);
+
 			$query = "SELECT COUNT(DISTINCT(relevanssi.doc)) FROM $relevanssi_table AS relevanssi
-				$query_join WHERE $term_cond $query_restrictions";
-			// Clean: $query_restrictions is escaped, $term_cond is escaped.
+				$query_join WHERE $term_cond $this_query_restrictions";
+			// Clean: $this_query_restrictions is escaped, $term_cond is escaped.
 			/**
 			 * Filters the DF query.
 			 *
@@ -306,13 +315,20 @@ function relevanssi_search( $args ) {
 		foreach ( $df_counts as $term => $df ) {
 			$term_cond = relevanssi_generate_term_where( $term, $search_again, $no_terms );
 
+			$this_query_restrictions = relevanssi_add_phrase_restrictions(
+				$query_restrictions,
+				$phrase_queries,
+				$term,
+				$operator
+			);
+
 			$query = "SELECT DISTINCT(relevanssi.doc), relevanssi.*, relevanssi.title * $title_boost +
 				relevanssi.content * $content_boost + relevanssi.comment * $comment_boost +
 				relevanssi.tag * $tag + relevanssi.link * $link_boost +
 				relevanssi.author + relevanssi.category * $cat + relevanssi.excerpt +
 				relevanssi.taxonomy + relevanssi.customfield + relevanssi.mysqlcolumn AS tf
-				FROM $relevanssi_table AS relevanssi $query_join WHERE $term_cond $query_restrictions";
-			/** Clean: $query_restrictions is escaped, $term_cond is escaped. */
+				FROM $relevanssi_table AS relevanssi $query_join WHERE $term_cond $this_query_restrictions";
+			/** Clean: $this_query_restrictions is escaped, $term_cond is escaped. */
 
 			/**
 			 * Filters the Relevanssi MySQL query.

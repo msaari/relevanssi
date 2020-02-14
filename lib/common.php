@@ -413,6 +413,8 @@ function relevanssi_recognize_phrases( $search_query, $operator = 'AND' ) {
 		return $all_queries;
 	}
 
+	$phrase_queries = array();
+
 	foreach ( $phrases as $phrase ) {
 		$queries = array();
 		$phrase  = $wpdb->esc_like( $phrase );
@@ -501,6 +503,8 @@ function relevanssi_recognize_phrases( $search_query, $operator = 'AND' ) {
 		$queries       = implode( ' OR relevanssi.doc IN ', $queries );
 		$queries       = "(relevanssi.doc IN $queries)";
 		$all_queries[] = $queries;
+
+		$phrase_queries[ $phrase ] = $queries;
 	}
 
 	$operator = strtoupper( $operator );
@@ -512,7 +516,10 @@ function relevanssi_recognize_phrases( $search_query, $operator = 'AND' ) {
 		$all_queries = ' AND ( ' . implode( ' ' . $operator . ' ', $all_queries ) . ' ) ';
 	}
 
-	return $all_queries;
+	return array(
+		'and' => $all_queries,
+		'or'  => $phrase_queries,
+	);
 }
 
 /**

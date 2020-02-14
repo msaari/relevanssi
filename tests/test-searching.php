@@ -556,6 +556,8 @@ class SearchingTest extends WP_UnitTestCase {
 	 * Tests phrase searching.
 	 *
 	 * Uses both quotes for phrases and the "sentence" parameter.
+	 *
+	 * @group new
 	 */
 	public function test_phrase_search() {
 
@@ -627,8 +629,7 @@ class SearchingTest extends WP_UnitTestCase {
 
 		update_option( 'relevanssi_implicit_operator', 'OR' );
 
-		// AND search for two phrases should only find posts
-		// with both phrases.
+		// OR search for two phrases should find posts with either phrase.
 		$args = array(
 			's'           => '"test phrase" "faktojen maailma"',
 			'post_type'   => 'post',
@@ -640,6 +641,25 @@ class SearchingTest extends WP_UnitTestCase {
 		// This should find two posts.
 		$this->assertEquals(
 			2,
+			$query->found_posts,
+			"The OR search for phrases doesn't work as expected."
+		);
+
+		update_option( 'relevanssi_implicit_operator', 'OR' );
+
+		// OR search for two phrases and a non-phrase word should find all posts
+		// with any of the search terms.
+		$args = array(
+			's'           => 'content "test phrase" "faktojen maailma"',
+			'post_type'   => 'post',
+			'numberposts' => -1,
+			'post_status' => 'publish',
+		);
+
+		$query = self::results_from_args( $args )['query'];
+		// This should find two posts.
+		$this->assertEquals(
+			10,
 			$query->found_posts,
 			"The OR search for phrases doesn't work as expected."
 		);

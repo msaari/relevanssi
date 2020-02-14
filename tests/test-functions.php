@@ -32,13 +32,14 @@ class FunctionTest extends WP_UnitTestCase {
 
 		// $phrase_queries should not be empty.
 		$this->assertNotEmpty( $phrase_queries );
-		$this->assertFalse( stripos( $phrase_queries, 'post_excerpt' ) );
+		$this->assertFalse( stripos( $phrase_queries['and'], 'post_excerpt' ) );
+		$this->assertNotEmpty( $phrase_queries['or']['this is a phrase'] );
 
 		update_option( 'relevanssi_index_excerpt', 'on' );
 
 		$phrase_queries = relevanssi_recognize_phrases( $search_query, 'BOGUS_OPERATOR' );
 
-		$this->assertNotFalse( stripos( $phrase_queries, 'post_excerpt' ) );
+		$this->assertNotFalse( stripos( $phrase_queries['and'], 'post_excerpt' ) );
 
 		$search_query   = 'Search query "notaphrase"';
 		$phrase_queries = relevanssi_recognize_phrases( $search_query );

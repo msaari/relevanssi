@@ -25,6 +25,11 @@ function relevanssi_process_query_args( $args ) {
 	$query              = '';
 	$query_no_synonyms  = '';
 
+	$phrase_query_restrictions = array(
+		'and' => '',
+		'or'  => array(),
+	);
+
 	if ( function_exists( 'wp_encode_emoji' ) ) {
 		$query             = wp_encode_emoji( $args['q'] );
 		$query_no_synonyms = wp_encode_emoji( $args['q_no_synonyms'] );
@@ -71,8 +76,7 @@ function relevanssi_process_query_args( $args ) {
 
 	$phrases = relevanssi_recognize_phrases( $query, $args['operator'] );
 	if ( $phrases ) {
-		$query_restrictions .= " $phrases";
-		// Clean: $phrases is escaped earlier.
+		$phrase_query_restrictions = $phrases;
 	}
 
 	if ( $args['post_type'] || $args['include_attachments'] ) {
@@ -92,6 +96,7 @@ function relevanssi_process_query_args( $args ) {
 		'query_join'         => $query_join,
 		'query_query'        => $query,
 		'query_no_synonyms'  => $query_no_synonyms,
+		'phrase_queries'     => $phrase_query_restrictions,
 	);
 }
 
@@ -534,5 +539,34 @@ function relevanssi_process_post_status( $post_status ) {
 		}
 	}
 
+	return $query_restrictions;
+}
+
+/**
+ * Adds phrase restrictions to the query.
+ *
+ * For OR searches, adds the phrases only for matching terms that are in the
+ * phrases, achieving the OR search effect for phrases: posts without the phrase
+ * but with another search term are not excluded from the search. In AND
+ * searches, all search terms must match to documents containing the phrase.
+ *
+ * @param string $query_restrictions The MySQL query restriction for the search.
+ * @param array  $phrase_queries     The phrase queries - 'and' contains the
+ * main query, while 'or' has the phrase-specific queries.
+ * @param string $term               The current search term.
+ * @param string $operator           AND or OR.
+ *
+ * @return string The query restrictions with the phrase restrictions added.
+ */
+function relevanssi_add_phrase_restrictions( $query_restrictions, $phrase_queries, $term, $operator ) {
+	if ( 'OR' === $operator ) {
+		foreach ( $phrase_queries['or'] as $phrase_terms => $restriction ) {
+			if ( relevanssi_stripos( $phrase_terms, $term ) !== false ) {
+				$query_restrictions .= ' AND ' . $restriction;
+			}
+		}
+	} else {
+		$query_restrictions .= $phrase_queries['and'];
+	}
 	return $query_restrictions;
 }
