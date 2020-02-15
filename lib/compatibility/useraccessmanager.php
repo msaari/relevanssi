@@ -22,11 +22,17 @@ add_filter( 'relevanssi_post_ok', 'relevanssi_useraccessmanager_compatibility', 
  * otherwise false.
  */
 function relevanssi_useraccessmanager_compatibility( $post_ok, $post_id ) {
-	// phpcs:disable WordPress.NamingConventions.ValidVariableName
-	global $userAccessManager;
-	$type    = relevanssi_get_post_type( $post_id );
-	$post_ok = $userAccessManager->getAccessHandler()->checkObjectAccess( $type, $post_id );
-	// phpcs:enable WordPress.NamingConventions.ValidVariableName
+	$status = relevanssi_get_post_status( $post_id );
+
+	if ( 'publish' === $status ) {
+		// Only apply to published posts, don't apply to drafts.
+
+		// phpcs:disable WordPress.NamingConventions.ValidVariableName
+		global $userAccessManager;
+		$type    = relevanssi_get_post_type( $post_id );
+		$post_ok = $userAccessManager->getAccessHandler()->checkObjectAccess( $type, $post_id );
+		// phpcs:enable WordPress.NamingConventions.ValidVariableName
+	}
 
 	return $post_ok;
 }
