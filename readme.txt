@@ -5,7 +5,7 @@ Tags: search, relevance, better search
 Requires at least: 4.9
 Tested up to: 5.3.2
 Requires PHP: 5.6
-Stable tag: 4.5.0
+Stable tag: 4.6.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -133,6 +133,10 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.6.0 =
+* Changed behaviour: Phrases in OR search are now less restrictive. A search for 'foo "bar baz"' used to only return posts with the "bar baz" phrase, but now also posts with just the word 'foo' will be returned.
+* Minor fix: User Access Manager showed drafts in search results for all users. This is now fixed.
+
 = 4.5.0 =
 * New feature: New filter hook `relevanssi_disable_stopwords` can be used to disable stopwords completely. Just add a filter function that returns `true`.
 * Changed behaviour: Stopwords are no longer automatically restored if emptied. It's now possible to empty the stopword list. If you want to restore the stopwords from the file (or from the database, if you're upgrading from an earlier version of Relevanssi and find your stopwords missing), just click the button on the stopwords settings page that restores the stopwords.
@@ -158,6 +162,9 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: Indexing did not adjust the number of posts indexed at one go like it should.
 
 == Upgrade notice ==
+= 4.6.0 =
+* Changes how phrases work in OR search and fixes a User Access Manager issue.
+
 = 4.5.0 =
 * Bug fixes and improvements to stopword management.
 
