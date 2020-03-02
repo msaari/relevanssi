@@ -102,9 +102,7 @@ function relevanssi_do_excerpt( $t_post, $query, $excerpt_length = null, $excerp
 	 * @param array $problem_shortcodes Array of problematic shortcode names.
 	 */
 	$problem_shortcodes = apply_filters( 'relevanssi_disable_shortcodes_excerpt', $problem_shortcodes );
-	foreach ( $problem_shortcodes as $shortcode ) {
-		remove_shortcode( $shortcode );
-	}
+	array_walk( $problem_shortcodes, 'remove_shortcode' );
 
 	/**
 	 * Filters the post content before 'the_content'.
@@ -503,7 +501,6 @@ function relevanssi_highlight_terms( $content, $query, $in_docs = false ) {
 
 	usort( $terms, 'relevanssi_strlen_sort' );
 
-	$word_boundaries_available = true;
 	if ( 'on' === get_option( 'relevanssi_word_boundaries', 'off' ) ) {
 		$word_boundaries_available = false;
 	}
