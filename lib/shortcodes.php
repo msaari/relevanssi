@@ -32,8 +32,6 @@ add_shortcode( 'searchform', 'relevanssi_search_form' );
  * @return string A link to search results.
  */
 function relevanssi_shortcode( $atts, $content ) {
-	global $wpdb;
-
 	$attributes = shortcode_atts(
 		array(
 			'term'   => false,
