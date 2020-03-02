@@ -1116,7 +1116,7 @@ function relevanssi_add_accent_variations( $word ) {
 	$escaped    = false;
 	for ( $i = 0; $i < $len; $i++ ) {
 		$char = relevanssi_substr( $word, $i, 1 );
-		if ( '\\' === $char ) {
+		if ( '\\' === $char && ! $escaped ) {
 			$escaped = true;
 			continue;
 		}
