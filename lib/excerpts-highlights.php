@@ -116,6 +116,9 @@ function relevanssi_do_excerpt( $t_post, $query, $excerpt_length = null, $excerp
 	 */
 	$content = apply_filters( 'relevanssi_pre_excerpt_content', $post->post_content, $post, $query );
 
+	$pattern = get_shortcode_regex( $problem_shortcodes );
+	$content = preg_replace_callback( "/$pattern/", 'strip_shortcode_tag', $content );
+
 	// Add the custom field content.
 	if ( 'on' === get_option( 'relevanssi_excerpt_custom_fields' ) ) {
 		$content .= relevanssi_get_custom_field_content( $post->ID );
