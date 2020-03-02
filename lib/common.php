@@ -1368,7 +1368,7 @@ function relevanssi_switch_blog( $new_blog, $prev_blog ) {
  * @return string The link with the parameter added.
  */
 function relevanssi_add_highlight( $permalink, $link_post = null ) {
-	$highlight_docs = get_option( 'relevanssi_highlight_docs' );
+	$highlight_docs = get_option( 'relevanssi_highlight_docs', 'off' );
 	$query          = get_search_query();
 	if ( isset( $highlight_docs ) && 'off' !== $highlight_docs && ! empty( $query ) ) {
 		$frontpage_id = intval( get_option( 'page_on_front' ) );
