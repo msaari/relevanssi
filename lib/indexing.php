@@ -609,7 +609,14 @@ function relevanssi_index_taxonomy_terms( &$insert_data, $post_id, $taxonomy, $d
 	 * @param int    The post ID.
 	 */
 	$term_string = apply_filters( 'relevanssi_tag_before_tokenize', trim( $term_string ), $post_term, $taxonomy, $post_id );
-	$term_tokens = relevanssi_tokenize( $term_string, true, $min_word_length );
+
+	/** This filter is documented in lib/indexing.php */
+	$term_tokens = apply_filters(
+		'relevanssi_indexing_tokens',
+		relevanssi_tokenize( $term_string, true, $min_word_length ),
+		'taxonomy-' . $taxonomy
+	);
+
 	if ( count( $term_tokens ) > 0 ) {
 		foreach ( $term_tokens as $token => $count ) {
 			$n++;
