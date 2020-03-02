@@ -501,8 +501,9 @@ function relevanssi_highlight_terms( $content, $query, $in_docs = false ) {
 
 	usort( $terms, 'relevanssi_strlen_sort' );
 
+	$word_boundaries_available = false;
 	if ( 'on' === get_option( 'relevanssi_word_boundaries', 'off' ) ) {
-		$word_boundaries_available = false;
+		$word_boundaries_available = true;
 	}
 
 	$content = html_entity_decode( $content, ENT_QUOTES, 'UTF-8' );

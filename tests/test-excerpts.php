@@ -659,7 +659,7 @@ EOT;
 		$query   = array( 'massa', 'tempor' );
 		update_option( 'relevanssi_highlight', 'mark' );
 		update_option( 'relevanssi_fuzzy', 'never' );
-		update_option( 'relevanssi_word_boundaries', 'off' );
+		update_option( 'relevanssi_word_boundaries', 'on' );
 		$excerpt = relevanssi_highlight_terms( $content, $query, false );
 
 		$highlighted = <<<EOT
@@ -692,7 +692,7 @@ EOT;
 		);
 
 		update_option( 'relevanssi_fuzzy', 'never' );
-		update_option( 'relevanssi_word_boundaries', 'on' );
+		update_option( 'relevanssi_word_boundaries', 'off' );
 		$excerpt = relevanssi_highlight_terms( $content, $query, false );
 
 		$highlighted = <<<EOT
@@ -708,7 +708,7 @@ EOT;
 			'relevanssi_highlight_term() word boundaries test failed.'
 		);
 
-		update_option( 'relevanssi_word_boundaries', 'off' );
+		update_option( 'relevanssi_word_boundaries', 'on' );
 		delete_option( 'relevanssi_txt_col' );
 		delete_option( 'relevanssi_bg_col' );
 		delete_option( 'relevanssi_css' );
@@ -1058,7 +1058,7 @@ END;
 		$wp_query->query_vars['highlight'] = 'ipsum';
 
 		update_option( 'relevanssi_fuzzy', 'never' );
-		update_option( 'relevanssi_word_boundaries', 'off' );
+		update_option( 'relevanssi_word_boundaries', 'on' );
 		$highlighted_content = relevanssi_highlight_in_docs( $content );
 		$this->assertEquals(
 			'Lorem <strong>ipsum</strong> dolor sit amet, ipsumen consectetur adipiscing elit.',
