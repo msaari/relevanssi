@@ -755,13 +755,6 @@ function relevanssi_remove_punct( $a ) {
  */
 function relevanssi_prevent_default_request( $request, $query ) {
 	if ( $query->is_search ) {
-		if ( isset( $query->query_vars['post_type'] ) && isset( $query->query_vars['post_status'] ) ) {
-			if ( 'attachment' === $query->query_vars['post_type'] && 'inherit,private' === $query->query_vars['post_status'] ) {
-				// This is a media library search; do not meddle.
-				return $request;
-			}
-		}
-
 		if ( in_array( $query->query_vars['post_type'], array( 'topic', 'reply' ), true ) ) {
 			// This is a BBPress search; do not meddle.
 			return $request;

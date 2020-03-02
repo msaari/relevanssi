@@ -50,13 +50,6 @@ function relevanssi_query( $posts, $query = false ) {
 		$search_ok = false; // No search term.
 	}
 
-	// Disable Relevanssi in the media library search.
-	if ( $search_ok ) {
-		if ( 'attachment' === $query->query_vars['post_type'] && 'inherit,private' === $query->query_vars['post_status'] ) {
-			$search_ok = false;
-		}
-	}
-
 	/**
 	 * Filters whether Relevanssi search can be run or not.
 	 *
