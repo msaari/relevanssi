@@ -451,7 +451,7 @@ function relevanssi_highlight_terms( $content, $query, $in_docs = false ) {
 		$min_word_length = 1;
 	}
 
-	$remove_stopwords = true;
+	$remove_stopwords = 'body';
 	$terms            = array_keys(
 		relevanssi_tokenize(
 			$query,
@@ -460,27 +460,27 @@ function relevanssi_highlight_terms( $content, $query, $in_docs = false ) {
 		)
 	);
 
-	if ( is_array( $query ) ) {
-		$untokenized_terms = array_filter(
-			$query,
-			function( $value ) use ( $min_word_length ) {
-				if ( relevanssi_strlen( $value ) > $min_word_length ) {
-					return true;
-				}
-				return false;
-			}
-		);
-	} else {
-		$untokenized_terms = array_filter(
-			explode( ' ', $query ),
-			function( $value ) use ( $min_word_length ) {
-				if ( relevanssi_strlen( $value ) > $min_word_length ) {
-					return true;
-				}
-				return false;
-			}
-		);
+	if ( ! is_array( $query ) ) {
+		$query = explode( ' ', $query );
 	}
+
+	$body_stopwords = function_exists( 'relevanssi_fetch_body_stopwords' )
+		? relevanssi_fetch_body_stopwords()
+		: array();
+
+	$untokenized_terms = array_filter(
+		$query,
+		function( $value ) use ( $min_word_length, $body_stopwords ) {
+			if ( in_array( $value, $body_stopwords, true ) ) {
+				return false;
+			}
+			if ( relevanssi_strlen( $value ) > $min_word_length ) {
+				return true;
+			}
+			return false;
+		}
+	);
+
 	$terms = array_unique( array_merge( $untokenized_terms, $terms ) );
 	array_walk( $terms, 'relevanssi_array_walk_trim' ); // Numeric search terms begin with a space.
 
