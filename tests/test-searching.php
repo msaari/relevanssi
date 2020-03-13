@@ -556,8 +556,6 @@ class SearchingTest extends WP_UnitTestCase {
 	 * Tests phrase searching.
 	 *
 	 * Uses both quotes for phrases and the "sentence" parameter.
-	 *
-	 * @group new
 	 */
 	public function test_phrase_search() {
 
@@ -1767,13 +1765,13 @@ class SearchingTest extends WP_UnitTestCase {
 
 		$args = array(
 			's'           => 'content',
-			'post_parent' => 123,
+			'post_parent' => '123',
 		);
 
 		$query->parse_query( $args );
 		$search_params = relevanssi_compile_search_args( $query, $args['s'] );
 
-		$this->assertEquals(
+		$this->assertSame(
 			array( 'parent in' => array( 123 ) ),
 			$search_params['parent_query'],
 			'post_parent is not interpreted correctly.'
@@ -2051,7 +2049,6 @@ class SearchingTest extends WP_UnitTestCase {
 			$search_params['include_attachments'],
 			'include_attachments is not interpreted correctly.'
 		);
-
 	}
 
 	/**

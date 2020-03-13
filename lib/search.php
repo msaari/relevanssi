@@ -1311,8 +1311,8 @@ function relevanssi_compile_search_args( $query, $q ) {
 	}
 
 	$parent_query = array();
-	if ( isset( $query->query_vars['post_parent'] ) ) {
-		$parent_query = array( 'parent in' => array( $query->query_vars['post_parent'] ) );
+	if ( isset( $query->query_vars['post_parent'] ) && '' !== $query->query_vars['post_parent'] ) {
+		$parent_query = array( 'parent in' => array( (int) $query->query_vars['post_parent'] ) );
 	}
 	if ( isset( $query->query_vars['post_parent__in'] ) && is_array( $query->query_vars['post_parent__in'] ) && ! empty( $query->query_vars['post_parent__in'] ) ) {
 		$parent_query = array( 'parent in' => $query->query_vars['post_parent__in'] );
