@@ -58,7 +58,27 @@ function relevanssi_gutenberg_block_rendering( $content ) {
 	$output = '';
 
 	foreach ( $blocks as $block ) {
-		if ( ! isset( $block['attrs']['className'] ) || strstr( $block['attrs']['className'], 'relevanssi_noindex' ) === false ) {
+		/**
+		 * Filters the Gutenberg block before it is rendered.
+		 *
+		 * If the block is non-empty after the filter and it's className
+		 * parameter is not 'relevanssi_noindex', it will be passed on to the
+		 * render_block() function for rendering.
+		 *
+		 * @see render_block
+		 *
+		 * @param array $block The Gutenberg block element.
+		 */
+		$block = apply_filters( 'relevanssi_block_to_render', $block );
+
+		if ( ! $block ) {
+			continue;
+		}
+
+		if (
+			! isset( $block['attrs']['className'] )
+			|| false === strstr( $block['attrs']['className'], 'relevanssi_noindex' )
+			) {
 			$output .= render_block( $block );
 		}
 	}
