@@ -671,6 +671,7 @@ function relevanssi_remove_punct( $a ) {
 
 	$replacement_array = array(
 		'ß'                     => 'ss',
+		'₂'                     => '2',
 		'·'                     => '',
 		'…'                     => '',
 		'€'                     => '',
