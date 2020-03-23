@@ -1309,6 +1309,41 @@ class IndexingTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Tests handling of emoji.
+	 */
+	public function test_index_emoji() {
+		$insert_data = array(
+			'🍫' => array(
+				'content' => 1,
+			),
+		);
+
+		$post            = new stdClass();
+		$post->post_type = 'post';
+		$post->ID        = 1;
+
+		$values = relevanssi_convert_data_to_values( $insert_data, $post );
+
+		$this->assertEquals(
+			$values,
+			array( "(1, '🍫', REVERSE('🍫'), 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'post', '', '', 0)" ),
+			'Emoji are not handled correctly.'
+		);
+
+		add_filter( 'pre_get_col_charset', 'return_utf8' );
+
+		$values = relevanssi_convert_data_to_values( $insert_data, $post );
+
+		$this->assertEquals(
+			$values,
+			array( "(1, '&#x1f36b;', REVERSE('&#x1f36b;'), 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'post', '', '', 0)" ),
+			'Emoji are not handled correctly.'
+		);
+
+		remove_filter( 'pre_get_col_charset', 'return_utf8' );
+	}
+
+	/**
 	 * Helper function that deletes all the posts in the database.
 	 */
 	private function delete_all_posts() {
@@ -1340,5 +1375,15 @@ class IndexingTest extends WP_UnitTestCase {
  * Helper function for insert_edit test.
  */
 function insert_edit_test_filter() {
-	return " AND post_title != 'auto-draft' ";
+	return array(
+		'mysql'  => " AND post_title != 'auto-draft' ",
+		'reason' => 'insert_edit_test',
+	);
+}
+
+/**
+ * Helper function for emoji indexing test.
+ */
+function return_utf8() {
+	return 'utf8';
 }

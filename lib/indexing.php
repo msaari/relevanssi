@@ -1499,7 +1499,6 @@ function relevanssi_index_content( &$insert_data, $post, $min_word_length, $debu
 
 	$contents = preg_replace( '/<[a-zA-Z\/][^>]*>/', ' ', $contents );
 	$contents = wp_strip_all_tags( $contents );
-	$contents = wp_encode_emoji( $contents );
 
 	/**
 	 * Filters the post content in indexing before tokenization.
@@ -1620,6 +1619,7 @@ function relevanssi_disable_shortcodes() {
  * insert query values before and after the conversion.
  *
  * @global $wpdb The WordPress database interface.
+ * @global $relevanssi_variables Used for the Relevanssi db table name.
  *
  * @param array  $insert_data An array of term => data pairs, where data has
  * token counts for the term in different contexts.
@@ -1628,7 +1628,12 @@ function relevanssi_disable_shortcodes() {
  * @return array An array of values clauses for an INSERT query.
  */
 function relevanssi_convert_data_to_values( $insert_data, $post ) {
-	global $wpdb;
+	global $wpdb, $relevanssi_variables;
+
+	$charset = $wpdb->get_col_charset(
+		$relevanssi_variables['relevanssi_table'],
+		'term'
+	);
 
 	/**
 	 * Sets the indexed post 'type' column in the index.
@@ -1664,6 +1669,10 @@ function relevanssi_convert_data_to_values( $insert_data, $post ) {
 		$mysqlcolumn        = isset( $data['mysqlcolumn'] ) ? $data['mysqlcolumn'] : 0;
 		$taxonomy_detail    = isset( $data['taxonomy_detail'] ) ? $data['taxonomy_detail'] : '';
 		$customfield_detail = isset( $data['customfield_detail'] ) ? $data['customfield_detail'] : '';
+
+		if ( 'utf8' === $charset ) {
+			$term = wp_encode_emoji( $term );
+		}
 
 		$term = trim( $term );
 
