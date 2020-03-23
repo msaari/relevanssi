@@ -117,9 +117,25 @@ function relevanssi_generate_indexing_query( $valid_status, $extend = false, $re
 	 *
 	 * @param string The WHERE restriction.
 	 *
-	 * @return string The modified WHERE restriction.
+	 * @param array $restriction An array with two values: 'mysql' for the MySQL
+	 * query restriction to modify, 'reason' for the reason of restriction.
 	 */
-	$restriction = apply_filters( 'relevanssi_indexing_restriction', $restriction );
+	$restriction = apply_filters(
+		'relevanssi_indexing_restriction',
+		array(
+			'mysql'  => $restriction,
+			'reason' => '',
+		)
+	);
+
+	/**
+	 * Backwards compatibility for the change in filter parameters in Premium
+	 * 2.8.0 in March 2020. Remove this eventually.
+	 */
+	if ( is_string( $restriction ) ) {
+		$restriction['mysql']  = $restriction;
+		$restriction['reason'] = 'relevanssi_indexing_restriction filter';
+	}
 
 	if ( ! $extend ) {
 		$q = "SELECT post.ID
@@ -135,7 +151,7 @@ function relevanssi_generate_indexing_query( $valid_status, $extend = false, $re
 				)
 			))
 		AND post.ID NOT IN (SELECT post_id FROM $wpdb->postmeta WHERE meta_key = '_relevanssi_hide_post' AND meta_value = 'on')
-		$restriction ORDER BY post.ID DESC $limit";
+		{$restriction['mysql']} ORDER BY post.ID DESC $limit";
 	} else {
 		$processed_post_filter = 'r.doc is null';
 		if ( 'noindex' !== get_option( 'relevanssi_internal_links', 'noindex' ) ) {
@@ -159,7 +175,7 @@ function relevanssi_generate_indexing_query( $valid_status, $extend = false, $re
 			)
 		)
 		AND post.ID NOT IN (SELECT post_id FROM $wpdb->postmeta WHERE meta_key = '_relevanssi_hide_post' AND meta_value = 'on')
-		$restriction ORDER BY post.ID DESC $limit";
+		{$restriction['mysql']} ORDER BY post.ID DESC $limit";
 	}
 
 	/**
@@ -443,6 +459,11 @@ function relevanssi_index_doc( $index_post, $remove_first = false, $custom_field
 			if ( $previous_post || $post_was_null ) {
 				$post = $previous_post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 			}
+			update_post_meta(
+				$post->ID,
+				'_relevanssi_noindex_reason',
+				__( 'Relevanssi index exclude', 'relevanssi' )
+			);
 			return 'hide';
 		}
 	}
@@ -460,14 +481,21 @@ function relevanssi_index_doc( $index_post, $remove_first = false, $custom_field
 	 *
 	 * Allows you to filter whether a post is indexed or not.
 	 *
-	 * @param boolean If true, the post is not indexed. Default false.
-	 * @param int     The post ID.
+	 * @param boolean|string If not false, the post is not indexed. The value
+	 * can be a boolean, or a string containing an explanation for the
+	 * exclusion. Default false.
+	 * @param int            The post ID.
 	 */
-	if ( true === apply_filters( 'relevanssi_do_not_index', false, $post->ID ) ) {
+	$do_not_index = apply_filters( 'relevanssi_do_not_index', false, $post->ID );
+	if ( $do_not_index ) {
 		// Filter says no.
-		if ( $debug ) {
-			relevanssi_debug_echo( 'relevanssi_do_not_index returned true.' );
+		if ( true === $do_not_index ) {
+			$do_not_index = __( 'Blocked by a filter function', 'relevanssi' );
 		}
+		if ( $debug ) {
+			relevanssi_debug_echo( 'relevanssi_do_not_index says exclude, because: ' . $do_not_index );
+		}
+		update_post_meta( $post->ID, '_relevanssi_noindex_reason', $do_not_index );
 		$index_this_post = false;
 	}
 
@@ -557,6 +585,8 @@ function relevanssi_index_doc( $index_post, $remove_first = false, $custom_field
 		}
 		$wpdb->query( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 	}
+
+	delete_post_meta( $post->ID, '_relevanssi_noindex_reason' );
 
 	if ( $previous_post || $post_was_null ) {
 		$post = $previous_post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
@@ -801,11 +831,19 @@ function relevanssi_insert_edit( $post_id ) {
 	$index_this_post = true;
 
 	/* Documented in lib/indexing.php. */
-	$restriction = apply_filters( 'relevanssi_indexing_restriction', '' );
-	if ( ! empty( $restriction ) ) {
+	$restriction = apply_filters(
+		'relevanssi_indexing_restriction',
+		array(
+			'mysql'  => '',
+			'reason' => '',
+		)
+	);
+	if ( ! empty( $restriction['mysql'] ) ) {
 		// Check the indexing restriction filter: if the post passes the filter, this
 		// should return the post ID.
-		$is_unrestricted = $wpdb->get_var( "SELECT ID FROM $wpdb->posts AS post WHERE ID = $post_id $restriction" ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$is_unrestricted = $wpdb->get_var(
+			"SELECT ID FROM $wpdb->posts AS post WHERE ID = $post_id {$restriction['mysql']}" // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		);
 		if ( ! $is_unrestricted ) {
 			$index_this_post = false;
 		}
@@ -823,6 +861,11 @@ function relevanssi_insert_edit( $post_id ) {
 	} else {
 		// The post isn't supposed to be indexed anymore, remove it from index.
 		relevanssi_remove_doc( $post_id );
+		update_post_meta(
+			$post_id,
+			'_relevanssi_noindex_reason',
+			trim( $restriction['reason'] )
+		);
 		$return_value = 'removed';
 	}
 

@@ -610,7 +610,7 @@ class IndexingTest extends WP_UnitTestCase {
 			"relevanssi_index_doc() doesn't handle relevanssi_do_not_index correctly."
 		);
 		$this->assertContains(
-			'relevanssi_do_not_index returned true.',
+			'relevanssi_do_not_index says exclude, because: Blocked by a filter function',
 			$output,
 			"Output for relevanssi_do_not_index doesn't work."
 		);

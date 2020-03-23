@@ -21,12 +21,13 @@ add_filter( 'relevanssi_indexing_restriction', 'relevanssi_yoast_exclude' );
  * @param boolean $do_not_index True, if the post shouldn't be indexed.
  * @param integer $post_id      The post ID number.
  *
- * @return boolean True, if the post shouldn't be indexed.
+ * @return string|boolean If the post shouldn't be indexed, this returns
+ * 'yoast_seo'. The value may also be a boolean.
  */
 function relevanssi_yoast_noindex( $do_not_index, $post_id ) {
 	$noindex = get_post_meta( $post_id, '_yoast_wpseo_meta-robots-noindex', true );
 	if ( '1' === $noindex ) {
-		$do_not_index = true;
+		$do_not_index = 'Yoast SEO';
 	}
 	return $do_not_index;
 }
@@ -37,10 +38,14 @@ function relevanssi_yoast_noindex( $do_not_index, $post_id ) {
  * Adds a MySQL query restriction that blocks posts that have the Yoast SEO
  * "noindex" setting set to "1" from indexing.
  *
- * @param string $restriction The MySQL query restriction to modify.
+ * @param array $restriction An array with two values: 'mysql' for the MySQL
+ * query restriction to modify, 'reason' for the reason of restriction.
  */
 function relevanssi_yoast_exclude( $restriction ) {
 	global $wpdb;
-	$restriction .= " AND post.ID NOT IN (SELECT post_id FROM $wpdb->postmeta WHERE meta_key = '_yoast_wpseo_meta-robots-noindex' AND meta_value = '1' ) ";
+	$restriction['mysql']  .= " AND post.ID NOT IN (SELECT post_id FROM
+		$wpdb->postmeta WHERE meta_key = '_yoast_wpseo_meta-robots-noindex'
+		AND meta_value = '1' ) ";
+	$restriction['reason'] .= ' Yoast SEO';
 	return $restriction;
 }

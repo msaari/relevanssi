@@ -15,12 +15,12 @@ add_filter( 'relevanssi_indexing_restriction', 'relevanssi_woocommerce_restricti
 /**
  * Applies the WooCommerce product visibility filter.
  *
- * @param string $restriction The restriction clause.
- *
- * @return string The restriction clause with the WC filter added, if necessary.
- */
+ * @param array $restriction An array with two values: 'mysql' for the MySQL
+ * query restriction to modify, 'reason' for the reason of restriction.
+  */
 function relevanssi_woocommerce_restriction( $restriction ) {
-	$restriction .= relevanssi_woocommerce_indexing_filter();
+	$restriction['mysql']  .= relevanssi_woocommerce_indexing_filter();
+	$restriction['reason'] .= 'WooCommerce';
 	return $restriction;
 }
 

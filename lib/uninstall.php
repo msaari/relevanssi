@@ -132,5 +132,8 @@ function relevanssi_uninstall_free() {
 	delete_option( 'relevanssi_taxonomies_to_index' );
 	delete_option( 'relevanssi_highlight_docs_external' );
 
+	global $wpdb;
+	$wpdb->query( "DELETE FROM $wpdb->postmeta WHERE meta_key = '_relevanssi_noindex_reason'" );
+
 	relevanssi_drop_database_tables();
 }

@@ -622,7 +622,7 @@ class FunctionTest extends WP_UnitTestCase {
 		require_once dirname( dirname( __FILE__ ) ) . '/lib/compatibility/yoast-seo.php';
 		$this->assertFalse( relevanssi_yoast_noindex( false, $post_id ) );
 		update_post_meta( $post_id, '_yoast_wpseo_meta-robots-noindex', '1' );
-		$this->assertTrue( relevanssi_yoast_noindex( false, $post_id ) );
+		$this->assertEquals( 'Yoast SEO', relevanssi_yoast_noindex( false, $post_id ) );
 		update_post_meta( $post_id, '_yoast_wpseo_meta-robots-noindex', '2' );
 		$this->assertFalse( relevanssi_yoast_noindex( false, $post_id ) );
 	}
