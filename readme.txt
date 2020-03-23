@@ -3,9 +3,9 @@ Contributors: msaari
 Donate link: https://www.relevanssi.com/buy-premium/
 Tags: search, relevance, better search
 Requires at least: 4.9
-Tested up to: 5.3.2
+Tested up to: 5.4
 Requires PHP: 5.6
-Stable tag: 4.6.0
+Stable tag: 4.7.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -133,6 +133,7 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.7.0 =
 * New feature: New filter hook `relevanssi_admin_search_blocked_post_types` makes it easy to block Relevanssi from searching a specific post type in the admin dashboard. There's built-in support for Reusable Content Blocks `rc_blocks` post type, for example.
 * New feature: The reason why a post is not indexed is now stored in the `_relevanssi_noindex_reason` custom field.
 * Changed behaviour: The `relevanssi_indexing_restriction` filter hook has a changed format. Instead of a string value, the filter now expects an array with the MySQL query in the index 'mysql' and a reason in string format in 'reason'. There's some temporary backwards compatibility for this.
@@ -169,6 +170,9 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: Indexing did not adjust the number of posts indexed at one go like it should.
 
 == Upgrade notice ==
+= 4.7.0 =
+* The `relevanssi_indexing_restriction` filter hook has been changed, stopwords are handled in a different way in excerpts.
+
 = 4.6.0 =
 * Changes how phrases work in OR search and fixes a User Access Manager issue.
 
