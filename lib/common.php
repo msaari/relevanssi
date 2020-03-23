@@ -1933,3 +1933,43 @@ function relevanssi_remove_page_builder_shortcodes( $content ) {
 	$content      = preg_replace( $search_array, ' ', $content );
 	return $content;
 }
+
+/**
+ * Blocks Relevanssi from the admin searches on specific post types.
+ *
+ * This function is added to relevanssi_search_ok, relevanssi_admin_search_ok,
+ * and relevanssi_prevent_default_request hooks. When a search is made with
+ * one of the listed post types, these filters will get a false response, which
+ * means Relevanssi won't search and won't block the default request.
+ *
+ * @see relevanssi_prevent_default_request
+ * @see relevanssi_search
+ *
+ * @param boolean  $allow Should the admin search be allowed.
+ * @param WP_Query $query The query object.
+ */
+function relevanssi_block_on_admin_searches( $allow, $query ) {
+	$blocked_post_types = array(
+		'rc_blocks', // Reusable Content Blocks.
+	);
+	/**
+	 * Filters the post types that are blocked in the admin search.
+	 *
+	 * In some cases you may want to enable Relevanssi in the admin backend,
+	 * but don't want Relevanssi to search certain post types. To block
+	 * Relevanssi from a specific post type, add the post type to this filter.
+	 *
+	 * @param array List of post types Relevanssi shouldn't try searching.
+	 */
+	$blocked_post_types = apply_filters(
+		'relevanssi_admin_search_blocked_post_types',
+		$blocked_post_types
+	);
+	if (
+		isset( $query->query_vars['post_type'] ) &&
+		in_array( $query->query_vars['post_type'], $blocked_post_types, true )
+		) {
+		$allow = false;
+	}
+	return $allow;
+}
