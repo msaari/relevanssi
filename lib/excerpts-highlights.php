@@ -58,7 +58,7 @@ function relevanssi_do_excerpt( $t_post, $query, $excerpt_length = null, $excerp
 	}
 	$post = $t_post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 
-	$remove_stopwords = true;
+	$remove_stopwords = 'body';
 
 	/**
 	 * Filters the search query before excerpt-building.
@@ -88,7 +88,10 @@ function relevanssi_do_excerpt( $t_post, $query, $excerpt_length = null, $excerp
 	} else {
 		$untokenized_terms = array_filter( explode( ' ', $query ) );
 	}
-	$terms = array_merge( array_flip( $untokenized_terms ), $terms );
+	$untokenized_terms = array_flip(
+		relevanssi_remove_stopwords_from_array( $untokenized_terms )
+	);
+	$terms             = array_merge( $untokenized_terms, $terms );
 
 	// These shortcodes cause problems with Relevanssi excerpts.
 	$problem_shortcodes = array( 'layerslider', 'responsive-flipbook', 'breadcrumb', 'robogallery', 'gravityview', 'wp_show_posts' );

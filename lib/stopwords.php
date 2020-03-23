@@ -303,3 +303,22 @@ function relevanssi_remove_stopword( $term, $verbose = true ) {
 
 	return $success;
 }
+
+/**
+ * Helper function to remove stopwords from an array.
+ *
+ * Removes all stopwords from an array of terms. If body stopwords are
+ * available, those will also be removed. The terms must be in the array values.
+ *
+ * @param array $terms An array of terms to clean out.
+ *
+ * @return array An array of terms with stopwords removed.
+ */
+function relevanssi_remove_stopwords_from_array( $terms ) {
+	$stopword_list = relevanssi_fetch_stopwords();
+	if ( function_exists( 'relevanssi_fetch_body_stopwords' ) ) {
+		$stopword_list = array_merge( $stopword_list, relevanssi_fetch_body_stopwords() );
+	}
+	$terms_without_stops = array_diff( $terms, $stopword_list );
+	return $terms_without_stops;
+}
