@@ -1490,6 +1490,17 @@ function relevanssi_index_content( &$insert_data, $post, $min_word_length, $debu
 	remove_shortcode( 'noindex' );
 	add_shortcode( 'noindex', 'relevanssi_noindex_shortcode' );
 
+	/**
+	 * Filters the post content after shortcodes but before HTML stripping.
+	 *
+	 * @param string $contents The post content.
+	 * @param object $post     The full post object.
+	 */
+	$contents = apply_filters(
+		'relevanssi_post_content_after_shortcodes',
+		$contents,
+		$post
+	);
 	$contents = relevanssi_strip_invisibles( $contents );
 
 	// Premium feature for better control over internal links.
