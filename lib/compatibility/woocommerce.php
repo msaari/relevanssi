@@ -17,8 +17,16 @@ add_filter( 'relevanssi_indexing_restriction', 'relevanssi_woocommerce_restricti
  *
  * @param array $restriction An array with two values: 'mysql' for the MySQL
  * query restriction to modify, 'reason' for the reason of restriction.
-  */
+ */
 function relevanssi_woocommerce_restriction( $restriction ) {
+	// Backwards compatibility code for 2.8.0, remove at some point.
+	if ( is_string( $restriction ) ) {
+		$restriction = array(
+			'mysql'  => $restriction,
+			'reason' => '',
+		);
+	}
+
 	$restriction['mysql']  .= relevanssi_woocommerce_indexing_filter();
 	$restriction['reason'] .= 'WooCommerce';
 	return $restriction;

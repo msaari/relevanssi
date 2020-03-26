@@ -43,6 +43,15 @@ function relevanssi_yoast_noindex( $do_not_index, $post_id ) {
  */
 function relevanssi_yoast_exclude( $restriction ) {
 	global $wpdb;
+
+	// Backwards compatibility code for 2.8.0, remove at some point.
+	if ( is_string( $restriction ) ) {
+		$restriction = array(
+			'mysql'  => $restriction,
+			'reason' => '',
+		);
+	}
+
 	$restriction['mysql']  .= " AND post.ID NOT IN (SELECT post_id FROM
 		$wpdb->postmeta WHERE meta_key = '_yoast_wpseo_meta-robots-noindex'
 		AND meta_value = '1' ) ";
