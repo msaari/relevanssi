@@ -5,7 +5,7 @@ Tags: search, relevance, better search
 Requires at least: 4.9
 Tested up to: 5.4
 Requires PHP: 5.6
-Stable tag: 4.7.0
+Stable tag: 4.7.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -133,7 +133,9 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.7.1 =
 * New feature: New filter hook `relevanssi_post_content_after_shortcodes` filters the post content after shortcodes have been processed but before the HTML tags are stripped.
+* Minor fix: Adds more backwards compatibility for the `relevanssi_indexing_restriction` change.
 
 = 4.7.0 =
 * New feature: New filter hook `relevanssi_admin_search_blocked_post_types` makes it easy to block Relevanssi from searching a specific post type in the admin dashboard. There's built-in support for Reusable Content Blocks `rc_blocks` post type, for example.
@@ -172,6 +174,9 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: Indexing did not adjust the number of posts indexed at one go like it should.
 
 == Upgrade notice ==
+= 4.7.1 =
+* Improved backwards compatibility for the `relevanssi_indexing_restriction` filter hook change.
+
 = 4.7.0 =
 * The `relevanssi_indexing_restriction` filter hook has been changed, stopwords are handled in a different way in excerpts.
 
