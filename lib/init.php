@@ -78,8 +78,23 @@ function relevanssi_init() {
 	$on_relevanssi_page = false;
 	if ( isset( $_GET['page'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 		$page = sanitize_file_name( wp_unslash( $_GET['page'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
-		if ( plugin_basename( $relevanssi_variables['file'] ) === $page ) {
+		$base = sanitize_file_name( wp_unslash( plugin_basename( $relevanssi_variables['file'] ) ) );
+		if ( $base === $page ) {
 			$on_relevanssi_page = true;
+		}
+	}
+
+	$restriction_notice = relevanssi_check_indexing_restriction();
+	if ( $restriction_notice ) {
+		if ( 'options-general.php' === $pagenow && $on_relevanssi_page ) {
+			if ( 'indexing' === $_GET['tab'] ) { // phpcs:ignore WordPress.Security.NonceVerification
+				add_action(
+					'admin_notices',
+					function() use ( $restriction_notice ) {
+						echo $restriction_notice; // phpcs:ignore WordPress.Security.EscapeOutput
+					}
+				);
+			}
 		}
 	}
 
