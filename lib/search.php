@@ -50,6 +50,16 @@ function relevanssi_query( $posts, $query = false ) {
 		$search_ok = false; // No search term.
 	}
 
+	$indexed_post_types = array_flip(
+		get_option( 'relevanssi_index_post_types', array() )
+	);
+	$images_indexed     = get_option( 'relevanssi_index_image_files', 'off' );
+	if ( $search_ok && ( false === isset( $indexed_post_types['attachment'] ) || 'off' === $images_indexed ) ) {
+		if ( 'attachment' === $query->query_vars['post_type'] && 'inherit,private' === $query->query_vars['post_status'] ) {
+			$search_ok = false;
+		}
+	}
+
 	/**
 	 * Filters whether Relevanssi search can be run or not.
 	 *
