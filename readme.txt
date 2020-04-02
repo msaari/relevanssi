@@ -5,7 +5,7 @@ Tags: search, relevance, better search
 Requires at least: 4.9
 Tested up to: 5.4
 Requires PHP: 5.6
-Stable tag: 4.7.1
+Stable tag: 4.7.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -133,6 +133,10 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.7.2 =
+* Minor fix: Media Library searches failed if Relevanssi was enabled in the WP admin, but the `attachment` post type wasn't indexed. Relevanssi will no longer block the default Media Library search in these cases.
+* Minor fix: Adds more backwards compatibility for the `relevanssi_indexing_restriction` change, there's now an alert on indexing tab if there's a problem.
+
 = 4.7.1 =
 * New feature: New filter hook `relevanssi_post_content_after_shortcodes` filters the post content after shortcodes have been processed but before the HTML tags are stripped.
 * Minor fix: Adds more backwards compatibility for the `relevanssi_indexing_restriction` change.
@@ -174,6 +178,9 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: Indexing did not adjust the number of posts indexed at one go like it should.
 
 == Upgrade notice ==
+= 4.7.2 =
+* Improved backwards compatibility for the `relevanssi_indexing_restriction` filter hook change, better Media Library support.
+
 = 4.7.1 =
 * Improved backwards compatibility for the `relevanssi_indexing_restriction` filter hook change.
 
