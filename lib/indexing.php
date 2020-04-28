@@ -955,7 +955,21 @@ function relevanssi_get_comments( $post_id ) {
 			'number' => $limit,
 			'type'   => $comment_types,
 		);
-		$comments = get_approved_comments( $post_id, $args );
+		$comments = get_approved_comments(
+			$post_id,
+			/**
+			 * Filters the arguments for get_approved_comments().
+			 *
+			 * Useful for indexing custom comment types, for example.
+			 *
+			 * @param array An array of arguments. Don't adjust 'offset' or
+			 * 'number' to avoid problems.
+			 */
+			apply_filters(
+				'relevanssi_get_approved_comments_args',
+				$args
+			)
+		);
 		if ( count( $comments ) === 0 ) {
 			break;
 		}
@@ -1501,6 +1515,7 @@ function relevanssi_index_content( &$insert_data, $post, $min_word_length, $debu
 		$contents,
 		$post
 	);
+
 	$contents = relevanssi_strip_invisibles( $contents );
 
 	// Premium feature for better control over internal links.

@@ -348,6 +348,13 @@ function relevanssi_cmp_function( $a, $b ) {
 	$level = -1;
 	$val   = 0;
 
+	if ( is_integer( $a ) ) {
+		$a = get_post( $a );
+	}
+	if ( is_integer( $b ) ) {
+		$b = get_post( $b );
+	}
+
 	while ( 0 === $val ) {
 		$level++;
 		if ( ! isset( $relevanssi_keys[ $level ] ) ) {
