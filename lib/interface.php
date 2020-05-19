@@ -295,9 +295,9 @@ function update_relevanssi_options() {
 	}
 
 	if ( 'indexing' === $_REQUEST['tab'] ) {
-		update_option( 'relevanssi_index_taxonomies_list', array_keys( $index_taxonomies_list ) );
+		update_option( 'relevanssi_index_taxonomies_list', array_keys( $index_taxonomies_list ), false );
 		if ( RELEVANSSI_PREMIUM ) {
-			update_option( 'relevanssi_index_terms', array_keys( $index_terms_list ) );
+			update_option( 'relevanssi_index_terms', array_keys( $index_terms_list ), false );
 		}
 	}
 
@@ -306,7 +306,7 @@ function update_relevanssi_options() {
 	}
 
 	if ( count( $index_post_types ) > 0 ) {
-		update_option( 'relevanssi_index_post_types', array_keys( $index_post_types ) );
+		update_option( 'relevanssi_index_post_types', array_keys( $index_post_types ), false );
 	}
 
 	if ( isset( $_REQUEST['relevanssi_index_fields_select'] ) ) {
@@ -322,7 +322,7 @@ function update_relevanssi_options() {
 				$fields_option = rtrim( $_REQUEST['relevanssi_index_fields'], " \t\n\r\0\x0B," );
 			}
 		}
-		update_option( 'relevanssi_index_fields', $fields_option );
+		update_option( 'relevanssi_index_fields', $fields_option, false );
 	}
 
 	if ( isset( $_REQUEST['relevanssi_trim_logs'] ) ) {
@@ -370,7 +370,7 @@ function update_relevanssi_options() {
 	}
 
 	if ( isset( $_REQUEST['relevanssi_admin_search'] ) ) {
-		update_option( 'relevanssi_admin_search', $_REQUEST['relevanssi_admin_search'] );
+		update_option( 'relevanssi_admin_search', $_REQUEST['relevanssi_admin_search'], false );
 	}
 	if ( isset( $_REQUEST['relevanssi_excerpts'] ) ) {
 		update_option( 'relevanssi_excerpts', $_REQUEST['relevanssi_excerpts'] );
@@ -415,22 +415,22 @@ function update_relevanssi_options() {
 		update_option( 'relevanssi_hilite_title', $_REQUEST['relevanssi_hilite_title'] );
 	}
 	if ( isset( $_REQUEST['relevanssi_index_comments'] ) ) {
-		update_option( 'relevanssi_index_comments', $_REQUEST['relevanssi_index_comments'] );
+		update_option( 'relevanssi_index_comments', $_REQUEST['relevanssi_index_comments'], false );
 	}
 	if ( isset( $_REQUEST['relevanssi_index_author'] ) ) {
-		update_option( 'relevanssi_index_author', $_REQUEST['relevanssi_index_author'] );
+		update_option( 'relevanssi_index_author', $_REQUEST['relevanssi_index_author'], false );
 	}
 	if ( isset( $_REQUEST['relevanssi_index_excerpt'] ) ) {
-		update_option( 'relevanssi_index_excerpt', $_REQUEST['relevanssi_index_excerpt'] );
+		update_option( 'relevanssi_index_excerpt', $_REQUEST['relevanssi_index_excerpt'], false );
 	}
 	if ( isset( $_REQUEST['relevanssi_index_image_files'] ) ) {
-		update_option( 'relevanssi_index_image_files', $_REQUEST['relevanssi_index_image_files'] );
+		update_option( 'relevanssi_index_image_files', $_REQUEST['relevanssi_index_image_files'], false );
 	}
 	if ( isset( $_REQUEST['relevanssi_fuzzy'] ) ) {
 		update_option( 'relevanssi_fuzzy', $_REQUEST['relevanssi_fuzzy'] );
 	}
 	if ( isset( $_REQUEST['relevanssi_expand_shortcodes'] ) ) {
-		update_option( 'relevanssi_expand_shortcodes', $_REQUEST['relevanssi_expand_shortcodes'] );
+		update_option( 'relevanssi_expand_shortcodes', $_REQUEST['relevanssi_expand_shortcodes'], false );
 	}
 	if ( isset( $_REQUEST['relevanssi_implicit_operator'] ) ) {
 		update_option( 'relevanssi_implicit_operator', $_REQUEST['relevanssi_implicit_operator'] );

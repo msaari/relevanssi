@@ -308,7 +308,7 @@ function relevanssi_build_index( $extend_offset = false, $verbose = null, $post_
 			relevanssi_premium_indexing();
 		}
 
-		update_option( 'relevanssi_index', '' );
+		update_option( 'relevanssi_index', '', false );
 	}
 
 	$indexing_query_args = relevanssi_indexing_query_args( $extend_offset, $post_limit );
@@ -366,7 +366,7 @@ function relevanssi_build_index( $extend_offset = false, $verbose = null, $post_
 
 	if ( ( 0 === $size ) || ( count( $content ) < $size ) ) {
 		$complete = true;
-		update_option( 'relevanssi_indexed', 'done' );
+		update_option( 'relevanssi_indexed', 'done', false );
 	}
 
 	// Update the document count variable.
