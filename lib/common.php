@@ -1052,6 +1052,12 @@ function relevanssi_get_post_status( $post_id ) {
 		return 'publish';
 	}
 
+	$original_id = $post_id;
+	$blog_id     = -1;
+	if ( is_multisite() ) {
+		$blog_id = get_current_blog_id();
+		$post_id = $blog_id . '|' . $post_id;
+	}
 	if ( isset( $relevanssi_post_array[ $post_id ] ) ) {
 		$status = $relevanssi_post_array[ $post_id ]->post_status;
 		if ( 'inherit' === $status ) {
@@ -1066,14 +1072,32 @@ function relevanssi_get_post_status( $post_id ) {
 		}
 		return $status;
 	} else {
-		// No hit from the cache; let's add this post to the cache.
-		$post = get_post( $post_id );
-		if ( ! $post ) {
-			return '';
-		}
+		// No hit from the cache; let's fetch.
+		$post = relevanssi_get_post( $original_id, $blog_id );
 
-		$relevanssi_post_array[ $post_id ] = $post;
-		return $post->post_status;
+		if ( is_wp_error( $post ) ) {
+			$post->add_data(
+				'not_found',
+				"relevanssi_get_post_status() didn't get a post, relevanssi_get_post() returned null."
+			);
+			return $post;
+		} elseif ( $post ) {
+			if ( 'inherit' === $post->post_status ) {
+				// Attachment, let's see what the parent says.
+				$parent = $relevanssi_post_array[ $post_id ]->post_parent;
+				if ( ! $parent ) {
+					// Attachment without a parent, let's assume it's public.
+					$status = 'publish';
+				} else {
+					$status = relevanssi_get_post_status( $parent );
+				}
+			} else {
+				$status = $post->post_status;
+			}
+			return $status;
+		} else {
+			return new WP_Error( 'not_found', 'Something went wrong.' );
+		}
 	}
 }
 
@@ -1091,17 +1115,27 @@ function relevanssi_get_post_status( $post_id ) {
  */
 function relevanssi_get_post_type( $post_id ) {
 	global $relevanssi_post_array;
+
+	$original_id = $post_id;
+	$blog_id     = -1;
+	if ( function_exists( 'get_current_blog_id' ) ) {
+		$blog_id = get_current_blog_id();
+		$post_id = $blog_id . '|' . $post_id;
+	}
+
 	if ( isset( $relevanssi_post_array[ $post_id ] ) ) {
 		return $relevanssi_post_array[ $post_id ]->post_type;
 	} else {
-		// No hit from the cache; let's add this post to the cache.
-		$post = relevanssi_get_post( $post_id );
+		// No hit from the cache; let's fetch.
+		$post = relevanssi_get_post( $original_id, $blog_id );
 
 		if ( is_wp_error( $post ) ) {
-			$post->add_data( 'not_found', "relevanssi_get_post_type() didn't get a post, relevanssi_get_post() returned null." );
+			$post->add_data(
+				'not_found',
+				"relevanssi_get_post_type() didn't get a post, relevanssi_get_post() returned null."
+			);
 			return $post;
 		} elseif ( $post ) {
-			$relevanssi_post_array[ $post_id ] = $post;
 			return $post->post_type;
 		} else {
 			return new WP_Error( 'not_found', 'Something went wrong.' );
@@ -2083,7 +2117,7 @@ function relevanssi_check_indexing_restriction() {
 		$callbacks = array_flip(
 			array_keys(
 				array_merge(
-					[],
+					array(),
 					...$wp_filter['relevanssi_indexing_restriction']->callbacks
 				)
 			)
@@ -2100,7 +2134,13 @@ function relevanssi_check_indexing_restriction() {
 		if ( ! empty( $callbacks ) ) {
 			$returns_string = array();
 			foreach ( array_keys( $callbacks ) as $callback ) {
-				$return = call_user_func( $callback, array( 'mysql' => '', 'reason' => '' ) );
+				$return = call_user_func(
+					$callback,
+					array(
+						'mysql'  => '',
+						'reason' => '',
+					)
+				);
 				if ( is_string( $return ) ) {
 					$returns_string[] = '<code>' . $callback . '</code>';
 				}
