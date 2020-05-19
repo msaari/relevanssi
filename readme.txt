@@ -133,6 +133,10 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.7.3 =
+* New feature: New filter hook `relevanssi_get_approved_comments_args` filters the arguments to `get_approved_comments` in comment indexing. This can be used to index custom comment types, for example.
+* Minor fix: Autoload has been disabled for several options that are not needed often.
+
 = 4.7.2 =
 * Minor fix: Media Library searches failed if Relevanssi was enabled in the WP admin, but the `attachment` post type wasn't indexed. Relevanssi will no longer block the default Media Library search in these cases.
 * Minor fix: Adds more backwards compatibility for the `relevanssi_indexing_restriction` change, there's now an alert on indexing tab if there's a problem.
