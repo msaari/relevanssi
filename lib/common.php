@@ -58,11 +58,11 @@ function relevanssi_strtolower( $string ) {
  *
  * @param string $string The source string.
  * @param int    $start  If start is non-negative, the returned string will
- * start at the start'th position in str, counting from zero. If start is
- * negative, the returned string will start at the start'th character from the
- * end of string.
+ *                       start at the start'th position in str, counting from zero. If start is
+ *                       negative, the returned string will start at the start'th character from the
+ *                       end of string.
  * @param int    $length Maximum number of characters to use from string. If
- * omitted or null is passed, extract all characters to the end of the string.
+ *                       omitted or null is passed, extract all characters to the end of the string.
  *
  * @return string $string The string in lowercase.
  */
@@ -257,19 +257,20 @@ function relevanssi_default_post_ok( $post_ok, $post_id ) {
 	if ( in_array(
 		$status,
 		/**
-		 * Filters statuses allowed in admin searches.
-		 *
-		 * By default, admin searches may show posts that have 'draft',
-		 * 'pending' and 'future' status (in addition to 'publish' and
-		 * 'private'). If you use custom statuses and want them included in the
-		 * admin search, you can add the statuses using this filter.
-		 *
-		 * @param array $statuses Array of statuses to accept.
-		 */
+		* Filters statuses allowed in admin searches.
+		*
+		* By default, admin searches may show posts that have 'draft',
+		* 'pending' and 'future' status (in addition to 'publish' and
+		* 'private'). If you use custom statuses and want them included in the
+		* admin search, you can add the statuses using this filter.
+		*
+		* @param array $statuses Array of statuses to accept.
+		*/
 		apply_filters( 'relevanssi_valid_admin_status', array( 'draft', 'pending', 'future' ) ),
 		true
 	)
-	&& is_admin() ) {
+		&& is_admin()
+	) {
 		// Only show drafts, pending and future posts in admin search.
 		$post_ok = true;
 	}
@@ -323,10 +324,10 @@ function relevanssi_populate_array( $matches ) {
  *
  * Fetches the taxonomy from wp_term_taxonomy based on term_id.
  *
- * @global object $wpdb The WordPress database interface.
- * @param int $term_id The term ID.
+ * @global     object $wpdb The WordPress database interface.
+ * @param      int $term_id The term ID.
  * @deprecated Will be removed in future versions.
- * @return string $taxonomy The term taxonomy.
+ * @return     string $taxonomy The term taxonomy.
  */
 function relevanssi_get_term_taxonomy( $term_id ) {
 	global $wpdb;
@@ -422,15 +423,13 @@ function relevanssi_recognize_phrases( $search_query, $operator = 'AND' ) {
 	$phrase_queries = array();
 	$queries        = array();
 
-	if (
-		isset( $relevanssi_variables['phrase_targets'] ) &&
-		is_array( $relevanssi_variables['phrase_targets'] )
-		) {
+	if ( isset( $relevanssi_variables['phrase_targets'] )
+		&& is_array( $relevanssi_variables['phrase_targets'] )
+	) {
 		$non_targeted_phrases = array();
 		foreach ( $phrases as $phrase ) {
-			if (
-				isset( $relevanssi_variables['phrase_targets'][ $phrase ] ) &&
-				function_exists( 'relevanssi_targeted_phrases' )
+			if ( isset( $relevanssi_variables['phrase_targets'][ $phrase ] )
+				&& function_exists( 'relevanssi_targeted_phrases' )
 			) {
 				$queries = relevanssi_targeted_phrases( $phrase );
 			} else {
@@ -927,9 +926,9 @@ function relevanssi_prevent_default_request( $request, $query ) {
  * @param string|array   $string          The string, or an array of strings, to
  *                                        tokenize.
  * @param boolean|string $remove_stops    If true, stopwords are removed. If
- * 'body', also removes the body stopwords. Default true.
+ *                                        'body', also removes the body stopwords. Default true.
  * @param int            $min_word_length The minimum word length to include.
- * Default -1.
+ *                                        Default -1.
  *
  * @return int[] An array of tokens as the keys and their frequency as the
  * value.
@@ -1446,7 +1445,7 @@ function relevanssi_debug_echo( $notice ) {
  * @return object A new Relevanssi_Taxonomy_Walker instance.
  */
 function get_relevanssi_taxonomy_walker() {
-	require_once 'class-relevanssi-taxonomy-walker.php';
+	include_once 'class-relevanssi-taxonomy-walker.php';
 	return new Relevanssi_Taxonomy_Walker();
 }
 
@@ -1488,7 +1487,7 @@ function relevanssi_switch_blog( $new_blog, $prev_blog ) {
  *
  * @param string $permalink The link to patch.
  * @param object $link_post The post object for the current link, global $post if
- * the parameter is set to null. Default null.
+ *                          the parameter is set to null. Default null.
  *
  * @return string The link with the parameter added.
  */
@@ -1558,7 +1557,7 @@ function relevanssi_the_permalink() {
  *
  * @param string     $link      The link to adjust.
  * @param object|int $link_post The post to modify, either WP post object or the post
- * ID. If null, use global $post. Defaults null.
+ *                              ID. If null, use global $post. Defaults null.
  *
  * @return string The modified link.
  */
@@ -1591,7 +1590,7 @@ function relevanssi_permalink( $link, $link_post = null ) {
  * @param string  $pre   Printed out before the suggestion.
  * @param string  $post  Printed out after the suggestion.
  * @param int     $n     Maximum number of search results found for the suggestions
- * to show up. Default 5.
+ *                       to show up. Default 5.
  * @param boolean $echo  If true, echo out. Default true.
  *
  * @return string The suggestion HTML element.
@@ -1624,7 +1623,7 @@ function relevanssi_didyoumean( $query, $pre, $post, $n = 5, $echo = true ) {
  * @param string $pre   Printed out before the suggestion.
  * @param string $post  Printed out after the suggestion.
  * @param int    $n     Maximum number of search results found for the suggestions
- * to show up. Default 5.
+ *                      to show up. Default 5.
  *
  * @return string The suggestion HTML code, null if nothing found.
  */
@@ -1852,7 +1851,7 @@ function relevanssi_sanitize_hex_color( $color ) {
  *
  * @param int     $limit  How many words to display, default 25.
  * @param boolean $wp_cli If true, return just a list of words. If false, print out
- * HTML code.
+ *                        HTML code.
  *
  * @return array A list of words, if $wp_cli is true.
  */
@@ -2089,10 +2088,9 @@ function relevanssi_block_on_admin_searches( $allow, $query ) {
 		'relevanssi_admin_search_blocked_post_types',
 		$blocked_post_types
 	);
-	if (
-		isset( $query->query_vars['post_type'] ) &&
-		in_array( $query->query_vars['post_type'], $blocked_post_types, true )
-		) {
+	if ( isset( $query->query_vars['post_type'] )
+	&& in_array( $query->query_vars['post_type'], $blocked_post_types, true )
+	) {
 		$allow = false;
 	}
 	return $allow;
