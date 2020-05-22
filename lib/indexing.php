@@ -367,10 +367,9 @@ function relevanssi_build_index( $extend_offset = false, $verbose = null, $post_
 	if ( ( 0 === $size ) || ( count( $content ) < $size ) ) {
 		$complete = true;
 		update_option( 'relevanssi_indexed', 'done', false );
+		// Update the document count variable.
+		relevanssi_update_doc_count();
 	}
-
-	// Update the document count variable.
-	relevanssi_update_doc_count();
 
 	wp_suspend_cache_addition( false );
 
@@ -868,8 +867,6 @@ function relevanssi_insert_edit( $post_id ) {
 		);
 		$return_value = 'removed';
 	}
-
-	relevanssi_update_doc_count();
 
 	return $return_value;
 }

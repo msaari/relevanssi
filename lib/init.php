@@ -63,6 +63,7 @@ add_action( 'plugins_loaded', 'relevanssi_export_log_check' );
 
 global $relevanssi_variables;
 register_activation_hook( $relevanssi_variables['file'], 'relevanssi_install' );
+register_deactivation_hook( $relevanssi_variables['file'], 'relevanssi_uninstall' );
 
 /**
  * Initiates Relevanssi.

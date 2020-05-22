@@ -1400,9 +1400,37 @@ function relevanssi_get_the_title( $post_id ) {
  */
 function relevanssi_update_doc_count() {
 	global $wpdb, $relevanssi_variables;
-	$doc_count = $wpdb->get_var( 'SELECT COUNT(DISTINCT(doc)) FROM ' . $relevanssi_variables['relevanssi_table'] ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-	update_option( 'relevanssi_doc_count', $doc_count );
-	return $doc_count;
+
+	/**
+	 * Allows disabling counts
+	 *
+	 * For extremely large indexes or poor performaning databases, you may want
+	 * to disable these expensive queries.
+	 *
+	 * Important! disabling this will cause weights and other relevance
+	 * calculations to be disabled as well. Use with caution.
+	 *
+	 * @param boolean $disable_count
+	 */
+	$disable_count = apply_filters( 'relevanssi_disable_count', false );
+	if ( $disable_count ) {
+		return get_option( 'relevanssi_doc_count', 0 );
+	}
+	$doc_count   = $wpdb->get_var( 'SELECT COUNT(DISTINCT(doc)) FROM ' . $relevanssi_variables['relevanssi_table'] . ' WHERE doc != -1' ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+	$terms_count = $wpdb->get_var( 'SELECT COUNT(*) FROM ' . $relevanssi_variables['relevanssi_table'] );  // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
+	$lowest_doc  = $wpdb->get_var( 'SELECT doc FROM ' . $relevanssi_variables['relevanssi_table'] . ' WHERE doc > 0 ORDER BY doc ASC LIMIT 1' );  // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
+
+	if ( RELEVANSSI_PREMIUM ) {
+		$user_count    = $wpdb->get_var( 'SELECT COUNT(DISTINCT item) FROM ' . $relevanssi_variables['relevanssi_table'] . " WHERE type = 'user'" );  // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
+		$taxterm_count = $wpdb->get_var( 'SELECT COUNT(DISTINCT item) FROM ' . $relevanssi_variables['relevanssi_table'] . " WHERE (type != 'post' AND type != 'attachment' AND type != 'user')" );  // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
+		update_option( 'relevanssi_user_count', is_null( $user_count ) ? 0 : $user_count );
+		update_option( 'relevanssi_taxterm_count', is_null( $taxterm_count ) ? 0 : $taxterm_count );
+	}
+
+	update_option( 'relevanssi_doc_count', is_null( $doc_count ) ? 0 : $doc_count );
+	update_option( 'relevanssi_term_count', is_null( $terms_count ) ? 0 : $terms_count );
+	update_option( 'relevanssi_lowest_doc', is_null( $lowest_doc ) ? 0 : $lowest_doc );
+	return is_null( $doc_count ) ? 0 : $doc_count;
 }
 
 /**

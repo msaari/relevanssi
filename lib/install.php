@@ -60,6 +60,35 @@ function relevanssi_install( $network_wide = false ) {
 }
 
 /**
+ * Runs _relevanssi_uninstall() on one blog or for the whole network.
+ *
+ * If Relevanssi is network active, this installs Relevanssi on all blogs in the
+ * network, running the _relevanssi_uninstall() function.
+ *
+ * @param boolean $network_wide If true, install on all sites. Default false.
+ */
+function relevanssi_uninstall( $network_wide = false ) {
+	if ( $network_wide ) {
+		$args     = array(
+			'spam'     => 0,
+			'deleted'  => 0,
+			'archived' => 0,
+			'fields'   => 'ids',
+		);
+		$blog_ids = get_sites( $args );
+
+		foreach ( $blog_ids as $blog_id ) {
+			switch_to_blog( $blog_id );
+			_relevanssi_uninstall();
+			restore_current_blog();
+		}
+	} else {
+		_relevanssi_uninstall();
+	}
+}
+
+
+/**
  * Installs Relevanssi on the blog.
  *
  * Adds Relevanssi options and sets their default values and generates the
@@ -69,6 +98,17 @@ function relevanssi_install( $network_wide = false ) {
  */
 function _relevanssi_install() {
 	global $relevanssi_variables;
+
+	/**
+	 * Sets the frequency of scheduled event: relevanssi_count
+	 *
+	 * @return string scheduled event frequency
+	 */
+	$frequency = apply_filters( 'relevanssi_count_frequency', 'hourly' );
+	if ( ! wp_next_scheduled( 'relevanssi_count' ) ) {
+		wp_schedule_event( time(), $frequency, 'relevanssi_count' );
+	}
+	add_action( 'relevanssi_count', 'relevanssi_update_doc_count', 10 );
 
 	add_option( 'relevanssi_admin_search', 'off' );
 	add_option( 'relevanssi_bg_col', '#ffaf75' );
@@ -143,4 +183,11 @@ function _relevanssi_install() {
 	do_action( 'relevanssi_update_options' );
 
 	relevanssi_create_database_tables( $relevanssi_variables['database_version'] );
+}
+
+/**
+ * Uninstalls Relevanssi on the blog.
+ */
+function _relevanssi_uninstall() {
+	wp_clear_scheduled_hook( 'relevanssi_count' );
 }

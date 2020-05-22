@@ -180,11 +180,7 @@ function relevanssi_search( $args ) {
 	$query_join = apply_filters( 'relevanssi_join', $query_join );
 
 	// Go get the count from the options, but run the full query if it's not available.
-	$doc_count = get_option( 'relevanssi_doc_count' );
-	if ( ! $doc_count || $doc_count < 1 ) {
-		$doc_count = relevanssi_update_doc_count();
-	}
-
+	$doc_count  = get_option( 'relevanssi_doc_count', 0 );
 	$total_hits = 0;
 
 	$title_matches       = array();
