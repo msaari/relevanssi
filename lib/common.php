@@ -1402,8 +1402,18 @@ function relevanssi_get_the_title( $post_id ) {
 function relevanssi_update_doc_count() {
 	global $wpdb, $relevanssi_variables;
 	$doc_count = $wpdb->get_var( 'SELECT COUNT(DISTINCT(doc)) FROM ' . $relevanssi_variables['relevanssi_table'] ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-	update_option( 'relevanssi_doc_count', $doc_count );
+	update_option( 'relevanssi_doc_count', is_null( $doc_count ) ? 0 : $doc_count );
+
 	return $doc_count;
+}
+
+/**
+ * Launches an asynchronous action to update the doc count and other counts.
+ *
+ * This function should be used instead of relevanssi_update_doc_count().
+ */
+function relevanssi_async_update_doc_count() {
+	relevanssi_launch_ajax_action( 'relevanssi_update_counts' );
 }
 
 /**
@@ -2159,4 +2169,44 @@ EOH;
 		}
 	}
 	return $notice;
+}
+
+/**
+ * Launches an asynchronous Ajax action.
+ *
+ * Makes a wp_remote_post() call with the specific action. Handles nonce
+ * verification.
+ *
+ * @see wp_remove_post()
+ * @see wp_create_nonce()
+ *
+ * @param string $action       The action to trigger (also the name of the
+ * nonce).
+ * @param array  $payload_args The parameters sent to the action. Defaults to
+ * an empty array.
+ *
+ * @return WP_Error|array The wp_remote_post() response or WP_Error on failure.
+ */
+function relevanssi_launch_ajax_action( $action, $payload_args = array() ) {
+	$cookies = array();
+	foreach ( $_COOKIE as $name => $value ) {
+		$cookies[] = "$name=" . rawurlencode(
+			is_array( $value ) ? wp_json_encode( $value ) : $value
+		);
+	}
+	$default_payload = array(
+		'action' => $action,
+		'_nonce' => wp_create_nonce( $action ),
+	);
+	$payload         = array_merge( $default_payload, $payload_args );
+	$args            = array(
+		'timeout'  => 0.01,
+		'blocking' => false,
+		'body'     => $payload,
+		'headers'  => array(
+			'cookie' => implode( '; ', $cookies ),
+		),
+	);
+	$url             = admin_url( 'admin-ajax.php' );
+	return wp_remote_post( $url, $args );
 }

@@ -367,10 +367,10 @@ function relevanssi_build_index( $extend_offset = false, $verbose = null, $post_
 	if ( ( 0 === $size ) || ( count( $content ) < $size ) ) {
 		$complete = true;
 		update_option( 'relevanssi_indexed', 'done', false );
-	}
 
-	// Update the document count variable.
-	relevanssi_update_doc_count();
+		// Update the document count variable.
+		relevanssi_async_update_doc_count();
+	}
 
 	wp_suspend_cache_addition( false );
 
@@ -869,7 +869,7 @@ function relevanssi_insert_edit( $post_id ) {
 		$return_value = 'removed';
 	}
 
-	relevanssi_update_doc_count();
+	relevanssi_async_update_doc_count();
 
 	return $return_value;
 }
@@ -892,7 +892,6 @@ function relevanssi_insert_edit( $post_id ) {
 function relevanssi_index_comment( $comment_id ) {
 	$comment_indexing_type = get_option( 'relevanssi_index_comments' );
 	$no_pingbacks          = false;
-	$post_id               = null;
 
 	if ( 'normal' === $comment_indexing_type ) {
 		$no_pingbacks = true;
@@ -1035,8 +1034,6 @@ function relevanssi_remove_doc( $post_id, $keep_internal_links = false ) {
 			return;
 		}
 
-		$doc_count = get_option( 'relevanssi_doc_count' );
-
 		$rows_updated = $wpdb->query(
 			$wpdb->prepare(
 				'DELETE FROM ' . $relevanssi_variables['relevanssi_table'] . ' WHERE doc=%d', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
@@ -1045,7 +1042,7 @@ function relevanssi_remove_doc( $post_id, $keep_internal_links = false ) {
 		);
 
 		if ( $rows_updated && $rows_updated > 0 ) {
-			update_option( 'relevanssi_doc_count', $doc_count - $rows_updated );
+			relevanssi_async_update_doc_count();
 		}
 	}
 }

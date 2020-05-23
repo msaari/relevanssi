@@ -14,6 +14,7 @@ add_action( 'wp_ajax_relevanssi_count_posts', 'relevanssi_count_posts_ajax_wrapp
 add_action( 'wp_ajax_relevanssi_count_missing_posts', 'relevanssi_count_missing_posts_ajax_wrapper' );
 add_action( 'wp_ajax_relevanssi_list_categories', 'relevanssi_list_categories' );
 add_action( 'wp_ajax_relevanssi_admin_search', 'relevanssi_admin_search' );
+add_action( 'wp_ajax_relevanssi_update_counts', 'relevanssi_update_counts' );
 
 /**
  * Truncates the Relevanssi index.
@@ -385,4 +386,32 @@ function relevanssi_admin_search_debugging_info( $query ) {
 	$result .= '</div>';
 
 	return $result;
+}
+
+/**
+ * Updates count options.
+ *
+ * Updates 'relevanssi_doc_count', 'relevanssi_terms_count' (and in Premium
+ * 'relevanssi_user_count' and 'relevanssi_taxterm_count'). These are slightly
+ * expensive queries, so they are updated when necessary as a non-blocking AJAX
+ * action and stored in options for quick retrieval.
+ *
+ * @global object $wpdb                 The WordPress database interface.
+ * @global array  $relevanssi_variables The Relevanssi global variable, used for table names.
+ */
+function relevanssi_update_counts() {
+	global $wpdb, $relevanssi_variables;
+
+	relevanssi_update_doc_count();
+
+	$terms_count = $wpdb->get_var( 'SELECT COUNT(*) FROM ' . $relevanssi_variables['relevanssi_table'] );  // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
+	update_option( 'relevanssi_terms_count', is_null( $terms_count ) ? 0 : $terms_count, false );
+
+	if ( RELEVANSSI_PREMIUM ) {
+		$user_count    = $wpdb->get_var( 'SELECT COUNT(DISTINCT item) FROM ' . $relevanssi_variables['relevanssi_table'] . " WHERE type = 'user'" );  // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
+		$taxterm_count = $wpdb->get_var( 'SELECT COUNT(DISTINCT item) FROM ' . $relevanssi_variables['relevanssi_table'] . " WHERE (type != 'post' AND type != 'attachment' AND type != 'user')" );  // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
+
+		update_option( 'relevanssi_user_count', is_null( $user_count ) ? 0 : $user_count, false );
+		update_option( 'relevanssi_taxterm_count', is_null( $taxterm_count ) ? 0 : $taxterm_count, false );
+	}
 }
