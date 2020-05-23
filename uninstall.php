@@ -24,8 +24,8 @@ if ( function_exists( 'is_multisite' ) && is_multisite() ) {
 	foreach ( $blogids as $uninstall_blog_id ) {
 		switch_to_blog( $uninstall_blog_id );
 		relevanssi_uninstall_free();
+		restore_current_blog();
 	}
-	switch_to_blog( $old_blogid );
 } else {
 	relevanssi_uninstall_free();
 }
