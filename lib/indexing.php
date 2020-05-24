@@ -858,6 +858,8 @@ function relevanssi_insert_edit( $post_id ) {
 	if ( $index_this_post ) {
 		$bypass_global_post = true;
 		$return_value       = relevanssi_publish( $post_id, $bypass_global_post );
+
+		relevanssi_async_update_doc_count();
 	} else {
 		// The post isn't supposed to be indexed anymore, remove it from index.
 		relevanssi_remove_doc( $post_id );
@@ -868,8 +870,6 @@ function relevanssi_insert_edit( $post_id ) {
 		);
 		$return_value = 'removed';
 	}
-
-	relevanssi_async_update_doc_count();
 
 	return $return_value;
 }
