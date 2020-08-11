@@ -1,11 +1,11 @@
 === Relevanssi - A Better Search ===
 Contributors: msaari
 Donate link: https://www.relevanssi.com/buy-premium/
-Tags: search, relevance, better search
+Tags: search, relevance, better search, product search, woocommerce search
 Requires at least: 4.9
 Tested up to: 5.4
 Requires PHP: 5.6
-Stable tag: 4.7.2
+Stable tag: 4.7.2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -135,7 +135,14 @@ Each document database is full of useless words. All the little words that appea
 == Changelog ==
 = 4.7.3 =
 * New feature: New filter hook `relevanssi_get_approved_comments_args` filters the arguments to `get_approved_comments` in comment indexing. This can be used to index custom comment types, for example.
+* New feature: Content wrapped in the `noindex` tags is no longer used for excerpts.
+* New feature: The `[et_pb_fullwidth_code]` shortcode is now removed completely, including the contents, when Relevanssi is indexing and building excerpts.
 * Minor fix: Autoload has been disabled for several options that are not needed often.
+* Minor fix: Phrase matching did not work correctly in visible custom fields.
+* Minor fix: TablePress support could cause halting errors if posts were inserted before Relevanssi has loaded itself (on `init` priority 10). These errors will no longer happen. Relevanssi now also does the init on priority 1.
+* Minor fix: Relevanssi now sorts strings with `strnatcasecmp()` instead of `strcasecmp()`, leading to a more natural results with strings that include numbers.
+* Minor fix: The doc count update, which is a heavy task, is now moved to an asynchronous action to avoid slowing down the site for users.
+* Minor fix: Relevanssi only updates doc count on `relevanssi_insert_edit()` when the post is indexed.
 
 = 4.7.2 =
 * Minor fix: Media Library searches failed if Relevanssi was enabled in the WP admin, but the `attachment` post type wasn't indexed. Relevanssi will no longer block the default Media Library search in these cases.
