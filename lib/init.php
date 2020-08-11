@@ -9,7 +9,7 @@
  */
 
 // Setup.
-add_action( 'init', 'relevanssi_init' );
+add_action( 'init', 'relevanssi_init', 1 );
 add_filter( 'query_vars', 'relevanssi_query_vars' );
 add_filter( 'rest_api_init', 'relevanssi_rest_api_disable' );
 add_action( 'switch_blog', 'relevanssi_switch_blog', 1, 2 );
