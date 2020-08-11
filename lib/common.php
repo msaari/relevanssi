@@ -23,12 +23,12 @@
  */
 function relevanssi_mb_strcasecmp( $str1, $str2, $encoding = null ) {
 	if ( ! function_exists( 'mb_internal_encoding' ) ) {
-		return strcasecmp( $str1, $str2 );
+		return strnatcasecmp( $str1, $str2 );
 	} else {
 		if ( null === $encoding ) {
 			$encoding = mb_internal_encoding();
 		}
-		return strcmp( mb_strtoupper( $str1, $encoding ), mb_strtoupper( $str2, $encoding ) );
+		return strnatcmp( mb_strtoupper( $str1, $encoding ), mb_strtoupper( $str2, $encoding ) );
 	}
 }
 
