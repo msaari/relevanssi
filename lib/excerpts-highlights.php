@@ -134,8 +134,14 @@ function relevanssi_do_excerpt( $t_post, $query, $excerpt_length = null, $excerp
 	// don't want that.
 	remove_filter( 'the_content', 'prepend_attachment' );
 
+	remove_shortcode( 'noindex' );
+	add_shortcode( 'noindex', 'relevanssi_noindex_shortcode_indexing' );
+
 	/** This filter is documented in wp-includes/post-template.php */
 	$content = apply_filters( 'the_content', $content );
+
+	remove_shortcode( 'noindex' );
+	add_shortcode( 'noindex', 'relevanssi_noindex_shortcode' );
 
 	/**
 	 * Filters the post content after 'the_content'.
