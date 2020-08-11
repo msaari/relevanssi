@@ -557,7 +557,7 @@ function relevanssi_generate_phrase_queries( $phrases, $taxonomies, $custom_fiel
 			}
 
 			if ( 'visible' === $custom_fields ) {
-				$keys = "AND (m.meta_key NOT LIKE '_%' OR m.meta_key = '_relevanssi_pdf_content')";
+				$keys = "AND (m.meta_key NOT LIKE '\_%' OR m.meta_key = '_relevanssi_pdf_content')";
 			}
 
 			$query = "(SELECT ID
