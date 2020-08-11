@@ -1485,7 +1485,9 @@ function relevanssi_index_content( &$insert_data, $post, $min_word_length, $debu
 
 	if ( 'on' === get_option( 'relevanssi_expand_shortcodes' ) ) {
 		// TablePress support.
-		$tablepress_controller = relevanssi_enable_tablepress_shortcodes();
+		if ( function_exists( 'relevanssi_enable_tablepress_shortcodes' ) ) {
+			$tablepress_controller = relevanssi_enable_tablepress_shortcodes();
+		}
 
 		relevanssi_disable_shortcodes();
 
