@@ -2047,6 +2047,7 @@ function relevanssi_remove_page_builder_shortcodes( $content ) {
 			'/\[et_pb_code.*?\].*\[\/et_pb_code\]/im',
 			'/\[et_pb_sidebar.*?\].*\[\/et_pb_sidebar\]/im',
 			'/\[et_pb_fullwidth_slider.*?\].*\[\/et_pb_fullwidth_slider\]/im',
+			'/\[et_pb_fullwidth_code.*?\].*\[\/et_pb_fullwidth_code\]/im',
 			'/\[vc_raw_html.*?\].*\[\/vc_raw_html\]/im',
 			'/\[fusion_imageframe.*?\].*\[\/fusion_imageframe\]/im',
 			'/\[fusion_code.*?\].*\[\/fusion_code\]/im',
