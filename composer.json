@@ -1,7 +1,7 @@
 {
     "name": "msaari/relevanssi",
     "description": "A WordPress search plugin",
-    "version": "4.7.2",
+    "version": "4.8.0",
     "source": {
         "url": "https://github.com/msaari/relevanssi.git",
         "type": "git",

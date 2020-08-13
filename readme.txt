@@ -3,9 +3,9 @@ Contributors: msaari
 Donate link: https://www.relevanssi.com/buy-premium/
 Tags: search, relevance, better search, product search, woocommerce search
 Requires at least: 4.9
-Tested up to: 5.4
-Requires PHP: 5.6
-Stable tag: 4.7.2.1
+Tested up to: 5.5
+Requires PHP: 7.0
+Stable tag: 4.8.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -133,14 +133,17 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
-= 4.7.3 =
+= 4.8.0 =
+* Changed behaviour: Relevanssi now requires PHP 7.
+* Changed behaviour: Relevanssi now sorts strings with `strnatcasecmp()` instead of `strcasecmp()`, leading to a more natural results with strings that include numbers.
+* Changed behaviour: Relevanssi init is now moved from priority 10 to priority 1 on the `init` hook to avoid problems with missing TablePress compatibility.
 * New feature: New filter hook `relevanssi_get_approved_comments_args` filters the arguments to `get_approved_comments` in comment indexing. This can be used to index custom comment types, for example.
 * New feature: Content wrapped in the `noindex` tags is no longer used for excerpts.
 * New feature: The `[et_pb_fullwidth_code]` shortcode is now removed completely, including the contents, when Relevanssi is indexing and building excerpts.
+* Major fix: Relevanssi didn't index new comments when they were added; when a post was indexed or the whole index rebuilt, comment content was included. We don't know how long this bug has existed, but it is now fixed. Rebuild the index to get all comment content included in the index.
 * Minor fix: Autoload has been disabled for several options that are not needed often.
 * Minor fix: Phrase matching did not work correctly in visible custom fields.
-* Minor fix: TablePress support could cause halting errors if posts were inserted before Relevanssi has loaded itself (on `init` priority 10). These errors will no longer happen. Relevanssi now also does the init on priority 1.
-* Minor fix: Relevanssi now sorts strings with `strnatcasecmp()` instead of `strcasecmp()`, leading to a more natural results with strings that include numbers.
+* Minor fix: TablePress support could cause halting errors if posts were inserted before Relevanssi has loaded itself (on `init` priority 10). These errors will no longer happen.
 * Minor fix: The doc count update, which is a heavy task, is now moved to an asynchronous action to avoid slowing down the site for users.
 * Minor fix: Relevanssi only updates doc count on `relevanssi_insert_edit()` when the post is indexed.
 
@@ -164,31 +167,10 @@ Each document database is full of useless words. All the little words that appea
 * Changed behaviour: Phrases in OR search are now less restrictive. A search for 'foo "bar baz"' used to only return posts with the "bar baz" phrase, but now also posts with just the word 'foo' will be returned.
 * Minor fix: User Access Manager showed drafts in search results for all users. This is now fixed.
 
-= 4.5.0 =
-* New feature: New filter hook `relevanssi_disable_stopwords` can be used to disable stopwords completely. Just add a filter function that returns `true`.
-* Changed behaviour: Stopwords are no longer automatically restored if emptied. It's now possible to empty the stopword list. If you want to restore the stopwords from the file (or from the database, if you're upgrading from an earlier version of Relevanssi and find your stopwords missing), just click the button on the stopwords settings page that restores the stopwords.
-* Changed behaviour: Changes to post weights in the `relevanssi_results` hook did not affect the relevance scores shown in excerpts. That's changed now, and the displayed scores are now taken from the `$doc_weight` array, which is returned in the return value array from `relevanssi_search()`.
-* Changed behaviour: Excerpt length and type are now checked outside the loop that goes through the posts. This reduces the number of database calls required.
-* Minor fix: Searching for regex special characters (for example parentheses, brackets) caused problems in excerpts.
-* Minor fix: Improvements in handling highlighting for words with apostrophes.
-* Minor fix: Disregard hanging commas at the end of post exclusion settings.
-* Minor fix: Sometimes excerpts wouldn't have an ellipsis in the beginning even though they should.
-
-= 4.4.1 =
-* Major fix: Returns the missing stopwords.
-
-= 4.4.0 =
-* New feature: It's now possible to exclude image attachments from the index with a simple setting on the indexing settings page.
-* New feature: Page builder short codes are now removed in Relevanssi indexing. This should reduce the amount of garbage data indexed for posts in Divi, Avada and other page builder themes.
-* Changed behaviour: The `relevanssi_page_builder_shortcodes` filter hook is now applied both in indexing and excerpts, and has a second parameter that will inform you of the current context.
-* Minor fix: Stopwords weren't case insensitive like they should. They are now. Also, stopwords are no longer stored in the `wp_relevanssi_stopwords` database table, but are now stored in the `relevanssi_stopwords` option.
-* Minor fix: A comma at the end of the custom field indexing setting made Relevanssi index all custom fields. This doesn't happen anymore and trailing commas are automatically removed, too.
-* Minor fix: Accessibility improvements all around the admin interface. Screen reader support should be better, feel free to report any further ways to make this better.
-* Minor fix: Doing searches without search terms and with the throttle disabled could cause problems. Relevanssi now makes sure throttle is always on when doing termless searches.
-* Minor fix: Untokenized search terms are used for building excerpts, which makes highlighting in excerpts work better.
-* Minor fix: Indexing did not adjust the number of posts indexed at one go like it should.
-
 == Upgrade notice ==
+= 4.8.0 =
+* Fixes a major bug in comment indexing, if you include comments in the index rebuild the index after updating.
+
 = 4.7.2 =
 * Improved backwards compatibility for the `relevanssi_indexing_restriction` filter hook change, better Media Library support.
 
@@ -200,12 +182,3 @@ Each document database is full of useless words. All the little words that appea
 
 = 4.6.0 =
 * Changes how phrases work in OR search and fixes a User Access Manager issue.
-
-= 4.5.0 =
-* Bug fixes and improvements to stopword management.
-
-= 4.4.1 =
-* Fixes missing stopwords problem in 4.4.0.
-
-= 4.4.0 =
-* Changes in relevanssi_page_builder_shortcodes filter hook, page builder indexing and image attachments.
