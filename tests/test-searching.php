@@ -439,7 +439,7 @@ class SearchingTest extends WP_UnitTestCase {
 		foreach ( $posts as $post ) {
 			$titles[] = $post->post_title;
 		}
-		sort( $titles );
+		sort( $titles, SORT_NATURAL );
 
 		$first_post       = $posts[0];
 		$first_post_title = $titles[0];
@@ -2084,7 +2084,7 @@ class SearchingTest extends WP_UnitTestCase {
 	 *
 	 * @return boolean True, if no posts have that tag.
 	 */
-	private function no_posts_have_tag( $posts, $tag ) {
+	private static function no_posts_have_tag( $posts, $tag ) {
 		return self::no_posts_have_taxonomy( $posts, $tag, 'post_tag' );
 	}
 
@@ -2096,7 +2096,7 @@ class SearchingTest extends WP_UnitTestCase {
 	 *
 	 * @return boolean True, if no posts have that tag.
 	 */
-	private function all_posts_have_tag( $posts, $tag ) {
+	private static function all_posts_have_tag( $posts, $tag ) {
 		return self::all_posts_have_taxonomy( $posts, $tag, 'post_tag' );
 	}
 
@@ -2108,7 +2108,7 @@ class SearchingTest extends WP_UnitTestCase {
 	 *
 	 * @return boolean True, if no posts have that category.
 	 */
-	private function no_posts_have_category( $posts, $category ) {
+	private static function no_posts_have_category( $posts, $category ) {
 		return self::no_posts_have_taxonomy( $posts, $category, 'category' );
 	}
 
@@ -2120,7 +2120,7 @@ class SearchingTest extends WP_UnitTestCase {
 	 *
 	 * @return boolean True, if no posts have that category.
 	 */
-	private function all_posts_have_category( $posts, $category ) {
+	private static function all_posts_have_category( $posts, $category ) {
 		return self::all_posts_have_taxonomy( $posts, $category, 'category' );
 	}
 
@@ -2133,7 +2133,7 @@ class SearchingTest extends WP_UnitTestCase {
 	 *
 	 * @return boolean True, if no posts have that term.
 	 */
-	private function no_posts_have_taxonomy( $posts, $term_id, $taxonomy ) {
+	private static function no_posts_have_taxonomy( $posts, $term_id, $taxonomy ) {
 		return ! array_reduce(
 			$posts,
 			function( $value, $post ) use ( $term_id, $taxonomy ) {
@@ -2152,7 +2152,7 @@ class SearchingTest extends WP_UnitTestCase {
 	 *
 	 * @return boolean True, if no posts have that term.
 	 */
-	private function all_posts_have_taxonomy( $posts, $term_id, $taxonomy ) {
+	private static function all_posts_have_taxonomy( $posts, $term_id, $taxonomy ) {
 		return array_reduce(
 			$posts,
 			function( $value, $post ) use ( $term_id, $taxonomy ) {
@@ -2169,7 +2169,7 @@ class SearchingTest extends WP_UnitTestCase {
 	 *
 	 * @return array An array containing the posts Relevanssi found and the query.
 	 */
-	private function results_from_args( $args ) {
+	private static function results_from_args( $args ) {
 		$query = new WP_Query();
 		$query->parse_query( $args );
 		$posts = relevanssi_do_query( $query );
