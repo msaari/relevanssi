@@ -904,7 +904,7 @@ function relevanssi_index_comment( $comment_id ) {
 	if ( ! $comment ) {
 		return 'nocommentfound';
 	}
-	if ( $no_pingbacks && ! empty( $comment->comment_type ) ) {
+	if ( $no_pingbacks && 'pingback' === $comment->comment_type ) {
 		return 'donotindex';
 	}
 	if ( 1 !== intval( $comment->comment_approved ) ) {
