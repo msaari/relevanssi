@@ -57,7 +57,6 @@ function relevanssi_update_log( $query, $hits ) {
 	$user = apply_filters( 'relevanssi_log_get_user', wp_get_current_user() );
 	if ( 0 !== $user->ID && get_option( 'relevanssi_omit_from_logs' ) ) {
 		$omit = explode( ',', get_option( 'relevanssi_omit_from_logs' ) );
-		array_walk( $omit, 'trim' );
 		if ( in_array( strval( $user->ID ), $omit, true ) ) {
 			return;
 		}
