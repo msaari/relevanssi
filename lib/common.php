@@ -2062,6 +2062,8 @@ function relevanssi_remove_page_builder_shortcodes( $content ) {
 			'/\[ai1ec.*?\]/im',
 			'/\[eme_.*?\]/im',
 			'/\[layerslider.*?\]/im',
+			// Divi garbage.
+			'/@ET-DC@.*?@/im',
 		),
 		$context
 	);
