@@ -5,7 +5,7 @@ Tags: search, relevance, better search, product search, woocommerce search
 Requires at least: 4.9
 Tested up to: 5.5
 Requires PHP: 7.0
-Stable tag: 4.8.0
+Stable tag: 4.8.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -133,6 +133,13 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.8.1 =
+* Major fix: Changes in WooCommerce 4.4.0 broke the Relevanssi searches. This makes the WooCommerce search work again.
+* Minor fix: Excluding from logs didn't work if user IDs had spaces between them ('user_a, user_b'). Now the extra spaces don't matter.
+* Minor fix: The asynchronous doc count action in the previous version could cause an infinite loop with the Snitch logger plugin. This is prevented now: the async action doesn't run after indexing unless a post is actually indexed.
+* Minor fix: Relevanssi indexing procedure was triggered for autosaved drafts, causing possible problems with the asynchronous doc count action.
+* Minor fix: The `relevanssi_index_custom_fields` filter hook was not applied when doing phrase matching, thus phrases could not be found when they were in custom fields added with the filter.
+
 = 4.8.0 =
 * Changed behaviour: Relevanssi now requires PHP 7.
 * Changed behaviour: Relevanssi now sorts strings with `strnatcasecmp()` instead of `strcasecmp()`, leading to a more natural results with strings that include numbers.
@@ -168,6 +175,9 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: User Access Manager showed drafts in search results for all users. This is now fixed.
 
 == Upgrade notice ==
+= 4.8.1 =
+* WooCommerce 4.4 compatibility, other minor fixes.
+
 = 4.8.0 =
 * Fixes a major bug in comment indexing, if you include comments in the index rebuild the index after updating.
 
