@@ -15,6 +15,7 @@ add_action( 'wp_ajax_relevanssi_count_missing_posts', 'relevanssi_count_missing_
 add_action( 'wp_ajax_relevanssi_list_categories', 'relevanssi_list_categories' );
 add_action( 'wp_ajax_relevanssi_admin_search', 'relevanssi_admin_search' );
 add_action( 'wp_ajax_relevanssi_update_counts', 'relevanssi_update_counts' );
+add_action( 'wp_ajax_nopriv_relevanssi_update_counts', 'relevanssi_update_counts' );
 
 /**
  * Truncates the Relevanssi index.
