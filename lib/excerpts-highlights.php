@@ -1208,7 +1208,10 @@ function relevanssi_get_custom_field_content( $post_id ) {
 					array_walk_recursive(
 						$value,
 						function( $val ) use ( &$value_as_string ) {
-							$value_as_string .= ' ' . $val;
+							if ( is_string( $val ) ) {
+								// Sometimes this can be something weird.
+								$value_as_string .= ' ' . $val;
+							}
 						}
 					);
 					$value = $value_as_string;
