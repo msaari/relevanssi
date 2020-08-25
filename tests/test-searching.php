@@ -865,6 +865,11 @@ class SearchingTest extends WP_UnitTestCase {
 		$private_post_ids = self::factory()->post->create_many( $private_count );
 		$author_count     = 0;
 
+		// Reset the Relevanssi post array to avoid caching issues in multisite
+		// testing.
+		global $relevanssi_post_array;
+		$relevanssi_post_array = array();
+
 		$counter = 0;
 		foreach ( $private_post_ids as $private_post_id ) {
 			// Distribute the private posts between the two author profiles.
@@ -883,7 +888,7 @@ class SearchingTest extends WP_UnitTestCase {
 			$counter++;
 		}
 
-		wp_set_current_user( self::$post_author_id );
+ 		wp_set_current_user( self::$post_author_id );
 
 		$args = array(
 			's'           => 'content',
