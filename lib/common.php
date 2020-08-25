@@ -414,8 +414,9 @@ function relevanssi_recognize_phrases( $search_query, $operator = 'AND' ) {
 		return $all_queries;
 	}
 
+	/* Documented in lib/indexing.php. */
+	$custom_fields    = apply_filters( 'relevanssi_index_custom_fields', relevanssi_get_custom_fields() );
 	$taxonomies       = get_option( 'relevanssi_index_taxonomies_list', array() );
-	$custom_fields    = relevanssi_get_custom_fields();
 	$excerpts         = get_option( 'relevanssi_index_excerpt', 'off' );
 	$index_pdf_parent = get_option( 'relevanssi_index_pdf_parent' );
 
@@ -545,15 +546,21 @@ function relevanssi_generate_phrase_queries( $phrases, $taxonomies, $custom_fiel
 
 			if ( is_array( $custom_fields ) ) {
 				array_push( $custom_fields, '_relevanssi_pdf_content' );
-				$custom_fields_escaped = implode(
-					"','",
-					array_map(
-						'esc_sql',
-						$custom_fields
-					)
-				);
 
-				$keys = "AND m.meta_key IN ('$custom_fields_escaped')";
+				if ( strpos( implode( ' ', $custom_fields ), '%' ) ) {
+					// ACF repeater fields involved.
+					$custom_fields_regexp = str_replace( '%', '.+', implode( '|', $custom_fields ) );
+					$keys                 = "AND m.meta_key REGEXP ('$custom_fields_regexp')";
+				} else {
+					$custom_fields_escaped = implode(
+						"','",
+						array_map(
+							'esc_sql',
+							$custom_fields
+						)
+					);
+					$keys                  = "AND m.meta_key IN ('$custom_fields_escaped')";
+				}
 			}
 
 			if ( 'visible' === $custom_fields ) {
