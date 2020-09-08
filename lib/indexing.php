@@ -816,7 +816,6 @@ function relevanssi_publish( $post_id, $bypass_global_post = false ) {
  */
 function relevanssi_insert_edit( $post_id ) {
 	global $wpdb;
-
 	if ( 'revision' === relevanssi_get_post_type( $post_id ) ) {
 		return 'revision';
 	}
@@ -862,10 +861,6 @@ function relevanssi_insert_edit( $post_id ) {
 	if ( $index_this_post ) {
 		$bypass_global_post = true;
 		$return_value       = relevanssi_publish( $post_id, $bypass_global_post );
-
-		if ( is_int( $return_value ) && $return_value > 0 ) {
-			relevanssi_async_update_doc_count();
-		}
 	} else {
 		// The post isn't supposed to be indexed anymore, remove it from index.
 		relevanssi_remove_doc( $post_id );
@@ -1046,10 +1041,6 @@ function relevanssi_remove_doc( $post_id, $keep_internal_links = false ) {
 				$post_id
 			)
 		);
-
-		if ( $rows_updated && $rows_updated > 0 ) {
-			relevanssi_async_update_doc_count();
-		}
 	}
 }
 

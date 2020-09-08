@@ -182,8 +182,11 @@ function relevanssi_search( $args ) {
 	// Get the count from the options.
 	$doc_count = get_option( 'relevanssi_doc_count', 0 );
 	if ( ! $doc_count || $doc_count < 1 ) {
-		// Doc count is 0, update async in case there's some problem.
-		relevanssi_async_update_doc_count();
+		$doc_count = relevanssi_update_doc_count();
+		if ( ! $doc_count || $doc_count < 1 ) {
+			// No value available for some reason, use a random value.
+			$doc_count = 100;
+		}
 	}
 
 	$total_hits = 0;

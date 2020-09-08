@@ -141,6 +141,10 @@ function relevanssi_init() {
 		}
 	}
 
+	if ( ! wp_next_scheduled( 'relevanssi_update_counts' ) ) {
+		wp_schedule_event( time(), 'weekly', 'relevanssi_update_counts' );
+	}
+
 	if ( function_exists( 'icl_object_id' ) && ! function_exists( 'pll_is_translated_post_type' ) ) {
 		require_once 'compatibility/wpml.php';
 	}

@@ -87,6 +87,11 @@ function relevanssi_options() {
 			check_admin_referer( plugin_basename( $relevanssi_variables['file'] ), 'relevanssi_options' );
 			relevanssi_remove_all_body_stopwords();
 		}
+
+		if ( isset( $_REQUEST['update_counts'] ) ) {
+			check_admin_referer( 'update_counts' );
+			relevanssi_update_counts();
+		}
 	}
 
 	relevanssi_options_form();
