@@ -1301,7 +1301,43 @@ function relevanssi_stripos( $haystack, $needle, $offset = 0 ) {
 		return false;
 	}
 
-	if ( function_exists( 'mb_stripos' ) ) {
+	if ( preg_match( '/[\?\*]/', $needle ) ) {
+		// There's a ? or an * in the string, which means it's a wildcard search
+		// query (a Premium feature) and requires some extra steps.
+
+		$needle_regex = str_replace(
+			array( '?', '*' ),
+			array( '.', '.*' ),
+			$needle
+		);
+		$pos_found    = false;
+		while ( ! $pos_found ) {
+			preg_match(
+				"/$needle_regex/i",
+				$haystack,
+				$matches,
+				PREG_OFFSET_CAPTURE,
+				$offset
+			);
+			/**
+			 * This trickery is necessary, because PREG_OFFSET_CAPTURE gives
+			 * wrong offsets for multibyte strings. The mb_strlen() gives the
+			 * correct offset, the rest of this is because the $offset received
+			 * as a parameter can be before the first $position, leading to an
+			 * infinite loop.
+			 */
+			$pos = isset( $matches[0][1] )
+				? mb_strlen( substr( $haystack, 0, $matches[0][1] ) )
+				: false;
+			if ( $pos && $pos > $offset ) {
+				$pos_found = true;
+			} elseif ( $pos ) {
+				$offset++;
+			} else {
+				$pos_found = true;
+			}
+		}
+	} elseif ( function_exists( 'mb_stripos' ) ) {
 		if ( '' === $haystack ) {
 			$pos = false;
 		} else {

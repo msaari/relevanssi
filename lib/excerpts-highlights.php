@@ -524,6 +524,13 @@ function relevanssi_highlight_terms( $content, $query, $in_docs = false ) {
 		$pr_term = preg_quote( $term, '/' );
 		$pr_term = relevanssi_add_accent_variations( $pr_term );
 
+		// Support for wildcard matching (a Premium feature).
+		$pr_term = str_replace(
+			array( '\*', '\?' ),
+			array( '\S*', '.' ),
+			$pr_term
+		);
+
 		if ( $word_boundaries_available ) {
 			$regex = "/(\b$pr_term\b)/iu";
 			if ( 'never' !== get_option( 'relevanssi_fuzzy' ) ) {
@@ -879,6 +886,13 @@ function relevanssi_count_matches( $words, $complete_text ) {
 			),
 			'UTF-8'
 		);
+		// Support for wildcard matching (a Premium feature).
+		$word_slice = str_replace(
+			array( '\*', '\?' ),
+			array( '\S*', '.' ),
+			$word_slice
+		);
+
 		if ( $word_boundaries_available ) {
 			if ( 'never' !== get_option( 'relevanssi_fuzzy' ) ) {
 				$regex = "/\b$word_slice|$word_slice\b/";
