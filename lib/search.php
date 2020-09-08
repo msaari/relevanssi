@@ -1150,7 +1150,12 @@ function relevanssi_generate_term_where( $term, $force_fuzzy = false, $no_terms 
 
 	$term_where = str_replace( '#term#', $term, $term_where_template );
 
-	return $term_where;
+	/**
+	 * Filters the term WHERE condition for the Relevanssi MySQL query.
+	 *
+	 * @param string $term_where The WHERE condition for the terms.
+	 */
+	return apply_filters( 'relevanssi_term_where', $term_where );
 }
 
 /**
