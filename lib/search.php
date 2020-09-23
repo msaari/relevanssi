@@ -903,7 +903,7 @@ function relevanssi_do_query( &$query ) {
 		$query->query_vars['posts_per_page'] = -1;
 	}
 	if ( -1 === $query->query_vars['posts_per_page'] ) {
-		$query->max_num_pages = $hits_count;
+		$query->max_num_pages = 1;
 	} else {
 		$query->max_num_pages = ceil( $hits_count / $query->query_vars['posts_per_page'] );
 	}
