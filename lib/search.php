@@ -1340,108 +1340,8 @@ function relevanssi_compile_search_args( $query, $q ) {
 		$parent_query = array( 'parent not in' => $query->query_vars['post_parent__not_in'] );
 	}
 
-	$meta_query = array();
-	if ( ! empty( $query->query_vars['meta_query'] ) ) {
-		$meta_query = $query->query_vars['meta_query'];
-	}
-
-	if ( isset( $query->query_vars['customfield_key'] ) ) {
-		$build_meta_query = array();
-
-		// Use meta key.
-		$build_meta_query['key'] = $query->query_vars['customfield_key'];
-
-		/**
-		 * Check the value is not empty for ordering purpose,
-		 * set it or not for the current meta query.
-		 */
-		if ( ! empty( $query->query_vars['customfield_value'] ) ) {
-			$build_meta_query['value'] = $query->query_vars['customfield_value'];
-		}
-
-		// Set the compare.
-		$build_meta_query['compare'] = '=';
-		$meta_query[]                = $build_meta_query;
-	}
-
-	if ( ! empty( $query->query_vars['meta_key'] ) || ! empty( $query->query_vars['meta_value'] ) || ! empty( $query->query_vars['meta_value_num'] ) ) {
-		$build_meta_query = array();
-
-		// Use meta key.
-		$build_meta_query['key'] = $query->query_vars['meta_key'];
-
-		$value = null;
-		if ( ! empty( $query->query_vars['meta_value'] ) ) {
-			$value = $query->query_vars['meta_value'];
-		} elseif ( ! empty( $query->query_vars['meta_value_num'] ) ) {
-			$value = $query->query_vars['meta_value_num'];
-		}
-
-		/**
-		 * Check the meta value, as it could be not set for ordering purpose.
-		 * Set it or not for the current meta query.
-		 */
-		if ( ! empty( $value ) ) {
-			$build_meta_query['value'] = $value;
-		}
-
-		// Set meta compare.
-		$build_meta_query['compare'] = '=';
-		if ( ! empty( $query->query_vars['meta_compare'] ) ) {
-			$build_meta_query['compare'] = $query->query_vars['meta_compare'];
-		}
-
-		$meta_query[] = $build_meta_query;
-	}
-
-	$date_query = false;
-	if ( ! empty( $query->date_query ) ) {
-		if ( is_object( $query->date_query ) && 'WP_Date_Query' === get_class( $query->date_query ) ) {
-			$date_query = $query->date_query;
-		} else {
-			$date_query = new WP_Date_Query( $query->date_query );
-		}
-	} elseif ( ! empty( $query->query_vars['date_query'] ) ) {
-		// The official date query is in $query->date_query, but this allows
-		// users to set the date query from query variables.
-		$date_query = new WP_Date_Query( $query->query_vars['date_query'] );
-	}
-
-	if ( ! $date_query ) {
-		$date_query = array();
-		if ( ! empty( $query->query_vars['year'] ) ) {
-			$date_query['year'] = intval( $query->query_vars['year'] );
-		}
-		if ( ! empty( $query->query_vars['monthnum'] ) ) {
-			$date_query['month'] = intval( $query->query_vars['monthnum'] );
-		}
-		if ( ! empty( $query->query_vars['w'] ) ) {
-			$date_query['week'] = intval( $query->query_vars['w'] );
-		}
-		if ( ! empty( $query->query_vars['day'] ) ) {
-			$date_query['day'] = intval( $query->query_vars['day'] );
-		}
-		if ( ! empty( $query->query_vars['hour'] ) ) {
-			$date_query['hour'] = intval( $query->query_vars['hour'] );
-		}
-		if ( ! empty( $query->query_vars['minute'] ) ) {
-			$date_query['minute'] = intval( $query->query_vars['minute'] );
-		}
-		if ( ! empty( $query->query_vars['second'] ) ) {
-			$date_query['second'] = intval( $query->query_vars['second'] );
-		}
-		if ( ! empty( $query->query_vars['m'] ) ) {
-			if ( 6 === strlen( $query->query_vars['m'] ) ) {
-				$date_query['year']  = intval( substr( $query->query_vars['m'], 0, 4 ) );
-				$date_query['month'] = intval( substr( $query->query_vars['m'], -2, 2 ) );
-			}
-		}
-		if ( ! empty( $date_query ) ) {
-			$date_query = new WP_Date_Query( $date_query );
-		} else {
-			$date_query = false;
-		}
-	}
+	$meta_query = relevanssi_meta_query_from_query_vars( $query );
+	$date_query = relevanssi_wp_date_query_from_query_vars( $query );
 
 	$post_type = false;
 	if ( isset( $query->query_vars['post_type'] ) && 'any' !== $query->query_vars['post_type'] ) {
@@ -1550,4 +1450,136 @@ function relevanssi_compile_search_args( $query, $q ) {
 	);
 
 	return $search_params;
+}
+
+/**
+ * Generates a WP_Date_Query from the query date variables.
+ *
+ * First checks $query->date_query, if that doesn't exist then looks at the
+ * other date parameters to construct a date query.
+ *
+ * @param WP_Query $query The query object.
+ *
+ * @return WP_Date_Query|boolean The date query object or false, if no date
+ * parameters can be parsed.
+ */
+function relevanssi_wp_date_query_from_query_vars( $query ) {
+	$date_query = false;
+	if ( ! empty( $query->date_query ) ) {
+		if ( is_object( $query->date_query ) && 'WP_Date_Query' === get_class( $query->date_query ) ) {
+			$date_query = $query->date_query;
+		} else {
+			$date_query = new WP_Date_Query( $query->date_query );
+		}
+	} elseif ( ! empty( $query->query_vars['date_query'] ) ) {
+		// The official date query is in $query->date_query, but this allows
+		// users to set the date query from query variables.
+		$date_query = new WP_Date_Query( $query->query_vars['date_query'] );
+	}
+
+	if ( ! $date_query ) {
+		$date_query = array();
+		if ( ! empty( $query->query_vars['year'] ) ) {
+			$date_query['year'] = intval( $query->query_vars['year'] );
+		}
+		if ( ! empty( $query->query_vars['monthnum'] ) ) {
+			$date_query['month'] = intval( $query->query_vars['monthnum'] );
+		}
+		if ( ! empty( $query->query_vars['w'] ) ) {
+			$date_query['week'] = intval( $query->query_vars['w'] );
+		}
+		if ( ! empty( $query->query_vars['day'] ) ) {
+			$date_query['day'] = intval( $query->query_vars['day'] );
+		}
+		if ( ! empty( $query->query_vars['hour'] ) ) {
+			$date_query['hour'] = intval( $query->query_vars['hour'] );
+		}
+		if ( ! empty( $query->query_vars['minute'] ) ) {
+			$date_query['minute'] = intval( $query->query_vars['minute'] );
+		}
+		if ( ! empty( $query->query_vars['second'] ) ) {
+			$date_query['second'] = intval( $query->query_vars['second'] );
+		}
+		if ( ! empty( $query->query_vars['m'] ) ) {
+			if ( 6 === strlen( $query->query_vars['m'] ) ) {
+				$date_query['year']  = intval( substr( $query->query_vars['m'], 0, 4 ) );
+				$date_query['month'] = intval( substr( $query->query_vars['m'], -2, 2 ) );
+			}
+		}
+		if ( ! empty( $date_query ) ) {
+			$date_query = new WP_Date_Query( $date_query );
+		} else {
+			$date_query = false;
+		}
+	}
+	return $date_query;
+}
+
+/**
+ * Generates a meta_query array from the query meta variables.
+ *
+ * First checks $query->meta_query, if that doesn't exist then looks at the
+ * other meta query and custom field parameters to construct a meta query.
+ *
+ * @param WP_Query $query The query object.
+ *
+ * @return array|boolean The meta query object or false, if no meta query
+ * parameters can be parsed.
+ */
+
+function relevanssi_meta_query_from_query_vars( $query ) {
+	$meta_query = false;
+	if ( ! empty( $query->query_vars['meta_query'] ) ) {
+		$meta_query = $query->query_vars['meta_query'];
+	}
+
+	if ( isset( $query->query_vars['customfield_key'] ) ) {
+		$build_meta_query = array();
+
+		// Use meta key.
+		$build_meta_query['key'] = $query->query_vars['customfield_key'];
+
+		/**
+		 * Check the value is not empty for ordering purpose,
+		 * set it or not for the current meta query.
+		 */
+		if ( ! empty( $query->query_vars['customfield_value'] ) ) {
+			$build_meta_query['value'] = $query->query_vars['customfield_value'];
+		}
+
+		// Set the compare.
+		$build_meta_query['compare'] = '=';
+		$meta_query[]                = $build_meta_query;
+	}
+
+	if ( ! empty( $query->query_vars['meta_key'] ) || ! empty( $query->query_vars['meta_value'] ) || ! empty( $query->query_vars['meta_value_num'] ) ) {
+		$build_meta_query = array();
+
+		// Use meta key.
+		$build_meta_query['key'] = $query->query_vars['meta_key'];
+
+		$value = null;
+		if ( ! empty( $query->query_vars['meta_value'] ) ) {
+			$value = $query->query_vars['meta_value'];
+		} elseif ( ! empty( $query->query_vars['meta_value_num'] ) ) {
+			$value = $query->query_vars['meta_value_num'];
+		}
+
+		/**
+		 * Check the meta value, as it could be not set for ordering purpose.
+		 * Set it or not for the current meta query.
+		 */
+		if ( ! empty( $value ) ) {
+			$build_meta_query['value'] = $value;
+		}
+
+		// Set meta compare.
+		$build_meta_query['compare'] = '=';
+		if ( ! empty( $query->query_vars['meta_compare'] ) ) {
+			$build_meta_query['compare'] = $query->query_vars['meta_compare'];
+		}
+
+		$meta_query[] = $build_meta_query;
+	}
+	return $meta_query;
 }
