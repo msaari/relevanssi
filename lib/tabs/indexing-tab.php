@@ -141,8 +141,8 @@ function relevanssi_indexing_tab() {
 		</p>
 		<p><?php echo esc_html( $terms_count ); ?> <?php echo esc_html( _n( 'term in the index.', 'terms in the index.', $terms_count, 'relevanssi' ) ); ?><br />
 		<?php echo esc_html( $lowest_doc ); ?> <?php esc_html_e( 'is the lowest post ID indexed.', 'relevanssi' ); ?></p>
-		<?php /** Translators: %1$s opens the a tag, %2$s closes it. */ ?>
-		<p class="description">(<?php printf( esc_html__( 'These values may be inaccurate. If you need exact values, %1$supdate the counts%2$s' ), '<a href="' . esc_attr( $update_url ) . '">', '</a>' ); ?>.)</p>
+		<?php /* Translators: %1$s opens the a tag, %2$s closes it. */ ?>
+		<p class="description">(<?php printf( esc_html__( 'These values may be inaccurate. If you need exact values, %1$supdate the counts%2$s', 'relevanssi' ), '<a href="' . esc_attr( $update_url ) . '">', '</a>' ); ?>.)</p>
 		</td>
 	</tr>
 	</table>
