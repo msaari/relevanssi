@@ -1862,7 +1862,7 @@ function relevanssi_flatten_array( array $array ) {
 	foreach ( new RecursiveIteratorIterator( new RecursiveArrayIterator( $array ) ) as $value ) {
 		$return_value .= ' ' . $value;
 	}
-	return $return_value;
+	return trim( $return_value );
 }
 
 /**
