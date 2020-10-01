@@ -15,8 +15,8 @@ add_shortcode( 'searchform', 'relevanssi_search_form' );
 /**
  * Creates a link to search results.
  *
- * Using this is generally not a brilliant idea, actually. Google doesn't like if you
- * create links to internal search results.
+ * Using this is generally not a brilliant idea, actually. Google doesn't like
+ * it if you create links to internal search results.
  *
  * Usage: [search term='tomato']tomatoes[/search] would create a link like this:
  * <a href="/?s=tomato">tomatoes</a>
@@ -25,8 +25,8 @@ add_shortcode( 'searchform', 'relevanssi_search_form' );
  *
  * @global object $wpdb The WordPress database interface.
  *
- * @param array  $atts    The shortcode attributes. If 'term' is set, will use it as
- * the search term, otherwise the content word is used as the term.
+ * @param array  $atts    The shortcode attributes. If 'term' is set, will use
+ * it as the search term, otherwise the content word is used as the term.
  * @param string $content The content inside the shortcode tags.
  *
  * @return string A link to search results.
@@ -112,15 +112,12 @@ function relevanssi_search_form( $atts ) {
 		$additional_fields = array();
 		foreach ( $atts as $key => $value ) {
 			if ( 'dropdown' === $key ) {
-				switch ( $value ) {
-					case 'category':
-						$name = 'cat';
-						break;
-					case 'post_tag':
-						$name = 'tag';
-						break;
-					default:
-						$name = $value;
+				$name = $value;
+				if ( 'category' === $value ) {
+					$name = 'cat';
+				}
+				if ( 'post_tag' === $value ) {
+					$name = 'tag';
 				}
 				$args                = array(
 					'taxonomy'         => $value,
