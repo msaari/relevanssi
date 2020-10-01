@@ -1109,10 +1109,12 @@ function relevanssi_generate_term_where( $term, $force_fuzzy = false, $no_terms 
 	 * hook that returns '(relevanssi.term LIKE '%#term#%')'.
 	 *
 	 * @param string The partial matching query.
+	 * @param string $term The search term.
 	 */
 	$fuzzy_query = apply_filters(
 		'relevanssi_fuzzy_query',
-		"(relevanssi.term LIKE '#term#%' OR relevanssi.term_reverse LIKE CONCAT(REVERSE('#term#'), '%')) "
+		"(relevanssi.term LIKE '#term#%' OR relevanssi.term_reverse LIKE CONCAT(REVERSE('#term#'), '%')) ",
+		$term
 	);
 	$basic_query = " relevanssi.term = '#term#' ";
 
@@ -1154,8 +1156,9 @@ function relevanssi_generate_term_where( $term, $force_fuzzy = false, $no_terms 
 	 * Filters the term WHERE condition for the Relevanssi MySQL query.
 	 *
 	 * @param string $term_where The WHERE condition for the terms.
+	 * @param string $term       The search term.
 	 */
-	return apply_filters( 'relevanssi_term_where', $term_where );
+	return apply_filters( 'relevanssi_term_where', $term_where, $term );
 }
 
 /**
