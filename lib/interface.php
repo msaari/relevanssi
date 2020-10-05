@@ -844,88 +844,106 @@ function relevanssi_options_form() {
 	printf( "<input type='hidden' name='tab' value='%s' />", esc_attr( $active_tab ) );
 
 	$this_page = '?page=' . plugin_basename( $relevanssi_variables['file'] );
-	?>
 
+	$tabs = array(
+		array(
+			'slug'     => 'overview',
+			'name'     => __( 'Overview', 'relevanssi' ),
+			'require'  => 'tabs/overview-tab.php',
+			'callback' => 'relevanssi_overview_tab',
+			'save'     => 'premium',
+		),
+		array(
+			'slug'     => 'indexing',
+			'name'     => __( 'Indexing', 'relevanssi' ),
+			'require'  => 'tabs/indexing-tab.php',
+			'callback' => 'relevanssi_indexing_tab',
+			'save'     => true,
+		),
+		array(
+			'slug'     => 'attachments',
+			'name'     => __( 'Attachments', 'relevanssi' ),
+			'require'  => 'tabs/attachments-tab.php',
+			'callback' => 'relevanssi_attachments_tab',
+			'save'     => false,
+		),
+		array(
+			'slug'     => 'searching',
+			'name'     => __( 'Searching', 'relevanssi' ),
+			'require'  => 'tabs/searching-tab.php',
+			'callback' => 'relevanssi_searching_tab',
+			'save'     => true,
+		),
+		array(
+			'slug'     => 'logging',
+			'name'     => __( 'Logging', 'relevanssi' ),
+			'require'  => 'tabs/logging-tab.php',
+			'callback' => 'relevanssi_logging_tab',
+			'save'     => true,
+		),
+		array(
+			'slug'     => 'excerpts',
+			'name'     => __( 'Excerpts and Highlights', 'relevanssi' ),
+			'require'  => 'tabs/excerpts-tab.php',
+			'callback' => 'relevanssi_excerpts_tab',
+			'save'     => true,
+		),
+		array(
+			'slug'     => 'synonyms',
+			'name'     => __( 'Synonyms', 'relevanssi' ),
+			'require'  => 'tabs/synonyms-tab.php',
+			'callback' => 'relevanssi_synonyms_tab',
+			'save'     => true,
+		),
+		array(
+			'slug'     => 'stopwords',
+			'name'     => __( 'Stopwords', 'relevanssi' ),
+			'require'  => 'tabs/stopwords-tab.php',
+			'callback' => 'relevanssi_stopwords_tab',
+			'save'     => true,
+		),
+		array(
+			'slug'     => 'redirects',
+			'name'     => __( 'Redirects', 'relevanssi' ),
+			'require'  => 'tabs/redirects-tab.php',
+			'callback' => 'relevanssi_redirects_tab',
+			'save'     => false,
+		),
+	);
+
+	/**
+	 * Allows adding new tabs to the Relevanssi menu.
+	 *
+	 * @param array $tabs An array of arrays defining the tabs.
+	 *
+	 * @return array Filtered tab array.
+	 */
+	$tabs = apply_filters( 'relevanssi_tabs', $tabs );
+	?>
 <h2 class="nav-tab-wrapper">
-	<a href="<?php echo esc_attr( $this_page ); ?>&amp;tab=overview" class="nav-tab <?php echo 'overview' === $active_tab ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'Overview', 'relevanssi' ); ?></a>
-	<a href="<?php echo esc_attr( $this_page ); ?>&amp;tab=indexing" class="nav-tab <?php echo 'indexing' === $active_tab ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'Indexing', 'relevanssi' ); ?></a>
-	<a href="<?php echo esc_attr( $this_page ); ?>&amp;tab=attachments" class="nav-tab <?php echo 'attachments' === $active_tab ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'Attachments', 'relevanssi' ); ?></a>
-	<a href="<?php echo esc_attr( $this_page ); ?>&amp;tab=searching" class="nav-tab <?php echo 'searching' === $active_tab ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'Searching', 'relevanssi' ); ?></a>
-	<a href="<?php echo esc_attr( $this_page ); ?>&amp;tab=logging" class="nav-tab <?php echo 'logging' === $active_tab ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'Logging', 'relevanssi' ); ?></a>
-	<a href="<?php echo esc_attr( $this_page ); ?>&amp;tab=excerpts" class="nav-tab <?php echo 'excerpts' === $active_tab ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'Excerpts and highlights', 'relevanssi' ); ?></a>
-	<a href="<?php echo esc_attr( $this_page ); ?>&amp;tab=synonyms" class="nav-tab <?php echo 'synonyms' === $active_tab ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'Synonyms', 'relevanssi' ); ?></a>
-	<a href="<?php echo esc_attr( $this_page ); ?>&amp;tab=stopwords" class="nav-tab <?php echo 'stopwords' === $active_tab ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'Stopwords', 'relevanssi' ); ?></a>
-	<a href="<?php echo esc_attr( $this_page ); ?>&amp;tab=redirects" class="nav-tab <?php echo 'redirects' === $active_tab ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'Redirects', 'relevanssi' ); ?></a>
-	<?php if ( RELEVANSSI_PREMIUM ) : ?>
-	<a href="<?php echo esc_attr( $this_page ); ?>&amp;tab=related" class="nav-tab <?php echo 'related' === $active_tab ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'Related', 'relevanssi' ); ?></a>
-	<a href="<?php echo esc_attr( $this_page ); ?>&amp;tab=importexport" class="nav-tab <?php echo 'importexport' === $active_tab ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'Import / Export options', 'relevanssi' ); ?></a>
-	<?php endif; ?>
+	<?php
+	array_walk(
+		$tabs,
+		function( $tab ) use ( $this_page, $active_tab ) {
+			?>
+			<a href="<?php echo esc_attr( $this_page ); ?>&amp;tab=<?php echo esc_attr( $tab['slug'] ); ?>"
+			class="nav-tab <?php echo esc_attr( $tab['slug'] === $active_tab ? 'nav-tab-active' : '' ); ?>">
+			<?php echo esc_html( $tab['name'] ); ?></a>
+			<?php
+		}
+	);
+	?>
 </h2>
 
 	<?php
-	if ( 'overview' === $active_tab ) {
-		if ( ! RELEVANSSI_PREMIUM ) {
-			$display_save_button = false;
-		}
-		require_once 'tabs/overview-tab.php';
-		relevanssi_overview_tab();
+	$current_tab = $tabs[ array_search( $active_tab, wp_list_pluck( $tabs, 'slug' ), true ) ];
+	if ( ! $current_tab['save'] || ( ! RELEVANSSI_PREMIUM && 'premium' === $current_tab['save'] ) ) {
+		$display_save_button = false;
 	}
-	if ( 'logging' === $active_tab ) {
-		require_once 'tabs/logging-tab.php';
-		relevanssi_logging_tab();
+	if ( $current_tab['require'] ) {
+		require_once $current_tab['require'];
 	}
-	if ( 'searching' === $active_tab ) {
-		require_once 'tabs/searching-tab.php';
-		relevanssi_searching_tab();
-	}
-	if ( 'excerpts' === $active_tab ) {
-		require_once 'tabs/excerpts-tab.php';
-		relevanssi_excerpts_tab();
-	}
-	if ( 'indexing' === $active_tab ) {
-		require_once 'tabs/indexing-tab.php';
-		relevanssi_indexing_tab();
-	}
-	if ( 'attachments' === $active_tab ) {
-		if ( ! RELEVANSSI_PREMIUM ) {
-			$display_save_button = false;
-			require_once 'tabs/attachments-tab.php';
-			relevanssi_attachments_tab();
-		} else {
-			require_once dirname( $relevanssi_variables['file'] ) . '/premium/tabs/attachments-tab.php';
-			relevanssi_attachments_tab();
-		}
-	}
-	if ( 'synonyms' === $active_tab ) {
-		require_once 'tabs/synonyms-tab.php';
-		relevanssi_synonyms_tab();
-	}
-	if ( 'stopwords' === $active_tab ) {
-		require_once 'tabs/stopwords-tab.php';
-		relevanssi_stopwords_tab();
-	}
-	if ( 'importexport' === $active_tab ) {
-		if ( RELEVANSSI_PREMIUM ) {
-			require_once dirname( $relevanssi_variables['file'] ) . '/premium/tabs/import-export-tab.php';
-			relevanssi_import_export_tab();
-		}
-	}
-	if ( 'related' === $active_tab ) {
-		if ( RELEVANSSI_PREMIUM ) {
-			require_once dirname( $relevanssi_variables['file'] ) . '/premium/tabs/related-tab.php';
-			relevanssi_related_tab();
-		}
-	}
-	if ( 'redirects' === $active_tab ) {
-		if ( ! RELEVANSSI_PREMIUM ) {
-			$display_save_button = false;
-			require_once 'tabs/redirects-tab.php';
-			relevanssi_redirects_tab();
-		} else {
-			require_once dirname( $relevanssi_variables['file'] ) . '/premium/tabs/redirects-tab.php';
-			relevanssi_redirects_tab();
-		}
-	}
+	call_user_func( $current_tab['callback'] );
 
 	if ( $display_save_button ) :
 		?>
