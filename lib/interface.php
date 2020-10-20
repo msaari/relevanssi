@@ -883,7 +883,7 @@ function relevanssi_options_form() {
 		),
 		array(
 			'slug'     => 'excerpts',
-			'name'     => __( 'Excerpts and Highlights', 'relevanssi' ),
+			'name'     => __( 'Excerpts and highlights', 'relevanssi' ),
 			'require'  => 'tabs/excerpts-tab.php',
 			'callback' => 'relevanssi_excerpts_tab',
 			'save'     => true,
@@ -907,6 +907,13 @@ function relevanssi_options_form() {
 			'name'     => __( 'Redirects', 'relevanssi' ),
 			'require'  => 'tabs/redirects-tab.php',
 			'callback' => 'relevanssi_redirects_tab',
+			'save'     => false,
+		),
+		array(
+			'slug'     => 'debugging',
+			'name'     => __( 'Debugging', 'relevanssi' ),
+			'require'  => 'tabs/debugging-tab.php',
+			'callback' => 'relevanssi_debugging_tab',
 			'save'     => false,
 		),
 	);

@@ -2250,3 +2250,173 @@ function relevanssi_launch_ajax_action( $action, $payload_args = array() ) {
 	$url             = admin_url( 'admin-ajax.php' );
 	return wp_remote_post( $url, $args );
 }
+
+/**
+ * Fetches the data and generates the HTML for the "How Relevanssi sees this
+ * post".
+ *
+ * @param int     $post_id The post ID.
+ * @param boolean $display If false, add "display: none" style to the element.
+ *
+ * @return string The HTML code for the "How Relevanssi sees this post".
+ */
+function relevanssi_generate_how_relevanssi_sees( $post_id, $display = true ) {
+	$style = '';
+	if ( ! $display ) {
+		$style = 'style="display: none"';
+	}
+
+	$element = '<div id="relevanssi_sees_container" ' . $style . '>';
+
+	$data = relevanssi_fetch_sees_data( $post_id );
+
+	if ( empty( $data['terms_list'] ) && empty( $data['reason'] ) ) {
+		$element .= '<p>'
+			// Translators: %d is the post ID.
+			. sprintf( __( 'Nothing found for post ID %d.', 'relevanssi' ), $post_id )
+			. '</p>';
+		$element .= '</div>';
+		return $element;
+	}
+
+	if ( ! empty( $data['reason'] ) ) {
+		$element .= '<h3>' . esc_html__( 'Reason this post is not indexed', 'relevanssi' ) . '</h3>';
+		$element .= '<p>' . esc_html( $data['reason'] ) . '</p>';
+	}
+	if ( ! empty( $data['title_terms'] ) ) {
+		$element .= '<h3>' . esc_html__( 'Post title', 'relevanssi' ) . '</h3>';
+		$element .= '<p>' . esc_html( $data['title_terms'] ) . '</p>';
+	}
+	if ( ! empty( $data['content_terms'] ) ) {
+		$element .= '<h3>' . esc_html__( 'Post content', 'relevanssi' ) . '</h3>';
+		$element .= '<p>' . esc_html( $data['content_terms'] ) . '</p>';
+	}
+	if ( ! empty( $data['comment_terms'] ) ) {
+		$element .= '<h3>' . esc_html__( 'Comments', 'relevanssi' ) . '</h3>';
+		$element .= '<p>' . esc_html( $data['comment_terms'] ) . '</p>';
+	}
+	if ( ! empty( $data['tag_terms'] ) ) {
+		$element .= '<h3>' . esc_html__( 'Tags', 'relevanssi' ) . '</h3>';
+		$element .= '<p>' . esc_html( $data['tag_terms'] ) . '</p>';
+	}
+	if ( ! empty( $data['category_terms'] ) ) {
+		$element .= '<h3>' . esc_html__( 'Categories', 'relevanssi' ) . '</h3>';
+		$element .= '<p>' . esc_html( $data['category_terms'] ) . '</p>';
+	}
+	if ( ! empty( $data['taxonomy_terms'] ) ) {
+		$element .= '<h3>' . esc_html__( 'Other taxonomies', 'relevanssi' ) . '</h3>';
+		$element .= '<p>' . esc_html( $data['taxonomy_terms'] ) . '</p>';
+	}
+	if ( ! empty( $data['link_terms'] ) ) {
+		$element .= '<h3>' . esc_html__( 'Links', 'relevanssi' ) . '</h3>';
+		$element .= '<p>' . esc_html( $data['link_terms'] ) . '</p>';
+	}
+	if ( ! empty( $data['author_terms'] ) ) {
+		$element .= '<h3>' . esc_html__( 'Authors', 'relevanssi' ) . '</h3>';
+		$element .= '<p>' . esc_html( $data['author_terms'] ) . '</p>';
+	}
+	if ( ! empty( $data['excerpt_terms'] ) ) {
+		$element .= '<h3>' . esc_html__( 'Excerpt', 'relevanssi' ) . '</h3>';
+		$element .= '<p>' . esc_html( $data['excerpt_terms'] ) . '</p>';
+	}
+	if ( ! empty( $data['customfield_terms'] ) ) {
+		$element .= '<h3>' . esc_html__( 'Custom fields', 'relevanssi' ) . '</h3>';
+		$element .= '<p>' . esc_html( $data['customfield_terms'] ) . '</p>';
+	}
+	if ( ! empty( $data['mysql_terms'] ) ) {
+		$element .= '<h3>' . esc_html__( 'MySQL content', 'relevanssi' ) . '</h3>';
+		$element .= '<p>' . esc_html( $data['mysql_terms'] ) . '</p>';
+	}
+	$element .= '</div>';
+	return $element;
+}
+
+/**
+ * Fetches the Relevanssi indexing data for a post.
+ *
+ * @param int $post_id The post ID.
+ *
+ * @global array  $relevanssi_variables The Relevanssi global variables array,
+ * used for the database table name.
+ * @global object $wpdb                 The WordPress database interface.
+ *
+ * @return array The indexed terms for various parts of the post in an
+ * associative array.
+ */
+function relevanssi_fetch_sees_data( $post_id ) {
+	global $wpdb, $relevanssi_variables;
+
+	$terms_list = $wpdb->get_results(
+		$wpdb->prepare(
+			'SELECT * FROM ' . $relevanssi_variables['relevanssi_table'] . ' WHERE doc = %d', // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
+			$post_id
+		),
+		OBJECT
+	);
+
+	$terms['content']     = array();
+	$terms['title']       = array();
+	$terms['comment']     = array();
+	$terms['tag']         = array();
+	$terms['link']        = array();
+	$terms['author']      = array();
+	$terms['category']    = array();
+	$terms['excerpt']     = array();
+	$terms['taxonomy']    = array();
+	$terms['customfield'] = array();
+	$terms['mysql']       = array();
+
+	foreach ( $terms_list as $row ) {
+		if ( $row->content > 0 ) {
+			$terms['content'][] = $row->term;
+		}
+		if ( $row->title > 0 ) {
+			$terms['title'][] = $row->term;
+		}
+		if ( $row->comment > 0 ) {
+			$terms['comment'][] = $row->term;
+		}
+		if ( $row->tag > 0 ) {
+			$terms['tag'][] = $row->term;
+		}
+		if ( $row->link > 0 ) {
+			$terms['link'][] = $row->term;
+		}
+		if ( $row->author > 0 ) {
+			$terms['author'][] = $row->term;
+		}
+		if ( $row->category > 0 ) {
+			$terms['category'][] = $row->term;
+		}
+		if ( $row->excerpt > 0 ) {
+			$terms['excerpt'][] = $row->term;
+		}
+		if ( $row->taxonomy > 0 ) {
+			$terms['taxonomy'][] = $row->term;
+		}
+		if ( $row->customfield > 0 ) {
+			$terms['customfield'][] = $row->term;
+		}
+		if ( $row->mysqlcolumn > 0 ) {
+			$terms['mysql'][] = $row->term;
+		}
+	}
+
+	$reason = get_post_meta( $post_id, '_relevanssi_noindex_reason', true );
+
+	return array(
+		'content'     => implode( ' ', $terms['content'] ),
+		'title'       => implode( ' ', $terms['title'] ),
+		'comment'     => implode( ' ', $terms['comment'] ),
+		'tag'         => implode( ' ', $terms['tag'] ),
+		'link'        => implode( ' ', $terms['link'] ),
+		'author'      => implode( ' ', $terms['author'] ),
+		'category'    => implode( ' ', $terms['category'] ),
+		'excerpt'     => implode( ' ', $terms['excerpt'] ),
+		'taxonomy'    => implode( ' ', $terms['taxonomy'] ),
+		'customfield' => implode( ' ', $terms['customfield'] ),
+		'mysql'       => implode( ' ', $terms['mysql'] ),
+		'reason'      => $reason,
+		'terms_list'  => $terms_list,
+	);
+}
