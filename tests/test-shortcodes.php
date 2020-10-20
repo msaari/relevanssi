@@ -51,9 +51,12 @@ class ShortcodeTest extends WP_UnitTestCase {
 	 * Tests search form shortcode.
 	 */
 	public function test_search_form() {
+		add_filter( 'get_search_form', 'base_search_form' );
+
 		$cat_ids    = array();
 		$cat_ids[0] = wp_create_category( 'foo' );
 		$post_ids   = $this->factory->post->create_many( 3 );
+
 		$cats = wp_set_post_terms( $post_ids[0], $cat_ids, 'category', true );
 		$tags = wp_set_post_terms( $post_ids[0], array( 'bar' ), 'post_tag', true );
 
@@ -117,4 +120,17 @@ class ShortcodeTest extends WP_UnitTestCase {
 			relevanssi_uninstall_free();
 		}
 	}
+}
+
+/**
+ * Returns a base search form.
+ */
+function base_search_form() {
+	return '<form role="search" method="get" id="searchform" class="searchform" action="http://example.org/">
+		<div>
+			<label class="screen-reader-text" for="s">Search for:</label>
+			<input type="text" value="" name="s" id="s" />
+			<input type="submit" id="searchsubmit" value="Search"/>
+		</div>
+	</form>';
 }
