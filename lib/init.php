@@ -182,6 +182,10 @@ function relevanssi_init() {
 		require_once 'compatibility/seopress.php';
 	}
 
+	if ( defined( 'THE_SEO_FRAMEWORK_VERSION' ) ) {
+		require_once 'compatibility/seoframework.php';
+	}
+
 	if ( function_exists( 'members_content_permissions_enabled' ) ) {
 		require_once 'compatibility/members.php';
 	}
