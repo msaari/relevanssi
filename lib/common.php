@@ -1014,14 +1014,22 @@ function relevanssi_tokenize( $string, $remove_stops = true, $min_word_length = 
 
 		if ( $accept ) {
 			$token = relevanssi_mb_trim( $token );
-			if ( is_numeric( $token ) ) {
-				// $token ends up as an array index, and numbers don't work there.
-				$token = " $token";
-			}
-			if ( ! isset( $tokens[ $token ] ) ) {
-				$tokens[ $token ] = 1;
-			} else {
-				$tokens[ $token ]++;
+
+			/**
+			 * This explode is done so that a stemmer can return both the
+			 * original term and the stemmed term and both can be indexed.
+			 */
+			$token_array = explode( ' ', $token );
+			foreach ( $token_array as $token ) {
+				if ( is_numeric( $token ) ) {
+					// $token ends up as an array index, and numbers don't work there.
+					$token = " $token";
+				}
+				if ( ! isset( $tokens[ $token ] ) ) {
+					$tokens[ $token ] = 1;
+				} else {
+					$tokens[ $token ]++;
+				}
 			}
 		}
 
