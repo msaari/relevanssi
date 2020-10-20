@@ -509,7 +509,7 @@ function relevanssi_generate_phrase_queries( $phrases, $taxonomies, $custom_fiel
 		$queries = array();
 		$phrase  = $wpdb->esc_like( $phrase );
 		$phrase  = str_replace( array( '‘', '’', "'", '"', '”', '“', '“', '„', '´' ), '_', $phrase );
-		$phrase  = htmlentities( $phrase );
+		$phrase  = htmlspecialchars( $phrase );
 		$phrase  = esc_sql( $phrase );
 
 		$excerpt = '';
