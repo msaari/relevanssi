@@ -1425,13 +1425,13 @@ function relevanssi_index_title( &$insert_data, $post, $min_word_length, $debug 
  * Creates indexing queries for post content.
  *
  * @param array   $insert_data     The INSERT query data. Modified here.
- * @param object  $post            The post object.
+ * @param object  $post_object     The post object.
  * @param int     $min_word_length The minimum word length.
  * @param boolean $debug           If true, print out debug notices.
  *
  * @return int The number of tokens added to the data.
  */
-function relevanssi_index_content( &$insert_data, $post, $min_word_length, $debug ) {
+function relevanssi_index_content( &$insert_data, $post_object, $min_word_length, $debug ) {
 	$n = 0;
 
 	/**
@@ -1453,10 +1453,10 @@ function relevanssi_index_content( &$insert_data, $post, $min_word_length, $debu
 	/**
 	 * Filters the post content before indexing.
 	 *
-	 * @param string $post->post_content The post content.
-	 * @param object $post               The full post object.
+	 * @param string $post_object->post_content The post content.
+	 * @param object $post_object               The full post object.
 	 */
-	$contents = apply_filters( 'relevanssi_post_content', $post->post_content, $post );
+	$contents = apply_filters( 'relevanssi_post_content', $post_object->post_content, $post_object );
 	if ( $debug ) {
 		relevanssi_debug_echo( "\tPost content after relevanssi_post_content:\n$contents" );
 	}
@@ -1466,10 +1466,10 @@ function relevanssi_index_content( &$insert_data, $post, $min_word_length, $debu
 	 *
 	 * @author Alexander Gieg
 	 *
-	 * @param string       The additional content.
-	 * @param object $post The post object.
+	 * @param string              The additional content.
+	 * @param object $post_object The post object.
 	 */
-	$additional_content = trim( apply_filters( 'relevanssi_content_to_index', '', $post ) );
+	$additional_content = trim( apply_filters( 'relevanssi_content_to_index', '', $post_object ) );
 	if ( ! empty( $additional_content ) ) {
 		$contents .= ' ' . $additional_content;
 
@@ -1486,9 +1486,22 @@ function relevanssi_index_content( &$insert_data, $post, $min_word_length, $debu
 
 		relevanssi_disable_shortcodes();
 
-		$post_before_shortcode = $post;
-		$contents              = do_shortcode( $contents );
-		$post                  = $post_before_shortcode; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+		/**
+		 * This needs to be global here, otherwise the safety mechanism doesn't
+		 * work correctly.
+		 */
+		global $post;
+
+		$global_post_before_shortcode = null;
+		if ( isset( $post ) ) {
+			$global_post_before_shortcode = $post;
+		}
+
+		$contents = do_shortcode( $contents );
+
+		if ( $global_post_before_shortcode ) {
+			$post = $global_post_before_shortcode; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+		}
 
 		unset( $tablepress_controller );
 	} else {
@@ -1501,20 +1514,20 @@ function relevanssi_index_content( &$insert_data, $post, $min_word_length, $debu
 	/**
 	 * Filters the post content after shortcodes but before HTML stripping.
 	 *
-	 * @param string $contents The post content.
-	 * @param object $post     The full post object.
+	 * @param string $contents    The post content.
+	 * @param object $post_object The full post object.
 	 */
 	$contents = apply_filters(
 		'relevanssi_post_content_after_shortcodes',
 		$contents,
-		$post
+		$post_object
 	);
 
 	$contents = relevanssi_strip_invisibles( $contents );
 
 	// Premium feature for better control over internal links.
 	if ( function_exists( 'relevanssi_process_internal_links' ) ) {
-		$contents = relevanssi_process_internal_links( $contents, $post->ID );
+		$contents = relevanssi_process_internal_links( $contents, $post_object->ID );
 	}
 
 	$contents = preg_replace( '/<[a-zA-Z\/][^>]*>/', ' ', $contents );
@@ -1523,10 +1536,10 @@ function relevanssi_index_content( &$insert_data, $post, $min_word_length, $debu
 	/**
 	 * Filters the post content in indexing before tokenization.
 	 *
-	 * @param string $contents The post content.
-	 * @param object $post     The full post object.
+	 * @param string $contents    The post content.
+	 * @param object $post_object The full post object.
 	 */
-	$contents = apply_filters( 'relevanssi_post_content_before_tokenize', $contents, $post );
+	$contents = apply_filters( 'relevanssi_post_content_before_tokenize', $contents, $post_object );
 	/** This filter is documented in lib/indexing.php */
 	$content_tokens = apply_filters(
 		'relevanssi_indexing_tokens',

@@ -1105,7 +1105,7 @@ class IndexingTest extends WP_UnitTestCase {
 					(parent.ID is not null AND (parent.post_status IN (publish)))
 					OR (post.post_parent=0)
 				)
-			)) AND post.ID NOT IN (SELECT post_id FROM {$wpdb->prefix}postmeta WHERE meta_key = '_relevanssi_hide_post' AND meta_value = 'on')
+			))
 		 	AND restriction=true ORDER BY post.ID DESC"
 		);
 
@@ -1120,7 +1120,7 @@ class IndexingTest extends WP_UnitTestCase {
 				(parent.ID is not null AND (parent.post_status IN (publish)))
 				OR (post.post_parent=0)
 				)
-			)) AND post.ID NOT IN (SELECT post_id FROM {$wpdb->prefix}postmeta WHERE meta_key='_relevanssi_hide_post' AND meta_value='on')
+			))
 			ORDER BY post.ID DESC LIMIT 3"
 		);
 
@@ -1138,7 +1138,7 @@ class IndexingTest extends WP_UnitTestCase {
 				(parent.ID is not null AND (parent.post_status IN (publish)))
 				OR (post.post_parent=0)
 				)
-			)) AND post.ID NOT IN (SELECT post_id FROM {$wpdb->prefix}postmeta WHERE meta_key='_relevanssi_hide_post' AND meta_value='on')
+			))
 			ORDER BY post.ID DESC"
 		);
 
@@ -1344,6 +1344,48 @@ class IndexingTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Tests to see if indexing can survive a shortcode with WP_Query in it.
+	 */
+	public function test_wp_query_shortcodes() {
+		$this->delete_all_posts();
+
+		update_option( 'relevanssi_index_post_types', array( 'post' ) );
+
+		$post_data = array(
+			'post_title'   => 'insert',
+			'post_content' => 'insert',
+			'post_status'  => 'publish',
+		);
+
+		$insert_post_id = wp_insert_post( $post_data );
+
+		$post_data = array(
+			'post_title'   => 'original',
+			'post_content' => '[insert_post id=' . $insert_post_id . ']',
+			'post_status'  => 'publish',
+		);
+
+		$post_id = wp_insert_post( $post_data );
+
+		global $wpdb, $relevanssi_variables;
+		$results = $wpdb->get_results( "SELECT * FROM {$relevanssi_variables['relevanssi_table']} WHERE doc=$post_id AND term='flipflop'" );
+
+		$this->assertEquals(
+			1,
+			count( $results ),
+			'Content should be indexed for the original post ID.'
+		);
+
+		$results = $wpdb->get_results( "SELECT * FROM {$relevanssi_variables['relevanssi_table']} WHERE doc=$insert_post_id AND term='flipflop'" );
+
+		$this->assertEquals(
+			0,
+			count( $results ),
+			"Content shouldn't be indexed for the insert post ID."
+		);
+	}
+
+	/**
 	 * Helper function that deletes all the posts in the database.
 	 */
 	private function delete_all_posts() {
@@ -1386,4 +1428,24 @@ function insert_edit_test_filter() {
  */
 function return_utf8() {
 	return 'utf8';
+}
+
+add_shortcode( 'insert_post', 'insert_post_shortcode' );
+/**
+ * Helper function that runs a WP_Query and returns "flipflop".
+ *
+ * @param array $atts The shortcode attributes array.
+ *
+ * @return string "Flipflop".
+ */
+function insert_post_shortcode( $atts ) {
+	$args     = array(
+		'p' => $atts['id'],
+	);
+	$wp_query = new WP_Query( $args );
+	while ( $wp_query->have_posts() ) {
+		$wp_query->the_post();
+		global $post;
+	}
+	return 'flipflop';
 }
