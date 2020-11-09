@@ -437,7 +437,7 @@ function relevanssi_highlight_terms( $content, $query, $in_docs = false ) {
 			return $content;
 	}
 
-	$start_emp_token = '**{}[';
+	$start_emp_token = '**{[';
 	$end_emp_token   = ']}**';
 
 	if ( function_exists( 'mb_internal_encoding' ) ) {
@@ -513,12 +513,8 @@ function relevanssi_highlight_terms( $content, $query, $in_docs = false ) {
 
 	usort( $terms, 'relevanssi_strlen_sort' );
 
-	$word_boundaries_available = false;
-	if ( 'on' === get_option( 'relevanssi_word_boundaries', 'off' ) ) {
-		$word_boundaries_available = true;
-	}
-
 	$content = html_entity_decode( $content, ENT_QUOTES, 'UTF-8' );
+	$content = str_replace( "\n", ' ', $content );
 
 	foreach ( $terms as $term ) {
 		$pr_term = preg_quote( $term, '/' );
@@ -531,23 +527,55 @@ function relevanssi_highlight_terms( $content, $query, $in_docs = false ) {
 			$pr_term
 		);
 
-		if ( $word_boundaries_available ) {
-			$regex = "/(\b$pr_term\b)/iu";
-			if ( 'never' !== get_option( 'relevanssi_fuzzy' ) ) {
-				$regex = "/(\b$pr_term|$pr_term\b)/iu";
-			}
-			$content = preg_replace(
-				$regex,
-				$start_emp_token . '\\1' . $end_emp_token,
-				$content
-			);
-		} else {
-			$content = preg_replace(
-				"/($pr_term)/iu",
-				$start_emp_token . '\\1' . $end_emp_token,
-				$content
-			);
+		$regex       = "/([\W])($pr_term)([\W])/iu";
+		$three_parts = true;
+
+		if ( 'never' !== get_option( 'relevanssi_fuzzy' ) ) {
+			$regex       = "/([\W]{$pr_term}|{$pr_term}[\W])/iu";
+			$three_parts = false;
 		}
+
+		if ( 'on' === get_option( 'relevanssi_expand_highlights' ) ) {
+			$regex       = "/([\w]*{$pr_term}[\W]|[\W]{$pr_term}[\w]*)/iu";
+			$three_parts = false;
+		}
+
+		if ( $three_parts ) {
+			$replace = '\\1' . $start_emp_token . '\\2' . $end_emp_token . '\\3';
+		} else {
+			$replace = $start_emp_token . '\\1' . $end_emp_token;
+		}
+
+		$content = trim(
+			preg_replace(
+				$regex,
+				$replace,
+				' ' . $content
+			)
+		);
+
+		/**
+		 * The method here leaves extra spaces inside the highlighting. That
+		 * is cleaned away here.
+		 */
+		$replace_regex = '/(.)(' . preg_quote( $start_emp_token, '/' ) . ')(\s)/iu';
+		$content       = preg_replace( $replace_regex, '\1\3\2', $content );
+
+		$replace_regex = '/^(' . preg_quote( $start_emp_token, '/' ) . ')\s/iu';
+		$content       = preg_replace( $replace_regex, '\1', $content );
+
+		$replace_regex = '/(\s)(' . preg_quote( $end_emp_token, '/' ) . ')(.)/iu';
+		$content       = preg_replace( $replace_regex, '\2\1\3', $content );
+
+		$replace_regex = '/\s(' . preg_quote( $end_emp_token, '/' ) . ')/iu';
+		$content       = preg_replace( $replace_regex, '\1', $content );
+
+		// The starting tokens can get interlaced this way, let's unknot them.
+		$content = str_replace(
+			substr( $start_emp_token, 0, -1 ) . $start_emp_token . substr( $start_emp_token, -1, 1 ),
+			$start_emp_token . $start_emp_token,
+			$content
+		);
 
 		if ( preg_match_all( '/<.*>/U', $content, $matches ) > 0 ) {
 			// Remove highlights from inside HTML tags.
@@ -870,11 +898,6 @@ function relevanssi_count_matches( $words, $complete_text ) {
 	$lowercase_text = relevanssi_strtolower( $complete_text, 'UTF-8' );
 	$text           = '';
 
-	$word_boundaries_available = false;
-	if ( 'on' === get_option( 'relevanssi_word_boundaries', 'off' ) ) {
-		$word_boundaries_available = true;
-	}
-
 	$count_words = count( $words );
 	for ( $t = 0; $t < $count_words; $t++ ) {
 		$word_slice = relevanssi_strtolower(
@@ -893,15 +916,12 @@ function relevanssi_count_matches( $words, $complete_text ) {
 			$word_slice
 		);
 
-		if ( $word_boundaries_available ) {
-			if ( 'never' !== get_option( 'relevanssi_fuzzy' ) ) {
-				$regex = "/\b$word_slice|$word_slice\b/";
-			} else {
-				$regex = "/\b$word_slice\b/";
-			}
+		if ( 'never' !== get_option( 'relevanssi_fuzzy' ) ) {
+			$regex = "/[\W]{$word_slice}|{$word_slice}[\W]/iu";
 		} else {
-			$regex = "/$word_slice/";
+			$regex = "/[\W]{$word_slice}[\W]/iu";
 		}
+
 		$lines = preg_split( $regex, $lowercase_text );
 		if ( $lines && count( $lines ) > 1 ) {
 			$count_lines = count( $lines );
@@ -1129,7 +1149,7 @@ function relevanssi_add_accent_variations( $word ) {
 		'relevanssi_accents_replacement_arrays',
 		array(
 			'from'    => array( 'a', 'c', 'e', 'i', 'o', 'u', 'n' ),
-			'to'      => array( '(a|á|à|â)', '(c|ç)', '(e|é|è|ê|ë)', '(i|í|ì|î|ï)', '(o|ó|ò|ô|õ)', '(u|ú|ù|ü|û)', '(n|ñ)' ),
+			'to'      => array( '(?:a|á|à|â)', '(?:c|ç)', '(?:e|é|è|ê|ë)', '(?:i|í|ì|î|ï)', '(?:o|ó|ò|ô|õ)', '(?:u|ú|ù|ü|û)', '(?:n|ñ)' ),
 			'from_re' => array( "/(s)('|’)?$/", "/[^\(\|]('|’)/" ),
 			'to_re'   => array( "(('|’)?\\1|\\1('|’)?)", "?('|’)?" ),
 		)

@@ -29,8 +29,8 @@ function relevanssi_excerpts_tab() {
 	$highlight_coms         = get_option( 'relevanssi_highlight_comments' );
 	$show_matches           = get_option( 'relevanssi_show_matches' );
 	$show_matches_text      = get_option( 'relevanssi_show_matches_text' );
-	$word_boundaries        = get_option( 'relevanssi_word_boundaries' );
 	$index_fields           = get_option( 'relevanssi_index_fields' );
+	$expand_highlights      = get_option( 'relevanssi_expand_highlights' );
 
 	if ( '#' !== substr( $txt_col, 0, 1 ) ) {
 		$txt_col = '#' . $txt_col;
@@ -49,7 +49,7 @@ function relevanssi_excerpts_tab() {
 	$highlight_docs        = relevanssi_check( $highlight_docs );
 	$highlight_coms        = relevanssi_check( $highlight_coms );
 	$show_matches          = relevanssi_check( $show_matches );
-	$word_boundaries       = relevanssi_check( $word_boundaries );
+	$expand_highlights     = relevanssi_check( $expand_highlights );
 	$excerpt_chars         = relevanssi_select( $excerpt_type, 'chars' );
 	$excerpt_words         = relevanssi_select( $excerpt_type, 'words' );
 	$highlight_none        = relevanssi_select( $highlight, 'no' );
@@ -136,6 +136,7 @@ function relevanssi_excerpts_tab() {
 			<p class="description"><?php esc_html_e( "Using words is much faster than characters. Don't use characters, unless you have a really good reason and your posts are short.", 'relevanssi' ); ?></p>
 		</td>
 	</tr>
+	<?php relevanssi_form_max_excerpts( $excerpts ); ?>
 	<tr id="tr_excerpt_allowable_tags"
 		<?php
 		if ( empty( $excerpts ) ) {
@@ -356,20 +357,20 @@ function relevanssi_excerpts_tab() {
 	</tr>
 	<tr>
 		<th scope="row">
-			<?php esc_html_e( 'Highlighting problems with non-ASCII alphabet?', 'relevanssi' ); ?>
+			<?php esc_html_e( 'Expand highlights', 'relevanssi' ); ?>
 		</th>
 		<td>
-			<label for='relevanssi_word_boundaries'>
-				<input type='checkbox' name='relevanssi_word_boundaries' id='relevanssi_word_boundaries' <?php echo esc_html( $word_boundaries ); ?>
+			<label for='relevanssi_expand_highlights'>
+				<input type='checkbox' name='relevanssi_expand_highlights' id='relevanssi_expand_highlights' <?php echo esc_html( $expand_highlights ); ?>
 				<?php
 				if ( empty( $excerpts ) ) {
 					echo "disabled='disabled'";
 				}
 				?>
 				/>
-				<?php esc_html_e( 'Uncheck this if you use non-ASCII characters', 'relevanssi' ); ?>
+				<?php esc_html_e( 'Expand highlights to cover full words', 'relevanssi' ); ?>
 			</label>
-		<p class="description"><?php esc_html_e( "If you use non-ASCII characters (like Cyrillic alphabet) and the highlights don't work, unchecking this option may make the highlights work.", 'relevanssi' ); ?></p>
+		<p class="description"><?php esc_html_e( 'When a highlight matches part of the word, if this option is enabled, the highlight will be expanded to highlight the whole word.', 'relevanssi' ); ?></p>
 		</td>
 	</tr>
 	</table>

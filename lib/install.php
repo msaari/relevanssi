@@ -88,6 +88,7 @@ function _relevanssi_install() {
 	add_option( 'relevanssi_excerpt_type', 'words' );
 	add_option( 'relevanssi_excerpts', 'on' );
 	add_option( 'relevanssi_exclude_posts', '' );
+	add_option( 'relevanssi_expand_highlights', 'off' );
 	add_option( 'relevanssi_expand_shortcodes', 'on' );
 	add_option( 'relevanssi_extag', '0' );
 	add_option( 'relevanssi_fuzzy', 'sometimes' );
@@ -126,7 +127,6 @@ function _relevanssi_install() {
 	add_option( 'relevanssi_throttle_limit', '500' );
 	add_option( 'relevanssi_title_boost', $relevanssi_variables['title_boost_default'] );
 	add_option( 'relevanssi_txt_col', '#ff0000' );
-	add_option( 'relevanssi_word_boundaries', 'on' );
 	add_option( 'relevanssi_wpml_only_current', 'on' );
 
 	if ( function_exists( 'relevanssi_premium_install' ) ) {

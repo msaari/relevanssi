@@ -92,7 +92,7 @@ END;
 		$posts = relevanssi_do_query( $query );
 		$post  = $posts[0];
 
-		$words = count( explode( ' ', $post->post_excerpt ) );
+		$words = count( explode( ' ', wp_strip_all_tags( $post->post_excerpt ) ) );
 		$this->assertEquals(
 			self::$excerpt_length,
 			$words,
@@ -103,7 +103,7 @@ END;
 		update_option( 'relevanssi_excerpt_length', self::$excerpt_length );
 		$new_excerpt = relevanssi_do_excerpt( $post, 'keyword' );
 
-		$words = count( explode( ' ', $new_excerpt ) );
+		$words = count( explode( ' ', wp_strip_all_tags( $new_excerpt ) ) );
 		$this->assertEquals(
 			self::$excerpt_length,
 			$words,
@@ -132,7 +132,7 @@ END;
 
 		// The search terms are from the beginning, so the excerpt shouldn't start
 		// with an ellipsis.
-		$excerpt_first_three_letters = substr( $post->post_excerpt, 0, 3 );
+		$excerpt_first_three_letters = substr( wp_strip_all_tags( $post->post_excerpt ), 0, 3 );
 		$this->assertNotEquals(
 			'...',
 			$excerpt_first_three_letters,
@@ -140,7 +140,7 @@ END;
 		);
 
 		// It should end with one, though.
-		$excerpt_last_three_letters = substr( $post->post_excerpt, -3, 3 );
+		$excerpt_last_three_letters = substr( wp_strip_all_tags( $post->post_excerpt ), -3, 3 );
 		$this->assertEquals(
 			'...',
 			$excerpt_last_three_letters,
@@ -161,7 +161,7 @@ END;
 		$post  = $posts[0];
 
 		// Now the excerpt should start/ with an ellipsis.
-		$excerpt_first_three_letters = substr( $post->post_excerpt, 0, 3 );
+		$excerpt_first_three_letters = substr( wp_strip_all_tags( $post->post_excerpt ), 0, 3 );
 		$this->assertEquals( '...', $excerpt_first_three_letters, 'Excerpt should start with an ellipsis.' );
 	}
 
@@ -308,8 +308,6 @@ nulla. Pharetra vel turpis nunc eget lorem dolor. Tristique senectus et netus
 et malesuada.
 EOT;
 
-		update_option( 'relevanssi_word_boundaries', 'on' );
-
 		$this->assertEquals(
 			3,
 			relevanssi_count_matches( array( 'fringilla', 'sagittis' ), $text ),
@@ -328,20 +326,6 @@ EOT;
 			3,
 			relevanssi_count_matches( array( 'fringil', 'sagit' ), $text ),
 			"relevanssi_count_matches() isn't doing fuzzy matching correctly"
-		);
-
-		update_option( 'relevanssi_word_boundaries', 'off' );
-		$this->assertEquals(
-			3,
-			relevanssi_count_matches( array( 'fringilla', 'sagittis' ), $text ),
-			"relevanssi_count_matches() isn't counting correctly without word boundaries"
-		);
-
-		update_option( 'relevanssi_fuzzy', 'always' );
-		$this->assertEquals(
-			3,
-			relevanssi_count_matches( array( 'fringil', 'sagit' ), $text ),
-			"relevanssi_count_matches() isn't doing fuzzy matching correctly without word boundaries"
 		);
 	}
 
@@ -659,7 +643,6 @@ EOT;
 		$query   = array( 'massa', 'tempor' );
 		update_option( 'relevanssi_highlight', 'mark' );
 		update_option( 'relevanssi_fuzzy', 'never' );
-		update_option( 'relevanssi_word_boundaries', 'on' );
 		$excerpt = relevanssi_highlight_terms( $content, $query, false );
 
 		$highlighted = <<<EOT
@@ -692,23 +675,6 @@ EOT;
 		);
 
 		update_option( 'relevanssi_fuzzy', 'never' );
-		update_option( 'relevanssi_word_boundaries', 'off' );
-		$excerpt = relevanssi_highlight_terms( $content, $query, false );
-
-		$highlighted = <<<EOT
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-<mark>tempor</mark>incididunt ut labore et dolore magna aliqua. Dolor sed viverra ipsum nunc
-aliquet bibendum enim. In <mark>massa tempor</mark> nec feugiat. Nunc aliquet bibendum enim
-facilisis gravida. Nisl nunc mi ipsum faucibus vitae aliquet nec ullamcorper.
-EOT;
-
-		$this->assertEquals(
-			str_replace( "\n", ' ', $highlighted ),
-			str_replace( "\n", ' ', $excerpt ),
-			'relevanssi_highlight_term() word boundaries test failed.'
-		);
-
-		update_option( 'relevanssi_word_boundaries', 'on' );
 		delete_option( 'relevanssi_txt_col' );
 		delete_option( 'relevanssi_bg_col' );
 		delete_option( 'relevanssi_css' );
@@ -747,6 +713,7 @@ EOT;
 				'end'   => '</span>',
 			),
 		);
+
 		foreach ( $types as $type => $properties ) {
 			update_option( 'relevanssi_highlight', $type );
 			$excerpt = relevanssi_highlight_terms( $content, $query, false );
@@ -1003,7 +970,7 @@ END;
 		update_option( 'relevanssi_excerpt_length', '10' );
 		$excerpt = relevanssi_do_excerpt( $post, 'quis hendrerit' );
 		$this->assertEquals(
-			'...massa massa ultricies mi <strong>quis hendrerit</strong>. Sed ullamcorper morbi tincidunt...',
+			'<span class="excerpt_part">...massa massa ultricies mi <strong>quis hendrerit</strong>. Sed ullamcorper morbi tincidunt...</span>',
 			$excerpt,
 			"relevanssi_do_excerpt() doesn't work correctly."
 		);
@@ -1012,7 +979,7 @@ END;
 		update_option( 'relevanssi_highlight', 'none' );
 		$excerpt = relevanssi_do_excerpt( $post, 'quis hendrerit' );
 		$this->assertEquals(
-			$post->post_content,
+			'<span class="excerpt_part">' . $post->post_content . '</span>',
 			$excerpt,
 			"relevanssi_do_excerpt() doesn't do whole post excerpts correctly."
 		);
@@ -1022,7 +989,7 @@ END;
 		update_option( 'relevanssi_index_comments', 'on' );
 		$excerpt = relevanssi_do_excerpt( $post, 'praising pain' );
 		$this->assertEquals(
-			'...idea of denouncing pleasure and <strong>praising pain</strong> was born and...',
+			'<span class="excerpt_part">...idea of denouncing pleasure and <strong>praising pain</strong> was born and...</span>',
 			$excerpt,
 			"relevanssi_do_excerpt() doesn't excerpt comment content correctly."
 		);
@@ -1030,7 +997,7 @@ END;
 		update_option( 'relevanssi_index_excerpt', 'on' );
 		$excerpt = relevanssi_do_excerpt( $post, 'condimentum lacinia' );
 		$this->assertEquals(
-			'...Nulla aliquet enim tortor at. Massa vitae tortor <strong>condimentum lacinia</strong>....',
+			'<span class="excerpt_part">...Nulla aliquet enim tortor at. Massa vitae tortor <strong>condimentum lacinia</strong>....</span>',
 			$excerpt,
 			"relevanssi_do_excerpt() doesn't excerpt post_excerpt correctly."
 		);
@@ -1040,7 +1007,7 @@ END;
 		update_option( 'relevanssi_index_excerpt', 'off' );
 		$excerpt = relevanssi_do_excerpt( $post, 'nonexistingwords' );
 		$this->assertEquals(
-			'Lorem ipsu...',
+			'<span class="excerpt_part">Lorem ipsu...</span>',
 			$excerpt,
 			"relevanssi_do_excerpt() doesn't do empty excerpt correctly."
 		);
@@ -1058,7 +1025,6 @@ END;
 		$wp_query->query_vars['highlight'] = 'ipsum';
 
 		update_option( 'relevanssi_fuzzy', 'never' );
-		update_option( 'relevanssi_word_boundaries', 'on' );
 		$highlighted_content = relevanssi_highlight_in_docs( $content );
 		$this->assertEquals(
 			'Lorem <strong>ipsum</strong> dolor sit amet, ipsumen consectetur adipiscing elit.',
