@@ -900,8 +900,9 @@ function relevanssi_prevent_default_request( $request, $query ) {
 			$admin_search_ok = false;
 		}
 
-		if ( $query->is_admin && 'page' === $query->query_vars['post_type'] ) {
-			// Relevanssi doesn't work on the page screen, so disable.
+		if ( $query->is_admin && isset( $query->query['fields'] ) && 'id=>parent' === $query->query['fields'] ) {
+			// Relevanssi doesn't work on hierarchical post type admin screens,
+			// so disable.
 			$prevent         = false;
 			$admin_search_ok = false;
 		}
