@@ -241,8 +241,6 @@ function relevanssi_init() {
 function relevanssi_admin_init() {
 	global $relevanssi_variables;
 
-	require_once $relevanssi_variables['plugin_dir'] . 'lib/admin-ajax.php';
-
 	add_action( 'admin_enqueue_scripts', 'relevanssi_add_admin_scripts' );
 	add_filter( 'plugin_action_links_' . $relevanssi_variables['plugin_basename'], 'relevanssi_action_links' );
 }
