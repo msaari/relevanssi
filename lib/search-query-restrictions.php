@@ -36,7 +36,7 @@ function relevanssi_process_query_args( $args ) {
 	}
 
 	if ( $args['sentence'] ) {
-		$query = str_replace( array( '"', '“', '”' ), '', $query );
+		$query = relevanssi_remove_quotes( $query );
 		$query = '"' . $query . '"';
 	}
 
@@ -560,10 +560,17 @@ function relevanssi_process_post_status( $post_status ) {
  */
 function relevanssi_add_phrase_restrictions( $query_restrictions, $phrase_queries, $term, $operator ) {
 	if ( 'OR' === $operator ) {
-		foreach ( $phrase_queries['or'] as $phrase_terms => $restriction ) {
-			if ( relevanssi_stripos( $phrase_terms, $term ) !== false ) {
-				$query_restrictions .= ' AND ' . $restriction;
-			}
+		$or_queries = array_filter(
+			$phrase_queries['or'],
+			function ( $terms ) use ( $term ) {
+				return relevanssi_stripos( $terms, $term ) !== false;
+			},
+			ARRAY_FILTER_USE_KEY
+		);
+		if ( $or_queries ) {
+			$query_restrictions .= ' AND ( '
+				. implode( ' OR ', array_values( $or_queries ) )
+				. ' ) ';
 		}
 	} else {
 		$query_restrictions .= $phrase_queries['and'];

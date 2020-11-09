@@ -2429,3 +2429,58 @@ function relevanssi_fetch_sees_data( $post_id ) {
 		'terms_list'  => $terms_list,
 	);
 }
+
+/**
+ * Removes quotes from array keys. Does not keep array values.
+ *
+ * Used to remove phrase quotes from search term array, which have the format
+ * of (term => hits). The number of hits is not needed, so this function
+ * discards it as a side effect.
+ *
+ * @param array $array An array to process.
+ *
+ * @return array The same array with quotes removed from the keys.
+ */
+function relevanssi_remove_quotes_from_array_keys( $array ) {
+	$array = array_keys( $array );
+	array_walk(
+		$array,
+		function( &$key ) {
+			$key = relevanssi_remove_quotes( $key );
+		}
+	);
+	return array_flip( $array );
+}
+
+/**
+ * Removes quotes (", ”, “) from a string.
+ *
+ * @param string $string The string to clean.
+ *
+ * @return string The cleaned string.
+ */
+function relevanssi_remove_quotes( $string ) {
+	return str_replace( array( '”', '“', '"' ), '', $string );
+}
+
+/**
+ * Strips tags from contents, keeping the allowed tags.
+ *
+ * The allowable tags are read from the relevanssi_excerpt_allowable_tags
+ * option. Spaces are added between tags before removing the tags, so that
+ * words don't get stuck together. The function also remove invisible content.
+ *
+ * @see relevanssi_strip_invisibles
+ *
+ * @param string $content The content.
+ *
+ * @return string The content without tags.
+ */
+function relevanssi_strip_tags( $content ) {
+	$content = relevanssi_strip_invisibles( $content );
+	$content = preg_replace( '/(<\/[^>]+?>)(<[^>\/][^>]*?>)/', '$1 $2', $content );
+	return strip_tags(
+		$content,
+		get_option( 'relevanssi_excerpt_allowable_tags', '' )
+	);
+}

@@ -497,7 +497,7 @@ function relevanssi_search( $args ) {
 
 				if ( $exact_match_bonus ) {
 					$post    = relevanssi_get_post( $match->doc );
-					$clean_q = str_replace( array( '"', '”', '“' ), '', $q_no_synonyms );
+					$clean_q = relevanssi_remove_quotes( $q_no_synonyms );
 					if ( $post && $clean_q ) {
 						if ( stristr( $post->post_title, $clean_q ) !== false ) {
 							$match->weight *= $exact_match_boost['title'];

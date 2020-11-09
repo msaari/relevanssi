@@ -154,15 +154,7 @@ function relevanssi_do_excerpt( $t_post, $query, $excerpt_length = null, $excerp
 	 * @param string $query   The search query.
 	 */
 	$content = apply_filters( 'relevanssi_excerpt_content', $content, $post, $query );
-
-	// Removes <script>, <embed> &c with content.
-	$content = relevanssi_strip_invisibles( $content );
-
-	// Add spaces between tags to avoid getting words stuck together.
-	$content = preg_replace( '/(<\/[^>]+?>)(<[^>\/][^>]*?>)/', '$1 $2', $content );
-
-	// This removes the tags, but leaves the content.
-	$content = strip_tags( $content, get_option( 'relevanssi_excerpt_allowable_tags', '' ) );
+	$content = relevanssi_strip_tags( $content );
 
 	// Replace linefeeds and carriage returns with spaces.
 	$content = preg_replace( "/\n\r|\r\n|\n|\r/", ' ', $content );
@@ -1111,10 +1103,7 @@ function relevanssi_extract_relevant( $words, $fulltext, $excerpt_length = 300, 
 		$startpos -= ( $text_length - $startpos ) / 2;
 	}
 
-	$substr = 'substr';
-	if ( function_exists( 'mb_substr' ) ) {
-		$substr = 'mb_substr';
-	}
+	$substr = function_exists( 'mb_substr' ) ? 'mb_substr' : 'substr';
 
 	$excerpt = call_user_func( $substr, $fulltext, $startpos, $excerpt_length );
 
