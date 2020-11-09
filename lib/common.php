@@ -2292,49 +2292,49 @@ function relevanssi_generate_how_relevanssi_sees( $post_id, $display = true ) {
 		$element .= '<h3>' . esc_html__( 'Possible reasons this post is not indexed', 'relevanssi' ) . '</h3>';
 		$element .= '<p>' . esc_html( $data['reason'] ) . '</p>';
 	}
-	if ( ! empty( $data['title_terms'] ) ) {
+	if ( ! empty( $data['title'] ) ) {
 		$element .= '<h3>' . esc_html__( 'Post title', 'relevanssi' ) . '</h3>';
-		$element .= '<p>' . esc_html( $data['title_terms'] ) . '</p>';
+		$element .= '<p>' . esc_html( $data['title'] ) . '</p>';
 	}
-	if ( ! empty( $data['content_terms'] ) ) {
+	if ( ! empty( $data['content'] ) ) {
 		$element .= '<h3>' . esc_html__( 'Post content', 'relevanssi' ) . '</h3>';
-		$element .= '<p>' . esc_html( $data['content_terms'] ) . '</p>';
+		$element .= '<p>' . esc_html( $data['content'] ) . '</p>';
 	}
-	if ( ! empty( $data['comment_terms'] ) ) {
+	if ( ! empty( $data['comment'] ) ) {
 		$element .= '<h3>' . esc_html__( 'Comments', 'relevanssi' ) . '</h3>';
-		$element .= '<p>' . esc_html( $data['comment_terms'] ) . '</p>';
+		$element .= '<p>' . esc_html( $data['comment'] ) . '</p>';
 	}
-	if ( ! empty( $data['tag_terms'] ) ) {
+	if ( ! empty( $data['tag'] ) ) {
 		$element .= '<h3>' . esc_html__( 'Tags', 'relevanssi' ) . '</h3>';
-		$element .= '<p>' . esc_html( $data['tag_terms'] ) . '</p>';
+		$element .= '<p>' . esc_html( $data['tag'] ) . '</p>';
 	}
-	if ( ! empty( $data['category_terms'] ) ) {
+	if ( ! empty( $data['category'] ) ) {
 		$element .= '<h3>' . esc_html__( 'Categories', 'relevanssi' ) . '</h3>';
-		$element .= '<p>' . esc_html( $data['category_terms'] ) . '</p>';
+		$element .= '<p>' . esc_html( $data['category'] ) . '</p>';
 	}
-	if ( ! empty( $data['taxonomy_terms'] ) ) {
+	if ( ! empty( $data['taxonomy'] ) ) {
 		$element .= '<h3>' . esc_html__( 'Other taxonomies', 'relevanssi' ) . '</h3>';
-		$element .= '<p>' . esc_html( $data['taxonomy_terms'] ) . '</p>';
+		$element .= '<p>' . esc_html( $data['taxonomy'] ) . '</p>';
 	}
-	if ( ! empty( $data['link_terms'] ) ) {
+	if ( ! empty( $data['link'] ) ) {
 		$element .= '<h3>' . esc_html__( 'Links', 'relevanssi' ) . '</h3>';
-		$element .= '<p>' . esc_html( $data['link_terms'] ) . '</p>';
+		$element .= '<p>' . esc_html( $data['link'] ) . '</p>';
 	}
-	if ( ! empty( $data['author_terms'] ) ) {
+	if ( ! empty( $data['author'] ) ) {
 		$element .= '<h3>' . esc_html__( 'Authors', 'relevanssi' ) . '</h3>';
-		$element .= '<p>' . esc_html( $data['author_terms'] ) . '</p>';
+		$element .= '<p>' . esc_html( $data['author'] ) . '</p>';
 	}
-	if ( ! empty( $data['excerpt_terms'] ) ) {
+	if ( ! empty( $data['excerpt'] ) ) {
 		$element .= '<h3>' . esc_html__( 'Excerpt', 'relevanssi' ) . '</h3>';
-		$element .= '<p>' . esc_html( $data['excerpt_terms'] ) . '</p>';
+		$element .= '<p>' . esc_html( $data['excerpt'] ) . '</p>';
 	}
-	if ( ! empty( $data['customfield_terms'] ) ) {
+	if ( ! empty( $data['customfield'] ) ) {
 		$element .= '<h3>' . esc_html__( 'Custom fields', 'relevanssi' ) . '</h3>';
-		$element .= '<p>' . esc_html( $data['customfield_terms'] ) . '</p>';
+		$element .= '<p>' . esc_html( $data['customfield'] ) . '</p>';
 	}
-	if ( ! empty( $data['mysql_terms'] ) ) {
+	if ( ! empty( $data['mysql'] ) ) {
 		$element .= '<h3>' . esc_html__( 'MySQL content', 'relevanssi' ) . '</h3>';
-		$element .= '<p>' . esc_html( $data['mysql_terms'] ) . '</p>';
+		$element .= '<p>' . esc_html( $data['mysql'] ) . '</p>';
 	}
 	$element .= '</div>';
 	return $element;
