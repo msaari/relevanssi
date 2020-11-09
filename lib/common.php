@@ -2288,7 +2288,7 @@ function relevanssi_generate_how_relevanssi_sees( $post_id, $display = true ) {
 	}
 
 	if ( ! empty( $data['reason'] ) ) {
-		$element .= '<h3>' . esc_html__( 'Reason this post is not indexed', 'relevanssi' ) . '</h3>';
+		$element .= '<h3>' . esc_html__( 'Possible reasons this post is not indexed', 'relevanssi' ) . '</h3>';
 		$element .= '<p>' . esc_html( $data['reason'] ) . '</p>';
 	}
 	if ( ! empty( $data['title_terms'] ) ) {

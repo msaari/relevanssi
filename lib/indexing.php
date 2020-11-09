@@ -150,7 +150,6 @@ function relevanssi_generate_indexing_query( $valid_status, $extend = false, $re
 					OR (post.post_parent=0)
 				)
 			))
-		AND post.ID NOT IN (SELECT post_id FROM $wpdb->postmeta WHERE meta_key = '_relevanssi_hide_post' AND meta_value = 'on')
 		{$restriction['mysql']} ORDER BY post.ID DESC $limit";
 	} else {
 		$processed_post_filter = 'r.doc is null';
@@ -174,7 +173,6 @@ function relevanssi_generate_indexing_query( $valid_status, $extend = false, $re
 				)
 			)
 		)
-		AND post.ID NOT IN (SELECT post_id FROM $wpdb->postmeta WHERE meta_key = '_relevanssi_hide_post' AND meta_value = 'on')
 		{$restriction['mysql']} ORDER BY post.ID DESC $limit";
 	}
 
