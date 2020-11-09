@@ -227,6 +227,10 @@ function relevanssi_init() {
 	if ( defined( 'NINJA_TABLES_VERSION' ) ) {
 		require_once 'compatibility/ninjatables.php';
 	}
+
+	if ( defined( 'PRLI_PLUGIN_NAME' ) ) {
+		require_once 'compatibility/pretty-links.php';
+	}
 }
 
 /**
