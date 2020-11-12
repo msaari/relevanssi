@@ -3,9 +3,9 @@ Contributors: msaari
 Donate link: https://www.relevanssi.com/buy-premium/
 Tags: search, relevance, better search, product search, woocommerce search
 Requires at least: 4.9
-Tested up to: 5.5.1
+Tested up to: 5.5.3
 Requires PHP: 7.0
-Stable tag: 4.8.3
+Stable tag: 4.9.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -133,6 +133,23 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.9.0 =
+* New feature: There's now a "Debugging" tab in the Relevanssi settings, letting you see how the Relevanssi index sees posts. This is familiar to Premium users, but is now available in the free version as well.
+* New feature: The SEO Framework plugin is now supported and posts set excluded from the search in SEO Framework settings will be excluded from the index.
+* New feature: There's a new option, "Expand highlights". Enabling it makes Relevanssi expand partial-word highlights to cover the full word. This is useful when doing partial matching and when using a stemmer.
+* New feature: New filter hook `relevanssi_excerpt_part` allows you to modify the excerpt parts before they are combined together. This doesn't do much in the free version.
+* New feature: Improved compatibility with Oxygen Builder. Relevanssi automatically indexes the Oxygen Builder content and cleans it up. New filter hooks `relevanssi_oxygen_section_filters` and `relevanssi_oxygen_section_content` allow easier filtering of Oxygen content to eg. remove unwanted sections.
+* Changed behaviour: The "Uncheck this for non-ASCII highlights" option has been removed. Highlights are now done in a slightly different way that should work in all cases, including for example Cyrillic text, thus this option is no longer necessary.
+* Minor fix: Fixes phrase searching using non-US alphabet.
+* Minor fix: Relevanssi would break admin searching for hierarchical post types. This is now fixed, Relevanssi won't do that anymore.
+* Minor fix: Relevanssi indexing now survives better shortcodes that change the global `$post`.
+* Minor fix: Warnings about missing `relevanssi_update_counts` function are now removed.
+* Minor fix: Paid Membership Pro support now takes notice of the "filter queries" setting.
+* Minor fix: OR logic didn't work correctly when two phrases both had the same word (for example "freedom of speech" and "free speech"). The search would always be an AND search in those cases. That has been fixed.
+* Minor fix: Relevanssi no longer blocks the Pretty Links admin page search.
+* Minor fix: The "Respect 'exclude_from_search'" setting did not work if no post type parameter was included in the search parameters.
+* Minor fix: The category inclusion and exclusion setting checkboxes on the Searching tab didn't work. The setting was saved, but the checkboxes wouldn't appear.
+
 = 4.8.3 =
 * New feature: Both `relevanssi_fuzzy_query` and `relevanssi_term_where` now get the current search term as a parameter.
 * Minor fix: Relevanssi database tables don't have PRIMARY keys, only UNIQUE keys. In case this is a problem (for example on Digital Ocean servers), deactivate and activate Relevanssi to fix the problem.
@@ -186,6 +203,9 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: User Access Manager showed drafts in search results for all users. This is now fixed.
 
 == Upgrade notice ==
+= 4.9.0 =
+* New debugging feature, lots of minor fixes.
+
 = 4.8.3 =
 * Small bug fixes and database improvements.
 
