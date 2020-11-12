@@ -1529,7 +1529,6 @@ function relevanssi_wp_date_query_from_query_vars( $query ) {
  * @return array|boolean The meta query object or false, if no meta query
  * parameters can be parsed.
  */
-
 function relevanssi_meta_query_from_query_vars( $query ) {
 	$meta_query = false;
 	if ( ! empty( $query->query_vars['meta_query'] ) ) {
