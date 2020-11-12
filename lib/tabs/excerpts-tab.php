@@ -136,7 +136,11 @@ function relevanssi_excerpts_tab() {
 			<p class="description"><?php esc_html_e( "Using words is much faster than characters. Don't use characters, unless you have a really good reason and your posts are short.", 'relevanssi' ); ?></p>
 		</td>
 	</tr>
-	<?php relevanssi_form_max_excerpts( $excerpts ); ?>
+	<?php
+	if ( function_exists( 'relevanssi_form_max_excerpts' ) ) {
+		relevanssi_form_max_excerpts( $excerpts );
+	}
+	?>
 	<tr id="tr_excerpt_allowable_tags"
 		<?php
 		if ( empty( $excerpts ) ) {
