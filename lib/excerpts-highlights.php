@@ -1196,7 +1196,7 @@ function relevanssi_extract_relevant_words( $terms, $content, $excerpt_length = 
 		$start   = true;
 	}
 
-	return array( $excerpt, $best_excerpt_term_hits, $start );
+	return array( trim( $excerpt ), $best_excerpt_term_hits, $start );
 }
 
 /**
