@@ -79,13 +79,11 @@ function relevanssi_process_query_args( $args ) {
 		$phrase_query_restrictions = $phrases;
 	}
 
-	if ( $args['post_type'] || $args['include_attachments'] ) {
-		$query_restrictions .= relevanssi_process_post_type(
-			$args['post_type'],
-			$args['admin_search'],
-			$args['include_attachments']
-		);
-	}
+	$query_restrictions .= relevanssi_process_post_type(
+		$args['post_type'],
+		$args['admin_search'],
+		$args['include_attachments']
+	);
 
 	if ( $args['post_status'] ) {
 		$query_restrictions .= relevanssi_process_post_status( $args['post_status'] );
