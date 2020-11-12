@@ -231,6 +231,10 @@ function relevanssi_init() {
 	if ( defined( 'PRLI_PLUGIN_NAME' ) ) {
 		require_once 'compatibility/pretty-links.php';
 	}
+
+	if ( defined( 'CT_VERSION' ) ) {
+		require_once 'compatibility/oxygen.php';
+	}
 }
 
 /**
