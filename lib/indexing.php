@@ -1197,7 +1197,9 @@ function relevanssi_index_author( &$insert_data, $post_author, $min_word_length,
  *
  * @param array        $insert_data     The INSERT query data. Modified here.
  * @param int          $post_id         The indexed post ID.
- * @param string|array $custom_fields   The custom fields to index.
+ * @param string|array $custom_fields   The custom fields to index. Only allowed
+ * string values are "all" and "visible". If you wish to specify a single custom
+ * field, wrap it in an array.
  * @param int          $min_word_length The minimum word length.
  * @param boolean      $debug           If true, print out debug notices.
  *
@@ -1206,41 +1208,10 @@ function relevanssi_index_author( &$insert_data, $post_author, $min_word_length,
 function relevanssi_index_custom_fields( &$insert_data, $post_id, $custom_fields, $min_word_length, $debug ) {
 	$n = 0;
 
-	$remove_underscore_fields = 'visible' === $custom_fields ? true : false;
-	if ( 'all' === $custom_fields || 'visible' === $custom_fields ) {
-		$custom_fields = get_post_custom_keys( $post_id );
+	$custom_fields = relevanssi_generate_list_of_custom_fields( $post_id, $custom_fields );
+	if ( empty( $custom_fields ) ) {
+		return $n;
 	}
-
-	/**
-	 * Filters the list of custom fields to index before indexing.
-	 *
-	 * @param array $custom_fields List of custom field names.
-	 * @param int   $post_id      The post ID.
-	 */
-	$custom_fields = apply_filters( 'relevanssi_index_custom_fields', $custom_fields, $post_id );
-
-	if ( ! is_array( $custom_fields ) ) {
-		return 0;
-	}
-
-	$custom_fields = array_unique( $custom_fields );
-	if ( $remove_underscore_fields ) {
-		$custom_fields = array_filter(
-			$custom_fields,
-			function( $field ) {
-				if ( '_relevanssi_pdf_content' === $field || '_' !== substr( $field, 0, 1 ) ) {
-					return $field;
-				}
-			}
-		);
-	}
-
-	// Premium includes some support for ACF repeater fields.
-	if ( function_exists( 'relevanssi_add_repeater_fields' ) ) {
-		relevanssi_add_repeater_fields( $custom_fields, $post_id );
-	}
-
-	$custom_fields = array_filter( $custom_fields );
 
 	if ( $debug ) {
 		relevanssi_debug_echo( 'Custom fields to index: ' . implode( ', ', $custom_fields ) );
