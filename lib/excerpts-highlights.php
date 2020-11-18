@@ -248,6 +248,19 @@ function relevanssi_do_excerpt( $t_post, $query, $excerpt_length = null, $excerp
 			$whole_post_excerpted = true;
 		}
 
+		/**
+		 * Filters excerpt text.
+		 *
+		 * Filters the individual excerpt part text (full excerpt in the free
+		 * version) before highlighting and ellipsis addition.
+		 *
+		 * @param string The excerpt text.
+		 * @param int    The post ID.
+		 *
+		 * @return string
+		 */
+		$excerpt['text'] = apply_filters( 'relevanssi_excerpt', $excerpt['text'], $post->ID );
+
 		if ( 'none' !== $highlight ) {
 			if ( ! is_admin() || ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
 				$excerpt['text'] = relevanssi_highlight_terms( $excerpt['text'], $query );
@@ -266,10 +279,25 @@ function relevanssi_do_excerpt( $t_post, $query, $excerpt_length = null, $excerp
 			}
 		}
 
+		/**
+		 * Filters individual excerpt parts.
+		 *
+		 * Filters the individual excerpt parts (full excerpt in the free
+		 * version) after highlighting, ellipsis and the wrapping span tag have
+		 * been added.
+		 *
+		 * @param string The excerpt text.
+		 * @param array  The excerpt array (keys 'text', 'start', 'source',
+		 * 'hits').
+		 * @param int    The post ID.
+		 *
+		 * @return string
+		 */
 		$excerpt_text .= apply_filters(
 			'relevanssi_excerpt_part',
 			'<span class="excerpt_part">' . $excerpt['text'] . '</span>',
-			$excerpt
+			$excerpt,
+			$post->ID
 		);
 	}
 
@@ -1255,73 +1283,50 @@ function relevanssi_add_accent_variations( $word ) {
  * @return string The custom field content.
  */
 function relevanssi_get_custom_field_content( $post_id ) {
-	$custom_field_content     = '';
-	$remove_underscore_fields = false;
+	$custom_field_content = '';
 
-	$custom_fields = relevanssi_get_custom_fields();
-	if ( isset( $custom_fields ) && 'all' === $custom_fields ) {
-		$custom_fields = get_post_custom_keys( $post_id );
-	}
-	if ( isset( $custom_fields ) && 'visible' === $custom_fields ) {
-		$custom_fields            = get_post_custom_keys( $post_id );
-		$remove_underscore_fields = true;
-	}
-	/* Documented in lib/indexing.php. */
-	$custom_fields = apply_filters( 'relevanssi_index_custom_fields', $custom_fields, $post_id );
+	$custom_fields = relevanssi_generate_list_of_custom_fields( $post_id );
 
 	if ( function_exists( 'relevanssi_get_child_pdf_content' ) ) {
 		$custom_field_content .= ' ' . relevanssi_get_child_pdf_content( $post_id );
 	}
 
-	if ( is_array( $custom_fields ) ) {
-		$custom_fields = array_unique( $custom_fields ); // No reason to index duplicates.
-
-		if ( function_exists( 'relevanssi_add_repeater_fields' ) ) {
-			relevanssi_add_repeater_fields( $custom_fields, $post_id );
-		}
-
-		foreach ( $custom_fields as $field ) {
-			if ( $remove_underscore_fields ) {
-				if ( '_' === substr( $field, 0, 1 ) ) {
-					continue;
-				}
-			}
-			/* Documented in lib/indexing.php. */
-			$values = apply_filters(
-				'relevanssi_custom_field_value',
-				get_post_meta(
-					$post_id,
-					$field,
-					false
-				),
+	foreach ( $custom_fields as $field ) {
+		/* Documented in lib/indexing.php. */
+		$values = apply_filters(
+			'relevanssi_custom_field_value',
+			get_post_meta(
+				$post_id,
 				$field,
-				$post_id
-			);
-			if ( empty( $values ) || ! is_array( $values ) ) {
-				continue;
+				false
+			),
+			$field,
+			$post_id
+		);
+		if ( empty( $values ) || ! is_array( $values ) ) {
+			continue;
+		}
+		foreach ( $values as $value ) {
+			// Quick hack : allow indexing of PODS relationship custom fields. @author TMV.
+			if ( is_array( $value ) && isset( $value['post_title'] ) ) {
+				$value = $value['post_title'];
 			}
-			foreach ( $values as $value ) {
-				// Quick hack : allow indexing of PODS relationship custom fields. @author TMV.
-				if ( is_array( $value ) && isset( $value['post_title'] ) ) {
-					$value = $value['post_title'];
-				}
 
-				// Flatten other array data.
-				if ( is_array( $value ) ) {
-					$value_as_string = '';
-					array_walk_recursive(
-						$value,
-						function( $val ) use ( &$value_as_string ) {
-							if ( is_string( $val ) ) {
-								// Sometimes this can be something weird.
-								$value_as_string .= ' ' . $val;
-							}
+			// Flatten other array data.
+			if ( is_array( $value ) ) {
+				$value_as_string = '';
+				array_walk_recursive(
+					$value,
+					function( $val ) use ( &$value_as_string ) {
+						if ( is_string( $val ) ) {
+							// Sometimes this can be something weird.
+							$value_as_string .= ' ' . $val;
 						}
-					);
-					$value = $value_as_string;
-				}
-				$custom_field_content .= ' ' . $value;
+					}
+				);
+				$value = $value_as_string;
 			}
+			$custom_field_content .= ' ' . $value;
 		}
 	}
 	/**
