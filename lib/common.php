@@ -414,8 +414,7 @@ function relevanssi_recognize_phrases( $search_query, $operator = 'AND' ) {
 		return $all_queries;
 	}
 
-	/* Documented in lib/indexing.php. */
-	$custom_fields    = apply_filters( 'relevanssi_index_custom_fields', relevanssi_get_custom_fields() );
+	$custom_fields    = relevanssi_get_custom_fields();
 	$taxonomies       = get_option( 'relevanssi_index_taxonomies_list', array() );
 	$excerpts         = get_option( 'relevanssi_index_excerpt', 'off' );
 	$index_pdf_parent = get_option( 'relevanssi_index_pdf_parent' );
@@ -539,7 +538,9 @@ function relevanssi_generate_phrase_queries( $phrases, $taxonomies, $custom_fiel
 			$keys = '';
 
 			if ( is_array( $custom_fields ) ) {
-				array_push( $custom_fields, '_relevanssi_pdf_content' );
+				if ( ! in_array( '_relevanssi_pdf_content', $custom_fields, true ) ) {
+					array_push( $custom_fields, '_relevanssi_pdf_content' );
+				}
 
 				if ( strpos( implode( ' ', $custom_fields ), '%' ) ) {
 					// ACF repeater fields involved.
@@ -2483,4 +2484,63 @@ function relevanssi_strip_tags( $content ) {
 		$content,
 		get_option( 'relevanssi_excerpt_allowable_tags', '' )
 	);
+}
+
+/**
+ * Generates a list of custom fields for a post.
+ *
+ * Starts from the custom field setting, expands "all" or "visible" if
+ * necessary, makes sure "_relevanssi_pdf_content" is not removed, applies the
+ * 'relevanssi_index_custom_fields' filter and 'relevanssi_add_repeater_fields'
+ * function.
+ *
+ * @param int          $post_id       The post ID.
+ * @param array|string $custom_fields An array of custom field names, or "all"
+ * or "visible". If null, uses relevanssi_get_custom_fields().
+ *
+ * @return array An array of custom field names.
+ */
+function relevanssi_generate_list_of_custom_fields( $post_id, $custom_fields = null ) {
+	if ( ! $custom_fields ) {
+		$custom_fields = relevanssi_get_custom_fields();
+	}
+	$remove_underscore_fields = 'visible' === $custom_fields ? true : false;
+	if ( 'all' === $custom_fields || 'visible' === $custom_fields ) {
+		$custom_fields = get_post_custom_keys( $post_id );
+	}
+
+	if ( ! is_array( $custom_fields ) ) {
+		return array();
+	}
+
+	$custom_fields = array_unique( $custom_fields );
+	if ( $remove_underscore_fields ) {
+		$custom_fields = array_filter(
+			$custom_fields,
+			function( $field ) {
+				if ( '_relevanssi_pdf_content' === $field || '_' !== substr( $field, 0, 1 ) ) {
+					return $field;
+				}
+			}
+		);
+	}
+
+	// Premium includes some support for ACF repeater fields.
+	if ( function_exists( 'relevanssi_add_repeater_fields' ) ) {
+		relevanssi_add_repeater_fields( $custom_fields, $post_id );
+	}
+
+	/**
+	 * Filters the list of custom fields to index before indexing.
+	 *
+	 * @param array $custom_fields List of custom field names.
+	 * @param int   $post_id      The post ID.
+	 */
+	$custom_fields = apply_filters( 'relevanssi_index_custom_fields', $custom_fields, $post_id );
+	if ( ! is_array( $custom_fields ) ) {
+		return array();
+	}
+	$custom_fields = array_filter( $custom_fields );
+
+	return $custom_fields;
 }
