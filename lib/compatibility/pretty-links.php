@@ -23,7 +23,7 @@ add_filter( 'relevanssi_search_ok', 'relevanssi_pretty_links_ok', 10, 2 );
  * @return boolean False if this is a Pretty Links query.
  */
 function relevanssi_pretty_links_ok( $ok, $query ) {
-	if ( 'pretty-link' === $query->query['post_type'] ) {
+	if ( isset( $query->query['post_type'] ) && 'pretty-link' === $query->query['post_type'] ) {
 		$ok = false;
 	}
 	return $ok;
