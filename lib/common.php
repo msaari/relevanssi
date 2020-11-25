@@ -989,6 +989,12 @@ function relevanssi_tokenize( $string, $remove_stops = true, $min_word_length = 
 
 	$string = relevanssi_strtolower( $string );
 
+	/* if Chinese tokenize extension installed (https://github.com/jonnywang/phpjieba) then use it for tokenize */
+	if ( function_exists('jieba' ) ) {
+			$string = jieba($string, 1,1500);/* 0 for extract mode . 1 for search mode . substr 1500 words*/
+			$string=@implode(" ",$string);
+	}
+	
 	$token = strtok( $string, "\n\t " );
 	while ( false !== $token ) {
 		$token  = strval( $token );
