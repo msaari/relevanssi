@@ -9,23 +9,6 @@
  */
 
 /**
- * Prints out the post excerpt.
- *
- * Prints out the post excerpt from $post->post_excerpt, unless the post is
- * protected. Only works in the Loop.
- *
- * @global $post The global post object.
- */
-function relevanssi_the_excerpt() {
-	global $post;
-	if ( ! post_password_required( $post ) ) {
-		echo '<p>' . $post->post_excerpt . '</p>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-	} else {
-		esc_html_e( 'There is no excerpt because this is a protected post.', 'relevanssi' );
-	}
-}
-
-/**
  * Generates an excerpt for a post.
  *
  * Takes the excerpt length and type as parameters. These can be omitted, in
@@ -879,25 +862,6 @@ function relevanssi_entities_inside( $content, $tag ) {
 		$content = str_replace( 'xxx' . $tag, $tag, $content );
 	}
 	return $content;
-}
-
-/**
- * Generates closing tags for an array of tags.
- *
- * @param array $tags Array of tag names.
- *
- * @return array $closing_tags Array of closing tags.
- */
-function relevanssi_generate_closing_tags( $tags ) {
-	$closing_tags = array();
-	foreach ( $tags as $tag ) {
-		$a = str_replace( '<', '</', $tag );
-		$b = str_replace( '>', '/>', $tag );
-
-		$closing_tags[] = $a;
-		$closing_tags[] = $b;
-	}
-	return $closing_tags;
 }
 
 /**
