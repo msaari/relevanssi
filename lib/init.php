@@ -35,7 +35,7 @@ add_action( 'deleted_comment', 'relevanssi_index_comment' );
 
 // Attachment indexing.
 add_action( 'delete_attachment', 'relevanssi_remove_doc' );
-add_action( 'add_attachment', 'relevanssi_publish', 12 );
+add_action( 'add_attachment', 'relevanssi_insert_edit', 12 );
 add_action( 'edit_attachment', 'relevanssi_insert_edit' );
 
 // When a post status changes, check child posts that inherit their status from parent.
