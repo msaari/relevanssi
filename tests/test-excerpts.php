@@ -658,6 +658,25 @@ EOT;
 			'relevanssi_highlight_term() mark test failed.'
 		);
 
+		$query = array( 'faucibus' );
+		update_option( 'relevanssi_highlight', 'mark' );
+		update_option( 'relevanssi_fuzzy', 'never' );
+		$excerpt = relevanssi_highlight_terms( $content, $query, false );
+
+		$highlighted = <<<EOT
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+temporincididunt ut labore et dolore magna aliqua. Dolor sed viverra ipsum nunc
+aliquet bibendum enim. In massa tempor nec feugiat. Nunc aliquet bibendum enim
+facilisis gravida. Nisl nunc mi ipsum <mark>faucibus</mark> vitae aliquet nec ullamcorper.
+EOT;
+
+		$this->assertEquals(
+			str_replace( "\n", ' ', $highlighted ),
+			str_replace( "\n", ' ', $excerpt ),
+			'relevanssi_highlight_term() mark test failed.'
+		);
+
+		$query = array( 'massa', 'tempor' );
 		update_option( 'relevanssi_fuzzy', 'always' );
 		$excerpt = relevanssi_highlight_terms( $content, $query, false );
 
