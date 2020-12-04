@@ -395,7 +395,7 @@ function relevanssi_create_database_tables( $relevanssi_db_version ) {
 		$relevanssi_term_reverse_idx_exists = false;
 		$docs_exists                        = false;
 		$typeitem_exists                    = false;
-		$doctermitem_exists					= false;
+		$doctermitem_exists                 = false;
 		foreach ( $indices as $index ) {
 			if ( 'terms' === $index->Key_name ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName
 				$terms_exists = true;
@@ -424,11 +424,6 @@ function relevanssi_create_database_tables( $relevanssi_db_version ) {
 			$wpdb->query( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery
 		}
 
-		if ( ! $docs_exists ) {
-			$sql = "CREATE INDEX docs ON $relevanssi_table (doc)";
-			$wpdb->query( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery
-		}
-
 		if ( ! $typeitem_exists ) {
 			$sql = "CREATE INDEX typeitem ON $relevanssi_table (type(190), item)";
 			$wpdb->query( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery
@@ -436,6 +431,11 @@ function relevanssi_create_database_tables( $relevanssi_db_version ) {
 
 		if ( $doctermitem_exists ) {
 			$sql = "DROP INDEX doctermitem ON $relevanssi_table";
+			$wpdb->query( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery
+		}
+
+		if ( $docs_exists ) { // This index was removed in 4.9.2 / 2.11.2.
+			$sql = "DROP INDEX docs ON $relevanssi_table (doc)";
 			$wpdb->query( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery
 		}
 
