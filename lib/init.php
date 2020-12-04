@@ -186,6 +186,10 @@ function relevanssi_init() {
 		require_once 'compatibility/seoframework.php';
 	}
 
+	if ( class_exists( 'RankMath', false ) ) {
+		require_once 'compatibility/rankmath.php';
+	}
+
 	if ( function_exists( 'members_content_permissions_enabled' ) ) {
 		require_once 'compatibility/members.php';
 	}
