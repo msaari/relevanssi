@@ -885,11 +885,12 @@ function relevanssi_do_query( &$query ) {
 	 * One of the key filters for Relevanssi. If you want to modify the results
 	 * Relevanssi finds, use this filter.
 	 *
-	 * @param array $filter_data The index 0 has an array of post objects found in
-	 * the search, index 1 has the search query string.
+	 * @param array $filter_data The index 0 has an array of post objects (or
+	 * post IDs, or parent=>ID pairs, depending on the `fields` parameter) found
+	 * in the search, index 1 has the search query string.
 	 *
-	 * @return array The return array composition is the same as the parameter array,
-	 * but Relevanssi only uses the index 0.
+	 * @return array The return array composition is the same as the parameter
+	 * array, but Relevanssi only uses the index 0.
 	 */
 	$hits_filters_applied = apply_filters( 'relevanssi_hits_filter', $filter_data );
 	// array_values() to make sure the $hits array is indexed in numerical order
@@ -1002,6 +1003,8 @@ function relevanssi_do_query( &$query ) {
 
 	$query->posts      = $posts;
 	$query->post_count = count( $posts );
+
+	$relevanssi_active = false;
 
 	return $posts;
 }
