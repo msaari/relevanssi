@@ -459,14 +459,15 @@ function relevanssi_highlight_in_docs( $content ) {
  * you want to override the settings, 'pre_option_relevanssi_highlight' filter
  * hook is your friend).
  *
- * @param string       $content The content to highlight.
- * @param string|array $query   The search query (should be a string, can
- * sometimes be an array).
- * @param boolean      $in_docs Are we highlighting post content? Default false.
+ * @param string       $content          The content to highlight.
+ * @param string|array $query            The search query (should be a string,
+ * can also be an array of string).
+ * @param boolean      $convert_entities Are we highlighting post content?
+ * Default false.
  *
  * @return string The $content with highlighting.
  */
-function relevanssi_highlight_terms( $content, $query, $in_docs = false ) {
+function relevanssi_highlight_terms( $content, $query, $convert_entities = false ) {
 	$type = get_option( 'relevanssi_highlight' );
 	if ( 'none' === $type ) {
 		return $content;
@@ -690,7 +691,7 @@ function relevanssi_highlight_terms( $content, $query, $in_docs = false ) {
 	}
 
 	$content = relevanssi_remove_nested_highlights( $content, $start_emp_token, $end_emp_token );
-	$content = relevanssi_fix_entities( $content, $in_docs );
+	$content = relevanssi_fix_entities( $content, $convert_entities );
 
 	/**
 	 * Allows cleaning unwanted highlights.
