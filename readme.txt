@@ -3,9 +3,9 @@ Contributors: msaari
 Donate link: https://www.relevanssi.com/buy-premium/
 Tags: search, relevance, better search, product search, woocommerce search
 Requires at least: 4.9
-Tested up to: 5.5.3
+Tested up to: 5.6.1
 Requires PHP: 7.0
-Stable tag: 4.9.1
+Stable tag: 4.10.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -133,6 +133,15 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.10.0 =
+* New feature: Relevanssi now supports multilingual synonyms and stopwords. Relevanssi now has a different set of synonyms and stopwords for each language. This feature is compatible with WPML and Polylang.
+* New feature: SEO by Rank Math compatibility is added: posts marked as 'noindex' with Rank Math are not indexed by Relevanssi.
+* Minor fix: With keyword matching set to 'whole words' and the 'expand highlights' disabled, words that ended with an 's' weren't highlighted correctly.
+* Minor fix: The 'Post exclusion' setting didn't work correctly. It has been fixed.
+* Minor fix: It's now impossible to set negative weights in searching settings. They did not work as expected anyway.
+* Minor fix: Relevanssi had an unnecessary index on the `doc` column in the `wp_relevanssi` database table. It is now removed to save space. Thanks to Matthew Wang.
+* Minor fix: Improved Oxygen Builder support makes sure `ct_builder_shortcodes` custom field is always indexed.
+
 = 4.9.1 =
 * Changed behaviour: The `relevanssi_excerpt_part` filter hook now gets the post ID as a second parameter. The documentation for the filter has been fixed to match actual use: this filter is applied to the excerpt part after the highlighting and the ellipsis have been added.
 * Changed behaviour: The `relevanssi_index_custom_fields` filter hook is no longer used when determining which custom fields are used for phrase searching. If you have a use case where this change matters, please contact us.
@@ -189,27 +198,10 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: The doc count update, which is a heavy task, is now moved to an asynchronous action to avoid slowing down the site for users.
 * Minor fix: Relevanssi only updates doc count on `relevanssi_insert_edit()` when the post is indexed.
 
-= 4.7.2 =
-* Minor fix: Media Library searches failed if Relevanssi was enabled in the WP admin, but the `attachment` post type wasn't indexed. Relevanssi will no longer block the default Media Library search in these cases.
-* Minor fix: Adds more backwards compatibility for the `relevanssi_indexing_restriction` change, there's now an alert on indexing tab if there's a problem.
-
-= 4.7.1 =
-* New feature: New filter hook `relevanssi_post_content_after_shortcodes` filters the post content after shortcodes have been processed but before the HTML tags are stripped.
-* Minor fix: Adds more backwards compatibility for the `relevanssi_indexing_restriction` change.
-
-= 4.7.0 =
-* New feature: New filter hook `relevanssi_admin_search_blocked_post_types` makes it easy to block Relevanssi from searching a specific post type in the admin dashboard. There's built-in support for Reusable Content Blocks `rc_blocks` post type, for example.
-* New feature: The reason why a post is not indexed is now stored in the `_relevanssi_noindex_reason` custom field.
-* Changed behaviour: The `relevanssi_indexing_restriction` filter hook has a changed format. Instead of a string value, the filter now expects an array with the MySQL query in the index 'mysql' and a reason in string format in 'reason'. There's some temporary backwards compatibility for this.
-* Changed behaviour: Relevanssi now applies minimum word length when tokenizing search query terms.
-* Changed behaviour: Content stopwords are removed from the search queries when doing excerpts and highlights. When Relevanssi uses the untokenized search terms for excerpt-building, stopwords are removed from those words. This should lead to better excerpts.
-* Minor fix: Improves handling of emoji in indexing. If the database supports emoji, they are allowed, otherwise they are encoded.
-
-= 4.6.0 =
-* Changed behaviour: Phrases in OR search are now less restrictive. A search for 'foo "bar baz"' used to only return posts with the "bar baz" phrase, but now also posts with just the word 'foo' will be returned.
-* Minor fix: User Access Manager showed drafts in search results for all users. This is now fixed.
-
 == Upgrade notice ==
+= 4.10.0 =
+* Adds support for multilingual stopwords and synonyms.
+
 = 4.9.1 =
 * Bug fixing, better Oxygen Builder compatibility.
 
@@ -227,15 +219,3 @@ Each document database is full of useless words. All the little words that appea
 
 = 4.8.0 =
 * Fixes a major bug in comment indexing, if you include comments in the index rebuild the index after updating.
-
-= 4.7.2 =
-* Improved backwards compatibility for the `relevanssi_indexing_restriction` filter hook change, better Media Library support.
-
-= 4.7.1 =
-* Improved backwards compatibility for the `relevanssi_indexing_restriction` filter hook change.
-
-= 4.7.0 =
-* The `relevanssi_indexing_restriction` filter hook has been changed, stopwords are handled in a different way in excerpts.
-
-= 4.6.0 =
-* Changes how phrases work in OR search and fixes a User Access Manager issue.
