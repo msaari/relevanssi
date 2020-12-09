@@ -92,7 +92,13 @@ function update_relevanssi_options() {
 		$linefeeds = array( "\r\n", "\n", "\r" );
 		$value     = str_replace( $linefeeds, ';', $_REQUEST['relevanssi_synonyms'] );
 		$value     = stripslashes( $value );
-		update_option( 'relevanssi_synonyms', $value );
+
+		$synonym_option   = get_option( 'relevanssi_synonyms', array() );
+		$current_language = relevanssi_get_current_language();
+
+		$synonym_option[ $current_language ] = $value;
+
+		update_option( 'relevanssi_synonyms', $synonym_option );
 	}
 
 	$relevanssi_punct = array();

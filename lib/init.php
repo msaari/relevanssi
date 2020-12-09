@@ -239,6 +239,20 @@ function relevanssi_init() {
 	if ( defined( 'CT_VERSION' ) ) {
 		require_once 'compatibility/oxygen.php';
 	}
+
+	if ( ! is_array( get_option( 'relevanssi_stopwords' ) ) ) {
+		// Version 2.12 / 4.10 changes stopwords option from a string to an
+		// array to support multilingual stopwords. This function converts old
+		// style to new style. Remove eventually.
+		relevanssi_update_stopwords_setting();
+	}
+
+	if ( ! is_array( get_option( 'relevanssi_synonyms' ) ) ) {
+		// Version 2.12 / 4.10 changes synonyms option from a string to an
+		// array to support multilingual synonyms. This function converts old
+		// style to new style. Remove eventually.
+		relevanssi_update_synonyms_setting();
+	}
 }
 
 /**
@@ -481,7 +495,8 @@ function relevanssi_create_database_tables( $relevanssi_db_version ) {
 		update_option( 'relevanssi_db_version', $relevanssi_db_version );
 	}
 
-	if ( empty( get_option( 'relevanssi_stopwords', '' ) ) ) {
+	$stopwords = relevanssi_fetch_stopwords();
+	if ( empty( $stopwords ) ) {
 		relevanssi_populate_stopwords();
 	}
 }

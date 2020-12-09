@@ -28,15 +28,21 @@ function relevanssi_stopwords_tab() {
 	if ( function_exists( 'relevanssi_show_body_stopwords' ) ) {
 		relevanssi_show_body_stopwords();
 	} else {
-		printf( '<p>%s</p>', esc_html__( 'Content stopwords are a premium feature where you can set stopwords that only apply to the post content. Those stopwords will still be indexed if they appear in post titles, tags, categories, custom fields or other parts of the post. To use content stopwords, you need Relevanssi Premium.', 'relevanssi' ) );
+		printf(
+			'<p>%s</p>',
+			esc_html__(
+				'Content stopwords are a premium feature where you can set stopwords that only apply to the post content. Those stopwords will still be indexed if they appear in post titles, tags, categories, custom fields or other parts of the post. To use content stopwords, you need Relevanssi Premium.',
+				'relevanssi'
+			)
+		);
 	}
 
 	/**
 	 * Filters whether the common words list is displayed or not.
 	 *
-	 * The list of 25 most common words is displayed by default, but if the index is
-	 * big, displaying the list can take a long time. This filter can be used to
-	 * turn the list off.
+	 * The list of 25 most common words is displayed by default, but if the
+	 * index is big, displaying the list can take a long time. This filter can
+	 * be used to turn the list off.
 	 *
 	 * @param boolean If true, show the list; if false, don't show it.
 	 */
@@ -48,10 +54,17 @@ function relevanssi_stopwords_tab() {
 /**
  * Displays a list of stopwords.
  *
- * Displays the list of stopwords and gives the controls for adding new stopwords.
+ * Displays the list of stopwords and gives the controls for adding new
+ * stopwords.
  */
 function relevanssi_show_stopwords() {
-	printf( '<p>%s</p>', esc_html__( 'Enter a word here to add it to the list of stopwords. The word will automatically be removed from the index, so re-indexing is not necessary. You can enter many words at the same time, separate words with commas.', 'relevanssi' ) );
+	printf(
+		'<p>%s</p>',
+		esc_html__(
+			'Enter a word here to add it to the list of stopwords. The word will automatically be removed from the index, so re-indexing is not necessary. You can enter many words at the same time, separate words with commas.',
+			'relevanssi'
+		)
+	);
 	?>
 <table class="form-table" role="presentation">
 <tr>
@@ -74,17 +87,16 @@ function relevanssi_show_stopwords() {
 	<td>
 		<ul>
 	<?php
-	$stopword_list  = get_option( 'relevanssi_stopwords', '' );
-	$stopword_array = array_map( 'stripslashes', explode( ',', $stopword_list ) );
-	sort( $stopword_array );
+	$stopwords = array_map( 'stripslashes', relevanssi_fetch_stopwords() );
+	sort( $stopwords );
+	$exportlist = htmlspecialchars( implode( ', ', $stopwords ) );
 	array_walk(
-		$stopword_array,
+		$stopwords,
 		function ( $term ) {
 			printf( '<li style="display: inline;"><input type="submit" name="removestopword" value="%s"/></li>', esc_attr( $term ) );
 		}
 	);
 
-	$exportlist = htmlspecialchars( str_replace( ',', ', ', $stopword_list ) );
 	?>
 	</ul>
 	<p>

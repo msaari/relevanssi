@@ -80,7 +80,7 @@ class FunctionTest extends WP_UnitTestCase {
 	 */
 	public function test_synonyms() {
 		$synonyms = 'dog = hound;0123 = numbers;  dog=cat   ;cat=dog';
-		update_option( 'relevanssi_synonyms', $synonyms );
+		update_option( 'relevanssi_synonyms', array( relevanssi_get_current_language() => $synonyms ) );
 		$query_pre  = 'dog 0123 numbers cat';
 		$query_post = relevanssi_add_synonyms( $query_pre );
 		$this->assertEquals( 'dog 0123 numbers cat hound cat numbers dog', $query_post );

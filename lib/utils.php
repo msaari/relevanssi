@@ -138,6 +138,42 @@ function relevanssi_generate_closing_tags( $tags ) {
 }
 
 /**
+ * Returns the locale or language code.
+ *
+ * First checks `pll_current_language()`, then `wpml_current_language`, then
+ * falls back to `get_locale()`.
+ *
+ * @param boolean $locale If true, return locale; if false, return language
+ * code.
+ *
+ * @return string The locale for the current site language.
+ */
+function relevanssi_get_current_language( $locale = true ) {
+	$current_language = get_locale();
+	if ( ! $locale ) {
+		$current_language = substr( $locale, 0, 2 );
+	}
+	if ( function_exists( 'pll_current_language' ) ) {
+		$current_language = pll_current_language( $locale ? 'locale' : 'slug' );
+	}
+	if ( function_exists( 'icl_object_id' ) && ! function_exists( 'pll_is_translated_post_type' ) ) {
+		if ( $locale ) {
+			$languages = apply_filters( 'wpml_active_languages', null );
+			foreach ( $languages as $l ) {
+				if ( $l['active'] ) {
+					$current_language = $l['default_locale'];
+					break;
+				}
+			}
+		} else {
+			$current_language = apply_filters( 'wpml_current_language', null );
+		}
+	}
+
+	return $current_language;
+}
+
+/**
  * Gets the permalink to the current post within Loop.
  *
  * Uses get_permalink() to get the permalink, then adds the 'highlight'

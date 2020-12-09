@@ -795,11 +795,13 @@ function relevanssi_add_synonyms( $query ) {
 		return $query;
 	}
 
-	$synonym_data = get_option( 'relevanssi_synonyms' );
-	if ( $synonym_data ) {
+	$current_language = relevanssi_get_current_language();
+	$synonym_data     = get_option( 'relevanssi_synonyms', array() );
+	$synonym_list     = isset( $synonym_data[ $current_language ] ) ? $synonym_data[ $current_language ] : '';
+	if ( $synonym_list ) {
 		$synonyms     = array();
-		$synonym_data = relevanssi_strtolower( $synonym_data );
-		$pairs        = explode( ';', $synonym_data );
+		$synonym_list = relevanssi_strtolower( $synonym_list );
+		$pairs        = explode( ';', $synonym_list );
 
 		foreach ( $pairs as $pair ) {
 			if ( empty( $pair ) ) {
@@ -1584,4 +1586,17 @@ function relevanssi_generate_list_of_custom_fields( $post_id, $custom_fields = n
 	$custom_fields = array_filter( $custom_fields );
 
 	return $custom_fields;
+}
+
+/**
+ * Updates the relevanssi_synonyms setting from a simple string to an array
+ * that is required for multilingual synonyms.
+ */
+function relevanssi_update_synonyms_setting() {
+	$synonyms = get_option( 'relevanssi_synonyms' );
+
+	$current_language = relevanssi_get_current_language();
+
+	$array_synonyms[ $current_language ] = $synonyms;
+	update_option( 'relevanssi_synonyms', $array_synonyms );
 }

@@ -40,9 +40,9 @@ function relevanssi_populate_stopwords( $verbose = false ) {
 		return 'database';
 	}
 
-	$lang          = get_locale();
+	$language      = relevanssi_get_current_language();
 	$stopword_file = $relevanssi_variables['plugin_dir']
-					. 'stopwords/stopwords.' . $lang;
+					. 'stopwords/stopwords.' . $language;
 
 	if ( ! file_exists( $stopword_file ) ) {
 		$verbose && printf(
@@ -53,7 +53,7 @@ function relevanssi_populate_stopwords( $verbose = false ) {
 					"The stopword file for the language '%s' doesn't exist.",
 					'relevanssi'
 				),
-				esc_html( $lang )
+				esc_html( $language )
 			)
 		);
 		return 'no_file';
@@ -83,15 +83,19 @@ function relevanssi_populate_stopwords( $verbose = false ) {
 }
 
 /**
- * Fetches the list of stopwords.
+ * Fetches the list of stopwords in the current language.
  *
- * Gets the list of stopwords from the relevanssi_stopwords option.
+ * Gets the list of stopwords from the relevanssi_stopwords option using the
+ * current language.
  *
- * @return array An array of stopwords.
+ * @return array An array of stopwords;  if nothing is found, returns an empty
+ * array.
  */
 function relevanssi_fetch_stopwords() {
-	$stopwords     = get_option( 'relevanssi_stopwords', '' );
-	$stopword_list = $stopwords ? explode( ',', $stopwords ) : array();
+	$current_language = relevanssi_get_current_language();
+	$stopwords_array  = get_option( 'relevanssi_stopwords', array() );
+	$stopwords        = isset( $stopwords_array[ $current_language ] ) ? $stopwords_array[ $current_language ] : '';
+	$stopword_list    = $stopwords ? explode( ',', $stopwords ) : array();
 
 	return $stopword_list;
 }
@@ -182,27 +186,102 @@ function relevanssi_add_single_stopword( $term ) {
 		return false;
 	}
 
+	$stopwords = relevanssi_fetch_stopwords();
 	$term      = stripslashes( relevanssi_strtolower( $term ) );
-	$stopwords = get_option( 'relevanssi_stopwords', '' );
 
-	$stopwords_array = explode( ',', $stopwords );
-	if ( in_array( $term, $stopwords_array, true ) ) {
+	if ( in_array( $term, $stopwords, true ) ) {
 		return false;
 	}
 
-	$stopwords_array[] = $term;
-	$success           = update_option(
-		'relevanssi_stopwords',
-		implode( ',', array_filter( $stopwords_array ) )
-	);
+	$stopwords[] = $term;
+
+	$success = relevanssi_update_stopwords( $stopwords );
 
 	if ( ! $success ) {
 		return false;
 	}
 
+	relevanssi_delete_term_from_all_posts( $term );
+
+	return true;
+}
+
+/**
+ * Updates the current language stopwords in the stopwords option.
+ *
+ * Fetches the stopwords option, replaces the current language stopwords with
+ * the parameter array and updates the option.
+ *
+ * @param array $stopwords An array of stopwords.
+ *
+ * @return boolean The return value from update_option().
+ */
+function relevanssi_update_stopwords( $stopwords ) {
+	$current_language = relevanssi_get_current_language();
+	$stopwords_option = get_option( 'relevanssi_stopwords', array() );
+
+	$stopwords_option[ $current_language ] = implode( ',', array_filter( $stopwords ) );
+	return update_option(
+		'relevanssi_stopwords',
+		$stopwords_option
+	);
+}
+
+/**
+ * Deletes a term from all posts in the database, language considered.
+ *
+ * If Polylang or WPML are used, deletes the term only from the posts matching
+ * the current language.
+ *
+ * @param string $term The term to delete.
+ */
+function relevanssi_delete_term_from_all_posts( $term ) {
 	global $wpdb, $relevanssi_variables;
 
-	// Remove from index.
+	if ( function_exists( 'pll_languages_list' ) ) {
+		$term_id = relevanssi_get_language_term_taxonomy_id(
+			relevanssi_get_current_language()
+		);
+
+		$wpdb->query(
+			$wpdb->prepare(
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				"DELETE FROM {$relevanssi_variables['relevanssi_table']}
+				WHERE term=%s
+				AND doc IN (
+					SELECT object_id
+					FROM $wpdb->term_relationships
+					WHERE term_taxonomy_id = %d
+				)",
+				$term,
+				$term_id
+			)
+		);
+
+		return;
+	}
+
+	if ( function_exists( 'icl_object_id' ) && ! function_exists( 'pll_is_translated_post_type' ) ) {
+		$language = relevanssi_get_current_language( false );
+		$wpdb->query(
+			$wpdb->prepare(
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				"DELETE FROM {$relevanssi_variables['relevanssi_table']}
+				WHERE term=%s
+				AND doc IN (
+					SELECT DISTINCT(element_id)
+					FROM {$wpdb->prefix}icl_translations
+					WHERE language_code = %s
+				)",
+				$term,
+				$language
+			)
+		);
+
+		return;
+	}
+
+	// No language defined, just remove from the index.
 	$wpdb->query(
 		$wpdb->prepare(
 			'DELETE FROM ' . $relevanssi_variables['relevanssi_table'] . // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
@@ -210,21 +289,27 @@ function relevanssi_add_single_stopword( $term ) {
 			$term
 		)
 	);
-
-	return true;
 }
 
 /**
- * Removes all stopwords.
+ * Removes all stopwords in specific language.
  *
- * Empties the relevanssi_stopwords option.
+ * Empties the relevanssi_stopwords option for particular language.
  *
- * @param boolean $verbose If true, print out notice. Default true.
+ * @param boolean $verbose  If true, print out notice. Default true.
+ * @param string  $language The language code of stopwords. If empty, removes
+ * the stopwords for the current language.
  *
  * @return boolean True, if able to remove the options.
  */
-function relevanssi_remove_all_stopwords( $verbose = true ) {
-	$success = update_option( 'relevanssi_stopwords', '' );
+function relevanssi_remove_all_stopwords( $verbose = true, $language = false ) {
+	if ( ! $language ) {
+		$language = relevanssi_get_current_language();
+	}
+
+	$stopwords = get_option( 'relevanssi_stopwords', array() );
+	unset( $stopwords[ $language ] );
+	$success = update_option( 'relevanssi_stopwords', $stopwords );
 
 	$verbose && $success && printf(
 		"<div id='message' class='updated fade'><p>%s</p></div>",
@@ -257,23 +342,16 @@ function relevanssi_remove_all_stopwords( $verbose = true ) {
  * @return boolean True if success, false if not.
  */
 function relevanssi_remove_stopword( $term, $verbose = true ) {
-	$stopwords = get_option( 'relevanssi_stopwords', '' );
-	$success   = false;
+	$stopwords = relevanssi_fetch_stopwords();
+	$term      = stripslashes( $term );
+	$stopwords = array_filter(
+		$stopwords,
+		function( $stopword ) use ( $term ) {
+			return $stopword !== $term;
+		}
+	);
 
-	$term = stripslashes( $term );
-
-	$stopwords_array = explode( ',', $stopwords );
-	if ( is_array( $stopwords_array ) ) {
-		$stopwords_array = array_filter(
-			$stopwords_array,
-			function( $stopword ) use ( $term ) {
-				return $stopword !== $term;
-			}
-		);
-
-		$stopwords = implode( ',', $stopwords_array );
-		$success   = update_option( 'relevanssi_stopwords', $stopwords );
-	}
+	$success = relevanssi_update_stopwords( $stopwords );
 
 	$verbose && $success &&
 		printf(
@@ -321,4 +399,17 @@ function relevanssi_remove_stopwords_from_array( $terms ) {
 	}
 	$terms_without_stops = array_diff( $terms, $stopword_list );
 	return $terms_without_stops;
+}
+
+/**
+ * Updates the relevanssi_stopwords setting from a simple string to an array
+ * that is required for multilingual stopwords.
+ */
+function relevanssi_update_stopwords_setting() {
+	$stopwords = get_option( 'relevanssi_stopwords' );
+
+	$current_language = relevanssi_get_current_language();
+
+	$array_stopwords[ $current_language ] = $stopwords;
+	update_option( 'relevanssi_stopwords', $array_stopwords );
 }

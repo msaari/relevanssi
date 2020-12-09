@@ -1051,7 +1051,7 @@ END;
 			"relevanssi_highlight_in_docs() doesn't highlight correctly."
 		);
 
-		update_option( 'relevanssi_synonyms', 'ipsum=dolor' );
+		update_option( 'relevanssi_synonyms', array( relevanssi_get_current_language() => 'ipsum=dolor' ) );
 		$highlighted_content = relevanssi_highlight_in_docs( $content );
 		$this->assertEquals(
 			'Lorem <strong>ipsum dolor</strong> sit amet, ipsumen consectetur adipiscing elit.',

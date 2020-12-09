@@ -14,7 +14,9 @@
  * Prints out the synonyms tab in Relevanssi settings.
  */
 function relevanssi_synonyms_tab() {
-	$synonyms = get_option( 'relevanssi_synonyms' );
+	$current_language = relevanssi_get_current_language();
+	$synonyms_array   = get_option( 'relevanssi_synonyms', array() );
+	$synonyms         = isset( $synonyms_array[ $current_language ] ) ? $synonyms_array[ $current_language ] : '';
 
 	if ( isset( $synonyms ) ) {
 		$synonyms = str_replace( ';', "\n", $synonyms );
