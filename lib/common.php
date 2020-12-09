@@ -746,42 +746,6 @@ function relevanssi_get_post_type( $post_id ) {
 }
 
 /**
- * Prints out a list of tags for post.
- *
- * Replacement for the_tags() that does the same, but applies Relevanssi search term
- * highlighting on the results.
- *
- * @param string  $before    What is printed before the tags, default null.
- * @param string  $separator The separator between items, default ', '.
- * @param string  $after     What is printed after the tags, default ''.
- * @param boolean $echo      If true, echo, otherwise return the result. Default true.
- * @param int     $post_id   The post ID. Default current post ID (in the Loop).
- */
-function relevanssi_the_tags( $before = null, $separator = ', ', $after = '', $echo = true, $post_id = null ) {
-	$tag_list = get_the_tag_list( $before, $separator, $after, $post_id );
-	$found    = preg_match_all( '~<a href=".*?" rel="tag">(.*?)</a>~', $tag_list, $matches );
-	if ( $found ) {
-		$originals   = $matches[0];
-		$tag_names   = $matches[1];
-		$highlighted = array();
-
-		$count = count( $matches[0] );
-		for ( $i = 0; $i < $count; $i++ ) {
-			$highlighted_tag_name = relevanssi_highlight_terms( $tag_names[ $i ], get_search_query(), true );
-			$highlighted[ $i ]    = str_replace( '>' . $tag_names[ $i ] . '<', '>' . $highlighted_tag_name . '<', $originals[ $i ] );
-		}
-
-		$tag_list = str_replace( $originals, $highlighted, $tag_list );
-	}
-
-	if ( $echo ) {
-		echo $tag_list; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-	} else {
-		return $tag_list;
-	}
-}
-
-/**
  * Adds synonyms to a search query.
  *
  * Takes a search query and adds synonyms to it.
