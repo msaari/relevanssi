@@ -71,12 +71,16 @@ $relevanssi_variables['plugin_version']                        = '4.10.0';
 
 require_once 'lib/admin-ajax.php';
 require_once 'lib/common.php';
+require_once 'lib/didyoumean.php';
 require_once 'lib/excerpts-highlights.php';
 require_once 'lib/indexing.php';
 require_once 'lib/init.php';
 require_once 'lib/install.php';
 require_once 'lib/interface.php';
 require_once 'lib/log.php';
+require_once 'lib/options.php';
+require_once 'lib/phrases.php';
+require_once 'lib/privacy.php';
 require_once 'lib/search.php';
 require_once 'lib/search-tax-query.php';
 require_once 'lib/search-query-restrictions.php';
