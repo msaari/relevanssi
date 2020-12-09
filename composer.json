@@ -8,6 +8,6 @@
         "reference": "origin/master"
     },
     "require-dev": {
-        "msaari/wp-test-framework": "*"
+        "rask/wp-test-framework": "*"
     }
 }
