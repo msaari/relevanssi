@@ -12,7 +12,7 @@
 
 add_filter( 'relevanssi_custom_field_value', 'relevanssi_oxygen_compatibility', 10, 3 );
 add_filter( 'relevanssi_index_custom_fields', 'relevanssi_add_oxygen' );
-
+add_filter( 'pre_option_relevanssi_index_fields', 'relevanssi_oxygen_fix_none_setting' );
 /**
  * Cleans up the Oxygen Builder custom field for Relevanssi consumption.
  *
@@ -120,3 +120,17 @@ function relevanssi_add_oxygen( $fields ) {
 	return $fields;
 }
 
+/**
+ * Makes sure the Oxygen builder shortcode is included in the index, even when
+ * the custom field setting is set to 'none'.
+ *
+ * @param string $value The custom field indexing setting value.
+ *
+ * @return string If value is undefined, it's set to 'ct_builder_shortcodes'.
+ */
+function relevanssi_oxygen_fix_none_setting( $value ) {
+	if ( ! $value ) {
+		$value = 'ct_builder_shortcodes';
+	}
+	return $value;
+}
