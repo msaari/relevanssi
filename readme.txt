@@ -5,7 +5,7 @@ Tags: search, relevance, better search, product search, woocommerce search
 Requires at least: 4.9
 Tested up to: 5.6.1
 Requires PHP: 7.0
-Stable tag: 4.10.0
+Stable tag: 4.10.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -133,6 +133,9 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.10.1 =
+* Major fix: The multilingual stopwords and synonyms were used based on the global language. Now when indexing posts, the post language is used instead of the global language.
+
 = 4.10.0 =
 * New feature: Relevanssi now supports multilingual synonyms and stopwords. Relevanssi now has a different set of synonyms and stopwords for each language. This feature is compatible with WPML and Polylang.
 * New feature: SEO by Rank Math compatibility is added: posts marked as 'noindex' with Rank Math are not indexed by Relevanssi.
@@ -199,6 +202,9 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: Relevanssi only updates doc count on `relevanssi_insert_edit()` when the post is indexed.
 
 == Upgrade notice ==
+= 4.10.1 =
+* Corrects the multilingual stopwords and synonyms.
+
 = 4.10.0 =
 * Adds support for multilingual stopwords and synonyms.
 

@@ -140,13 +140,19 @@ function relevanssi_generate_closing_tags( $tags ) {
 /**
  * Returns the locale or language code.
  *
- * First checks `pll_current_language()`, then `wpml_current_language`, then
- * falls back to `get_locale()`.
+ * If WPML or Polylang is not available, returns `get_locale()` value. With
+ * WPML or Polylang, first this function checks to see if the global $post is
+ * set. If it is, the function returns the language of the post, as we're
+ * working on a post and need to use the correct language.
+ *
+ * If the global $post is not set, this function returns for Polylang the
+ * results of `pll_current_language()`, for WPML it uses `wpml_current_language`
+ * and `wpml_active_languages`.
  *
  * @param boolean $locale If true, return locale; if false, return language
  * code.
  *
- * @return string The locale for the current site language.
+ * @return string The locale or the language code.
  */
 function relevanssi_get_current_language( $locale = true ) {
 	$current_language = get_locale();
@@ -154,19 +160,32 @@ function relevanssi_get_current_language( $locale = true ) {
 		$current_language = substr( $locale, 0, 2 );
 	}
 	if ( function_exists( 'pll_current_language' ) ) {
-		$current_language = pll_current_language( $locale ? 'locale' : 'slug' );
+		global $post;
+
+		if ( isset( $post ) ) {
+			$current_language = pll_get_post_language( $post->ID, $locale ? 'locale' : 'slug' );
+		} else {
+			$current_language = pll_current_language( $locale ? 'locale' : 'slug' );
+		}
 	}
 	if ( function_exists( 'icl_object_id' ) && ! function_exists( 'pll_is_translated_post_type' ) ) {
-		if ( $locale ) {
-			$languages = apply_filters( 'wpml_active_languages', null );
-			foreach ( $languages as $l ) {
-				if ( $l['active'] ) {
-					$current_language = $l['default_locale'];
-					break;
-				}
-			}
+		global $post;
+
+		if ( isset( $post ) ) {
+			$language_details = apply_filters( 'wpml_post_language_details', null, $post->ID );
+			$current_language = $language_details[ $locale ? 'locale' : 'language_code' ];
 		} else {
-			$current_language = apply_filters( 'wpml_current_language', null );
+			if ( $locale ) {
+				$languages = apply_filters( 'wpml_active_languages', null );
+				foreach ( $languages as $l ) {
+					if ( $l['active'] ) {
+						$current_language = $l['default_locale'];
+						break;
+					}
+				}
+			} else {
+				$current_language = apply_filters( 'wpml_current_language', null );
+			}
 		}
 	}
 
