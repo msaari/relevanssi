@@ -60,6 +60,10 @@ function relevanssi_query( $posts, $query = false ) {
 		}
 	}
 
+	if ( $query->get( 'relevanssi' ) ) {
+		$search_ok = true; // Manual override, always search.
+	}
+
 	/**
 	 * Filters whether Relevanssi search can be run or not.
 	 *
