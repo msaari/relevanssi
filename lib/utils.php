@@ -157,7 +157,7 @@ function relevanssi_generate_closing_tags( $tags ) {
 function relevanssi_get_current_language( $locale = true ) {
 	$current_language = get_locale();
 	if ( ! $locale ) {
-		$current_language = substr( $locale, 0, 2 );
+		$current_language = substr( $current_language, 0, 2 );
 	}
 	if ( function_exists( 'pll_current_language' ) ) {
 		global $post;
