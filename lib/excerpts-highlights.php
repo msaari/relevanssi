@@ -640,10 +640,10 @@ function relevanssi_highlight_terms( $content, $query, $convert_entities = false
 		);
 
 		/**
-		 * The method here leaves extra spaces inside the highlighting. That
-		 * is cleaned away here.
+		 * The method here leaves extra spaces or HTML tag closing brackets
+		 * inside the highlighting. That is cleaned away here.
 		 */
-		$replace_regex = '/(.)(' . preg_quote( $start_emp_token, '/' ) . ')(\s)/iu';
+		$replace_regex = '/(.)(' . preg_quote( $start_emp_token, '/' ) . ')(>|\s)/iu';
 		$content       = preg_replace( $replace_regex, '\1\3\2', $content );
 
 		$replace_regex = '/^(' . preg_quote( $start_emp_token, '/' ) . ')\s/iu';

@@ -820,6 +820,38 @@ EOT;
 	}
 
 	/**
+	 * Tests relevanssi_highlight_terms with content that has HTML tags.
+	 */
+	public function test_highlighting_html_tags() {
+		update_option( 'relevanssi_highlight', 'strong' );
+
+		$content = <<<EOT
+<!-- wp:paragraph -->
+<p>Klik hier om uw eigen tekst toe te voegen</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>tuin tuin tuin</p>
+<!-- /wp:paragraph -->
+EOT;
+
+		$highlighted = <<<EOT
+<!-- wp:paragraph -->
+<p>Klik hier om uw eigen tekst toe te voegen</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p><strong>tuin tuin tuin</strong></p>
+<!-- /wp:paragraph -->
+EOT;
+
+		$query   = 'tuin';
+		$excerpt = relevanssi_highlight_terms( $content, $query, true );
+
+		$this->assertDiscardWhitespace( $excerpt, $highlighted );
+	}
+
+	/**
 	 * Test relevanssi_create_excerpt().
 	 */
 	public function test_create_excerpt() {

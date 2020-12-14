@@ -133,6 +133,9 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.10.2 =
+* Minor fix: Highlighting didn't work properly when highlighting something immediately following a HTML tag.
+
 = 4.10.1 =
 * Major fix: The multilingual stopwords and synonyms were used based on the global language. Now when indexing posts, the post language is used instead of the global language.
 
