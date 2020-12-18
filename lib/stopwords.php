@@ -407,6 +407,11 @@ function relevanssi_remove_stopwords_from_array( $terms ) {
  */
 function relevanssi_update_stopwords_setting() {
 	$stopwords = get_option( 'relevanssi_stopwords' );
+	if ( is_object( $stopwords ) ) {
+		$array_stopwords = (array) $stopwords;
+		update_option( 'relevanssi_stopwords', $array_stopwords );
+		return;
+	}
 
 	$current_language = relevanssi_get_current_language();
 

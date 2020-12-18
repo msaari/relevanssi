@@ -1558,6 +1558,11 @@ function relevanssi_generate_list_of_custom_fields( $post_id, $custom_fields = n
  */
 function relevanssi_update_synonyms_setting() {
 	$synonyms = get_option( 'relevanssi_synonyms' );
+	if ( is_object( $synonyms ) ) {
+		$array_synonyms = (array) $synonyms;
+		update_option( 'relevanssi_synonyms', $array_synonyms );
+		return;
+	}
 
 	$current_language = relevanssi_get_current_language();
 
