@@ -138,6 +138,36 @@ function relevanssi_generate_closing_tags( $tags ) {
 }
 
 /**
+ * Returns a post object based on ID, **type**id notation or an object.
+ *
+ * @param int|string|WP_Post The source identified to parse, either a post ID
+ * integer, a **type**id string or a post object.
+ *
+ * @return array An array containing the actual object in 'object' and the
+ * format of the original value in 'format'. The value can be 'object', 'id'
+ * or 'id=>parent'.
+ */
+function relevanssi_get_an_object( $source ) {
+	$object = $source;
+	$format = 'object';
+
+	if ( ! is_object( $source ) ) {
+		// Convert from post ID to post.
+		$object = relevanssi_get_post_object( $source );
+		$format = 'id';
+	} elseif ( ! isset( $source->post_content ) ) {
+		// Convert from id=>parent to post.
+		$object = relevanssi_get_post_object( $source->ID );
+		$format = 'id=>parent';
+	}
+
+	return array(
+		'object' => $object,
+		'format' => $format,
+	);
+}
+
+/**
  * Returns the locale or language code.
  *
  * If WPML or Polylang is not available, returns `get_locale()` value. With
@@ -163,7 +193,11 @@ function relevanssi_get_current_language( $locale = true ) {
 		global $post;
 
 		if ( isset( $post ) ) {
-			$current_language = pll_get_post_language( $post->ID, $locale ? 'locale' : 'slug' );
+			if ( isset( $post->term_id ) ) {
+				$current_language = pll_get_term_language( $post->term_id, $locale ? 'locale' : 'slug' );
+			} elseif ( ! isset( $post->user_id ) ) {
+				$current_language = pll_get_post_language( $post->ID, $locale ? 'locale' : 'slug' );
+			}
 		} else {
 			$current_language = pll_current_language( $locale ? 'locale' : 'slug' );
 		}
@@ -172,7 +206,24 @@ function relevanssi_get_current_language( $locale = true ) {
 		global $post;
 
 		if ( isset( $post ) ) {
-			$language_details = apply_filters( 'wpml_post_language_details', null, $post->ID );
+			$language_details = array(
+				'locale'        => '',
+				'language_code' => '',
+			);
+			if ( isset( $post->term_id ) ) {
+				// Terms don't have a locale, just a language code.
+				$element       = array(
+					'element_id'   => relevanssi_get_term_tax_id( $post->term_id, $post->post_type ),
+					'element_type' => $post->post_type,
+				);
+				$language_code = apply_filters( 'wpml_element_language_code', null, $element );
+
+				$language_details['language_code'] = $language_code;
+			} elseif ( ! isset( $post->user_id ) ) {
+				// Users don't have language details.
+				$language_details = apply_filters( 'wpml_post_language_details', null, $post->ID );
+			}
+
 			$current_language = $language_details[ $locale ? 'locale' : 'language_code' ];
 		} else {
 			if ( $locale ) {
@@ -238,6 +289,35 @@ function relevanssi_get_post( $post_id, $blog_id = -1 ) {
 		$relevanssi_post_array[ $post_id ] = $post;
 	}
 	return $post;
+}
+
+/**
+ * Returns an object based on ID.
+ *
+ * @param int|string $post_id An ID, either an integer post ID or a
+ * **type**id string for terms and users.
+ *
+ * @return WP_Post|WP_Term|WP_User An object, type of which depends on the
+ * target object.
+ */
+function relevanssi_get_post_object( $post_id ) {
+	$object = null;
+	if ( '*' === substr( $post_id, 0, 1 ) ) {
+		// Convert from **type**id to a user or a term object.
+		$parts = explode( '**', $post_id );
+		$type  = $parts[1] ?? null;
+		$id    = $parts[2] ?? null;
+		if ( $type && $id ) {
+			if ( 'user' === $type ) {
+				$object = get_user_by( 'id', $id );
+			} else {
+				$object = get_term( $id, $type );
+			}
+		}
+	} else {
+		$object = relevanssi_get_post( $post_id );
+	}
+	return $object;
 }
 
 /**
@@ -477,6 +557,35 @@ function relevanssi_remove_quotes_from_array_keys( $array ) {
 }
 
 /**
+ * Returns an ID=>parent object from a post (or a term, or a user).
+ *
+ * @param WP_Post|WP_Term|WP_User $post_object The source object.
+ *
+ * @return object An object with the attributes ID and post_parent set. For
+ * terms and users, ID is the term or user ID and post_parent is 0. For bad
+ * inputs, returns 0 and 0.
+ */
+function relevanssi_return_id_parent( $post_object ) {
+	$id_parent_object = new stdClass();
+
+	if ( isset( $post_object->ID ) ) {
+		$id_parent_object->ID          = $post_object->ID;
+		$id_parent_object->post_parent = $post_object->post_parent;
+	} elseif ( isset( $post_object->term_id ) ) {
+		$id_parent_object->ID          = $post_object->term_id;
+		$id_parent_object->post_parent = 0;
+	} elseif ( isset( $post_object->user_id ) ) {
+		$id_parent_object->ID          = $post_object->user_id;
+		$id_parent_object->post_parent = 0;
+	} else {
+		$id_parent_object->ID          = 0;
+		$id_parent_object->post_parent = 0;
+	}
+
+	return $id_parent_object;
+}
+
+/**
  * Returns "off".
  *
  * Useful for returning "off" to filters easily.
@@ -485,6 +594,25 @@ function relevanssi_remove_quotes_from_array_keys( $array ) {
  */
 function relevanssi_return_off() {
 	return 'off';
+}
+
+/**
+ * Gets a post object, returns ID, ID=>parent or the post object.
+ *
+ * @param WP_Post $post         The post object.
+ * @param string  $return_value The value to return, possible values are 'id'
+ * for returning the ID and 'id=>parent' for returning the ID=>parent object,
+ * otherwise the post object is returned.
+ *
+ * @return int|object|WP_Post The post object in the desired format.
+ */
+function relevanssi_return_value( $post, $return_value ) {
+	if ( 'id' === $return_value ) {
+		return $post->ID;
+	} elseif ( 'id=>parent' === $return_value ) {
+		return relevanssi_return_id_parent( $post );
+	}
+	return $post;
 }
 
 /**

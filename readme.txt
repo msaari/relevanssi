@@ -138,6 +138,7 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: You can no longer set the value of minimum word length to less than 1 or higher than 9 from the settings page.
 * Minor fix: Importing options broke synonym and stopword settings.
 * Minor fix: Improves the Rank Math SEO compatibility to avoid errors in plugin activation.
+* Minor fix: WPML search results that included non-post results caused fatal errors and crashes. This fixes the crashing and makes non-post results work better in both WPML and Polylang.
 
 = 4.10.1 =
 * Major fix: The multilingual stopwords and synonyms were used based on the global language. Now when indexing posts, the post language is used instead of the global language.
