@@ -5,7 +5,7 @@ Tags: search, relevance, better search, product search, woocommerce search
 Requires at least: 4.9
 Tested up to: 5.6.1
 Requires PHP: 7.0
-Stable tag: 4.10.1
+Stable tag: 4.10.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -134,6 +134,8 @@ Each document database is full of useless words. All the little words that appea
 
 == Changelog ==
 = 4.10.2 =
+* New feature: You can force Relevanssi to be active by setting the query variable `relevanssi` to `true`. Thanks to Jan Willem Oostendorp.
+* Changed behaviour: Relevanssi has been moved from `the_posts` filter to `posts_pre_query`. This change doesn't do much, but increases performance slightly as WordPress needs to do less useless work, as now the default query is no longer run. Thanks to Jan Willem Oostendorp.
 * Minor fix: Highlighting didn't work properly when highlighting something immediately following a HTML tag.
 * Minor fix: You can no longer set the value of minimum word length to less than 1 or higher than 9 from the settings page.
 * Minor fix: Importing options broke synonym and stopword settings.
@@ -209,6 +211,9 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: Relevanssi only updates doc count on `relevanssi_insert_edit()` when the post is indexed.
 
 == Upgrade notice ==
+= 4.10.2 =
+* Switch from `the_posts` to `posts_pre_query`, bug fixes.
+
 = 4.10.1 =
 * Corrects the multilingual stopwords and synonyms.
 
