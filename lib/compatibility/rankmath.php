@@ -25,7 +25,7 @@ add_filter( 'relevanssi_indexing_restriction', 'relevanssi_rankmath_exclude' );
  */
 function relevanssi_rankmath_noindex( $do_not_index, $post_id ) {
 	$noindex = get_post_meta( $post_id, 'rank_math_robots', true );
-	if ( in_array( 'noindex', $noindex, true ) ) {
+	if ( is_array( $noindex ) && in_array( 'noindex', $noindex, true ) ) {
 		$do_not_index = 'RankMath';
 	}
 	return $do_not_index;

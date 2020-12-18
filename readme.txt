@@ -137,6 +137,7 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: Highlighting didn't work properly when highlighting something immediately following a HTML tag.
 * Minor fix: You can no longer set the value of minimum word length to less than 1 or higher than 9 from the settings page.
 * Minor fix: Importing options broke synonym and stopword settings.
+* Minor fix: Improves the Rank Math SEO compatibility to avoid errors in plugin activation.
 
 = 4.10.1 =
 * Major fix: The multilingual stopwords and synonyms were used based on the global language. Now when indexing posts, the post language is used instead of the global language.
