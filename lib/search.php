@@ -821,6 +821,7 @@ function relevanssi_search( $args ) {
 		'term_hits'           => $term_hits,
 		'query'               => $q,
 		'doc_weights'         => $doc_weight,
+		'query_no_synonyms'   => $q_no_synonyms,
 	);
 
 	return $return;
@@ -873,14 +874,9 @@ function relevanssi_do_query( &$query ) {
 		$return        = relevanssi_search( $search_params );
 	}
 
-	$hits = array();
-	if ( isset( $return['hits'] ) ) {
-		$hits = $return['hits'];
-	}
-	$q = '';
-	if ( isset( $return['query'] ) ) {
-		$q = $return['query'];
-	}
+	$hits          = $return['hits'] ?? array();
+	$q             = $return['query'] ?? '';
+	$q_no_synonyms = $return['query_no_synonyms'] ?? '';
 
 	$filter_data = array( $hits, $q );
 	/**
@@ -915,7 +911,19 @@ function relevanssi_do_query( &$query ) {
 
 	$update_log = get_option( 'relevanssi_log_queries' );
 	if ( 'on' === $update_log ) {
-		relevanssi_update_log( $q, $hits_count );
+		/**
+		 * Filters whether the logged query includes synonyms or not.
+		 *
+		 * By default, Relevanssi logs the original query without the added
+		 * synonyms. If this filter hook returns true, Relevanssi will instead
+		 * log the query that contains the synonyms.
+		 *
+		 * @param boolean If true, log with synonyms. Default false.
+		 */
+		$query_string = apply_filters( 'relevanssi_log_synonyms', false )
+			? $q
+			: $q_no_synonyms;
+		relevanssi_update_log( $query_string, $hits_count );
 	}
 
 	$make_excerpts = get_option( 'relevanssi_excerpts' );
