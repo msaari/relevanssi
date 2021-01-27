@@ -1481,7 +1481,7 @@ function relevanssi_generate_list_of_custom_fields( $post_id, $custom_fields = n
 	}
 
 	if ( ! is_array( $custom_fields ) ) {
-		return array();
+		$custom_fields = array();
 	}
 
 	$custom_fields = array_unique( $custom_fields );
