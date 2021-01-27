@@ -135,10 +135,10 @@ Each document database is full of useless words. All the little words that appea
 == Changelog ==
 = 4.10.3 =
 * New feature: New filter hook `relevanssi_rendered_block` filters Gutenberg block content after the block has been rendered with `render_block()`.
-* New feature: New filter hook `relevanssi_log_synonyms` can be set to true to log queries with the added synonyms.
+* New feature: New filter hook `relevanssi_log_query` can be used to filter the search query before it's logged. This can be used to log instead the query that includes synonyms (available as a parameter to the filter hook).
 * Changed behaviour: Type hinting has been added to Relevanssi functions, which may cause errors if the filter functions are sloppy with data types.
 * Changed behaviour: `relevanssi_the_title()` now supports the same parameters as `the_title()`, so you can just replace `the_title()` with it and keep everything else the same. The old behaviour is still supported.
-* Changed behaviour: Relevanssi no longer logs queries with the added synonyms. Set the `relevanssi_log_synonyms` filter to `true` to return to the previous behaviour of logging the synonyms too. Thanks to Jan Willem Oostendorp.
+* Changed behaviour: Relevanssi no longer logs queries with the added synonyms. You can use the `relevanssi_log_query` filter hook to return to the previous behaviour of logging the synonyms too. Thanks to Jan Willem Oostendorp.
 * Minor fix: The Oxygen compatibility made it impossible to index other custom fields than the Oxygen `ct_builder_shortcodes`. This has been improved now.
 * Minor fix: Old legacy scripts that caused Javascript warnings on admin pages have been removed.
 * Minor fix: In some cases, having less than or greater than symbols in PDF content would block that PDF content from being indexed.
