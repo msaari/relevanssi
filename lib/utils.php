@@ -903,6 +903,50 @@ function relevanssi_the_tags( $before = null, $separator = ', ', $after = '', $e
 }
 
 /**
+ * Prints out post title with highlighting.
+ *
+ * Uses the global $post object. Reads the highlighted title from
+ * $post->post_highlighted_title. This used to accept one parameter, the
+ * `$echo` boolean, but in 2.12.3 / 4.10.3 the function signature was matched
+ * to copy `the_title()` function in WordPress core. The original behaviour is
+ * still supported: `relevanssi_the_title()` without arguments works exactly as
+ * before and `relevanssi_the_title( false )` returns the title.
+ *
+ * @global object $post The global post object.
+ *
+ * @param boolean|string $before Markup to prepend to the title. Can also be a
+ * boolean for whether to echo or return the title.
+ * @param string         $after  Markup to append to the title.
+ * @param boolean        $echo   Whether to echo or return the title. Default
+ * true for echo.
+ *
+ * @return void|string Void if $echo argument is true, current post title with
+ * highlights if $echo is false.
+ */
+function relevanssi_the_title( $before = true, string $after = '', bool $echo = true ) {
+	if ( true === $before ) {
+		$before = '';
+		$echo   = true;
+	} elseif ( false === $before ) {
+		$before = '';
+		$echo   = false;
+	}
+	global $post;
+	if ( empty( $post->post_highlighted_title ) ) {
+		$post->post_highlighted_title = $post->post_title;
+	}
+	if ( relevanssi_strlen( $post->post_highlighted_title ) === 0 ) {
+		return;
+	}
+	$title = $before . $post->post_highlighted_title . $after;
+	if ( $echo ) {
+		echo $title; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	} else {
+		return $title;
+	}
+}
+
+/**
  * Turns off options, ie. sets them to "off".
  *
  * If the specified options don't exist in the request array, they are set to

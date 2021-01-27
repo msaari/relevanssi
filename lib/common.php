@@ -819,50 +819,6 @@ function relevanssi_add_synonyms( $query ) {
 	return $query;
 }
 
-
-/**
- * Prints out post title with highlighting.
- *
- * Uses the global $post object. Reads the highlighted title from
- * $post->post_highlighted_title.
- *
- * @global object $post The global post object.
- *
- * @param boolean $echo If true, echo out the title. Default true.
- *
- * @return string If $echo is false, returns the title with highlights.
- */
-function relevanssi_the_title( $echo = true ) {
-	global $post;
-	if ( empty( $post->post_highlighted_title ) ) {
-		$post->post_highlighted_title = $post->post_title;
-	}
-	if ( $echo ) {
-		echo $post->post_highlighted_title; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-	}
-	return $post->post_highlighted_title;
-}
-
-/**
- * Returns the post title with highlighting.
- *
- * Reads the highlighted title from $post->post_highlighted_title.
- *
- * @param int $post_id The post ID.
- *
- * @return string The post title with highlights.
- */
-function relevanssi_get_the_title( $post_id ) {
-	$post = relevanssi_get_post( $post_id );
-	if ( ! is_object( $post ) ) {
-		return null;
-	}
-	if ( empty( $post->post_highlighted_title ) ) {
-		$post->post_highlighted_title = $post->post_title;
-	}
-	return $post->post_highlighted_title;
-}
-
 /**
  * Updates the 'relevanssi_doc_count' option.
  *
