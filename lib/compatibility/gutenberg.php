@@ -79,7 +79,20 @@ function relevanssi_gutenberg_block_rendering( $content ) {
 			! isset( $block['attrs']['className'] )
 			|| false === strstr( $block['attrs']['className'], 'relevanssi_noindex' )
 			) {
-			$output .= render_block( $block );
+			/**
+			 * Filters the Gutenberg block after it is rendered.
+			 *
+			 * The value is the output from render_block( $block ). Feel free to
+			 * modify it as you wish.
+			 *
+			 * @see render_block
+			 *
+			 * @param string The rendered block content.
+			 * @param array  $block The Gutenberg block being rendered.
+			 *
+			 * @return string The filtered block content.
+			 */
+			$output .= apply_filters( 'relevanssi_rendered_block', render_block( $block ), $block );
 		}
 	}
 
