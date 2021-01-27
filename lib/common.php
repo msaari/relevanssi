@@ -1077,6 +1077,17 @@ function relevanssi_get_forbidden_post_types() {
 		'slides',               // Qoda slides.
 		'carousels',            // Qoda carousels.
 		'pretty-link',          // Pretty Links.
+		'fusion_tb_layout',     // Fusion Builder.
+		'fusion_tb_section',    // Fusion Builder.
+		'fusion_form',          // Fusion Builder.
+		'fusion_icons',         // Fusion Builder.
+		'fusion_template',      // Fusion Builder.
+		'fusion_element',       // Fusion Builder.
+		'acfe-dbt',             // ACF Extended.
+		'acfe-form',            // ACF Extended.
+		'acfe-dop',             // ACF Extended.
+		'acfe-dpt',             // ACF Extended.
+		'acfe-dt',              // ACF Extended.
 	);
 }
 
