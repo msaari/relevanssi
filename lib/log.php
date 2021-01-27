@@ -285,7 +285,7 @@ function relevanssi_export_log() {
 	ob_start();
 	$df = fopen( 'php://output', 'w' ); // phpcs:ignore WordPress.WP.AlternativeFunctions
 	if ( empty( $data ) ) {
-		fputcsv( $df, array( __( 'No Search keywords logged.', 'relevanssi' ) ) );
+		fputcsv( $df, array( __( 'No search keywords logged.', 'relevanssi' ) ) );
 		die();
 	}
 	fputcsv( $df, array_keys( reset( $data ) ) );
