@@ -121,11 +121,6 @@ function relevanssi_search_stats() {
 		}
 	}
 
-	wp_enqueue_style( 'dashboard' );
-	wp_print_styles( 'dashboard' );
-	wp_enqueue_script( 'dashboard' );
-	wp_print_scripts( 'dashboard' );
-
 	printf( "<div class='wrap'><h2>%s</h2>", esc_html( $options_txt ) );
 
 	if ( 'on' === get_option( 'relevanssi_log_queries' ) ) {
@@ -144,11 +139,6 @@ function relevanssi_admin_search_page() {
 	$relevanssi_hide_branding = get_option( 'relevanssi_hide_branding' );
 
 	$options_txt = __( 'Admin Search', 'relevanssi' );
-
-	wp_enqueue_style( 'dashboard' );
-	wp_print_styles( 'dashboard' );
-	wp_enqueue_script( 'dashboard' );
-	wp_print_scripts( 'dashboard' );
 
 	printf( "<div class='wrap'><h2>%s</h2>", esc_html( $options_txt ) );
 
@@ -408,11 +398,6 @@ function relevanssi_date_queries( $days, $title, $version = 'good' ) {
  */
 function relevanssi_options_form() {
 	global $relevanssi_variables, $wpdb;
-
-	wp_enqueue_style( 'dashboard' );
-	wp_print_styles( 'dashboard' );
-	wp_enqueue_script( 'dashboard' );
-	wp_print_scripts( 'dashboard' );
 
 	echo "<div class='postbox-container'>";
 	echo "<form method='post'>";
