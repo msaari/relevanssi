@@ -30,7 +30,7 @@ function get_relevanssi_taxonomy_walker() {
  *
  * @param string $string String to trim.
  */
-function relevanssi_array_walk_trim( &$string ) {
+function relevanssi_array_walk_trim( string &$string ) {
 	$string = relevanssi_mb_trim( $string );
 }
 
@@ -42,7 +42,7 @@ function relevanssi_array_walk_trim( &$string ) {
  * @return string If the option is 'on', returns 'checked', otherwise returns an
  * empty string.
  */
-function relevanssi_check( $option ) {
+function relevanssi_check( string $option ) {
 	$checked = '';
 	if ( 'on' === $option ) {
 		$checked = 'checked';
@@ -60,7 +60,7 @@ function relevanssi_check( $option ) {
  *
  * @return string The HTML code, with tags closed.
  */
-function relevanssi_close_tags( $html ) {
+function relevanssi_close_tags( string $html ) {
 	$result = array();
 	preg_match_all(
 		'#<(?!meta|img|br|hr|input\b)\b([a-z]+)(?: .*)?(?<![/|/ ])>#iU',
@@ -95,7 +95,7 @@ function relevanssi_close_tags( $html ) {
  *
  * @param string $notice The notice to print out.
  */
-function relevanssi_debug_echo( $notice ) {
+function relevanssi_debug_echo( string $notice ) {
 	if ( defined( 'WP_CLI' ) && WP_CLI ) {
 		WP_CLI::log( $notice );
 	} else {
@@ -125,7 +125,7 @@ function relevanssi_flatten_array( array $array ) {
  *
  * @return array $closing_tags Array of closing tags.
  */
-function relevanssi_generate_closing_tags( $tags ) {
+function relevanssi_generate_closing_tags( array $tags ) {
 	$closing_tags = array();
 	foreach ( $tags as $tag ) {
 		$a = str_replace( '<', '</', $tag );
@@ -140,8 +140,8 @@ function relevanssi_generate_closing_tags( $tags ) {
 /**
  * Returns a post object based on ID, **type**id notation or an object.
  *
- * @param int|string|WP_Post The source identified to parse, either a post ID
- * integer, a **type**id string or a post object.
+ * @param int|string|WP_Post $source The source identified to parse, either a
+ * post ID integer, a **type**id string or a post object.
  *
  * @return array An array containing the actual object in 'object' and the
  * format of the original value in 'format'. The value can be 'object', 'id'
@@ -184,12 +184,12 @@ function relevanssi_get_an_object( $source ) {
  *
  * @return string The locale or the language code.
  */
-function relevanssi_get_current_language( $locale = true ) {
+function relevanssi_get_current_language( bool $locale = true ) {
 	$current_language = get_locale();
 	if ( ! $locale ) {
 		$current_language = substr( $current_language, 0, 2 );
 	}
-	if ( function_exists( 'pll_current_language' ) ) {
+	if ( class_exists( 'Polylang', false ) ) {
 		global $post;
 
 		if ( isset( $post ) ) {
@@ -267,12 +267,18 @@ function relevanssi_get_permalink() {
  * Tries to fetch the post from the Relevanssi post cache. If that doesn't work,
  * gets the post using get_post().
  *
- * @param int $post_id The post ID.
- * @param int $blog_id The blog ID, default -1.
+ * @param int|string $post_id The post ID. Usually an integer post ID, but can
+ * also be a string (u_<user ID>, p_<post type name> or
+ * **<taxonomy>**<term ID>).
+ * @param int        $blog_id The blog ID, default -1. If -1, will be replaced
+ * with the actual current blog ID from get_current_blog_id().
  *
  * @return object The post object.
  */
-function relevanssi_get_post( $post_id, $blog_id = -1 ) {
+function relevanssi_get_post( $post_id, int $blog_id = -1 ) {
+	if ( -1 === $blog_id ) {
+		$blog_id = get_current_blog_id();
+	}
 	if ( function_exists( 'relevanssi_premium_get_post' ) ) {
 		return relevanssi_premium_get_post( $post_id, $blog_id );
 	}
@@ -330,7 +336,7 @@ function relevanssi_get_post_object( $post_id ) {
  *
  * @return int Term taxonomy ID.
  */
-function relevanssi_get_term_tax_id( $term_id, $taxonomy ) {
+function relevanssi_get_term_tax_id( int $term_id, string $taxonomy ) {
 	global $wpdb;
 	return $wpdb->get_var(
 		$wpdb->prepare(
@@ -347,11 +353,14 @@ function relevanssi_get_term_tax_id( $term_id, $taxonomy ) {
  * Fetches the taxonomy from wp_term_taxonomy based on term_id.
  *
  * @global object $wpdb The WordPress database interface.
+ *
  * @param int $term_id The term ID.
+ *
  * @deprecated Will be removed in future versions.
+ *
  * @return string $taxonomy The term taxonomy.
  */
-function relevanssi_get_term_taxonomy( $term_id ) {
+function relevanssi_get_term_taxonomy( int $term_id ) {
 	global $wpdb;
 
 	$taxonomy = $wpdb->get_var( $wpdb->prepare( "SELECT taxonomy FROM $wpdb->term_taxonomy WHERE term_id = %d", $term_id ) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
@@ -369,7 +378,7 @@ function relevanssi_get_term_taxonomy( $term_id ) {
  * @param string $after     What is printed after the tags, default ''.
  * @param int    $post_id   The post ID. Default current post ID (in the Loop).
  */
-function relevanssi_get_the_tags( $before = null, $separator = ', ', $after = '', $post_id = null ) {
+function relevanssi_get_the_tags( string $before = null, string $separator = ', ', string $after = '', ?int $post_id = null ) {
 	return relevanssi_the_tags( $before, $separator, $after, false, $post_id );
 }
 
@@ -408,7 +417,7 @@ function relevanssi_get_the_title( $post ) {
  *
  * @return string Imploded string or an empty string.
  */
-function relevanssi_implode( $request, $option, $glue = ',' ) {
+function relevanssi_implode( array $request, string $option, string $glue = ',' ) {
 	if ( isset( $request[ $option ] ) && is_array( $request[ $option ] ) ) {
 		return implode( $glue, $request[ $option ] );
 	}
@@ -423,7 +432,7 @@ function relevanssi_implode( $request, $option, $glue = ',' ) {
  *
  * @return int|null Integer value of the option, or null.
  */
-function relevanssi_intval( $request, $option ) {
+function relevanssi_intval( array $request, string $option ) {
 	if ( isset( $request[ $option ] ) ) {
 		return intval( $request[ $option ] );
 	}
@@ -446,7 +455,7 @@ function relevanssi_intval( $request, $option ) {
  *
  * @return WP_Error|array The wp_remote_post() response or WP_Error on failure.
  */
-function relevanssi_launch_ajax_action( $action, $payload_args = array() ) {
+function relevanssi_launch_ajax_action( string $action, array $payload_args = array() ) {
 	$cookies = array();
 	foreach ( $_COOKIE as $name => $value ) {
 		$cookies[] = "$name=" . rawurlencode(
@@ -481,7 +490,7 @@ function relevanssi_launch_ajax_action( $action, $payload_args = array() ) {
  * @return string|null A legal value or the default value, null if the option
  * isn't set.
  */
-function relevanssi_legal_value( $request, $option, $values, $default ) {
+function relevanssi_legal_value( array $request, string $option, array $values, string $default ) {
 	$value = null;
 	if ( isset( $request[ $option ] ) ) {
 		$value = $default;
@@ -505,7 +514,7 @@ function relevanssi_legal_value( $request, $option, $values, $default ) {
  * @return int $val Returns < 0 if str1 is less than str2; > 0 if str1 is
  * greater than str2, and 0 if they are equal.
  */
-function relevanssi_mb_strcasecmp( $str1, $str2, $encoding = null ) {
+function relevanssi_mb_strcasecmp( string $str1, string $str2, ?string $encoding = null ) {
 	if ( ! function_exists( 'mb_internal_encoding' ) ) {
 		return strnatcasecmp( $str1, $str2 );
 	} else {
@@ -526,7 +535,7 @@ function relevanssi_mb_strcasecmp( $str1, $str2, $encoding = null ) {
  *
  * @return string Trimmed string.
  */
-function relevanssi_mb_trim( $string ) {
+function relevanssi_mb_trim( string $string ) {
 	$string = str_replace( chr( 194 ) . chr( 160 ), '', $string );
 	$string = str_replace( "\0", '', $string );
 	$string = preg_replace( '/(^\s+)|(\s+$)/us', '', $string );
@@ -541,7 +550,7 @@ function relevanssi_mb_trim( $string ) {
  *
  * @return string 'on' or 'off'.
  */
-function relevanssi_off_or_on( $request, $option ) {
+function relevanssi_off_or_on( array $request, string $option ) {
 	if ( isset( $request[ $option ] ) && 'off' !== $request[ $option ] ) {
 		return 'on';
 	}
@@ -555,7 +564,7 @@ function relevanssi_off_or_on( $request, $option ) {
  *
  * @return string The cleaned string.
  */
-function relevanssi_remove_quotes( $string ) {
+function relevanssi_remove_quotes( string $string ) {
 	return str_replace( array( '”', '“', '"' ), '', $string );
 }
 
@@ -570,7 +579,7 @@ function relevanssi_remove_quotes( $string ) {
  *
  * @return array The same array with quotes removed from the keys.
  */
-function relevanssi_remove_quotes_from_array_keys( $array ) {
+function relevanssi_remove_quotes_from_array_keys( array $array ) {
 	$array = array_keys( $array );
 	array_walk(
 		$array,
@@ -631,7 +640,7 @@ function relevanssi_return_off() {
  *
  * @return int|object|WP_Post The post object in the desired format.
  */
-function relevanssi_return_value( $post, $return_value ) {
+function relevanssi_return_value( WP_Post $post, string $return_value ) {
 	if ( 'id' === $return_value ) {
 		return $post->ID;
 	} elseif ( 'id=>parent' === $return_value ) {
@@ -649,7 +658,7 @@ function relevanssi_return_value( $post, $return_value ) {
  *
  * @return string Sanitized hex string, or an empty string.
  */
-function relevanssi_sanitize_hex_color( $color ) {
+function relevanssi_sanitize_hex_color( string $color ) {
 	if ( '' === $color ) {
 		return '';
 	}
@@ -675,7 +684,7 @@ function relevanssi_sanitize_hex_color( $color ) {
  * @return string If the option matches the value, returns 'selected', otherwise
  * returns an empty string.
  */
-function relevanssi_select( $option, $value ) {
+function relevanssi_select( string $option, string $value ) {
 	$selected = '';
 	if ( $option === $value ) {
 		$selected = 'selected';
@@ -693,7 +702,7 @@ function relevanssi_select( $option, $value ) {
  *
  * @return string The processed text.
  */
-function relevanssi_strip_invisibles( $text ) {
+function relevanssi_strip_invisibles( string $text ) {
 	$text = preg_replace(
 		array(
 			'@<style[^>]*?>.*?</style>@siu',
@@ -725,7 +734,7 @@ function relevanssi_strip_invisibles( $text ) {
  *
  * @return string The content without tags.
  */
-function relevanssi_strip_tags( $content ) {
+function relevanssi_strip_tags( string $content ) {
 	$content = relevanssi_strip_invisibles( $content );
 	$content = preg_replace( '/(<\/[^>]+?>)(<[^>\/][^>]*?>)/', '$1 $2', $content );
 	return strip_tags(
@@ -748,7 +757,7 @@ function relevanssi_strip_tags( $content ) {
  * @return mixed False, if no result or $offset outside the length of $haystack,
  * otherwise the position (which can be non-false 0!).
  */
-function relevanssi_stripos( $haystack, $needle, $offset = 0 ) {
+function relevanssi_stripos( string $haystack, string $needle, int $offset = 0 ) {
 	if ( $offset > relevanssi_strlen( $haystack ) ) {
 		return false;
 	}
@@ -815,7 +824,7 @@ function relevanssi_stripos( $haystack, $needle, $offset = 0 ) {
  *
  * @return int The length of the string.
  */
-function relevanssi_strlen( $s ) {
+function relevanssi_strlen( string $s ) {
 	if ( function_exists( 'mb_strlen' ) ) {
 		return mb_strlen( $s );
 	}
@@ -832,7 +841,7 @@ function relevanssi_strlen( $s ) {
  *
  * @return string $string The string in lowercase.
  */
-function relevanssi_strtolower( $string ) {
+function relevanssi_strtolower( string $string ) {
 	if ( ! function_exists( 'mb_strtolower' ) ) {
 		return strtolower( $string );
 	} else {
@@ -856,7 +865,7 @@ function relevanssi_strtolower( $string ) {
  *
  * @return string $string The string in lowercase.
  */
-function relevanssi_substr( $string, $start, $length = null ) {
+function relevanssi_substr( string $string, int $start, ?int $length = null ) {
 	if ( ! function_exists( 'mb_substr' ) ) {
 		return substr( $string, $start, $length );
 	} else {
@@ -903,7 +912,7 @@ function relevanssi_the_permalink() {
  * @param boolean $echo      If true, echo, otherwise return the result. Default true.
  * @param int     $post_id   The post ID. Default current post ID (in the Loop).
  */
-function relevanssi_the_tags( $before = null, $separator = ', ', $after = '', $echo = true, $post_id = null ) {
+function relevanssi_the_tags( string $before = null, string $separator = ', ', string $after = '', bool $echo = true, int $post_id = null ) {
 	$tag_list = get_the_tag_list( $before, $separator, $after, $post_id );
 	$found    = preg_match_all( '~<a href=".*?" rel="tag">(.*?)</a>~', $tag_list, $matches );
 	if ( $found ) {
@@ -980,7 +989,7 @@ function relevanssi_the_title( $before = true, string $after = '', bool $echo = 
  * @param array $request The _REQUEST array, passed as reference.
  * @param array $options An array of option names.
  */
-function relevanssi_turn_off_options( &$request, $options ) {
+function relevanssi_turn_off_options( array &$request, array $options ) {
 	array_walk(
 		$options,
 		function( $option ) use ( &$request ) {
@@ -1001,7 +1010,7 @@ function relevanssi_turn_off_options( &$request, $options ) {
  * @param boolean $positive If true, replace negative values and zeroes with
  * $default.
  */
-function relevanssi_update_floatval( $request, $option, $autoload = true, $default = 0, $positive = false ) {
+function relevanssi_update_floatval( array $request, string $option, bool $autoload = true, int $default = 0, bool $positive = false ) {
 	if ( isset( $request[ $option ] ) ) {
 		$value = floatval( $request[ $option ] );
 		if ( ! $value ) {
@@ -1022,7 +1031,7 @@ function relevanssi_update_floatval( $request, $option, $autoload = true, $defau
  * @param boolean $autoload Should the option autoload, default true.
  * @param int     $default  The default value if intval() fails, default 0.
  */
-function relevanssi_update_intval( $request, $option, $autoload = true, $default = 0 ) {
+function relevanssi_update_intval( array $request, string $option, bool $autoload = true, int $default = 0 ) {
 	if ( isset( $request[ $option ] ) ) {
 		$value = intval( $request[ $option ] );
 		if ( ! $value ) {
@@ -1041,7 +1050,7 @@ function relevanssi_update_intval( $request, $option, $autoload = true, $default
  * @param string  $default  The default value.
  * @param boolean $autoload Should the option autoload, default true.
  */
-function relevanssi_update_legal_value( $request, $option, $values, $default, $autoload = true ) {
+function relevanssi_update_legal_value( array $request, string $option, array $values, string $default, bool $autoload = true ) {
 	if ( isset( $request[ $option ] ) ) {
 		$value = $default;
 		if ( in_array( $request[ $option ], $values, true ) ) {
@@ -1058,7 +1067,7 @@ function relevanssi_update_legal_value( $request, $option, $values, $default, $a
  * @param string  $option   The key to check.
  * @param boolean $autoload Should the option autoload, default true.
  */
-function relevanssi_update_off_or_on( $request, $option, $autoload = true ) {
+function relevanssi_update_off_or_on( array $request, string $option, bool $autoload = true ) {
 	relevanssi_update_legal_value(
 		$request,
 		$option,
@@ -1075,7 +1084,7 @@ function relevanssi_update_off_or_on( $request, $option, $autoload = true ) {
  * @param string  $option   The key to check.
  * @param boolean $autoload Should the option autoload, default true.
  */
-function relevanssi_update_sanitized( $request, $option, $autoload = true ) {
+function relevanssi_update_sanitized( array $request, string $option, bool $autoload = true ) {
 	if ( isset( $request[ $option ] ) ) {
 		$value = sanitize_text_field( wp_unslash( $request[ $option ] ) );
 		update_option( $option, $value, $autoload );
