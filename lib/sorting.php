@@ -154,7 +154,7 @@ function relevanssi_get_compare_values( $key, $item_1, $item_2 ) {
 	if ( 'meta_value' === $key || 'meta_value_num' === $key ) {
 		global $wp_query;
 		// Get the name of the field from the global WP_Query.
-		$key = $wp_query->query_vars['meta_key'];
+		$key = $wp_query->query_vars['meta_key'] ?? null;
 
 		if ( empty( $key ) ) {
 			// If empty, try the Relevanssi meta_query.
