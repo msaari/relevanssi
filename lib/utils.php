@@ -374,6 +374,31 @@ function relevanssi_get_the_tags( $before = null, $separator = ', ', $after = ''
 }
 
 /**
+ * Returns the post title with highlighting.
+ *
+ * Reads the highlighted title from $post->post_highlighted_title. Uses the
+ * relevanssi_get_post() to fecth the post.
+ *
+ * @uses relevanssi_get_post()
+ *
+ * @param int|WP_Post $post The post ID or a post object.
+ *
+ * @return string The post title with highlights.
+ */
+function relevanssi_get_the_title( $post ) {
+	if ( is_numeric( $post ) ) {
+		$post = relevanssi_get_post( $post );
+	}
+	if ( ! is_object( $post ) ) {
+		return null;
+	}
+	if ( empty( $post->post_highlighted_title ) ) {
+		$post->post_highlighted_title = $post->post_title;
+	}
+	return $post->post_highlighted_title;
+}
+
+/**
  * Returns an imploded string if the option exists and is an array, an empty
  * string otherwise.
  *
