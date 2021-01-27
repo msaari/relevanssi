@@ -373,12 +373,12 @@ function relevanssi_get_term_taxonomy( int $term_id ) {
  * Replacement for get_the_tags() that does the same, but applies Relevanssi
  * search term highlighting on the results.
  *
- * @param string $before    What is printed before the tags, default null.
+ * @param string $before    What is printed before the tags, default ''.
  * @param string $separator The separator between items, default ', '.
  * @param string $after     What is printed after the tags, default ''.
  * @param int    $post_id   The post ID. Default current post ID (in the Loop).
  */
-function relevanssi_get_the_tags( string $before = null, string $separator = ', ', string $after = '', ?int $post_id = null ) {
+function relevanssi_get_the_tags( string $before = '', string $separator = ', ', string $after = '', int $post_id = 0 ) {
 	return relevanssi_the_tags( $before, $separator, $after, false, $post_id );
 }
 
@@ -514,11 +514,11 @@ function relevanssi_legal_value( array $request, string $option, array $values, 
  * @return int $val Returns < 0 if str1 is less than str2; > 0 if str1 is
  * greater than str2, and 0 if they are equal.
  */
-function relevanssi_mb_strcasecmp( string $str1, string $str2, ?string $encoding = null ) {
+function relevanssi_mb_strcasecmp( string $str1, string $str2, string $encoding = '' ) {
 	if ( ! function_exists( 'mb_internal_encoding' ) ) {
 		return strnatcasecmp( $str1, $str2 );
 	} else {
-		if ( null === $encoding ) {
+		if ( empty( $encoding ) ) {
 			$encoding = mb_internal_encoding();
 		}
 		return strnatcmp( mb_strtoupper( $str1, $encoding ), mb_strtoupper( $str2, $encoding ) );
@@ -855,17 +855,17 @@ function relevanssi_strtolower( string $string ) {
  * If multibyte string functions are available, returns mb_substr() and falls
  * back to substr() if multibyte functions are not available.
  *
- * @param string $string The source string.
- * @param int    $start  If start is non-negative, the returned string will
+ * @param string   $string The source string.
+ * @param int      $start  If start is non-negative, the returned string will
  * start at the start'th position in str, counting from zero. If start is
  * negative, the returned string will start at the start'th character from the
  * end of string.
- * @param int    $length Maximum number of characters to use from string. If
+ * @param int|null $length Maximum number of characters to use from string. If
  * omitted or null is passed, extract all characters to the end of the string.
  *
  * @return string $string The string in lowercase.
  */
-function relevanssi_substr( string $string, int $start, ?int $length = null ) {
+function relevanssi_substr( string $string, int $start, $length = null ) {
 	if ( ! function_exists( 'mb_substr' ) ) {
 		return substr( $string, $start, $length );
 	} else {
@@ -906,13 +906,13 @@ function relevanssi_the_permalink() {
  * Replacement for the_tags() that does the same, but applies Relevanssi search term
  * highlighting on the results.
  *
- * @param string  $before    What is printed before the tags, default null.
+ * @param string  $before    What is printed before the tags, default ''.
  * @param string  $separator The separator between items, default ', '.
  * @param string  $after     What is printed after the tags, default ''.
  * @param boolean $echo      If true, echo, otherwise return the result. Default true.
  * @param int     $post_id   The post ID. Default current post ID (in the Loop).
  */
-function relevanssi_the_tags( string $before = null, string $separator = ', ', string $after = '', bool $echo = true, int $post_id = null ) {
+function relevanssi_the_tags( string $before = '', string $separator = ', ', string $after = '', bool $echo = true, int $post_id = 0 ) {
 	$tag_list = get_the_tag_list( $before, $separator, $after, $post_id );
 	$found    = preg_match_all( '~<a href=".*?" rel="tag">(.*?)</a>~', $tag_list, $matches );
 	if ( $found ) {
