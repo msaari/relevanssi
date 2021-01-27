@@ -76,9 +76,9 @@ function relevanssi_index_acf( &$insert_data, $post_id, $field_name, $field_valu
 	 * string. If your custom field values are arrays or objects, use this
 	 * filter hook to convert them into strings.
 	 *
-	 * @param any    The ACF field value.
-	 * @param string The ACF field name.
-	 * @param int    The post ID.
+	 * @param mixed  $field_content The ACF field value.
+	 * @param string $field_name    The ACF field name.
+	 * @param int    $post_id       The post ID.
 	 *
 	 * @return string|int The field value.
 	 */

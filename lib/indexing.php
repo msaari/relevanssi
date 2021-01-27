@@ -1437,8 +1437,8 @@ function relevanssi_index_content( &$insert_data, $post_object, $min_word_length
 	 *
 	 * @author Alexander Gieg
 	 *
-	 * @param string              The additional content.
-	 * @param object $post_object The post object.
+	 * @param string               The additional content.
+	 * @param WP_Post $post_object The post object.
 	 */
 	$additional_content = trim( apply_filters( 'relevanssi_content_to_index', '', $post_object ) );
 	if ( ! empty( $additional_content ) ) {
