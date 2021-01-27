@@ -719,11 +719,8 @@ function relevanssi_get_post_type( $post_id ) {
 	global $relevanssi_post_array;
 
 	$original_id = $post_id;
-	$blog_id     = -1;
-	if ( function_exists( 'get_current_blog_id' ) ) {
-		$blog_id = get_current_blog_id();
-		$post_id = $blog_id . '|' . $post_id;
-	}
+	$blog_id     = get_current_blog_id();
+	$post_id     = $blog_id . '|' . $post_id;
 
 	if ( isset( $relevanssi_post_array[ $post_id ] ) ) {
 		return $relevanssi_post_array[ $post_id ]->post_type;
