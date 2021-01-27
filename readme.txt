@@ -138,6 +138,7 @@ Each document database is full of useless words. All the little words that appea
 * Changed behaviour: `relevanssi_the_title()` now supports the same parameters as `the_title()`, so you can just replace `the_title()` with it and keep everything else the same. The old behaviour is still supported.
 * Minor fix: The Oxygen compatibility made it impossible to index other custom fields than the Oxygen `ct_builder_shortcodes`. This has been improved now.
 * Minor fix: Old legacy scripts that caused Javascript warnings on admin pages have been removed.
+* Minor fix: In some cases, having less than or greater than symbols in PDF content would block that PDF content from being indexed.
 
 = 4.10.2 =
 * New feature: You can force Relevanssi to be active by setting the query variable `relevanssi` to `true`. Thanks to Jan Willem Oostendorp.
