@@ -915,14 +915,14 @@ function relevanssi_do_query( &$query ) {
 		 * Filters whether the logged query includes synonyms or not.
 		 *
 		 * By default, Relevanssi logs the original query without the added
-		 * synonyms. If this filter hook returns true, Relevanssi will instead
-		 * log the query that contains the synonyms.
+		 * synonyms. This filters allows you to change this.
 		 *
-		 * @param boolean If true, log with synonyms. Default false.
+		 * @param string   $q_no_synonyms Default log sting without synonym.
+		 * @param string   $q             Searched string with synonym.
+		 * @param WP_Query $query         The WP_Query object which ran the
+		 *                                actual search.
 		 */
-		$query_string = apply_filters( 'relevanssi_log_synonyms', false )
-			? $q
-			: $q_no_synonyms;
+		$query_string = apply_filters( 'relevanssi_log_synonyms', $q_no_synonyms, $q, $query );
 		relevanssi_update_log( $query_string, $hits_count );
 	}
 
