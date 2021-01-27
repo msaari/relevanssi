@@ -79,6 +79,9 @@ END;
 	 * @return string An excerpt that should have a <strong> highlight in it.
 	 */
 	public function test_excerpts() {
+		global $relevanssi_post_array;
+		$relevanssi_post_array = array();
+
 		// Search for "keyword" in posts.
 		$args = array(
 			's'           => 'keyword',
@@ -117,6 +120,9 @@ END;
 	 * Test ellipsis.
 	 */
 	public function test_ellipsis() {
+		global $relevanssi_post_array;
+		$relevanssi_post_array = array();
+
 		// Search for "Lorem ipsum" in posts.
 		$args = array(
 			's'           => 'Lorem ipsum',
@@ -170,6 +176,9 @@ END;
 	 * words ending in s and 's and s'.
 	 */
 	public function test_apostrophes() {
+		global $relevanssi_post_array;
+		$relevanssi_post_array = array();
+
 		$query = new WP_Query();
 
 		$args = array(
@@ -251,6 +260,9 @@ END;
 	 * Test excerpts in admin.
 	 */
 	public function test_excerpts_admin() {
+		global $relevanssi_post_array;
+		$relevanssi_post_array = array();
+
 		// Search for "keyword" in posts.
 		$args = array(
 			's'           => 'keyword',
@@ -275,6 +287,9 @@ END;
 			'numberposts' => -1,
 			'post_status' => 'publish',
 		);
+
+		global $relevanssi_post_array;
+		$relevanssi_post_array = array();
 
 		$query->parse_query( $args );
 		$posts          = relevanssi_do_query( $query );

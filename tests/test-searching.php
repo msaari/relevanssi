@@ -201,7 +201,7 @@ class SearchingTest extends WP_UnitTestCase {
 				$title = substr( md5( wp_rand() ), 0, 7 );
 			}
 
-			$post_date = date( 'Y-m-d', time() - ( $counter * MONTH_IN_SECONDS ) );
+			$post_date = gmdate( 'Y-m-d', time() - ( $counter * MONTH_IN_SECONDS ) );
 
 			$author_id = self::$post_author_id;
 			if ( $counter < 1 ) {
@@ -774,8 +774,8 @@ class SearchingTest extends WP_UnitTestCase {
 	 */
 	public function test_date_query_search() {
 		$date_query = array(
-			'year' => date( 'Y' ),
-			'week' => date( 'W' ),
+			'year' => gmdate( 'Y' ),
+			'week' => gmdate( 'W' ),
 		);
 
 		$args = array(
@@ -804,8 +804,8 @@ class SearchingTest extends WP_UnitTestCase {
 			's'           => 'content',
 			'post_type'   => 'post',
 			'numberposts' => -1,
-			'year'        => date( 'Y' ),
-			'w'           => date( 'W' ),
+			'year'        => gmdate( 'Y' ),
+			'w'           => gmdate( 'W' ),
 		);
 
 		$query = self::results_from_args( $args )['query'];
@@ -888,7 +888,7 @@ class SearchingTest extends WP_UnitTestCase {
 			$counter++;
 		}
 
- 		wp_set_current_user( self::$post_author_id );
+		wp_set_current_user( self::$post_author_id );
 
 		$args = array(
 			's'           => 'content',
@@ -1141,6 +1141,9 @@ class SearchingTest extends WP_UnitTestCase {
 	 * Test category parameters.
 	 */
 	public function test_category_parameters() {
+		global $relevanssi_post_array;
+		$relevanssi_post_array = array();
+
 		$cat_ids  = self::$cat_ids;
 		$category = get_term_by( 'id', $cat_ids[0], 'category' );
 
