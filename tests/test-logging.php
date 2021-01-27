@@ -58,7 +58,7 @@ class LoggingTest extends WP_UnitTestCase {
 			),
 			array(
 				'query' => 'test',
-			),
+			)
 		);
 
 		update_option( 'relevanssi_trim_logs', 1 );
