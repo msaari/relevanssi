@@ -38,6 +38,7 @@ function update_relevanssi_options() {
 		if ( RELEVANSSI_PREMIUM ) {
 			update_option( 'relevanssi_index_terms', array_keys( $index_terms_list ), false );
 		}
+		do_action( 'relevanssi_indexing_options', $_REQUEST );
 	}
 
 	if ( 'searching' === $_REQUEST['tab'] ) {

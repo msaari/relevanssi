@@ -12,6 +12,8 @@
 
 add_filter( 'relevanssi_do_not_index', 'relevanssi_yoast_noindex', 10, 2 );
 add_filter( 'relevanssi_indexing_restriction', 'relevanssi_yoast_exclude' );
+add_action( 'relevanssi_indexing_tab_advanced', 'relevanssi_yoast_form', 20 );
+add_action( 'relevanssi_indexing_options', 'relevanssi_yoast_options' );
 
 /**
  * Blocks indexing of posts marked "noindex" in the Yoast SEO settings.
@@ -57,4 +59,36 @@ function relevanssi_yoast_exclude( $restriction ) {
 		AND meta_value = '1' ) ";
 	$restriction['reason'] .= ' Yoast SEO';
 	return $restriction;
+}
+
+/**
+ * Prints out the form fields for disabling the feature.
+ */
+function relevanssi_yoast_form() {
+	$seo_noindex = get_option( 'relevanssi_seo_noindex' );
+	$seo_noindex = relevanssi_check( $seo_noindex );
+
+	?>
+	<tr>
+		<th scope="row">
+			<label for='relevanssi_seo_noindex'><?php esc_html_e( 'Use Yoast SEO noindex', 'relevanssi' ); ?></label>
+		</th>
+		<td>
+			<label for='relevanssi_seo_noindex'>
+				<input type='checkbox' name='relevanssi_seo_noindex' id='relevanssi_seo_noindex' <?php echo esc_attr( $seo_noindex ); ?> />
+				<?php esc_html_e( 'Use Yoast SEO noindex.', 'relevanssi' ); ?>
+			</label>
+			<p class="description"><?php esc_html_e( 'If checked, Relevanssi will not index posts marked as "No index" in Yoast SEO settings.', 'relevanssi' ); ?></p>
+		</td>
+	</tr>
+	<?php
+}
+
+/**
+ * Saves the SEO No index option.
+ *
+ * @param array $request An array of option values from the request.
+ */
+function relevanssi_yoast_options( array $request ) {
+	relevanssi_update_off_or_on( $request, 'relevanssi_seo_noindex', true );
 }

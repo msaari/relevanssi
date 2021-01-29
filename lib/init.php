@@ -178,6 +178,10 @@ function relevanssi_init() {
 		require_once 'compatibility/yoast-seo.php';
 	}
 
+	if ( defined( 'AIOSEO_DIR' ) ) {
+		require_once 'compatibility/aioseo.php';
+	}
+
 	if ( function_exists( 'seopress_get_toggle_titles_option' ) && '1' === seopress_get_toggle_titles_option() ) {
 		require_once 'compatibility/seopress.php';
 	}
