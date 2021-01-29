@@ -1112,7 +1112,9 @@ function relevanssi_get_forbidden_taxonomies() {
 /**
  * Filters out unwanted custom fields.
  *
- * Added to the relevanssi_custom_field_value filter hook.
+ * Added to the relevanssi_custom_field_value filter hook. This function removes
+ * visible custom fields that are known to contain unwanted content and also
+ * removes ACF meta fields (fields where content begins with `field_`).
  *
  * @see relevanssi_index_custom_fields()
  *
@@ -1129,6 +1131,16 @@ function relevanssi_filter_custom_fields( $values, $field ) {
 	if ( isset( $unwanted_custom_fields[ $field ] ) ) {
 		$values = array();
 	}
+
+	$values = array_map(
+		function( $value ) {
+			if ( 'field_' === substr( $value, 0, 6 ) ) {
+				return '';
+			}
+		},
+		$values
+	);
+
 	return $values;
 }
 
