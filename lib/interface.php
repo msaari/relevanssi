@@ -561,7 +561,18 @@ function relevanssi_add_admin_scripts( $hook ) {
 		'settings_page_relevanssi/relevanssi',
 		'dashboard_page_relevanssi_admin_search',
 	);
-	if ( ! in_array( $hook, $acceptable_hooks, true ) ) {
+	/**
+	 * Filters the hooks where Relevanssi scripts are enqueued.
+	 *
+	 * By default Relevanssi only enqueues the Relevanssi admin javascript on
+	 * specific admin page hooks to avoid polluting the admin. If you want to
+	 * move things around, this means the javascript bits won't work. You can
+	 * introduce new hooks with this filter hook.
+	 *
+	 * @param array An array of page hook strings where Relevanssi scripts are
+	 * added.
+	 */
+	if ( ! in_array( $hook, apply_filters( 'relevanssi_acceptable_hooks', $acceptable_hooks ), true ) ) {
 		return;
 	}
 
