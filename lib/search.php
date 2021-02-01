@@ -1023,6 +1023,16 @@ function relevanssi_do_query( &$query ) {
 	$query->posts      = $posts;
 	$query->post_count = count( $posts );
 
+	/**
+	 * If true, Relevanssi adds a list of all post IDs found in the query
+	 * object in $query->relevanssi_all_results.
+	 *
+	 * @param boolean If true, enable the feature. Default false.
+	 */
+	if ( apply_filters( 'relevanssi_add_all_results', false ) ) {
+		$query->relevanssi_all_results = wp_list_pluck( $hits, 'ID' );
+	}
+
 	$relevanssi_active = false;
 
 	return $posts;
