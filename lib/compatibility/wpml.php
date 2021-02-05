@@ -11,6 +11,7 @@
  */
 
 add_filter( 'relevanssi_hits_filter', 'relevanssi_wpml_filter' );
+add_filter( 'relevanssi_tag_before_tokenize', 'relevanssi_wpml_term_fix', 10, 4 );
 
 /**
  * Filters posts based on WPML language.
@@ -103,4 +104,46 @@ function relevanssi_wpml_filter( $data ) {
 	}
 
 	return $data;
+}
+
+/**
+ * Fixes translated term indexing for WPML.
+ *
+ * WPML indexed translated terms based on current admin language, not the post
+ * language. This filter changes the term indexing to match the post language.
+ *
+ * @param string $term_content All terms in the taxonomy as a string.
+ * @param array  $terms        All the term objects in the current taxonomy.
+ * @param string $taxonomy     The taxonomy name.
+ * @param int    $post_id      The post ID.
+ *
+ * @return string The term names as a string.
+ */
+function relevanssi_wpml_term_fix( string $term_content, array $terms, string $taxonomy, int $post_id ) {
+	$post_language = apply_filters( 'wpml_post_language_details', null, $post_id );
+	if ( ! is_wp_error( $post_language ) ) {
+		$term_content = '';
+
+		global $sitepress;
+		remove_filter( 'get_term', array( $sitepress, 'get_term_adjust_id' ), 1, 1 );
+
+		foreach ( $terms as $term ) {
+			$term = get_term(
+				apply_filters(
+					'wpml_object_id',
+					$term->term_id,
+					$taxonomy,
+					true,
+					$post_language['language_code']
+				),
+				$taxonomy
+			);
+
+			$term_content .= ' ' . $term->name;
+		}
+
+		add_filter( 'get_term', array( $sitepress, 'get_term_adjust_id' ), 1, 1 );
+	}
+
+	return $term_content;
 }
