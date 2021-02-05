@@ -1088,6 +1088,8 @@ function relevanssi_get_forbidden_post_types() {
 		'acfe-dop',             // ACF Extended.
 		'acfe-dpt',             // ACF Extended.
 		'acfe-dt',              // ACF Extended.
+		'um_form',              // Ultimate Member.
+		'um_directory',         // Ultimate Member.
 	);
 }
 
