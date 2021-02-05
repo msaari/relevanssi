@@ -453,7 +453,7 @@ function relevanssi_create_database_tables( $relevanssi_db_version ) {
 		}
 
 		if ( $docs_exists ) { // This index was removed in 4.9.2 / 2.11.2.
-			$sql = "DROP INDEX docs ON $relevanssi_table (doc)";
+			$sql = "DROP INDEX docs ON $relevanssi_table";
 			$wpdb->query( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery
 		}
 
