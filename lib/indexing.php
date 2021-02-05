@@ -631,12 +631,24 @@ function relevanssi_index_taxonomy_terms( &$insert_data, $post_id, $taxonomy, $d
 	/**
 	 * Filters the taxonomy term content before indexing.
 	 *
-	 * @param string The taxonomy term content.
-	 * @param string The taxonomy term name.
-	 * @param string The taxonomy.
-	 * @param int    The post ID.
+	 * The taxonomy term content is presented as a string of term names
+	 * separated by spaces. If you want to edit this, it's probably best to just
+	 * reconstruct it from the taxonomy term objects contained in the second
+	 * parameter.
+	 *
+	 * @param string The taxonomy term content as a string.
+	 * @param array  An array containing the taxonomy term objects for this
+	 * taxonomy.
+	 * @param string The taxonomy name.
+	 * @param int    The post ID for the current post.
 	 */
-	$term_string = apply_filters( 'relevanssi_tag_before_tokenize', trim( $term_string ), $post_term, $taxonomy, $post_id );
+	$term_string = apply_filters(
+		'relevanssi_tag_before_tokenize',
+		trim( $term_string ),
+		$post_taxonomy_terms,
+		$taxonomy,
+		$post_id
+	);
 
 	/** This filter is documented in lib/indexing.php */
 	$term_tokens = apply_filters(
