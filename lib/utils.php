@@ -219,11 +219,13 @@ function relevanssi_get_current_language( bool $locale = true ) {
 				$language_code = apply_filters( 'wpml_element_language_code', null, $element );
 
 				$language_details['language_code'] = $language_code;
-			} elseif ( ! isset( $post->user_id ) ) {
+			} elseif ( ! isset( $post->user_id ) && 'post_type' !== $post->post_type ) {
 				// Users don't have language details.
 				$language_details = apply_filters( 'wpml_post_language_details', null, $post->ID );
 			}
-
+			if ( is_wp_error( $language_details ) ) {
+				$current_language = apply_filters( 'wpml_current_language', null );
+			}
 			$current_language = $language_details[ $locale ? 'locale' : 'language_code' ];
 		} else {
 			if ( $locale ) {
