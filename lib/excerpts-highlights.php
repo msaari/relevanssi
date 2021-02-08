@@ -395,7 +395,7 @@ function relevanssi_create_excerpts( $content, $terms, $query, $excerpt_length =
 		);
 		$excerpts[] = $excerpt;
 	} else {
-		if ( function_exists( 'relevanssi_extract_multiple_excerpts' ) ) {
+		if ( function_exists( 'relevanssi_extract_multiple_excerpts' ) && get_option( 'relevanssi_max_excerpts', 1 ) > 1 ) {
 			$excerpts = relevanssi_extract_multiple_excerpts(
 				array_keys( $terms ),
 				$content,
@@ -1135,8 +1135,29 @@ function relevanssi_extract_relevant_words( $terms, $content, $excerpt_length = 
 	$excerpt     = '';
 	$count_words = count( $words );
 	$start       = false;
+	$gap         = 0;
 
 	$best_excerpt_term_hits = -1;
+
+	$excerpt_candidates = $count_words / $excerpt_length;
+	if ( $excerpt_candidates > 200 ) {
+		/**
+		 * Adjusts the gap between excerpt candidates.
+		 *
+		 * The default value for the gap is number of words / 200 minus the
+		 * excerpt length, which means Relevanssi tries to create 200 excerpts.
+		 *
+		 * @param int The gap between excerpt candidates.
+		 * @param int $count_words    The number of words in the content.
+		 * @param int $excerpt_length The length of the excerpt.
+		 */
+		$gap = apply_filters(
+			'relevanssi_excerpt_gap',
+			floor( $count_words / 200 - $excerpt_length ),
+			$count_words,
+			$excerpt_length
+		);
+	}
 
 	while ( $offset < $count_words ) {
 		if ( $offset + $excerpt_length > $count_words ) {
@@ -1175,7 +1196,15 @@ function relevanssi_extract_relevant_words( $terms, $content, $excerpt_length = 
 			}
 		}
 
-		$offset += $excerpt_length;
+		$offset += $excerpt_length + $gap;
+	}
+
+	if ( '' === $excerpt && $gap > 0 ) {
+		$result = relevanssi_get_first_match( $words, $terms, $excerpt_length );
+
+		$excerpt                = $result['excerpt'];
+		$start                  = $result['start'];
+		$best_excerpt_term_hits = $result['best_excerpt_term_hits'];
 	}
 
 	if ( '' === $excerpt ) {
@@ -1190,6 +1219,51 @@ function relevanssi_extract_relevant_words( $terms, $content, $excerpt_length = 
 	}
 
 	return array( trim( $excerpt ), $best_excerpt_term_hits, $start );
+}
+
+/**
+ * Finds the first match in the content.
+ *
+ * Looks for search terms in the post content and stops immediately when the
+ * first match is found. Then an excerpt is returned where the match is in the
+ * middle of the excerpt.
+ *
+ * @param array $words          An array of words to look in.
+ * @param array $terms          An array of search terms to look for.
+ * @param int   $excerpt_length The length of the excerpt.
+ *
+ * @return array The found excerpt in 'excerpt', a boolean in 'start' that's
+ * true if the excerpt was from the start of the content and the number of
+ * matches found in the excerpt in 'best_excerpt_term_hits'.
+ */
+function relevanssi_get_first_match( array $words, array $terms, int $excerpt_length ) {
+	$offset                 = 0;
+	$excerpt                = '';
+	$start                  = false;
+	$best_excerpt_term_hits = 0;
+
+	foreach ( $words as $word ) {
+		if ( in_array( $word, $terms, true ) ) {
+			$offset = floor( $offset - $excerpt_length / 2 );
+			if ( $offset < 0 ) {
+				$offset = 0;
+			}
+			$excerpt_slice = array_slice( $words, $offset, $excerpt_length );
+			$excerpt       = ' ' . implode( ' ', $excerpt_slice );
+			$start         = $offset ? false : true;
+			$count_matches = relevanssi_count_matches( $terms, $excerpt );
+
+			$best_excerpt_term_hits = $count_matches;
+			break;
+		}
+		$offset++;
+	}
+
+	return array(
+		'excerpt'                => $excerpt,
+		'start'                  => $start,
+		'best_excerpt_term_hits' => $best_excerpt_term_hits,
+	);
 }
 
 /**
