@@ -1,13 +1,16 @@
 {
     "name": "msaari/relevanssi",
     "description": "A WordPress search plugin",
-    "version": "4.11.1",
-    "source": {
-        "url": "https://github.com/msaari/relevanssi.git",
-        "type": "git",
-        "reference": "origin/master"
+    "type": "wordpress-plugin",
+    "homepage": "https://www.relevanssi.com",
+    "license": "GPL-3.0-only",
+    "support": {
+        "source": "https://github.com/msaari/relevanssi"
+    },
+    "require": {
+        "php": "^7.0 || ^8.0"
     },
     "require-dev": {
-        "rask/wp-test-framework": "*"
+        "rask/wp-test-framework": "^0.2.0"
     }
 }
