@@ -5,12 +5,28 @@
     "homepage": "https://www.relevanssi.com",
     "license": "GPL-3.0-only",
     "support": {
-        "source": "https://github.com/msaari/relevanssi"
+        "source": "https://github.com/msaari/relevanssi",
+        "forum": "https://wordpress.org/support/plugin/relevanssi/",
+        "issues": "https://github.com/msaari/relevanssi/issues",
+        "docs": "https://www.relevanssi.com/user-manual/"
     },
+    "authors": [
+        {
+            "name": "Mikko Saari",
+            "email": "mikko@mikkosaari.fi",
+            "homepage": "https://www.mikkosaari.fi/",
+            "role": "Developer"
+        }
+    ],
     "require": {
         "php": "^7.0 || ^8.0"
     },
     "require-dev": {
         "rask/wp-test-framework": "^0.2.0"
-    }
+    },
+    "keywords": [
+        "search",
+        "WordPress",
+        "plugin"
+    ]
 }
