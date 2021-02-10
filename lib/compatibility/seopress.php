@@ -28,6 +28,10 @@ add_action( 'relevanssi_indexing_options', 'relevanssi_seopress_options' );
  * 'seopress'. The value may also be a boolean.
  */
 function relevanssi_seopress_noindex( $do_not_index, $post_id ) {
+	if ( 'on' === get_option( 'relevanssi_seo_noindex' ) ) {
+		return $do_not_index;
+	}
+
 	$noindex = get_post_meta( $post_id, '_seopress_robots_index', true );
 	if ( 'yes' === $noindex ) {
 		$do_not_index = 'SEOPress';
@@ -45,6 +49,10 @@ function relevanssi_seopress_noindex( $do_not_index, $post_id ) {
  * query restriction to modify, 'reason' for the reason of restriction.
  */
 function relevanssi_seopress_exclude( $restriction ) {
+	if ( 'on' === get_option( 'relevanssi_seo_noindex' ) ) {
+		return $restriction;
+	}
+
 	global $wpdb;
 	// Backwards compatibility code for 2.8.0, remove at some point.
 	if ( is_string( $restriction ) ) {

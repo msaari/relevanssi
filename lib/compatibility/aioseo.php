@@ -27,6 +27,9 @@ add_action( 'relevanssi_indexing_options', 'relevanssi_aioseo_options' );
  * 'aioseo_seo'. The value may also be a boolean.
  */
 function relevanssi_aioseo_noindex( bool $do_not_index, int $post_id ) {
+	if ( 'on' !== get_option( 'relevanssi_seo_noindex' ) ) {
+		return $do_not_index;
+	}
 	$noindex_posts = relevanssi_aioseo_get_noindex_posts();
 	if ( in_array( $post_id, $noindex_posts, true ) ) {
 		$do_not_index = 'All-in-One SEO';
@@ -44,6 +47,10 @@ function relevanssi_aioseo_noindex( bool $do_not_index, int $post_id ) {
  * query restriction to modify, 'reason' for the reason of restriction.
  */
 function relevanssi_aioseo_exclude( array $restriction ) {
+	if ( 'on' !== get_option( 'relevanssi_seo_noindex' ) ) {
+		return $restriction;
+	}
+
 	global $wpdb;
 
 	$restriction['mysql']  .= " AND post.ID NOT IN (SELECT post_id FROM

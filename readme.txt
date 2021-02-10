@@ -140,6 +140,7 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: WPML couldn't digest post type archives in the search results. Relevanssi now handles that and also takes errors from WPML more gracefully.
 * Minor fix: Taxonomy terms in WPML were not indexed correctly. Instead of the post language, the current language was used, so if your admin dashboard is in English, German posts would get English translations of the terms, not German. This is now fixed.
 * Minor fix: Excerpt creation is now faster when multiple excerpts are not used.
+* Minor fix: The SEO plugin noindex setting did not actually work. That has been fixed now.
 
 = 4.11.1 =
 * Major fix: The type hinting introduced for some functions turned out to be too strict, causing fatal errors. The type hinting has been relaxed (using nullable types would help, but that's a PHP 7.4 feature, and we don't want that).

@@ -28,6 +28,10 @@ add_action( 'relevanssi_indexing_options', 'relevanssi_seoframework_options' );
  * 'SEO Framework'. The value may also be a boolean.
  */
 function relevanssi_seoframework_noindex( $do_not_index, $post_id ) {
+	if ( 'on' === get_option( 'relevanssi_seo_noindex' ) ) {
+		return $do_not_index;
+	}
+
 	$noindex = get_post_meta( $post_id, 'exclude_local_search', true );
 	if ( '1' === $noindex ) {
 		$do_not_index = 'SEO Framework';
@@ -46,6 +50,10 @@ function relevanssi_seoframework_noindex( $do_not_index, $post_id ) {
  * query restriction to modify, 'reason' for the reason of restriction.
  */
 function relevanssi_seoframework_exclude( $restriction ) {
+	if ( 'on' === get_option( 'relevanssi_seo_noindex' ) ) {
+		return $restriction;
+	}
+
 	global $wpdb;
 
 	$restriction['mysql']  .= " AND post.ID NOT IN (SELECT post_id FROM

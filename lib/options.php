@@ -31,6 +31,7 @@ function update_relevanssi_options() {
 				'relevanssi_index_author',
 				'relevanssi_index_excerpt',
 				'relevanssi_index_image_files',
+				'relevanssi_seo_noindex',
 			)
 		);
 		relevanssi_update_intval( $_REQUEST, 'relevanssi_min_word_length', true, 3 );
