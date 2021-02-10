@@ -642,7 +642,7 @@ function relevanssi_return_off() {
  *
  * @return int|object|WP_Post The post object in the desired format.
  */
-function relevanssi_return_value( object $post, string $return_value ) {
+function relevanssi_return_value( $post, string $return_value ) {
 	if ( 'id' === $return_value ) {
 		return $post->ID;
 	} elseif ( 'id=>parent' === $return_value ) {
