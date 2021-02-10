@@ -22,11 +22,18 @@
         "php": "^7.0 || ^8.0"
     },
     "require-dev": {
-        "rask/wp-test-framework": "^0.2.0"
+        "rask/wp-test-framework": "^0.2.0",
+        "squizlabs/php_codesniffer": "^3.5",
+        "dealerdirect/phpcodesniffer-composer-installer": "^0.7.1",
+        "phpcompatibility/php-compatibility": "^9.3",
+        "phpcompatibility/phpcompatibility-wp": "^2.1"
     },
     "keywords": [
         "search",
         "WordPress",
         "plugin"
-    ]
+    ],
+    "scripts": {
+        "lint": "phpcs -p -s"
+    }
 }
