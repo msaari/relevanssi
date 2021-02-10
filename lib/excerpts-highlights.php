@@ -250,7 +250,9 @@ function relevanssi_do_excerpt( $t_post, $query, $excerpt_length = null, $excerp
 			}
 		}
 
-		$excerpt['text'] = relevanssi_close_tags( $excerpt['text'] );
+		if ( ! empty( $excerpt['text'] ) ) {
+			$excerpt['text'] = relevanssi_close_tags( $excerpt['text'] );
+		}
 
 		if ( ! $whole_post_excerpted ) {
 			if ( ! $excerpt['start'] && ! empty( $excerpt['text'] ) ) {
