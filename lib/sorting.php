@@ -234,6 +234,9 @@ function relevanssi_get_compare_values( $key, $item_1, $item_2 ) {
 		$key2 = relevanssi_flatten_array( $key2 );
 	}
 
+	$key1 = $key1 ?? '';
+	$key2 = $key2 ?? '';
+
 	$keys = array(
 		'key1' => $key1,
 		'key2' => $key2,
