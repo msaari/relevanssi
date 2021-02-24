@@ -135,7 +135,7 @@ Each document database is full of useless words. All the little words that appea
 == Changelog ==
 = 4.12.0 =
 * New feature: New filter hook `relevanssi_phrase_queries` can be used to add phrase matching queries to support more content types.
-
+* Minor fix: In some cases Relevanssi wouldn't highlight the last word of the title. This is more reliable now.
 
 = 4.11.2 =
 * New feature: New filter hook `relevanssi_excerpt_gap` lets you adjust the first line of excerpt optimization.

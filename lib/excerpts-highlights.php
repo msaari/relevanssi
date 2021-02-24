@@ -633,6 +633,11 @@ function relevanssi_highlight_terms( $content, $query, $convert_entities = false
 			$replace = $start_emp_token . '\\1' . $end_emp_token;
 		}
 
+		// Add an extra space so that the regex that looks for a non-word
+		// character after the search term will find one, even if the word is
+		// at the end of the content (especially in titles).
+		$content .= ' ';
+
 		$content = trim(
 			preg_replace(
 				$regex,
@@ -640,7 +645,6 @@ function relevanssi_highlight_terms( $content, $query, $convert_entities = false
 				' ' . $content
 			)
 		);
-
 		/**
 		 * The method here leaves extra spaces or HTML tag closing brackets
 		 * inside the highlighting. That is cleaned away here.
