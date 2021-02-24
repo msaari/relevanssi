@@ -516,7 +516,7 @@ function relevanssi_legal_value( array $request, string $option, array $values, 
  * @return int $val Returns < 0 if str1 is less than str2; > 0 if str1 is
  * greater than str2, and 0 if they are equal.
  */
-function relevanssi_mb_strcasecmp( string $str1, string $str2, string $encoding = '' ) {
+function relevanssi_mb_strcasecmp( $str1, $str2, $encoding = '' ) : int {
 	if ( ! function_exists( 'mb_internal_encoding' ) ) {
 		return strnatcasecmp( $str1, $str2 );
 	} else {
