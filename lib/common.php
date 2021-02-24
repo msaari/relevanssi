@@ -528,7 +528,14 @@ function relevanssi_prevent_default_request( $request, $query ) {
  * @return int[] An array of tokens as the keys and their frequency as the
  * value.
  */
-function relevanssi_tokenize( $string, $remove_stops = true, $min_word_length = -1 ) {
+function relevanssi_tokenize( $string, $remove_stops = true, int $min_word_length = -1 ) : array {
+	$string_for_phrases = is_array( $string ) ? implode( ' ', $string ) : $string;
+	$phrases            = relevanssi_extract_phrases( $string_for_phrases );
+	$phrase_words       = array();
+	foreach ( $phrases as $phrase ) {
+		$phrase_words = array_merge( $phrase_words, explode( ' ', $phrase ) );
+	}
+
 	$tokens = array();
 	if ( is_array( $string ) ) {
 		// If we get an array, tokenize each string in the array.
@@ -593,12 +600,12 @@ function relevanssi_tokenize( $string, $remove_stops = true, $min_word_length = 
 			$accept = false;
 		}
 
-		if ( RELEVANSSI_PREMIUM ) {
+		if ( RELEVANSSI_PREMIUM && ! in_array( $token, $phrase_words, true ) ) {
 			/**
 			 * Fires Premium tokenizer.
 			 *
-			 * Filters the token through the Relevanssi Premium tokenizer to add some
-			 * Premium features to the tokenizing (mostly stemming).
+			 * Filters the token through the Relevanssi Premium tokenizer to add
+			 * some Premium features to the tokenizing (mostly stemming).
 			 *
 			 * @param string $token Search query token.
 			 */
