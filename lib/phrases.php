@@ -18,7 +18,7 @@
  *
  * @return array An array of phrases (strings).
  */
-function relevanssi_extract_phrases( $query ) {
+function relevanssi_extract_phrases( string $query ) {
 	// iOS uses “” as the default quotes, so Relevanssi needs to understand
 	// that as well.
 	$normalized_query = str_replace( array( '”', '“' ), '"', $query );
@@ -83,11 +83,9 @@ function relevanssi_recognize_phrases( $search_query, $operator = 'AND' ) {
 		return $all_queries;
 	}
 
-	$custom_fields    = relevanssi_get_custom_fields();
-	$taxonomies       = get_option( 'relevanssi_index_taxonomies_list', array() );
-	$excerpts         = get_option( 'relevanssi_index_excerpt', 'off' );
-	$index_pdf_parent = get_option( 'relevanssi_index_pdf_parent' );
-
+	$custom_fields  = relevanssi_get_custom_fields();
+	$taxonomies     = get_option( 'relevanssi_index_taxonomies_list', array() );
+	$excerpts       = get_option( 'relevanssi_index_excerpt', 'off' );
 	$phrase_queries = array();
 	$queries        = array();
 
@@ -115,17 +113,19 @@ function relevanssi_recognize_phrases( $search_query, $operator = 'AND' ) {
 			$phrases,
 			$taxonomies,
 			$custom_fields,
-			$excerpts,
-			$index_pdf_parent
+			$excerpts
 		)
 	);
 
 	$phrase_queries = array();
 
 	foreach ( $queries as $phrase => $p_queries ) {
-		$p_queries     = implode( ' OR relevanssi.doc IN ', $p_queries );
-		$p_queries     = "(relevanssi.doc IN $p_queries)";
-		$all_queries[] = $p_queries;
+		$pq_array = array();
+		foreach ( $p_queries as $query ) {
+			$pq_array[] = "relevanssi.{$query['target']} IN {$query['query']}";
+		}
+		$p_queries     = implode( ' OR ', $pq_array );
+		$all_queries[] = "($p_queries)";
 
 		$phrase_queries[ $phrase ] = $p_queries;
 	}
@@ -151,17 +151,18 @@ function relevanssi_recognize_phrases( $search_query, $operator = 'AND' ) {
  * Takes in phrases and a bunch of parameters and generates the MySQL queries
  * that restrict the main search query to only posts that have the phrase.
  *
- * @param array  $phrases          A list of phrases to handle.
- * @param array  $taxonomies       An array of taxonomy names to use.
- * @param array  $custom_fields    A list of custom field names to use.
- * @param string $excerpts         If 'on', include excerpts.
- * @param string $index_pdf_parent If 'on', include PDF parent.
+ * @param array        $phrases          A list of phrases to handle.
+ * @param array        $taxonomies       An array of taxonomy names to use.
+ * @param array|string $custom_fields    A list of custom field names to use,
+ * "visible", or "all".
+ * @param string       $excerpts         If 'on', include excerpts.
  *
  * @global object $wpdb The WordPress database interface.
  *
  * @return array An array of queries sorted by phrase.
  */
-function relevanssi_generate_phrase_queries( $phrases, $taxonomies, $custom_fields, $excerpts, $index_pdf_parent ) {
+function relevanssi_generate_phrase_queries( array $phrases, array $taxonomies,
+$custom_fields, string $excerpts ) : array {
 	global $wpdb;
 
 	$status = relevanssi_valid_status_array();
@@ -190,7 +191,10 @@ function relevanssi_generate_phrase_queries( $phrases, $taxonomies, $custom_fiel
 			OR post_title LIKE '%$phrase%' $excerpt)
 			AND post_status IN ($status))";
 
-		$queries[] = $query;
+		$queries[] = array(
+			'query'  => $query,
+			'target' => 'doc',
+		);
 
 		if ( $taxonomies ) {
 			$taxonomies_escaped = implode( "','", array_map( 'esc_sql', $taxonomies ) );
@@ -205,7 +209,10 @@ function relevanssi_generate_phrase_queries( $phrases, $taxonomies, $custom_fiel
 				$taxonomies_sql
 				AND t.name LIKE '%$phrase%' AND p.post_status IN ($status))";
 
-			$queries[] = $query;
+			$queries[] = array(
+				'query'  => $query,
+				'target' => 'doc',
+			);
 		}
 
 		if ( $custom_fields ) {
@@ -243,32 +250,27 @@ function relevanssi_generate_phrase_queries( $phrases, $taxonomies, $custom_fiel
 				AND m.meta_value LIKE '%$phrase%'
 				AND p.post_status IN ($status))";
 
-			$queries[] = $query;
-		} elseif ( RELEVANSSI_PREMIUM ) {
-			$index_post_types = get_option( 'relevanssi_index_post_types', array() );
-			if ( in_array( 'attachment', $index_post_types, true ) ) {
-				$query = "(SELECT ID
-				FROM $wpdb->posts AS p, $wpdb->postmeta AS m
-				WHERE p.ID = m.post_id
-				AND m.meta_key = '_relevanssi_pdf_content'
-				AND m.meta_value LIKE '%$phrase%'
-				AND p.post_status IN ($status))";
-
-				$queries[] = $query;
-			}
+			$queries[] = array(
+				'query'  => $query,
+				'target' => 'doc',
+			);
 		}
 
-		if ( 'on' === $index_pdf_parent ) {
-			$query = "(SELECT parent.ID
-			FROM $wpdb->posts AS p, $wpdb->postmeta AS m, $wpdb->posts AS parent
-			WHERE p.ID = m.post_id
-			AND p.post_parent = parent.ID
-			AND m.meta_key = '_relevanssi_pdf_content'
-			AND m.meta_value LIKE '%$phrase%'
-			AND p.post_status = 'inherit')";
-
-			$queries[] = $query;
-		}
+		/**
+		 * Filters the phrase queries.
+		 *
+		 * Relevanssi Premium uses this filter hook to add Premium-specific
+		 * phrase queries.
+		 *
+		 * @param array  $queries The MySQL queries for phrase matching.
+		 * @param string $phrase  The current phrase.
+		 * @param string $status  A string containing post statuses.
+		 *
+		 * @return array An array of phrase queries, where each query is an
+		 * array that has the actual MySQL query in 'query' and the target
+		 * column ('doc' or 'item') in the Relevanssi index table in 'target'.
+		 */
+		$queries = apply_filters( 'relevanssi_phrase_queries', $queries, $phrase, $status );
 
 		$phrase_queries[ $phrase ] = $queries;
 	}
