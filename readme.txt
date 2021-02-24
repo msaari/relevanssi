@@ -136,6 +136,7 @@ Each document database is full of useless words. All the little words that appea
 * New feature: You can now reset the `relevanssi_words` cache option from the Relevanssi debugging settings tab.
 * Changed behaviour: The `relevanssi_admin_search_element` filter hook now gets the post object as the second parameter, rendering the filter hook more useful.
 * Minor fix: In some cases Relevanssi wouldn't highlight the last word of the title. This is more reliable now.
+* Minor fix: Relevanssi will now add the `highlight` parameter only to search results, and not to other links on the search results page.
 
 = 4.11.2 =
 * New feature: New filter hook `relevanssi_excerpt_gap` lets you adjust the first line of excerpt optimization.

@@ -930,8 +930,8 @@ function relevanssi_add_highlight( $permalink, $link_post = null ) {
  * @global object $post The global post object.
  *
  * @param string     $link      The link to adjust.
- * @param object|int $link_post The post to modify, either WP post object or the post
- * ID. If null, use global $post. Defaults null.
+ * @param object|int $link_post The post to modify, either WP post object or the
+ * post ID. If null, use global $post. Defaults null.
  *
  * @return string The modified link.
  */
@@ -947,7 +947,7 @@ function relevanssi_permalink( $link, $link_post = null ) {
 		$link = $link_post->relevanssi_link;
 	}
 
-	if ( is_search() ) {
+	if ( is_search() && isset( $link_post->relevance_score ) ) {
 		$link = relevanssi_add_highlight( $link, $link_post );
 	}
 	return $link;
