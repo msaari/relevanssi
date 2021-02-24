@@ -268,11 +268,13 @@ EOH;
 		/**
 		 * Filters the admin search results element.
 		 *
-		 * The post element is a <li> element. Feel free to edit the element any way you want to.
+		 * The post element is a <li> element. Feel free to edit the element any
+		 * way you want to.
 		 *
 		 * @param string $post_element The post element.
+		 * @param object $post         The post object.
 		 */
-		$result .= apply_filters( 'relevanssi_admin_search_element', $post_element );
+		$result .= apply_filters( 'relevanssi_admin_search_element', $post_element, $post );
 		if ( isset( $post->blog_id ) ) {
 			restore_current_blog();
 		}
