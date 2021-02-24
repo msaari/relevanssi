@@ -23,6 +23,24 @@ function relevanssi_debugging_tab() {
 			$how_relevanssi_sees = relevanssi_generate_how_relevanssi_sees( intval( $current_post_id ) );
 		}
 	}
+	$text  = esc_attr__( 'Reset the option', 'relevanssi' );
+	$reset = <<<EOH
+	<p>
+		<input
+			type='submit' name='relevanssi_words'
+			value='$text'
+			class='button button-primary' />
+	</p>
+EOH;
+	if ( isset( $_REQUEST['relevanssi_words'] ) ) {
+		wp_verify_nonce( '_relevanssi_nonce', 'relevanssi_how_relevanssi_sees' );
+		$success = delete_option( 'relevanssi_words' );
+		if ( $success ) {
+			$reset = '<p>' . esc_html__( 'Option successfully reset!', 'relevanssi' ) . '</p>';
+		} else {
+			$reset = '<p>' . esc_html__( "Couldn't reset the option, reload the page to try again.", 'relevanssi' ) . '</p>';
+		}
+	}
 	wp_nonce_field( 'relevanssi_how_relevanssi_sees', '_relevanssi_nonce', true, true );
 	?>
 	<h2><?php esc_html_e( 'Debugging', 'relevanssi' ); ?></h2>
@@ -49,5 +67,22 @@ function relevanssi_debugging_tab() {
 			class='button button-primary' />
 	</p>
 	<?php echo $how_relevanssi_sees; // phpcs:ignore WordPress.Security.EscapeOutput ?>
+	<h2><?php esc_html_e( 'Reset the relevanssi_words option', 'relevanssi' ); ?></h2>
+
+	<p>
+	<?php
+	printf(
+		// Translators: %1$s is <code>relevanssi_words</code>.
+		__(
+			'If you are having problems with the Did you mean? feature, you can reset the %1$s option that keeps a cache. Next time the Did you mean? suggestions are needed the option is regenerated.',
+			'relevanssi'
+		),
+		'<code>relevanssi_words</code>'
+	);
+	?>
+	</p>
+
+	<?php echo $reset; // phpcs:ignore WordPress.Security.EscapeOutput ?>
+
 	<?php
 }

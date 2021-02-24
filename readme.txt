@@ -133,6 +133,7 @@ Each document database is full of useless words. All the little words that appea
 == Changelog ==
 = 4.12.0 =
 * New feature: New filter hook `relevanssi_phrase_queries` can be used to add phrase matching queries to support more content types.
+* New feature: You can now reset the `relevanssi_words` cache option from the Relevanssi debugging settings tab.
 * Changed behaviour: The `relevanssi_admin_search_element` filter hook now gets the post object as the second parameter, rendering the filter hook more useful.
 * Minor fix: In some cases Relevanssi wouldn't highlight the last word of the title. This is more reliable now.
 
