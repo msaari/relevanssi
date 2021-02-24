@@ -1090,6 +1090,7 @@ function relevanssi_get_forbidden_post_types() {
 		'acfe-dt',              // ACF Extended.
 		'um_form',              // Ultimate Member.
 		'um_directory',         // Ultimate Member.
+		'mailpoet_page',        // Mailpoet Page.
 	);
 }
 
