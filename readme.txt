@@ -3,9 +3,9 @@ Contributors: msaari
 Donate link: https://www.relevanssi.com/buy-premium/
 Tags: search, relevance, better search, product search, woocommerce search
 Requires at least: 4.9
-Tested up to: 5.6.1
+Tested up to: 5.6.3
 Requires PHP: 7.0
-Stable tag: 4.11.1
+Stable tag: 4.12.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -134,15 +134,13 @@ Each document database is full of useless words. All the little words that appea
 = 4.12.0 =
 * New feature: New filter hook `relevanssi_phrase_queries` can be used to add phrase matching queries to support more content types.
 * New feature: You can now reset the `relevanssi_words` cache option from the Relevanssi debugging settings tab.
+* New feature: New filter hook `relevanssi_excerpt_gap` lets you adjust the first line of excerpt optimization.
 * Changed behaviour: The `relevanssi_admin_search_element` filter hook now gets the post object as the second parameter, rendering the filter hook more useful.
+* Changed behaviour: Relevanssi now automatically optimizes excerpt creation in long posts. You can still use `relevanssi_optimize_excerpts` for further optimization, but it's probably not necessary.
+* Changed behaviour: The `relevanssi_tag_before_tokenize` filter hook parameters were changed in order to be actually useful and to match what the filter hook is supposed to do.
 * Minor fix: In some cases Relevanssi wouldn't highlight the last word of the title. This is more reliable now.
 * Minor fix: Relevanssi will now add the `highlight` parameter only to search results, and not to other links on the search results page.
 * Minor fix: Improved fringe cases in nested taxonomy queries.
-
-= 4.11.2 =
-* New feature: New filter hook `relevanssi_excerpt_gap` lets you adjust the first line of excerpt optimization.
-* Changed behaviour: Relevanssi now automatically optimizes excerpt creation in long posts. You can still use `relevanssi_optimize_excerpts` for further optimization, but it's probably not necessary.
-* Changed behaviour: The `relevanssi_tag_before_tokenize` filter hook parameters were changed in order to be actually useful and to match what the filter hook is supposed to do.
 * Minor fix: WPML couldn't digest post type archives in the search results. Relevanssi now handles that and also takes errors from WPML more gracefully.
 * Minor fix: Taxonomy terms in WPML were not indexed correctly. Instead of the post language, the current language was used, so if your admin dashboard is in English, German posts would get English translations of the terms, not German. This is now fixed.
 * Minor fix: Excerpt creation is now faster when multiple excerpts are not used.
@@ -212,6 +210,9 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: The category inclusion and exclusion setting checkboxes on the Searching tab didn't work. The setting was saved, but the checkboxes wouldn't appear.
 
 == Upgrade notice ==
+= 4.12.0 =
+* New features and bug fixes.
+
 = 4.11.1 =
 * Prevents surprising fatal errors.
 
