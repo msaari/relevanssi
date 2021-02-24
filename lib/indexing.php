@@ -1143,8 +1143,8 @@ function relevanssi_index_comments( &$insert_data, $post_id, $min_word_length, $
 	$post_comments = relevanssi_get_comments( $post_id );
 	if ( ! empty( $post_comments ) ) {
 		$post_comments = relevanssi_strip_invisibles( $post_comments );
-		$post_comments = preg_replace( '/<[a-zA-Z\/][^>]*>/', ' ', $post_comments );
-		$post_comments = wp_strip_all_tags( $post_comments );
+		$post_comments = relevanssi_strip_all_tags( $post_comments );
+
 		if ( $debug ) {
 			relevanssi_debug_echo( "Comment content: $post_comments" );
 		}
@@ -1513,8 +1513,7 @@ function relevanssi_index_content( &$insert_data, $post_object, $min_word_length
 		$contents = relevanssi_process_internal_links( $contents, $post_object->ID );
 	}
 
-	$contents = preg_replace( '/<[a-zA-Z\/][^>]*>/', ' ', $contents );
-	$contents = wp_strip_all_tags( $contents );
+	$contents = relevanssi_strip_all_tags( $contents );
 
 	/**
 	 * Filters the post content in indexing before tokenization.

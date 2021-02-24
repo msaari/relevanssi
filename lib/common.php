@@ -299,9 +299,8 @@ function relevanssi_remove_punct( $a ) {
 	}
 
 	$a = preg_replace( '/&lt;(\d|\s)/', '\1', $a );
-
 	$a = html_entity_decode( $a, ENT_QUOTES );
-	$a = preg_replace( '/<[!a-z]*>/', ' ', $a );
+	$a = relevanssi_strip_all_tags( $a );
 
 	$punct_options = get_option( 'relevanssi_punctuation' );
 

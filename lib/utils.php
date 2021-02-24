@@ -695,6 +695,20 @@ function relevanssi_select( string $option, string $value ) {
 }
 
 /**
+ * Strips all tags from content, keeping non-tags that look like tags.
+ *
+ * Strips content that matches <[!a-zA-Z\/]*> to remove HTML tags and HTML
+ * comments, but not things like "<30 grams, 4>1".
+ *
+ * @param string $content The content.
+ *
+ * @return string The content with tags stripped.
+ */
+function relevanssi_strip_all_tags( string $content ) : string {
+	return preg_replace( '/<[!a-zA-Z\/][^>]*>/', ' ', $content );
+}
+
+/**
  * Strips invisible elements from text.
  *
  * Strips <style>, <script>, <object>, <embed>, <applet>, <noscript>, <noembed>,
