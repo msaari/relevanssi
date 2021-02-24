@@ -270,7 +270,9 @@ class SearchingTest extends WP_UnitTestCase {
 		// Set this to 0 to see if it gets counted correctly.
 		update_option( 'relevanssi_doc_count', 0 );
 
-		list( 'query' => $query, 'posts' => $posts ) = self::results_from_args( $args );
+		$results = self::results_from_args( $args );
+		$query   = $results['query'];
+		$posts   = $results['posts'];
 
 		// These should both match the number of posts in the index.
 		$this->assertEquals( self::$post_count, $query->found_posts );
@@ -971,7 +973,10 @@ class SearchingTest extends WP_UnitTestCase {
 			'posts_per_page' => 4,
 		);
 
-		list( 'posts' => $posts_1, 'query' => $query ) = self::results_from_args( $args );
+		$results = self::results_from_args( $args );
+		$query   = $results['query'];
+		$posts_1 = $results['posts'];
+
 		$this->assertEquals( 4, $query->post_count, 'Should return 4 posts.' );
 
 		$args = array(

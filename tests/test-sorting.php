@@ -343,6 +343,9 @@ class SortingTest extends WP_UnitTestCase {
 
 /**
  * Returns 'foo'.
+ *
+ * @param string $value Not used.
+ * @param string $key   Not used.
  */
 function return_sort_key( $value, $key ) {
 	return 'foo';
@@ -350,6 +353,9 @@ function return_sort_key( $value, $key ) {
 
 /**
  * Returns 'foo' in an array.
+ *
+ * @param string $value Not used.
+ * @param string $key   Not used.
  */
 function return_sort_key_array( $value, $key ) {
 	return array( 'foo' );
@@ -357,8 +363,10 @@ function return_sort_key_array( $value, $key ) {
 
 /**
  * Returns filter array where post = 0, page = 1 and book = 2.
+ *
+ * @param array $order Ordering array.
  */
-function return_filter_array( $order ) {
+function return_filter_array( array $order ) {
 	$order = array(
 		'post' => 0,
 		'page' => 1,

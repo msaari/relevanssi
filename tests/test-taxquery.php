@@ -90,7 +90,7 @@ class TaxQueryTest extends WP_UnitTestCase {
 END;
 		$this->assertDiscardWhitespace(
 			$target_query_restriction,
-			relevanssi_process_tax_query( null, $tax_query )
+			relevanssi_process_tax_query( '', $tax_query )
 		);
 	}
 
@@ -576,6 +576,101 @@ END;
 		);
 		$this->assertEquals(
 			'',
+			relevanssi_process_tax_query( 'and', $tax_query )
+		);
+	}
+
+	/**
+	 * Test a mixture of AND and OR.
+	 *
+	 * @group new
+	 */
+	public function test_and_or_mixture() {
+		global $wpdb;
+
+		$books_id  = self::$books_id;
+		$games_id  = self::$games_id;
+		$yellow_id = self::$yellow_id;
+
+		$tax_query = array(
+			'relation' => 'OR',
+			array(
+				'taxonomy' => 'category',
+				'field'    => 'name',
+				'terms'    => 'Books and periodicals',
+			),
+			array(
+				'relation' => 'AND',
+				array(
+					'taxonomy'         => 'category',
+					'field'            => 'slug',
+					'terms'            => 'games',
+					'include_children' => false,
+				),
+				array(
+					'taxonomy' => 'post_tag',
+					'field'    => 'slug',
+					'terms'    => 'yellow',
+				),
+			),
+		);
+
+		$target_query_restriction = <<<END
+			AND (
+				relevanssi.doc IN (SELECT DISTINCT(tr.object_id)
+					FROM {$wpdb->prefix}term_relationships AS tr
+					WHERE tr.term_taxonomy_id IN ($books_id)
+				) OR relevanssi.doc IN (SELECT ID
+					FROM {$wpdb->prefix}posts
+					WHERE 1=1 AND (SELECT COUNT(1)
+						FROM {$wpdb->prefix}term_relationships AS tr
+						WHERE tr.term_taxonomy_id IN ($games_id,$yellow_id)
+						AND tr.object_id={$wpdb->prefix}posts.ID)
+					=2
+				)
+			)
+END;
+
+		$this->assertDiscardWhitespace(
+			$target_query_restriction,
+			relevanssi_process_tax_query( 'or', $tax_query )
+		);
+
+		$tax_query = array(
+			'relation' => 'AND',
+			array(
+				'taxonomy' => 'category',
+				'field'    => 'name',
+				'terms'    => 'Books and periodicals',
+			),
+			array(
+				'relation' => 'OR',
+				array(
+					'taxonomy'         => 'category',
+					'field'            => 'slug',
+					'terms'            => 'games',
+					'include_children' => false,
+				),
+				array(
+					'taxonomy' => 'post_tag',
+					'field'    => 'slug',
+					'terms'    => 'yellow',
+				),
+			),
+		);
+
+		$target_query_restriction = <<<END
+			AND relevanssi.doc IN (SELECT DISTINCT(tr.object_id)
+				FROM {$wpdb->prefix}term_relationships AS tr
+				WHERE tr.term_taxonomy_id IN ($books_id)
+			) AND relevanssi.doc IN (SELECT DISTINCT(tr.object_id)
+				FROM {$wpdb->prefix}term_relationships AS tr
+				WHERE tr.term_taxonomy_id IN ($games_id,$yellow_id)
+			)
+END;
+
+		$this->assertDiscardWhitespace(
+			$target_query_restriction,
 			relevanssi_process_tax_query( 'and', $tax_query )
 		);
 	}
