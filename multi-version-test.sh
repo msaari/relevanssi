@@ -19,7 +19,7 @@ fi
 
 # Minimum version number to test:
 
-MINIMUM_VERSION=5.0.7
+MINIMUM_VERSION=5.3.6
 
 # Fetch the available WordPress versions.
 
