@@ -1268,6 +1268,10 @@ function relevanssi_index_custom_fields( &$insert_data, $post_id, $custom_fields
 				relevanssi_debug_echo( "\tKey: " . $field . ' - value: ' . $value );
 			}
 
+			if ( ! $value ) {
+				continue;
+			}
+
 			$context      = 'custom_field';
 			$remove_stops = true;
 			if ( '_relevanssi_pdf_content' === $field ) {
