@@ -133,6 +133,8 @@ Each document database is full of useless words. All the little words that appea
 == Changelog ==
 = 4.12.2 =
 * Major fix: Stops more problems with ACF custom field indexing.
+* Major fix: Fixes a bug in search result caching that caused Relevanssi to make lots of unnecessary database queries.
+
 = 4.12.1 =
 * Major fix: Stops TypeError crashes from null custom field indexing.
 

@@ -224,9 +224,14 @@ function relevanssi_default_post_ok( $post_ok, $post_id ) {
  * @global object $wpdb                  The WordPress database interface.
  *
  * @param array $matches An array of search matches.
+ * @param int   $blog_id The blog ID for multisite searches. Default -1.
  */
-function relevanssi_populate_array( $matches ) {
+function relevanssi_populate_array( $matches, $blog_id = -1 ) {
 	global $relevanssi_post_array, $relevanssi_post_types, $wpdb;
+
+	if ( -1 === $blog_id ) {
+		$blog_id = get_current_blog_id();
+	}
 
 	// Doing this makes life faster.
 	wp_suspend_cache_addition( true );
@@ -243,8 +248,10 @@ function relevanssi_populate_array( $matches ) {
 		$posts       = $wpdb->get_results( "SELECT * FROM $wpdb->posts WHERE id IN ( $id_list )", OBJECT ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 		foreach ( $posts as $post ) {
-			$relevanssi_post_array[ $post->ID ] = $post;
-			$relevanssi_post_types[ $post->ID ] = $post->post_type;
+			$cache_id = $blog_id . '|' . $post->ID;
+
+			$relevanssi_post_array[ $cache_id ] = $post;
+			$relevanssi_post_types[ $cache_id ] = $post->post_type;
 		}
 	} while ( $ids );
 
