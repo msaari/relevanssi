@@ -361,7 +361,7 @@ function relevanssi_build_index( $extend_offset = false, $verbose = null, $post_
 
 	if ( ( 0 === $size ) || ( count( $content ) < $size ) ) {
 		$complete = true;
-		update_option( 'relevanssi_indexed', 'done', false );
+		update_option( 'relevanssi_indexed', 'done' );
 
 		// To prevent empty indices.
 		$wpdb->query( "ANALYZE TABLE $relevanssi_table" ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared

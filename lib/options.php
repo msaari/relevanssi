@@ -125,7 +125,7 @@ function update_relevanssi_options() {
 	}
 
 	if ( count( $index_post_types ) > 0 ) {
-		update_option( 'relevanssi_index_post_types', array_keys( $index_post_types ), false );
+		update_option( 'relevanssi_index_post_types', array_keys( $index_post_types ) );
 	}
 
 	if ( isset( $_REQUEST['relevanssi_index_fields_select'] ) ) {
@@ -212,7 +212,7 @@ function update_relevanssi_options() {
 		'relevanssi_index_author'           => false,
 		'relevanssi_index_comments'         => false,
 		'relevanssi_index_excerpt'          => false,
-		'relevanssi_index_image_files'      => false,
+		'relevanssi_index_image_files'      => true,
 		'relevanssi_log_queries_with_ip'    => true,
 		'relevanssi_log_queries'            => true,
 		'relevanssi_omit_from_logs'         => true,
