@@ -528,7 +528,7 @@ function relevanssi_prevent_default_request( $request, $query ) {
  * value.
  */
 function relevanssi_tokenize( $string, $remove_stops = true, int $min_word_length = -1 ) : array {
-	if ( ! $string ) {
+	if ( ! $string || ( ! is_string( $string ) && ! is_array( $string ) ) ) {
 		return array();
 	}
 	$string_for_phrases = is_array( $string ) ? implode( ' ', $string ) : $string;

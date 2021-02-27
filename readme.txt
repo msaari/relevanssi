@@ -131,6 +131,8 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.12.2 =
+* Major fix: Stops more problems with ACF custom field indexing.
 = 4.12.1 =
 * Major fix: Stops TypeError crashes from null custom field indexing.
 
