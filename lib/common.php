@@ -246,12 +246,14 @@ function relevanssi_populate_array( $matches, $blog_id = -1 ) {
 	do {
 		$hundred_ids = array_splice( $ids, 0, 100 );
 		$id_list     = implode( ', ', $hundred_ids );
-		$posts       = $wpdb->get_results( "SELECT * FROM $wpdb->posts WHERE id IN ( $id_list )", OBJECT ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		if ( ! empty( $id_list ) ) {
+			$posts = $wpdb->get_results( "SELECT * FROM $wpdb->posts WHERE id IN ( $id_list )", OBJECT ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
-		foreach ( $posts as $post ) {
-			$cache_id = $blog_id . '|' . $post->ID;
+			foreach ( $posts as $post ) {
+				$cache_id = $blog_id . '|' . $post->ID;
 
-			$relevanssi_post_array[ $cache_id ] = $post;
+				$relevanssi_post_array[ $cache_id ] = $post;
+			}
 		}
 	} while ( $ids );
 
