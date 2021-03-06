@@ -236,7 +236,10 @@ function relevanssi_populate_array( $matches, $blog_id = -1 ) {
 
 	$ids = array();
 	foreach ( $matches as $match ) {
-		array_push( $ids, $match->doc );
+		$cache_id = $blog_id . '|' . $match->doc;
+		if ( $match->doc > 0 && ! isset( $relevanssi_post_array[ $cache_id ] ) ) {
+			array_push( $ids, $match->doc );
+		}
 	}
 
 	$ids = array_keys( array_flip( $ids ) ); // Remove duplicate IDs.
