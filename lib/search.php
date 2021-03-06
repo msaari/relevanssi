@@ -973,9 +973,13 @@ function relevanssi_do_query( &$query ) {
 			$highlight                    = get_option( 'relevanssi_highlight' );
 			if ( 'none' !== $highlight ) {
 				if ( ! is_admin() || ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
+					$q_for_highlight = 'on' === get_option( 'relevanssi_index_synonyms', 'off' )
+					? relevanssi_add_synonyms( $q )
+					: $q;
+
 					$post->post_highlighted_title = relevanssi_highlight_terms(
 						$post->post_highlighted_title,
-						$q
+						$q_for_highlight
 					);
 				}
 			}
