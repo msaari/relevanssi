@@ -703,7 +703,7 @@ function relevanssi_get_post_status( $post_id ) {
 		} elseif ( $post ) {
 			if ( 'inherit' === $post->post_status ) {
 				// Attachment, let's see what the parent says.
-				$parent = $relevanssi_post_array[ $post_id ]->post_parent;
+				$parent = $relevanssi_post_array[ $post_id ]->post_parent ?? null;
 				if ( ! $parent ) {
 					// Attachment without a parent, let's assume it's public.
 					$status = 'publish';
