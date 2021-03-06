@@ -356,6 +356,7 @@ function relevanssi_remove_punct( $a ) {
 		'©'                     => '',
 		'™'                     => '',
 		'&shy;'                 => '',
+		"\xC2\xAD"              => '',
 		'&nbsp;'                => ' ',
 		chr( 194 ) . chr( 160 ) => ' ',
 		'×'                     => ' ',

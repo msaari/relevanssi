@@ -131,6 +131,9 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.12.3 =
+* Minor fix: Relevanssi works better with soft hyphens now, removing them in indexing and excerpt-building.
+
 = 4.12.2 =
 * Major fix: Stops more problems with ACF custom field indexing.
 * Major fix: Fixes a bug in search result caching that caused Relevanssi to make lots of unnecessary database queries.

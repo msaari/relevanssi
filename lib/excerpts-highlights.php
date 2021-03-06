@@ -600,6 +600,7 @@ function relevanssi_highlight_terms( $content, $query, $convert_entities = false
 
 	usort( $terms, 'relevanssi_strlen_sort' );
 
+	$content = strtr( $content, array( "\xC2\xAD" => '' ) );
 	$content = html_entity_decode( $content, ENT_QUOTES, 'UTF-8' );
 	$content = str_replace( "\n", ' ', $content );
 
