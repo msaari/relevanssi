@@ -108,7 +108,6 @@ function relevanssi_query( $posts, $query = false ) {
  * @global object   $wpdb                  The WordPress database interface.
  * @global array    $relevanssi_variables  The global Relevanssi variables array.
  * @global WP_Query $wp_query              The WP_Query object.
- * @global array    $relevanssi_post_types Cache array for post type values.
  *
  * @param array $args Array of arguments.
  *
@@ -412,7 +411,6 @@ function relevanssi_search( $args ) {
 			}
 
 			relevanssi_populate_array( $matches );
-			global $relevanssi_post_types;
 
 			$total_hits += count( $matches );
 
@@ -558,10 +556,7 @@ function relevanssi_search( $args ) {
 				$mysqlcolumn_matches[ $match->doc ] += $match->mysqlcolumn;
 
 				/* Post type weights. */
-				$type = null;
-				if ( isset( $relevanssi_post_types[ $match->doc ] ) ) {
-					$type = $relevanssi_post_types[ $match->doc ];
-				}
+				$type = relevanssi_get_post_type( $match->doc );
 				if ( ! empty( $post_type_weights[ $type ] ) ) {
 					$match->weight = $match->weight * $post_type_weights[ $type ];
 				}

@@ -219,15 +219,13 @@ function relevanssi_default_post_ok( $post_ok, $post_id ) {
  * query, instead of doing up to 500 separate get_post() queries.
  *
  * @global array  $relevanssi_post_array An array of fetched posts.
- * @global array  $relevanssi_post_types An array of post types, to be used by
- * relevanssi_get_post_type() (again to avoid DB calls).
  * @global object $wpdb                  The WordPress database interface.
  *
  * @param array $matches An array of search matches.
  * @param int   $blog_id The blog ID for multisite searches. Default -1.
  */
 function relevanssi_populate_array( $matches, $blog_id = -1 ) {
-	global $relevanssi_post_array, $relevanssi_post_types, $wpdb;
+	global $relevanssi_post_array, $wpdb;
 
 	if ( -1 === $blog_id ) {
 		$blog_id = get_current_blog_id();
@@ -251,7 +249,6 @@ function relevanssi_populate_array( $matches, $blog_id = -1 ) {
 			$cache_id = $blog_id . '|' . $post->ID;
 
 			$relevanssi_post_array[ $cache_id ] = $post;
-			$relevanssi_post_types[ $cache_id ] = $post->post_type;
 		}
 	} while ( $ids );
 

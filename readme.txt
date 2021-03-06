@@ -132,6 +132,7 @@ Each document database is full of useless words. All the little words that appea
 
 == Changelog ==
 = 4.12.3 =
+* Major fix: Post type weights did not work; improving the caching had broken them.
 * Minor fix: Relevanssi works better with soft hyphens now, removing them in indexing and excerpt-building.
 
 = 4.12.2 =
