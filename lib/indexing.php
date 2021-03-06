@@ -615,7 +615,7 @@ function relevanssi_index_taxonomy_terms( &$insert_data, $post_id, $taxonomy, $d
 	$min_word_length     = get_option( 'relevanssi_min_word_length', 3 );
 	$post_taxonomy_terms = get_the_terms( $post_id, $taxonomy );
 
-	if ( false === $post_taxonomy_terms ) {
+	if ( false === $post_taxonomy_terms || is_wp_error( $post_taxonomy_terms ) ) {
 		return $n;
 	}
 

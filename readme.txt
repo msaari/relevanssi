@@ -134,6 +134,7 @@ Each document database is full of useless words. All the little words that appea
 = 4.12.3 =
 * Major fix: Post type weights did not work; improving the caching had broken them.
 * Minor fix: Relevanssi works better with soft hyphens now, removing them in indexing and excerpt-building.
+* Minor fix: Stops indexing error messages in WPML.
 
 = 4.12.2 =
 * Major fix: Stops more problems with ACF custom field indexing.
