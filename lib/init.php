@@ -49,6 +49,11 @@ add_action( 'relevanssi_trim_logs', 'relevanssi_trim_logs' );
 add_action( 'relevanssi_update_counts', 'relevanssi_update_counts' );
 add_action( 'relevanssi_custom_field_value', 'relevanssi_filter_custom_fields', 10, 2 );
 
+// Excerpts and highlights.
+add_action( 'relevanssi_pre_the_content', 'relevanssi_kill_autoembed' );
+add_action( 'relevanssi_pre_the_content', 'relevanssi_excerpt_pre_the_content' );
+add_action( 'relevanssi_post_the_content', 'relevanssi_excerpt_post_the_content' );
+
 // Page builder shortcodes.
 add_filter( 'relevanssi_pre_excerpt_content', 'relevanssi_remove_page_builder_shortcodes', 9 );
 add_filter( 'relevanssi_post_content', 'relevanssi_remove_page_builder_shortcodes', 9 );
