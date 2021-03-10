@@ -110,21 +110,18 @@ function relevanssi_do_excerpt( $t_post, $query, $excerpt_length = null, $excerp
 		$content .= relevanssi_get_custom_field_content( $post->ID );
 	}
 
-	// Autoembed discovery can really slow down excerpt-building.
-	relevanssi_kill_autoembed();
-
-	// This will print out the attachment file name in front of the excerpt, and we
-	// don't want that.
-	remove_filter( 'the_content', 'prepend_attachment' );
-
-	remove_shortcode( 'noindex' );
-	add_shortcode( 'noindex', 'relevanssi_noindex_shortcode_indexing' );
+	/**
+	 * Runs before Relevanssi excerpt building applies `the_content`.
+	 */
+	do_action( 'relevanssi_pre_the_content' );
 
 	/** This filter is documented in wp-includes/post-template.php */
 	$content = apply_filters( 'the_content', $content );
 
-	remove_shortcode( 'noindex' );
-	add_shortcode( 'noindex', 'relevanssi_noindex_shortcode' );
+	/**
+	 * Runs after Relevanssi excerpt building applies `the_content`.
+	 */
+	do_action( 'relevanssi_post_the_content' );
 
 	/**
 	 * Filters the post content after 'the_content'.
@@ -1403,4 +1400,32 @@ function relevanssi_kill_autoembed() {
 			}
 		}
 	}
+}
+
+/**
+ * Adjusts things before `the_content` is applied in excerpt-building.
+ *
+ * Removes the `prepend_attachment` filter hook and enables the `noindex`
+ * shortcode.
+ */
+function relevanssi_excerpt_pre_the_content() {
+	// This will print out the attachment file name in front of the excerpt, and we
+	// don't want that.
+	remove_filter( 'the_content', 'prepend_attachment' );
+
+	remove_shortcode( 'noindex' );
+	add_shortcode( 'noindex', 'relevanssi_noindex_shortcode_indexing' );
+}
+
+/**
+ * Adjusts things after `the_content` is applied in excerpt-building.
+ *
+ * Reapplies the `prepend_attachment` filter hook and disables the `noindex`
+ * shortcode.
+ */
+function relevanssi_excerpt_post_the_content() {
+	add_filter( 'the_content', 'prepend_attachment' );
+
+	remove_shortcode( 'noindex' );
+	add_shortcode( 'noindex', 'relevanssi_noindex_shortcode' );
 }
