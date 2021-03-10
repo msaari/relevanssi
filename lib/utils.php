@@ -704,7 +704,10 @@ function relevanssi_select( string $option, string $value ) {
  *
  * @return string The content with tags stripped.
  */
-function relevanssi_strip_all_tags( string $content ) : string {
+function relevanssi_strip_all_tags( $content ) : string {
+	if ( ! is_string( $content ) ) {
+		$content = '';
+	}
 	return preg_replace( '/<[!a-zA-Z\/][^>]*>/', ' ', $content );
 }
 
