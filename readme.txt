@@ -133,6 +133,7 @@ Each document database is full of useless words. All the little words that appea
 == Changelog ==
 = 4.12.4 =
 * New feature: New action hooks `relevanssi_pre_the_content` and `relevanssi_post_the_content` fire before and after Relevanssi applies `the_content` filter to the post excerpts. Some Relevanssi default behaviour has been moved to these hooks so it can be modified.
+* Changed behaviour: The `relevanssi_do_not_index` gets the post object as a third parameter.
 = 4.12.3 =
 * Major fix: Post type weights did not work; improving the caching had broken them.
 * Minor fix: Relevanssi works better with soft hyphens now, removing them in indexing and excerpt-building.

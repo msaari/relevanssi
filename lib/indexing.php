@@ -483,8 +483,9 @@ function relevanssi_index_doc( $index_post, $remove_first = false, $custom_field
 	 * can be a boolean, or a string containing an explanation for the
 	 * exclusion. Default false.
 	 * @param int            The post ID.
+	 * @param WP_Post        The post object.
 	 */
-	$do_not_index = apply_filters( 'relevanssi_do_not_index', false, $post->ID );
+	$do_not_index = apply_filters( 'relevanssi_do_not_index', false, $post->ID, $post );
 	if ( $do_not_index ) {
 		// Filter says no.
 		if ( true === $do_not_index ) {
