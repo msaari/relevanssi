@@ -50,6 +50,11 @@ function relevanssi_drop_database_tables() {
  * @global object $wpdb The WordPress database interface.
  */
 function relevanssi_uninstall_free() {
+	if ( defined( 'RELEVANSSI_PREMIUM' ) && RELEVANSSI_PREMIUM && ! defined( 'UNINSTALLING_RELEVANSSI_PREMIUM' ) ) {
+		// Relevanssi Premium exists, do not drop the tables.
+		return;
+	}
+
 	delete_option( 'relevanssi_admin_search' );
 	delete_option( 'relevanssi_bg_col' );
 	delete_option( 'relevanssi_cat' );
