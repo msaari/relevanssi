@@ -230,6 +230,9 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: The category inclusion and exclusion setting checkboxes on the Searching tab didn't work. The setting was saved, but the checkboxes wouldn't appear.
 
 == Upgrade notice ==
+= 4.12.5 =
+* Fixes minor bugs.
+
 = 4.12.4 =
 * Fixes minor bugs.
 
