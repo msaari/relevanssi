@@ -134,6 +134,7 @@ Each document database is full of useless words. All the little words that appea
 = 4.12.5 =
 * Changed behaviour: `relevanssi_excerpt_custom_field_content` now gets the post ID and list of custom field names as a parameter.
 * Minor fix: Makes sure Relevanssi options are not wiped when the free version is deleted while Premium is active.
+* Minor fix: Adds a trailing slash to the blog URL in Did you mean links.
 
 = 4.12.4 =
 * New feature: New action hooks `relevanssi_pre_the_content` and `relevanssi_post_the_content` fire before and after Relevanssi applies `the_content` filter to the post excerpts. Some Relevanssi default behaviour has been moved to these hooks so it can be modified.

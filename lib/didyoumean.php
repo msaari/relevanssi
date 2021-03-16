@@ -69,7 +69,7 @@ function relevanssi_simple_didyoumean( $query, $pre, $post, $n = 5 ) {
 
 	$result = null;
 	if ( $suggestion ) {
-		$url = get_bloginfo( 'url' );
+		$url = trailingslashit( get_bloginfo( 'url' ) );
 		$url = esc_attr(
 			add_query_arg(
 				array( 's' => rawurlencode( $suggestion ) ),
