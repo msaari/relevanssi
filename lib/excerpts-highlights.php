@@ -47,8 +47,8 @@ function relevanssi_do_excerpt( $t_post, $query, $excerpt_length = null, $excerp
 	 * Filters the search query before excerpt-building.
 	 *
 	 * Allows filtering the search query before generating an excerpt. This can
-	 * useful if you modifications to the search query, and it may help when working
-	 * with stemming.
+	 * useful if you make modifications to the search query, and it may also
+	 * help when working with stemming.
 	 *
 	 * @param string $query The search query.
 	 */
@@ -1376,8 +1376,15 @@ function relevanssi_get_custom_field_content( $post_id ) {
 	 * Filters the custom field content for excerpt use.
 	 *
 	 * @param string $custom_field_content Custom field content for excerpts.
+	 * @param int    $post_id              The post ID.
+	 * @param array  $custom_fields        The list of custom field names.
 	 */
-	return apply_filters( 'relevanssi_excerpt_custom_field_content', $custom_field_content );
+	return apply_filters(
+		'relevanssi_excerpt_custom_field_content',
+		$custom_field_content,
+		$post_id,
+		$custom_fields
+	);
 }
 
 /**
