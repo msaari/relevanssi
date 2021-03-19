@@ -77,7 +77,17 @@ function relevanssi_index_ninja_table( $table_id ) {
 		)
 	);
 	foreach ( $rows as $row ) {
-		$table_contents .= ' ' . implode( ' ', array_values( get_object_vars( json_decode( $row->value ) ) ) );
+		$array_values = array_map(
+			function( $value ) {
+				if ( is_object( $value ) ) {
+					return '';
+				}
+				return strval( $value );
+			},
+			array_values( get_object_vars( json_decode( $row->value ) ) )
+		);
+
+		$table_contents .= ' ' . implode( ' ', $array_values );
 	}
 
 	return $table_contents;

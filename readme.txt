@@ -131,6 +131,8 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+* Minor fix: Better Ninja Tables compatibility to avoid problems with lightbox images.
+
 = 4.12.5 =
 * Changed behaviour: `relevanssi_excerpt_custom_field_content` now gets the post ID and list of custom field names as a parameter.
 * Minor fix: Makes sure Relevanssi options are not wiped when the free version is deleted while Premium is active.
