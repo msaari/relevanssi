@@ -799,7 +799,7 @@ function relevanssi_stripos( $haystack, $needle, int $offset = 0 ) {
 		$needle_regex = str_replace(
 			array( '?', '*' ),
 			array( '.', '.*' ),
-			$needle
+			preg_quote( $needle, '/' )
 		);
 		$pos_found    = false;
 		while ( ! $pos_found ) {

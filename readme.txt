@@ -131,6 +131,7 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+* Minor fix: Warnings when creating excerpts with search terms that contain a slash were removed.
 * Minor fix: Better Ninja Tables compatibility to avoid problems with lightbox images.
 
 = 4.12.5 =
