@@ -747,8 +747,9 @@ function relevanssi_strip_invisibles( $text ) {
  * Strips tags from contents, keeping the allowed tags.
  *
  * The allowable tags are read from the relevanssi_excerpt_allowable_tags
- * option. Spaces are added between tags before removing the tags, so that
- * words don't get stuck together. The function also remove invisible content.
+ * option. Relevanssi also adds extra spaces after some tags to make sure words
+ * are not stuck together after the tags are removed. The function also removes
+ * invisible content.
  *
  * @see relevanssi_strip_invisibles
  *
@@ -761,7 +762,19 @@ function relevanssi_strip_tags( $content ) {
 		$content = strval( $content );
 	}
 	$content = relevanssi_strip_invisibles( $content );
-	$content = preg_replace( '/(<\/[^>]+?>)(<[^>\/][^>]*?>)/', '$1 $2', $content );
+
+	$space_tags = array(
+		'/(<\/?p.*?>)/',
+		'/(<\/?br.*?>)/',
+		'/(<\/?h[1-6].*?>)/',
+		'/(<\/?div.*?>)/',
+		'/(<\/?blockquote.*?>)/',
+		'/(<\/?hr.*?>)/',
+		'/(<\/?li.*?>)/',
+		'/(<img.*?>)/',
+	);
+
+	$content = preg_replace( $space_tags, '$1 ', $content );
 	return strip_tags(
 		$content,
 		get_option( 'relevanssi_excerpt_allowable_tags', '' )
