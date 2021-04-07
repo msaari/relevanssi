@@ -22,6 +22,7 @@ add_filter( 'posts_request', 'relevanssi_prevent_default_request', 10, 2 );
 add_filter( 'relevanssi_search_ok', 'relevanssi_block_on_admin_searches', 10, 2 );
 add_filter( 'relevanssi_admin_search_ok', 'relevanssi_block_on_admin_searches', 10, 2 );
 add_filter( 'relevanssi_prevent_default_request', 'relevanssi_block_on_admin_searches', 10, 2 );
+add_filter( 'relevanssi_search_ok', 'relevanssi_control_media_queries', 11, 2 );
 
 // Post indexing.
 add_action( 'wp_insert_post', 'relevanssi_insert_edit', 99, 1 );

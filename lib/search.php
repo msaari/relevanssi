@@ -50,16 +50,6 @@ function relevanssi_query( $posts, $query = false ) {
 		$search_ok = false; // No search term.
 	}
 
-	$indexed_post_types = array_flip(
-		get_option( 'relevanssi_index_post_types', array() )
-	);
-	$images_indexed     = get_option( 'relevanssi_index_image_files', 'off' );
-	if ( $search_ok && ( false === isset( $indexed_post_types['attachment'] ) || 'off' === $images_indexed ) ) {
-		if ( 'attachment' === $query->query_vars['post_type'] && 'inherit,private' === $query->query_vars['post_status'] ) {
-			$search_ok = false;
-		}
-	}
-
 	if ( $query->get( 'relevanssi' ) ) {
 		$search_ok = true; // Manual override, always search.
 	}
@@ -1615,4 +1605,49 @@ function relevanssi_meta_query_from_query_vars( $query ) {
 		$meta_query[] = $build_meta_query;
 	}
 	return $meta_query;
+}
+
+/**
+ * Checks whether Relevanssi can do a media search.
+ *
+ * Relevanssi does not work with the grid view of Media Gallery. This function
+ * will disable Relevanssi a) if Relevanssi is not set to index attachments,
+ * b) if Relevanssi is not set to index image attachments and c) if the Media
+ * Library is in grid mode. Any of these will inactivate Relevanssi in the
+ * Media Library search.
+ *
+ * @param boolean  $search_ok If true, allow the search.
+ * @param WP_Query $query     The query object.
+ *
+ * @return boolean If true, allow the search.
+ */
+function relevanssi_control_media_queries( bool $search_ok, WP_Query $query ) : bool {
+	if ( ! $search_ok ) {
+		// Something else has already disabled the search, this won't enable.
+		return $search_ok;
+	}
+	if (
+		isset( $query->query_vars['post_type'] ) &&
+		isset( $query->query_vars['post_status'] ) &&
+		'attachment' !== $query->query_vars['post_type'] &&
+		'inherit,private' !== $query->query_vars['post_status']
+	) {
+		// Not a Media Library search.
+		return $search_ok;
+	}
+	$indexed_post_types = array_flip(
+		get_option( 'relevanssi_index_post_types', array() )
+	);
+	$images_indexed     = get_option( 'relevanssi_index_image_files', 'off' );
+	if ( false === isset( $indexed_post_types['attachment'] ) || 'off' === $images_indexed ) {
+		// Attachments or images are not indexed, disable.
+		$search_ok = false;
+	}
+
+	if ( ! isset( $_REQUEST['mode'] ) || 'list' !== $_REQUEST['mode'] ) { // phpcs:ignore WordPress.Security.NonceVerification
+		// Grid view, disable.
+		$search_ok = false;
+	}
+
+	return $search_ok;
 }
