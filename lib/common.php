@@ -1070,6 +1070,7 @@ function relevanssi_get_forbidden_post_types() {
 		'wc_order_status',      // WooCommerce.
 		'wc_order_email',       // WooCommerce.
 		'shop_webhook',         // WooCommerce.
+		'woo_product_tab',      // Woo Product Tab.
 		'et_theme_builder',     // Divi.
 		'et_template',          // Divi.
 		'et_header_layout',     // Divi.
@@ -1110,6 +1111,7 @@ function relevanssi_get_forbidden_post_types() {
 		'um_form',              // Ultimate Member.
 		'um_directory',         // Ultimate Member.
 		'mailpoet_page',        // Mailpoet Page.
+		'mc4wp_form',           // MailChimp.
 	);
 }
 
