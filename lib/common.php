@@ -254,7 +254,7 @@ function relevanssi_populate_array( $matches, $blog_id = -1 ) {
 	foreach ( $matches as $match ) {
 		$cache_id = $blog_id . '|' . $match->doc;
 		if ( $match->doc > 0 && ! isset( $relevanssi_post_array[ $cache_id ] ) ) {
-			array_push( $ids, $match->doc );
+			$ids[] = $match->doc;
 		}
 	}
 
@@ -821,6 +821,31 @@ function relevanssi_add_synonyms( $query ) {
 		}
 
 		if ( count( $synonyms ) > 0 ) {
+			$query       = str_replace( array( '”', '“' ), '"', $query );
+			$phrases     = relevanssi_extract_phrases( $query );
+			$new_phrases = array();
+			if ( apply_filters( 'relevanssi_phrase_synonyms', true ) ) {
+				foreach ( $phrases as $phrase ) {
+					$new_phrases[] = $phrase;
+					$words = explode( ' ', $phrase );
+					foreach ( array_keys( $synonyms ) as $synonym_source ) {
+						if ( in_array( $synonym_source, $words, true ) ) {
+							$synonym_replacement = implode( '', array_keys( $synonyms[ $synonym_source ] ) );
+							$new_phrases[]       = str_replace( $synonym_source, $synonym_replacement, $phrase );
+						}
+					}
+				}
+			} else {
+				$new_phrases = $phrases;
+			}
+			$query = trim(
+				str_replace(
+					array_map( 'relevanssi_add_quotes', $phrases ),
+					'',
+					$query
+				)
+			);
+
 			$new_terms = array();
 			$terms     = array_keys( relevanssi_tokenize( $query, false ) ); // Remove stopwords is false here.
 			if ( ! in_array( $query, $terms, true ) ) {
@@ -839,6 +864,12 @@ function relevanssi_add_synonyms( $query ) {
 					}
 				}
 			}
+			if ( count( $new_phrases ) > 0 ) {
+				$new_terms = array_merge(
+					$new_terms,
+					array_map( 'relevanssi_add_quotes', $new_phrases )
+				);
+			}
 			if ( count( $new_terms ) > 0 ) {
 				$new_terms = array_unique( $new_terms );
 				foreach ( $new_terms as $new_term ) {
@@ -848,7 +879,7 @@ function relevanssi_add_synonyms( $query ) {
 		}
 	}
 
-	return $query;
+	return trim( $query );
 }
 
 /**
@@ -976,7 +1007,7 @@ function relevanssi_permalink( $link, $link_post = null ) {
 		$link = $link_post->relevanssi_link;
 	}
 
-	if ( is_search() && isset( $link_post->relevance_score ) ) {
+	if ( is_search() && property_exists( $link_post, 'relevance_score' ) ) {
 		$link = relevanssi_add_highlight( $link, $link_post );
 	}
 	return $link;
@@ -1585,4 +1616,37 @@ function relevanssi_update_synonyms_setting() {
 
 	$array_synonyms[ $current_language ] = $synonyms;
 	update_option( 'relevanssi_synonyms', $array_synonyms );
+}
+
+/**
+ * Replaces synonyms in an array with their original counterparts.
+ *
+ * If there's a synonym "dog=hound", and the array of terms contains "hound",
+ * it will be replaced with "dog". If there are multiple matches, all
+ * replacements will happen.
+ *
+ * @param array $terms An array of words.
+ *
+ * @return array An array of words with backwards synonym replacement.
+ */
+function relevanssi_replace_synonyms_in_terms( array $terms ) : array {
+	$all_synonyms = get_option( 'relevanssi_synonyms', array() );
+	$synonyms     = explode( ';', $all_synonyms[ relevanssi_get_current_language() ] ?? '' );
+
+	return array_map(
+		function ( $term ) use ( $synonyms ) {
+			$new_term = array();
+			foreach ( $synonyms as $pair ) {
+				list( $key, $value ) = explode( '=', $pair );
+				if ( $value === $term ) {
+					$new_term[] = $key;
+				}
+			}
+			if ( ! empty( $new_term ) ) {
+				$term = implode( ' ', $new_term );
+			}
+			return $term;
+		},
+		$terms
+	);
 }

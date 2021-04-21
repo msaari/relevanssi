@@ -71,6 +71,16 @@ function relevanssi_do_excerpt( $t_post, $query, $excerpt_length = null, $excerp
 	} else {
 		$untokenized_terms = array_filter( explode( ' ', $query ) );
 	}
+	$untokenized_terms = array_map(
+		function( $term ) {
+			if ( is_numeric( $term ) ) {
+				$term = " $term";
+			}
+			return $term;
+		},
+		$untokenized_terms
+	);
+
 	$untokenized_terms = array_flip(
 		relevanssi_remove_stopwords_from_array( $untokenized_terms )
 	);
@@ -348,7 +358,10 @@ function relevanssi_create_excerpt( $content, $terms, $query, $excerpt_length = 
  * content.
  */
 function relevanssi_create_excerpts( $content, $terms, $query, $excerpt_length = 30, $excerpt_type = 'words' ) {
-	$content = ' ' . preg_replace( '/\s+/u', ' ', $content );
+	$content = preg_replace( '/\s+/u', ' ', $content );
+	if ( ' ' !== relevanssi_substr( $content, 0, 1 ) ) {
+		$content = ' ' . $content;
+	}
 	$content = html_entity_decode( $content );
 	// Finds all the phrases in the query.
 	$phrases = relevanssi_extract_phrases( stripslashes( $query ) );
@@ -384,7 +397,7 @@ function relevanssi_create_excerpts( $content, $terms, $query, $excerpt_length =
 		relevanssi_extract_relevant(
 			array_keys( $terms ),
 			$content,
-			$excerpt_length + 1,
+			$excerpt_length + 1, // There's one space in the beginning of the content.
 			$prev_count
 		);
 		$excerpt    = array(
@@ -1435,4 +1448,57 @@ function relevanssi_excerpt_post_the_content() {
 
 	remove_shortcode( 'noindex' );
 	add_shortcode( 'noindex', 'relevanssi_noindex_shortcode' );
+}
+
+/**
+ * Adds a highlighted title in the post object in $post->post_highlighted_title.
+ *
+ * @param WP_Post $post  The post object (passed as reference).
+ * @param string  $query The search query.
+ *
+ * @uses relevanssi_highlight_terms
+ */
+function relevanssi_highlight_post_title( &$post, $query ) {
+	$post->post_highlighted_title = wp_strip_all_tags( $post->post_title );
+	$highlight                    = get_option( 'relevanssi_highlight' );
+	if ( 'none' !== $highlight ) {
+		if ( ! is_admin() || ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
+			$q_for_highlight = 'on' === get_option( 'relevanssi_index_synonyms', 'off' )
+			? relevanssi_add_synonyms( $query )
+			: $query;
+
+			$post->post_highlighted_title = relevanssi_highlight_terms(
+				$post->post_highlighted_title,
+				$q_for_highlight
+			);
+		}
+	}
+}
+
+/**
+ * Replaces $post->post_excerpt with the Relevanssi-generated excerpt and puts
+ * the original excerpt in $post->original_excerpt.
+ *
+ * @param WP_Post $post           The post object (passed as reference).
+ * @param int     $excerpt_length The length of the excerpt.
+ * @param string  $excerpt_type   "words" or "chars".
+ * @param string  $query          The search query.
+ *
+ * @uses relevanssi_do_excerpt
+ */
+function relevanssi_add_excerpt( &$post, $excerpt_length, $excerpt_type, $query ) {
+	if ( isset( $post->blog_id ) ) {
+		switch_to_blog( $post->blog_id );
+	}
+	$post->original_excerpt = $post->post_excerpt;
+	$post->post_excerpt     = relevanssi_do_excerpt(
+		$post,
+		$query,
+		$excerpt_length,
+		$excerpt_type
+	);
+
+	if ( isset( $post->blog_id ) ) {
+		restore_current_blog();
+	}
 }
