@@ -179,7 +179,17 @@ $custom_fields, string $excerpts ) : array {
 		$phrase  = $wpdb->esc_like( $phrase );
 		$phrase  = str_replace( array( '‘', '’', "'", '"', '”', '“', '“', '„', '´' ), '_', $phrase );
 		$phrase  = htmlspecialchars( $phrase );
-		$phrase  = esc_sql( $phrase );
+
+		/**
+		 * Filters each phrase before it's passed through esc_sql() and used in
+		 * the MySQL query. You can use this filter hook to for example run
+		 * htmlentities() on the phrase in case your database needs that.
+		 *
+		 * @param string $phrase The phrase after quotes re replaced with a
+		 * MySQL wild card and the phrase has been passed through esc_like() and
+		 * htmlspecialchars().
+		 */
+		$phrase = esc_sql( apply_filters( 'relevanssi_phrase', $phrase ) );
 
 		$excerpt = '';
 		if ( 'on' === $excerpts ) {
