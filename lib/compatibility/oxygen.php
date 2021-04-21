@@ -13,6 +13,7 @@
 add_filter( 'relevanssi_custom_field_value', 'relevanssi_oxygen_compatibility', 10, 3 );
 add_filter( 'relevanssi_index_custom_fields', 'relevanssi_add_oxygen' );
 add_filter( 'option_relevanssi_index_fields', 'relevanssi_oxygen_fix_none_setting' );
+add_filter( 'relevanssi_oxygen_section_content', 'relevanssi_oxygen_code_block' );
 
 /**
  * Cleans up the Oxygen Builder custom field for Relevanssi consumption.
@@ -139,4 +140,26 @@ function relevanssi_oxygen_fix_none_setting( $value ) {
 	}
 
 	return $value;
+}
+
+/**
+ * Indexes the Base64 encoded PHP & HTML code block contents.
+ *
+ * @param string $content The section content from the
+ * relevanssi_oxygen_section_content filter hook.
+ *
+ * @return string $content The content with the decoded code block content
+ * added to the end.
+ */
+function relevanssi_oxygen_code_block( $content ) {
+	if ( preg_match_all( '/\[ct_code_block.*?ct_code_block\]/', $content, $matches ) ) {
+		foreach ( $matches[0] as $match ) {
+			if ( preg_match_all( '/"code-php":"(.*?)"/', $match, $block_matches ) ) {
+				foreach ( $block_matches[1] as $encoded_text ) {
+					$content .= ' ' . base64_decode( $encoded_text ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions
+				}
+			}
+		}
+	}
+	return $content;
 }
