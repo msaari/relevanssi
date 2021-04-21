@@ -27,7 +27,8 @@
         "dealerdirect/phpcodesniffer-composer-installer": "^0.7.1",
         "phpcompatibility/php-compatibility": "^9.3",
         "phpcompatibility/phpcompatibility-wp": "^2.1",
-        "wp-coding-standards/wpcs": "*"
+        "wp-coding-standards/wpcs": "*",
+        "phpunit/phpunit": "^7"
     },
     "keywords": [
         "search",
@@ -35,6 +36,7 @@
         "plugin"
     ],
     "scripts": {
-        "lint": "./vendor/bin/phpcs -p -s"
+        "lint": "./vendor/bin/phpcs -p -s",
+        "test": "./vendor/bin/phpunit"
     }
 }
