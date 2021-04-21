@@ -21,6 +21,17 @@ function get_relevanssi_taxonomy_walker() {
 }
 
 /**
+ * Adds quotes around a string.
+ *
+ * @param string $string The string.
+ *
+ * @return string The string with quotes around it.
+ */
+function relevanssi_add_quotes( $string ) {
+	return '"' . $string . '"';
+}
+
+/**
  * Wraps the relevanssi_mb_trim() function so that it can be used as a callback
  * for array_walk().
  *
@@ -155,6 +166,10 @@ function relevanssi_get_an_object( $source ) {
 		// Convert from post ID to post.
 		$object = relevanssi_get_post_object( $source );
 		$format = 'id';
+	} elseif ( isset( $source->type ) ) {
+		// Convert from id=>type to post.
+		$object = relevanssi_get_post_object( $source->ID );
+		$format = 'id=>type';
 	} elseif ( ! isset( $source->post_content ) ) {
 		// Convert from id=>parent to post.
 		$object = relevanssi_get_post_object( $source->ID );
@@ -297,6 +312,44 @@ function relevanssi_get_post( $post_id, int $blog_id = -1 ) {
 		$relevanssi_post_array[ $post_id ] = $post;
 	}
 	return $post;
+}
+
+/**
+ * Fetches post meta value for a large group of posts with just one query.
+ *
+ * This function can be used to reduce the number of database queries. Instead
+ * of looping through an array of posts and calling get_post_meta() for each
+ * individual post, you can get all the values with this function with just one
+ * database query.
+ *
+ * @param array  $post_ids An array of post IDs.
+ * @param string $field    The name of the field.
+ *
+ * @return array An array of post_id, meta_value pairs.
+ */
+function relevanssi_get_post_meta_for_all_posts( array $post_ids, string $field ) : array {
+	global $wpdb;
+
+	$post_ids_string = implode( ',', $post_ids );
+	$meta_values     = array();
+
+	if ( $post_ids_string ) {
+		$meta_values = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT post_id, meta_value FROM $wpdb->postmeta
+                WHERE meta_key = %s
+				AND post_id IN ( $post_ids_string )", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
+				$field
+			)
+		);
+	}
+
+	$results = array();
+	foreach ( $meta_values as $row ) {
+		$results[ $row->post_id ] = $row->meta_value;
+	}
+
+	return $results;
 }
 
 /**
@@ -622,6 +675,36 @@ function relevanssi_return_id_parent( $post_object ) {
 }
 
 /**
+ * Returns an ID=>type object from a post (or a term, or a user).
+ *
+ * @param WP_Post|WP_Term|WP_User $post_object The source object.
+ *
+ * @return object An object with the attributes ID and type set. Type is
+ * 'post', 'user', 'term' or 'post_type'. For terms, also fills in 'taxonomy',
+ * for post types 'name'.
+ */
+function relevanssi_return_id_type( $post_object ) {
+	$id_type_object = new stdClass();
+
+	if ( isset( $post_object->ID ) ) {
+		$id_type_object->ID   = $post_object->ID;
+		$id_type_object->type = 'post';
+	} elseif ( isset( $post_object->term_id ) ) {
+		$id_type_object->ID       = $post_object->term_id;
+		$id_type_object->type     = 'term';
+		$id_type_object->taxonomy = $post_object->taxonomy;
+	} elseif ( isset( $post_object->user_id ) ) {
+		$id_type_object->ID   = $post_object->user_id;
+		$id_type_object->type = 'user';
+	} else {
+		$id_type_object->ID          = 0;
+		$id_type_object->post_parent = 0;
+	}
+
+	return $id_type_object;
+}
+
+/**
  * Returns "off".
  *
  * Useful for returning "off" to filters easily.
@@ -645,6 +728,8 @@ function relevanssi_return_off() {
 function relevanssi_return_value( $post, string $return_value ) {
 	if ( 'id' === $return_value ) {
 		return $post->ID;
+	} elseif ( 'id=>type' === $return_value ) {
+		return relevanssi_return_id_type( $post );
 	} elseif ( 'id=>parent' === $return_value ) {
 		return relevanssi_return_id_parent( $post );
 	}
