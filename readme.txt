@@ -3,9 +3,9 @@ Contributors: msaari
 Donate link: https://www.relevanssi.com/buy-premium/
 Tags: search, relevance, better search, product search, woocommerce search
 Requires at least: 4.9
-Tested up to: 5.7
+Tested up to: 5.7.1
 Requires PHP: 7.0
-Stable tag: 4.12.5
+Stable tag: 4.13.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -219,31 +219,10 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: Relevanssi had an unnecessary index on the `doc` column in the `wp_relevanssi` database table. It is now removed to save space. Thanks to Matthew Wang.
 * Minor fix: Improved Oxygen Builder support makes sure `ct_builder_shortcodes` custom field is always indexed.
 
-= 4.9.1 =
-* Changed behaviour: The `relevanssi_excerpt_part` filter hook now gets the post ID as a second parameter. The documentation for the filter has been fixed to match actual use: this filter is applied to the excerpt part after the highlighting and the ellipsis have been added.
-* Changed behaviour: The `relevanssi_index_custom_fields` filter hook is no longer used when determining which custom fields are used for phrase searching. If you have a use case where this change matters, please contact us.
-* Minor fix: The `relevanssi_excerpt` filter hook was removed in 4.9.0. It is now restored and behaves the way it did before.
-* Minor fix: Avoids undefined variable warnings from the Pretty Links compatibility code.
-* Minor fix: The Oxygen Builder compatibility has been improved. Now shortcodes in Oxygen Builder content are expanded, if that setting is enabled in Relevanssi settings.
-
-= 4.9.0 =
-* New feature: There's now a "Debugging" tab in the Relevanssi settings, letting you see how the Relevanssi index sees posts. This is familiar to Premium users, but is now available in the free version as well.
-* New feature: The SEO Framework plugin is now supported and posts set excluded from the search in SEO Framework settings will be excluded from the index.
-* New feature: There's a new option, "Expand highlights". Enabling it makes Relevanssi expand partial-word highlights to cover the full word. This is useful when doing partial matching and when using a stemmer.
-* New feature: New filter hook `relevanssi_excerpt_part` allows you to modify the excerpt parts before they are combined together. This doesn't do much in the free version.
-* New feature: Improved compatibility with Oxygen Builder. Relevanssi automatically indexes the Oxygen Builder content and cleans it up. New filter hooks `relevanssi_oxygen_section_filters` and `relevanssi_oxygen_section_content` allow easier filtering of Oxygen content to eg. remove unwanted sections.
-* Changed behaviour: The "Uncheck this for non-ASCII highlights" option has been removed. Highlights are now done in a slightly different way that should work in all cases, including for example Cyrillic text, thus this option is no longer necessary.
-* Minor fix: Fixes phrase searching using non-US alphabet.
-* Minor fix: Relevanssi would break admin searching for hierarchical post types. This is now fixed, Relevanssi won't do that anymore.
-* Minor fix: Relevanssi indexing now survives better shortcodes that change the global `$post`.
-* Minor fix: Warnings about missing `relevanssi_update_counts` function are now removed.
-* Minor fix: Paid Membership Pro support now takes notice of the "filter queries" setting.
-* Minor fix: OR logic didn't work correctly when two phrases both had the same word (for example "freedom of speech" and "free speech"). The search would always be an AND search in those cases. That has been fixed.
-* Minor fix: Relevanssi no longer blocks the Pretty Links admin page search.
-* Minor fix: The "Respect 'exclude_from_search'" setting did not work if no post type parameter was included in the search parameters.
-* Minor fix: The category inclusion and exclusion setting checkboxes on the Searching tab didn't work. The setting was saved, but the checkboxes wouldn't appear.
-
 == Upgrade notice ==
+= 4.13.0 =
+* Lots of new features and bug fixes.
+
 = 4.12.5 =
 * Fixes minor bugs.
 
@@ -276,9 +255,3 @@ Each document database is full of useless words. All the little words that appea
 
 = 4.10.0 =
 * Adds support for multilingual stopwords and synonyms.
-
-= 4.9.1 =
-* Bug fixing, better Oxygen Builder compatibility.
-
-= 4.9.0 =
-* New debugging feature, lots of minor fixes.
