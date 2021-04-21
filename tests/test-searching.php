@@ -2093,12 +2093,13 @@ class SearchingTest extends WP_UnitTestCase {
 	 * Tests relevanssi_generate_missing_terms_list().
 	 */
 	public function test_generate_missing_terms_list() {
+		update_option( 'relevanssi_implicit_operator', 'OR' );
+
 		$args = array(
 			's'           => 'content kakucha bancha',
 			'post_type'   => 'post',
 			'numberposts' => 1,
 			'post_status' => 'publish',
-			'operator'    => 'OR',
 		);
 
 		$posts = self::results_from_args( $args )['posts'];
