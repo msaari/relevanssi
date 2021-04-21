@@ -19,59 +19,22 @@
  * @param array  $data The source data.
  */
 function relevanssi_add_matches( &$post, $data ) {
-	$hits = array(
-		'body'        => 0,
-		'title'       => 0,
-		'comment'     => 0,
-		'author'      => 0,
-		'excerpt'     => 0,
-		'customfield' => 0,
-		'mysqlcolumn' => 0,
-		'taxonomy'    => array(
-			'tag'      => 0,
-			'category' => 0,
-			'taxonomy' => 0,
-		),
-		'score'       => 0,
-		'terms'       => array(),
-	);
-	if ( isset( $data['body_matches'][ $post->ID ] ) ) {
-		$hits['body'] = $data['body_matches'][ $post->ID ];
-	}
-	if ( isset( $data['title_matches'][ $post->ID ] ) ) {
-		$hits['title'] = $data['title_matches'][ $post->ID ];
-	}
-	if ( isset( $data['tag_matches'][ $post->ID ] ) ) {
-		$hits['taxonomy']['tag'] = $data['tag_matches'][ $post->ID ];
-	}
-	if ( isset( $data['category_matches'][ $post->ID ] ) ) {
-		$hits['taxonomy']['category'] = $data['category_matches'][ $post->ID ];
-	}
-	if ( isset( $data['taxonomy_matches'][ $post->ID ] ) ) {
-		$hits['taxonomy']['taxonomy'] = $data['taxonomy_matches'][ $post->ID ];
-	}
-	if ( isset( $data['comment_matches'][ $post->ID ] ) ) {
-		$hits['comment'] = $data['comment_matches'][ $post->ID ];
-	}
-	if ( isset( $data['author_matches'][ $post->ID ] ) ) {
-		$hits['author'] = $data['author_matches'][ $post->ID ];
-	}
-	if ( isset( $data['excerpt_matches'][ $post->ID ] ) ) {
-		$hits['excerpt'] = $data['excerpt_matches'][ $post->ID ];
-	}
-	if ( isset( $data['customfield_matches'][ $post->ID ] ) ) {
-		$hits['customfield'] = $data['customfield_matches'][ $post->ID ];
-	}
-	if ( isset( $data['mysqlcolumn_matches'][ $post->ID ] ) ) {
-		$hits['mysqlcolumn'] = $data['mysqlcolumn_matches'][ $post->ID ];
-	}
-	if ( isset( $data['doc_weights'][ $post->ID ] ) ) {
-		$hits['score'] = round( $data['doc_weights'][ $post->ID ], 2 );
-	}
-	if ( isset( $data['term_hits'][ $post->ID ] ) ) {
-		$hits['terms'] = $data['term_hits'][ $post->ID ];
-		arsort( $hits['terms'] );
-	}
+	$hits['body']                 = $data['body_matches'][ $post->ID ] ?? 0;
+	$hits['title']                = $data['title_matches'][ $post->ID ] ?? 0;
+	$hits['taxonomy']['tag']      = $data['tag_matches'][ $post->ID ] ?? 0;
+	$hits['taxonomy']['category'] = $data['category_matches'][ $post->ID ] ?? 0;
+	$hits['taxonomy']['taxonomy'] = $data['taxonomy_matches'][ $post->ID ] ?? 0;
+	$hits['comment']              = $data['comment_matches'][ $post->ID ] ?? 0;
+	$hits['author']               = $data['author_matches'][ $post->ID ] ?? 0;
+	$hits['excerpt']              = $data['excerpt_matches'][ $post->ID ] ?? 0;
+	$hits['customfield']          = $data['customfield_matches'][ $post->ID ] ?? 0;
+	$hits['mysqlcolumn']          = $data['mysqlcolumn_matches'][ $post->ID ] ?? 0;
+	$hits['score']                = isset( $data['doc_weights'][ $post->ID ] ) ? round( $data['doc_weights'][ $post->ID ], 2 ) : 0;
+	$hits['terms']                = $data['term_hits'][ $post->ID ] ?? array();
+	$hits['missing_terms']        = $data['missing_terms'][ $post->ID ] ?? array();
+
+	arsort( $hits['terms'] );
+
 	$post->relevanssi_hits = $hits;
 }
 
@@ -94,6 +57,7 @@ function relevanssi_show_matches( $post ) {
 	}
 
 	$text          = stripslashes( get_option( 'relevanssi_show_matches_text' ) );
+	$missing_terms = strstr( $text, '%missing%' ) !== false ? relevanssi_generate_missing_terms_list( $post ) : '';
 	$replace_these = array(
 		'%body%',
 		'%title%',
@@ -108,6 +72,7 @@ function relevanssi_show_matches( $post ) {
 		'%score%',
 		'%terms%',
 		'%total%',
+		'%missing%',
 	);
 	$replacements  = array(
 		$post->relevanssi_hits['body'],
@@ -123,6 +88,7 @@ function relevanssi_show_matches( $post ) {
 		$post->relevanssi_hits['score'],
 		$term_hits,
 		$total_hits,
+		$missing_terms,
 	);
 	$result        = ' ' . str_replace( $replace_these, $replacements, $text );
 
@@ -135,6 +101,56 @@ function relevanssi_show_matches( $post ) {
 	 * @param string $result The breakdown.
 	 */
 	return apply_filters( 'relevanssi_show_matches', $result );
+}
+
+/**
+ * Generates the "Missing:" element for the search results breakdown.
+ *
+ * @param WP_Post $post The post object, which should have the missing terms in
+ * $post->relevanssi_hits['missing_terms'].
+ *
+ * @return string The missing terms.
+ */
+function relevanssi_generate_missing_terms_list( $post ) {
+	$missing_terms = '';
+	if ( ! empty( $post->relevanssi_hits['missing_terms'] ) ) {
+		$missing_terms_list = implode(
+			' ',
+			array_map(
+				function ( $term ) {
+					/**
+					 * Determines the tag used for missing terms, default <s>.
+					 *
+					 * @param string The tag, without angle brackets. Default 's'.
+					 */
+					$tag = apply_filters( 'relevanssi_missing_terms_tag', 's' );
+					return $tag ? "<$tag>$term</$tag>" : $term;
+				},
+				$post->relevanssi_hits['missing_terms']
+			)
+		);
+		$missing_terms      = sprintf(
+			/**
+			 * Filters the template for showing missing terms. Make sure you
+			 * include the '%s', as that is where the missing terms will be
+			 * inserted.
+			 *
+			 * @param string The template.
+			 */
+			apply_filters(
+				'relevanssi_missing_terms_template',
+				'<span class="missing_terms">' . __( 'Missing', 'relevanssi' ) . ': %s</span>'
+			),
+			$missing_terms_list
+		);
+	}
+	if (
+		1 === count( $post->relevanssi_hits['missing_terms'] )
+		&& function_exists( 'relevanssi_add_must_have' )
+		) {
+		$missing_terms .= relevanssi_add_must_have( $post );
+	}
+	return $missing_terms;
 }
 
 /**

@@ -133,6 +133,9 @@ Each document database is full of useless words. All the little words that appea
 == Changelog ==
 = 4.13.0 =
 * New feature: New filter hook `relevanssi_phrase` filters each phrase before it's used in the MySQL query.
+* New feature: Relevanssi can now add Google-style missing term lists to the search results. You can either use the `%missing%` tag in the search results breakdown settings, or you can create your own code: the missing terms are also in `$post->missing_terms`. Relevanssi Premium will also add "Must have" links when there's just one missing term.
+* New feature: New filter hook `relevanssi_missing_terms_tag` controls which tag is used to wrap the missing terms.
+* New feature: New filter hook `relevanssi_missing_terms_template` can be used to filter the template used to display the missing terms.
 * Changed behaviour: `relevanssi_strip_tags()` used to add spaces between HTML tags before stripping them. It no longer does that, but instead adds a space after specific list of tags (p, br, h1-h6, div, blockquote, hr, li, img) to avoid words being stuck to each other in excerpts.
 * Changed behaviour: Relevanssi now indexes the contents of Oxygen Builder PHP & HTML code blocks.
 * Minor fix: Warnings when creating excerpts with search terms that contain a slash were removed.

@@ -648,6 +648,14 @@ function relevanssi_search( $args ) {
 	}
 	$total_terms = count( $terms_without_stops );
 
+	$temp_terms_without_stops_synonyms = array_keys( relevanssi_tokenize( implode( ' ', $terms_without_synonyms ), $strip_stops ) );
+	$terms_without_stops_synonyms      = array();
+	foreach ( $temp_terms_without_stops_synonyms as $temp_term ) {
+		if ( relevanssi_strlen( $temp_term ) >= $min_length ) {
+			array_push( $terms_without_stops_synonyms, $temp_term );
+		}
+	}
+
 	if ( isset( $doc_weight ) ) {
 		/**
 		 * Filters the results Relevanssi finds.
@@ -660,6 +668,8 @@ function relevanssi_search( $args ) {
 		$doc_weight = apply_filters( 'relevanssi_results', $doc_weight );
 	}
 
+	$missing_terms = array();
+
 	if ( isset( $doc_weight ) && count( $doc_weight ) > 0 ) {
 		arsort( $doc_weight );
 		$i = 0;
@@ -668,6 +678,18 @@ function relevanssi_search( $args ) {
 				// AND operator in action:
 				// doc didn't match all terms, so it's discarded.
 				continue;
+			}
+			if ( count( $doc_terms[ $doc ] ) < $total_terms ) {
+				$missing_terms[ $doc ] = array_diff(
+					array_values( $terms_without_stops_synonyms ),
+					array_keys( $doc_terms[ $doc ] )
+				);
+				if ( count( $missing_terms[ $doc ] ) === count( $terms_without_stops_synonyms ) ) {
+					$missing_terms[ $doc ] = array_diff(
+						array_values( $terms_without_stops_synonyms ),
+						relevanssi_replace_synonyms_in_terms( array_keys( $doc_terms[ $doc ] ) )
+					);
+				}
 			}
 
 			if ( ! empty( $fields ) ) {
@@ -684,6 +706,10 @@ function relevanssi_search( $args ) {
 			} else {
 				$hits[ intval( $i ) ]                  = relevanssi_get_post( $doc );
 				$hits[ intval( $i ) ]->relevance_score = round( $weight, 2 );
+
+				if ( isset( $missing_terms[ $doc ] ) ) {
+					$hits[ intval( $i ) ]->missing_terms = $missing_terms[ $doc ];
+				}
 			}
 			$i++;
 		}
