@@ -582,8 +582,6 @@ END;
 
 	/**
 	 * Test a mixture of AND and OR.
-	 *
-	 * @group new
 	 */
 	public function test_and_or_mixture() {
 		global $wpdb;

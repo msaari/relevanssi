@@ -159,19 +159,17 @@ class FunctionTest extends WP_UnitTestCase {
 	 * Test relevanssi_get_negative_post_type().
 	 */
 	public function test_get_negative_post_type() {
-		$default_values_w_attachment  = "'attachment', 'revision', 'nav_menu_item', 'custom_css', 'customize_changeset', 'oembed_cache', 'user_request', 'wp_block'";
-		$default_values_wo_attachment = "'revision', 'nav_menu_item', 'custom_css', 'customize_changeset', 'oembed_cache', 'user_request', 'wp_block'";
-
+		update_option( 'relevanssi_index_post_types', array( 'revision', 'custom_css', 'attachment' ) );
 		update_option( 'relevanssi_respect_exclude', 'on' );
 		$this->assertEquals(
-			$default_values_w_attachment,
+			"'attachment', 'revision', 'custom_css'",
 			relevanssi_get_negative_post_type( 'off' ),
-			'With respect_exclude on and attachments not included in search, this should return attachment and default values.'
+			'With respect_exclude on and revision and custom_css included in index, this should return attachment, revision and custom_css.'
 		);
 		$this->assertEquals(
-			$default_values_wo_attachment,
+			"'revision', 'custom_css'",
 			relevanssi_get_negative_post_type( 'include_attachments' ),
-			'With respect_exclude on and attachments included in search, this should return default values.'
+			'With respect_exclude on and attachments included in search, this should return revision and custom_css.'
 		);
 
 		set_current_screen( 'edit-post' );
@@ -572,18 +570,6 @@ class FunctionTest extends WP_UnitTestCase {
 			'Should produce correct MySQL for an array parameter.'
 		);
 
-		$this->assertDiscardWhitespace(
-			"AND (( relevanssi.doc IN (SELECT DISTINCT(posts.ID) FROM wptests_posts AS posts
-			WHERE posts.post_type NOT IN ('attachment','revision','nav_menu_item','custom_css',
-			'customize_changeset','oembed_cache','user_request','wp_block'))) OR (doc=-1))",
-			relevanssi_process_post_type(
-				'',
-				$is_admin,
-				$include_attachments
-			),
-			'Should produce correct MySQL if there are no parameters.'
-		);
-
 		if ( RELEVANSSI_PREMIUM ) {
 			$this->assertDiscardWhitespace(
 				"AND (relevanssi.doc IN (
@@ -651,6 +637,50 @@ class FunctionTest extends WP_UnitTestCase {
 		);
 
 		$relevanssi_admin_test = false;
+	}
+
+	/**
+	 * Test phrase synonyms.
+	 */
+	public function test_phrase_synonyms() {
+		$language              = relevanssi_get_current_language();
+		$synonyms[ $language ] = 'campbell=roborowski;mouse=mice';
+		update_option( 'relevanssi_synonyms', $synonyms );
+
+		add_filter( 'relevanssi_phrase_synonyms', '__return_true' );
+
+		$query = '"campbell hamster"';
+		$this->assertEquals(
+			'"campbell hamster" "roborowski hamster"',
+			relevanssi_add_synonyms( $query )
+		);
+
+		$query = '"campbellian hamster"';
+		$this->assertEquals(
+			'"campbellian hamster"',
+			relevanssi_add_synonyms( $query )
+		);
+
+		$query = 'mouse "campbell hamster"';
+		$this->assertEquals(
+			'mouse mice "campbell hamster" "roborowski hamster"',
+			relevanssi_add_synonyms( $query )
+		);
+
+		remove_filter( 'relevanssi_phrase_synonyms', '__return_true' );
+		add_filter( 'relevanssi_phrase_synonyms', '__return_false' );
+
+		$query = '"campbell hamster"';
+		$this->assertEquals(
+			'"campbell hamster"',
+			relevanssi_add_synonyms( $query )
+		);
+
+		$query = 'mouse "campbell hamster"';
+		$this->assertEquals(
+			'mouse mice "campbell hamster"',
+			relevanssi_add_synonyms( $query )
+		);
 	}
 
 	/**

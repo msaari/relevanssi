@@ -2090,6 +2090,105 @@ class SearchingTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Tests relevanssi_generate_missing_terms_list().
+	 */
+	public function test_generate_missing_terms_list() {
+		$args = array(
+			's'           => 'content kakucha bancha',
+			'post_type'   => 'post',
+			'numberposts' => 1,
+			'post_status' => 'publish',
+			'operator'    => 'OR',
+		);
+
+		$posts = self::results_from_args( $args )['posts'];
+
+		$this->assertEquals(
+			array(
+				1 => 'kakucha',
+				2 => 'bancha',
+			),
+			$posts[0]->missing_terms,
+			"Missing terms aren't set correctly."
+		);
+
+		$this->assertEquals(
+			'<span class="missing_terms">Missing: <s>kakucha</s> <s>bancha</s></span>',
+			relevanssi_generate_missing_terms_list( $posts[0] ),
+			"Missing terms list isn't generated correctly."
+		);
+
+		$synonyms = array(
+			relevanssi_get_current_language() => 'content=sencha;gyokuro=content',
+		);
+		update_option( 'relevanssi_synonyms', $synonyms );
+
+		$posts = self::results_from_args( $args )['posts'];
+
+		$this->assertEquals(
+			array(
+				1 => 'kakucha',
+				2 => 'bancha',
+			),
+			$posts[0]->missing_terms,
+			"Missing terms list with synonyms isn't set correctly."
+		);
+
+		$this->assertEquals(
+			'<span class="missing_terms">Missing: <s>kakucha</s> <s>bancha</s></span>',
+			relevanssi_generate_missing_terms_list( $posts[0] ),
+			"Missing terms list isn't generated correctly with synonyms."
+		);
+
+		$args['s'] = 'gyokuro bancha shincha';
+
+		$posts = self::results_from_args( $args )['posts'];
+
+		$this->assertEquals(
+			array(
+				1 => 'bancha',
+				2 => 'shincha',
+			),
+			$posts[0]->missing_terms,
+			"Missing terms list with synonyms isn't set correctly."
+		);
+
+		$this->assertEquals(
+			'<span class="missing_terms">Missing: <s>bancha</s> <s>shincha</s></span>',
+			relevanssi_generate_missing_terms_list( $posts[0] ),
+			"Missing terms list isn't generated correctly with synonyms."
+		);
+
+		if ( function_exists( 'relevanssi_add_must_have' ) ) {
+			$args = array(
+				's'           => 'content bancha',
+				'post_type'   => 'post',
+				'numberposts' => 1,
+				'post_status' => 'publish',
+				'operator'    => 'OR',
+			);
+
+			$posts = self::results_from_args( $args )['posts'];
+
+			$this->assertEquals(
+				array( 1 => 'bancha' ),
+				$posts[0]->missing_terms,
+				"Missing terms aren't set correctly."
+			);
+
+			$GLOBALS['query_string'] = '?s=content+bancha';
+			$GLOBALS['request']      = '/';
+
+			$this->assertEquals(
+				'<span class="missing_terms">Missing: <s>bancha</s></span> | Must have: <a href="http://example.org/?s=content+%2Bbancha">bancha</a>',
+				relevanssi_generate_missing_terms_list( $posts[0] ),
+				"Missing terms list isn't generated correctly."
+			);
+		}
+	}
+
+
+	/**
 	 * Returns true if no posts have the particular tag.
 	 *
 	 * @param array $posts An array containing post objects.
