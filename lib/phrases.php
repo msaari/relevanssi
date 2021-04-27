@@ -185,7 +185,7 @@ $custom_fields, string $excerpts ) : array {
 		 * the MySQL query. You can use this filter hook to for example run
 		 * htmlentities() on the phrase in case your database needs that.
 		 *
-		 * @param string $phrase The phrase after quotes re replaced with a
+		 * @param string $phrase The phrase after quotes are replaced with a
 		 * MySQL wild card and the phrase has been passed through esc_like() and
 		 * htmlspecialchars().
 		 */
