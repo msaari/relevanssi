@@ -846,6 +846,7 @@ function relevanssi_add_synonyms( $query ) {
 			} else {
 				$new_phrases = $phrases;
 			}
+
 			$query = trim(
 				str_replace(
 					array_map( 'relevanssi_add_quotes', $phrases ),
@@ -1120,6 +1121,7 @@ function relevanssi_get_forbidden_post_types() {
 		'jp_mem_plan',          // Jetpack.
 		'tablepress_table',     // TablePress.
 		'ninja-table',          // Ninja Tables.
+		'shop_coupon',          // WooCommerce.
 		'shop_order',           // WooCommerce.
 		'shop_order_refund',    // WooCommerce.
 		'wc_order_status',      // WooCommerce.
@@ -1167,6 +1169,10 @@ function relevanssi_get_forbidden_post_types() {
 		'um_directory',         // Ultimate Member.
 		'mailpoet_page',        // Mailpoet Page.
 		'mc4wp_form',           // MailChimp.
+		'elementor_font',       // Elementor.
+		'elementor_icons',      // Elementor.
+		'elementor_library',    // Elementor.
+		'elementor_snippet',    // Elementor.
 	);
 }
 
@@ -1185,6 +1191,9 @@ function relevanssi_get_forbidden_taxonomies() {
 		'amp_template',           // AMP.
 		'edd_commission_status',  // Easy Digital Downloads.
 		'edd_log_type',           // Easy Digital Downloads.
+		'elementor_library_type', // Elementor.
+		'elementor_library_category', // Elementor.
+		'elementor_font_type',    // Elementor.
 	);
 }
 
