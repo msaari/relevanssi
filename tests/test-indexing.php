@@ -677,7 +677,7 @@ class IndexingTest extends WP_UnitTestCase {
 		ob_start();
 		$post   = get_post( $post_id );
 		$data   = array();
-		$n      = relevanssi_index_author( $data, $post->post_author, 3, true );
+		$n      = relevanssi_index_author( $data, $post->post_author, 3, true, $post );
 		$output = ob_get_clean();
 
 		$this->assertEquals(

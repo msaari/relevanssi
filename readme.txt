@@ -137,6 +137,7 @@ Each document database is full of useless words. All the little words that appea
 * New feature: New filter hook `relevanssi_missing_terms_tag` controls which tag is used to wrap the missing terms.
 * New feature: New filter hook `relevanssi_missing_terms_template` can be used to filter the template used to display the missing terms.
 * New feature: New function `relevanssi_get_post_meta_for_all_posts()` can be used to fetch particular meta field for a number of posts with just one query.
+* New feature: New filter hook `relevanssi_post_author` lets you filter the post author display_name before it is indexed.
 * Changed behaviour: `relevanssi_strip_tags()` used to add spaces between HTML tags before stripping them. It no longer does that, but instead adds a space after specific list of tags (p, br, h1-h6, div, blockquote, hr, li, img) to avoid words being stuck to each other in excerpts.
 * Changed behaviour: Relevanssi now indexes the contents of Oxygen Builder PHP & HTML code blocks.
 * Changed behaviour: Relevanssi now handles synonyms inside phrases differently. If the new filter hook `relevanssi_phrase_synonyms` returns `true` (default value), synonyms create a new phrase (with synonym 'dog=hound', phrase `"dog biscuits"` becomes `"dog biscuits" "hound biscuits"`). If the value is `false`, synonyms inside phrases are ignored.
