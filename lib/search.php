@@ -619,8 +619,6 @@ function relevanssi_do_query( &$query ) {
 
 	list( $search_low_boundary, $search_high_boundary ) = relevanssi_get_boundaries( $query );
 
-	$excerpt_length  = get_option( 'relevanssi_excerpt_length' );
-	$excerpt_type    = get_option( 'relevanssi_excerpt_type' );
 	$highlight_title = 'on' === get_option( 'relevanssi_hilite_title' ) ? true : false;
 	$show_matches    = 'on' === get_option( 'relevanssi_show_matches' ) ? true : false;
 	$return_posts    = empty( $search_params['fields'] );
@@ -642,7 +640,7 @@ function relevanssi_do_query( &$query ) {
 			relevanssi_highlight_post_title( $post, $q );
 		}
 		if ( $make_excerpts && $return_posts ) {
-			relevanssi_add_excerpt( $post, $excerpt_length, $excerpt_type, $q );
+			relevanssi_add_excerpt( $post, $q );
 		}
 		if ( $return_posts ) {
 			relevanssi_add_matches( $post, $return );
@@ -653,7 +651,6 @@ function relevanssi_do_query( &$query ) {
 
 		$posts[] = $post;
 	}
-
 
 	$query->posts      = $posts;
 	$query->post_count = count( $posts );

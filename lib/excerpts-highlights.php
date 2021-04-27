@@ -348,7 +348,7 @@ function relevanssi_create_excerpt( $content, $terms, $query, $excerpt_length = 
  *
  * @param string $content        The content.
  * @param array  $terms          The search terms, tokenized.
- * @param string $query          The search query (not used anymore).
+ * @param string $query          The search query.
  * @param int    $excerpt_length The length of the excerpt, default 30.
  * @param string $excerpt_type   Either 'chars' or 'words', default 'words'.
  *
@@ -1480,16 +1480,16 @@ function relevanssi_highlight_post_title( &$post, $query ) {
  * the original excerpt in $post->original_excerpt.
  *
  * @param WP_Post $post           The post object (passed as reference).
- * @param int     $excerpt_length The length of the excerpt.
- * @param string  $excerpt_type   "words" or "chars".
  * @param string  $query          The search query.
  *
  * @uses relevanssi_do_excerpt
  */
-function relevanssi_add_excerpt( &$post, $excerpt_length, $excerpt_type, $query ) {
+function relevanssi_add_excerpt( &$post, $query ) {
 	if ( isset( $post->blog_id ) ) {
 		switch_to_blog( $post->blog_id );
 	}
+	$excerpt_length         = get_option( 'relevanssi_excerpt_length' );
+	$excerpt_type           = get_option( 'relevanssi_excerpt_type' );
 	$post->original_excerpt = $post->post_excerpt;
 	$post->post_excerpt     = relevanssi_do_excerpt(
 		$post,
