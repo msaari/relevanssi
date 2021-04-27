@@ -824,14 +824,22 @@ function relevanssi_add_synonyms( $query ) {
 			$query       = str_replace( array( '”', '“' ), '"', $query );
 			$phrases     = relevanssi_extract_phrases( $query );
 			$new_phrases = array();
+			/**
+			 * Controls how synonyms are handled when they appear inside
+			 * phrases.
+			 *
+			 * @param bool If true, synonyms inside phrases create new phrases.
+			 * If false, synonyms inside phrases are ignored.
+			 */
 			if ( apply_filters( 'relevanssi_phrase_synonyms', true ) ) {
 				foreach ( $phrases as $phrase ) {
 					$new_phrases[] = $phrase;
-					$words = explode( ' ', $phrase );
+					$words         = explode( ' ', $phrase );
 					foreach ( array_keys( $synonyms ) as $synonym_source ) {
 						if ( in_array( $synonym_source, $words, true ) ) {
-							$synonym_replacement = implode( '', array_keys( $synonyms[ $synonym_source ] ) );
-							$new_phrases[]       = str_replace( $synonym_source, $synonym_replacement, $phrase );
+							foreach ( array_keys( $synonyms[ $synonym_source ] ) as $synonym_replacement ) {
+								$new_phrases[] = str_replace( $synonym_source, $synonym_replacement, $phrase );
+							}
 						}
 					}
 				}
