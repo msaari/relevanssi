@@ -115,6 +115,52 @@ function relevanssi_debug_echo( string $notice ) {
 }
 
 /**
+ * Runs do_shortcode() on content, but safeguards the global $post to make sure
+ * it isn't changed by the shortcodes. If shortcode expansion is disabled in
+ * Relevanssi settings, runs strip_shortcodes() on the content.
+ *
+ * @uses relevanssi_disable_shortcodes() Disables problem shortcodes.
+ * @see do_shortcode()                   Expands shortcodes.
+ * @see strip_shortcodes()               Strips off shortcodes.
+ *
+ * @param string $content The content where the shortcodes are expanded.
+ *
+ * @return string
+ */
+function relevanssi_do_shortcode( string $content ) : string {
+	if ( 'on' === get_option( 'relevanssi_expand_shortcodes' ) ) {
+		// TablePress support.
+		if ( function_exists( 'relevanssi_enable_tablepress_shortcodes' ) ) {
+			$tablepress_controller = relevanssi_enable_tablepress_shortcodes();
+		}
+
+		relevanssi_disable_shortcodes();
+
+		/**
+		 * This needs to be global here, otherwise the safety mechanism doesn't
+		 * work correctly.
+		 */
+		global $post;
+
+		$global_post_before_shortcode = null;
+		if ( isset( $post ) ) {
+			$global_post_before_shortcode = $post;
+		}
+
+		$content = do_shortcode( $content );
+
+		if ( $global_post_before_shortcode ) {
+			$post = $global_post_before_shortcode; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+		}
+
+		unset( $tablepress_controller );
+	} else {
+		$content = strip_shortcodes( $content );
+	}
+	return $content;
+}
+
+/**
  * Recursively flattens a multidimensional array to produce a string.
  *
  * @param array $array The source array.

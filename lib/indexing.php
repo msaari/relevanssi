@@ -1476,35 +1476,7 @@ function relevanssi_index_content( &$insert_data, $post_object, $min_word_length
 		}
 	}
 
-	if ( 'on' === get_option( 'relevanssi_expand_shortcodes' ) ) {
-		// TablePress support.
-		if ( function_exists( 'relevanssi_enable_tablepress_shortcodes' ) ) {
-			$tablepress_controller = relevanssi_enable_tablepress_shortcodes();
-		}
-
-		relevanssi_disable_shortcodes();
-
-		/**
-		 * This needs to be global here, otherwise the safety mechanism doesn't
-		 * work correctly.
-		 */
-		global $post;
-
-		$global_post_before_shortcode = null;
-		if ( isset( $post ) ) {
-			$global_post_before_shortcode = $post;
-		}
-
-		$contents = do_shortcode( $contents );
-
-		if ( $global_post_before_shortcode ) {
-			$post = $global_post_before_shortcode; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
-		}
-
-		unset( $tablepress_controller );
-	} else {
-		$contents = strip_shortcodes( $contents );
-	}
+	$contents = relevanssi_do_shortcode( $contents );
 
 	remove_shortcode( 'noindex' );
 	add_shortcode( 'noindex', 'relevanssi_noindex_shortcode' );
