@@ -254,12 +254,12 @@ function relevanssi_get_current_language( bool $locale = true ) {
 		global $post;
 
 		if ( isset( $post ) ) {
-			if ( isset( $post->term_id ) ) {
+			if ( isset( $post->term_id ) && function_exists( 'pll_get_term_language' ) ) {
 				$current_language = pll_get_term_language( $post->term_id, $locale ? 'locale' : 'slug' );
-			} elseif ( ! isset( $post->user_id ) ) {
+			} elseif ( ! isset( $post->user_id ) && function_exists( 'pll_get_post_language' ) ) {
 				$current_language = pll_get_post_language( $post->ID, $locale ? 'locale' : 'slug' );
 			}
-		} else {
+		} elseif ( function_exists( 'pll_current_language' ) ) {
 			$current_language = pll_current_language( $locale ? 'locale' : 'slug' );
 		}
 	}
