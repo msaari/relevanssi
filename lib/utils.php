@@ -197,6 +197,8 @@ function relevanssi_generate_closing_tags( array $tags ) {
 /**
  * Returns a post object based on ID, **type**id notation or an object.
  *
+ * @uses relevanssi_get_post_object() Fetches post objects.
+ *
  * @param int|string|WP_Post $source The source identified to parse, either a
  * post ID integer, a **type**id string or a post object.
  *
@@ -312,6 +314,8 @@ function relevanssi_get_current_language( bool $locale = true ) {
  * Uses get_permalink() to get the permalink, then adds the 'highlight'
  * parameter if necessary using relevanssi_add_highlight().
  *
+ * @see get_permalink()
+ *
  * @return string The permalink.
  */
 function relevanssi_get_permalink() {
@@ -401,6 +405,11 @@ function relevanssi_get_post_meta_for_all_posts( array $post_ids, string $field 
 /**
  * Returns an object based on ID.
  *
+ * Wrapper to handle non-post cases (terms, user profiles). Regular posts are
+ * passed on to relevanssi_get_post().
+ *
+ * @uses relevanssi_get_post() Used to fetch regular posts.
+ *
  * @param int|string $post_id An ID, either an integer post ID or a
  * **type**id string for terms and users.
  *
@@ -474,6 +483,8 @@ function relevanssi_get_term_taxonomy( int $term_id ) {
  * Replacement for get_the_tags() that does the same, but applies Relevanssi
  * search term highlighting on the results.
  *
+ * @uses relevanssi_the_tags() Does the actual work.
+ *
  * @param string $before    What is printed before the tags, default ''.
  * @param string $separator The separator between items, default ', '.
  * @param string $after     What is printed after the tags, default ''.
@@ -489,7 +500,7 @@ function relevanssi_get_the_tags( string $before = '', string $separator = ', ',
  * Reads the highlighted title from $post->post_highlighted_title. Uses the
  * relevanssi_get_post() to fecth the post.
  *
- * @uses relevanssi_get_post()
+ * @uses relevanssi_get_post() Fetches post objects.
  *
  * @param int|WP_Post $post The post ID or a post object.
  *
@@ -512,6 +523,8 @@ function relevanssi_get_the_title( $post ) {
  * Returns an imploded string if the option exists and is an array, an empty
  * string otherwise.
  *
+ * @see implode()
+ *
  * @param array  $request An array of option values.
  * @param string $option  The key to check.
  * @param string $glue    The glue string for implode(), default ','.
@@ -527,6 +540,8 @@ function relevanssi_implode( array $request, string $option, string $glue = ',' 
 
 /**
  * Returns the intval of the option if it exists, null otherwise.
+ *
+ * @see intval()
  *
  * @param array  $request An array of option values.
  * @param string $option  The key to check.
@@ -583,10 +598,10 @@ function relevanssi_launch_ajax_action( string $action, array $payload_args = ar
 /**
  * Returns a legal value.
  *
- * @param array  $request  An array of option values.
- * @param string $option   The key to check.
- * @param array  $values   The legal values.
- * @param string $default  The default value.
+ * @param array  $request An array of option values.
+ * @param string $option  The key to check.
+ * @param array  $values  The legal values.
+ * @param string $default The default value.
  *
  * @return string|null A legal value or the default value, null if the option
  * isn't set.
@@ -605,8 +620,13 @@ function relevanssi_legal_value( array $request, string $option, array $values, 
 /**
  * Multibyte friendly case-insensitive string comparison.
  *
- * If multibyte string functions are available, do strcmp() after using
- * mb_strtoupper() to both strings. Otherwise use strcasecmp().
+ * If multibyte string functions are available, do strnatcmp() after using
+ * mb_strtoupper() to both strings. Otherwise use strnatcasecmp().
+ *
+ * @see strnatcasecmp() Falls back to this if multibyte functions are
+ * not available.
+ * @see strnatcmp()     Used to compare the strings.
+ * @see mb_strtoupper() Used to convert strings to uppercase.
  *
  * @param string $str1     First string to compare.
  * @param string $str2     Second string to compare.
@@ -675,6 +695,8 @@ function relevanssi_remove_quotes( string $string ) {
  * Used to remove phrase quotes from search term array, which have the format
  * of (term => hits). The number of hits is not needed, so this function
  * discards it as a side effect.
+ *
+ * @uses relevanssi_remove_quotes() This does the actual work.
  *
  * @param array $array An array to process.
  *
@@ -763,6 +785,9 @@ function relevanssi_return_off() {
 
 /**
  * Gets a post object, returns ID, ID=>parent or the post object.
+ *
+ * @uses relevanssi_return_id_type()   Used to return ID=>type results.
+ * @uses relevanssi_return_id_parent() Used to return ID=>parent results.
  *
  * @param object $post         The post object.
  * @param string $return_value The value to return, possible values are 'id'
@@ -882,7 +907,8 @@ function relevanssi_strip_invisibles( $text ) {
  * are not stuck together after the tags are removed. The function also removes
  * invisible content.
  *
- * @see relevanssi_strip_invisibles
+ * @uses relevanssi_strip_invisibles() Used to remove scripts and other tags.
+ * @see  strip_tags()                  Used to remove tags.
  *
  * @param string|null $content The content.
  *
@@ -1063,6 +1089,8 @@ function relevanssi_substr( $string, int $start, $length = null ) {
  * Prints out the post excerpt from $post->post_excerpt, unless the post is
  * protected. Only works in the Loop.
  *
+ * @see post_password_required() Used to check for password requirements.
+ *
  * @global $post The global post object.
  */
 function relevanssi_the_excerpt() {
@@ -1079,6 +1107,8 @@ function relevanssi_the_excerpt() {
  *
  * Uses get_permalink() to get the permalink, then adds the 'highlight'
  * parameter if necessary using relevanssi_add_highlight(), then echoes it out.
+ *
+ * @uses relevanssi_get_permalink() Fetches the current post permalink.
  */
 function relevanssi_the_permalink() {
 	echo esc_url( relevanssi_get_permalink() );

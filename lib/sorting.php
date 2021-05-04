@@ -13,9 +13,9 @@
 /**
  * Gets the next key-direction pair from the orderby array.
  *
- * Fetches a key-direction pair from the orderby array. Converts key names to match
- * the post object parameters when necessary and seeds the random generator, if
- * required.
+ * Fetches a key-direction pair from the orderby array. Converts key names to
+ * match the post object parameters when necessary and seeds the random
+ * generator, if required.
  *
  * @param array $orderby An array of key-direction pairs.
  *
@@ -182,11 +182,11 @@ function relevanssi_get_compare_values( $key, $item_1, $item_2 ) {
 			/**
 			 * Adds in a missing sorting value.
 			 *
-			 * In some cases the sorting method may not have values for all posts
-			 * (for example when sorting by 'menu_order'). If you still want to use
-			 * a sorting method like this, you can use this function to fill in a
-			 * value (in the case of 'menu_order', for example, one could use
-			 * PHP_INT_MAX.)
+			 * In some cases the sorting method may not have values for all
+			 * posts (for example when sorting by 'menu_order'). If you still
+			 * want to use a sorting method like this, you can use this function
+			 * to fill in a value (in the case of 'menu_order', for example, one
+			 * could use PHP_INT_MAX.)
 			 *
 			 * @param string $key1 The value to filter.
 			 * @param string $key  The name of the key.
@@ -256,8 +256,8 @@ function relevanssi_get_compare_values( $key, $item_1, $item_2 ) {
  * date comparisons and 'string' for string comparison, everything else is
  * considered a numeric comparison.
  *
- * @return int $val Returns < 0 if key1 is less than key2; > 0 if key1 is greater
- * than key2, and 0 if they are equal.
+ * @return int $val Returns < 0 if key1 is less than key2; > 0 if key1 is
+ * greater than key2, and 0 if they are equal.
  */
 function relevanssi_compare_values( $key1, $key2, $compare ) {
 	$val = 0;
@@ -284,21 +284,22 @@ function relevanssi_compare_values( $key1, $key2, $compare ) {
 /**
  * Compares two values using order array from a filter.
  *
- * Compares two sorting keys using a sorted array that contains value => order pairs.
- * Uses the 'relevanssi_comparison_order' filter to get the sorting guidance array.
+ * Compares two sorting keys using a sorted array that contains value => order
+ * pairs. Uses the 'relevanssi_comparison_order' filter to get the sorting
+ * guidance array.
  *
  * @param string $key1 The first key.
  * @param string $key2 The second key.
  *
- * @return int $val Returns < 0 if key1 is less than key2; > 0 if key1 is greater
- * than key2, and 0 if they are equal.
+ * @return int $val Returns < 0 if key1 is less than key2; > 0 if key1 is
+ * greater than key2, and 0 if they are equal.
  */
 function relevanssi_filter_compare( $key1, $key2 ) {
 	/**
 	 * Provides the sorting order for the filter.
 	 *
-	 * The array should contain the possible key values as keys and their order in
-	 * the values, like this:
+	 * The array should contain the possible key values as keys and their order
+	 * in the values, like this:
 	 *
 	 * $order = array(
 	 *     'post' => 0,
@@ -306,15 +307,16 @@ function relevanssi_filter_compare( $key1, $key2 ) {
 	 *     'book' => 2,
 	 * );
 	 *
-	 * This would sort posts first, pages second, books third. Values that do not
-	 * appear in the array are sorted last.
+	 * This would sort posts first, pages second, books third. Values that do
+	 * not appear in the array are sorted last.
 	 *
 	 * @param array Sorting guidance array.
 	 */
 	$order = apply_filters( 'relevanssi_comparison_order', array() );
 
-	// Set the default values so that if the key is not found in the array, it's last.
-	$max_key = max( $order );
+	// Set the default values so that if the key is not found in the array, it's
+	// last.
+	$max_key = ! empty( $order ) ? max( $order ) : 0;
 
 	$val_1 = isset( $order[ $key1 ] ) ? $order[ $key1 ] : $max_key + 1;
 	$val_2 = isset( $order[ $key2 ] ) ? $order[ $key2 ] : $max_key + 1;
@@ -325,8 +327,8 @@ function relevanssi_filter_compare( $key1, $key2 ) {
 /**
  * Compares values using multiple levels of sorting keys.
  *
- * Comparison function for usort() using multiple levels of sorting methods. If one
- * level produces a tie, the sort will get a next level of sorting methods.
+ * Comparison function for usort() using multiple levels of sorting methods. If
+ * one level produces a tie, the sort will get a next level of sorting methods.
  *
  * @global array $relevanssi_keys     An array of sorting keys by level.
  * @global array $relevanssi_dirs     An array of sorting directions by level.
@@ -372,16 +374,21 @@ function relevanssi_cmp_function( $a, $b ) {
 /**
  * Sorts post objects.
  *
- * Sorts post objects using multiple levels of sorting methods. This function was
- * originally written by Matthew Hood and published in the PHP manual comments.
+ * Sorts post objects using multiple levels of sorting methods. This function
+ * was originally written by Matthew Hood and published in the PHP manual
+ * comments.
+ *
  * The actual sorting is handled by relevanssi_cmp_function().
+ *
+ * @see relevanssi_cmp_function()
  *
  * @global array $relevanssi_keys       An array of sorting keys by level.
  * @global array $relevanssi_dirs       An array of sorting directions by level.
  * @global array $relevanssi_compares   An array of comparison methods by level.
  * @global array $relevanssi_meta_query The meta query array.
  *
- * @param array $data       The posts to sort are in $data[0], used as a reference.
+ * @param array $data       The posts to sort are in $data[0], used as a
+ * reference.
  * @param array $orderby    The array of orderby rules with directions.
  * @param array $meta_query The meta query array, in case it's needed for meta
  * query based sorting.
@@ -412,11 +419,13 @@ function relevanssi_object_sort( &$data, $orderby, $meta_query ) {
  * A sorting function that sorts strings by length. Uses relevanssi_strlen() to
  * count the string length.
  *
+ * @see relevanssi_strlen()
+ *
  * @param string $a String A.
  * @param string $b String B.
  *
- * @return int Negative value, if string A is longer; zero, if strings are equally
- * long; positive, if string B is longer.
+ * @return int Negative value, if string A is longer; zero, if strings are
+ * equally long; positive, if string B is longer.
  */
 function relevanssi_strlen_sort( $a, $b ) {
 	return relevanssi_strlen( $b ) - relevanssi_strlen( $a );
