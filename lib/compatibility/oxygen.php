@@ -77,7 +77,10 @@ function relevanssi_oxygen_compatibility( $value, $field, $post_id ) {
 			);
 
 			$content = preg_replace(
-				'/\[\/?ct_.*?\]/',
+				array(
+					'/\[oxygen.*?\]/',
+					'/\[\/?ct_.*?\]/',
+				),
 				' ',
 				/**
 				 * Filters the Oxygen Builder section content before the

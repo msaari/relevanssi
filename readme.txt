@@ -131,6 +131,9 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.13.1 =
+* Minor fix: Improves the Oxygen compatibility. Now also the [oxygen] shortcode tags are removed.
+
 = 4.13.0 =
 * New feature: New filter hook `relevanssi_phrase` filters each phrase before it's used in the MySQL query.
 * New feature: Relevanssi can now add Google-style missing term lists to the search results. You can either use the `%missing%` tag in the search results breakdown settings, or you can create your own code: the missing terms are also in `$post->missing_terms`. Relevanssi Premium will also add "Must have" links when there's just one missing term.
