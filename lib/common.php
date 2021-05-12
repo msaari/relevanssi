@@ -1667,3 +1667,41 @@ function relevanssi_replace_synonyms_in_terms( array $terms ) : array {
 		$terms
 	);
 }
+
+/**
+ * Replaces stemmed words in an array with their original counterparts.
+ *
+ * @param array $terms     An array of words where to replace.
+ * @param array $all_terms An array of all words to stem. Default $terms.
+ *
+ * @return array An array of words with stemmed words replaced with their
+ * originals.
+ */
+function relevanssi_replace_stems_in_terms( array $terms, array $all_terms = null ) : array {
+	if ( ! $all_terms ) {
+		$all_terms = $terms;
+	}
+	$term_for_stem = array();
+	foreach ( $all_terms as $term ) {
+		$term_and_stem = relevanssi_tokenize( $term, false, -1 );
+		foreach ( array_keys( $term_and_stem ) as $word ) {
+			if ( $word === $term ) {
+				continue;
+			}
+			$term_for_stem[ $word ] = $term;
+		}
+	}
+
+	if ( empty( $term_for_stem ) ) {
+		return $terms;
+	}
+
+	return array_unique(
+		array_map(
+			function ( $term ) use ( $term_for_stem ) {
+				return $term_for_stem[ $term ] ?? $term;
+			},
+			$terms
+		)
+	);
+}

@@ -2091,6 +2091,8 @@ class SearchingTest extends WP_UnitTestCase {
 
 	/**
 	 * Tests relevanssi_generate_missing_terms_list().
+	 *
+	 * @group fail
 	 */
 	public function test_generate_missing_terms_list() {
 		update_option( 'relevanssi_implicit_operator', 'OR' );
@@ -2151,7 +2153,7 @@ class SearchingTest extends WP_UnitTestCase {
 				2 => 'shincha',
 			),
 			$posts[0]->missing_terms,
-			"Missing terms list with synonyms isn't set correctly."
+			"Missing terms list with a synonym term isn't set correctly."
 		);
 
 		$this->assertEquals(
@@ -2177,8 +2179,8 @@ class SearchingTest extends WP_UnitTestCase {
 				"Missing terms aren't set correctly."
 			);
 
-			$GLOBALS['query_string'] = '?s=content+bancha';
-			$GLOBALS['request']      = '/';
+			$GLOBALS['wp']->query_string = '?s=content+bancha';
+			$GLOBALS['request']          = '/';
 
 			$this->assertEquals(
 				'<span class="missing_terms">Missing: <s>bancha</s></span> | Must have: <a href="http://example.org/?s=content+%2Bbancha">bancha</a>',
@@ -2186,6 +2188,7 @@ class SearchingTest extends WP_UnitTestCase {
 				"Missing terms list isn't generated correctly."
 			);
 		}
+
 	}
 
 
