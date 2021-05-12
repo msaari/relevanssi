@@ -721,9 +721,10 @@ function relevanssi_update_child_posts( $new_status, $old_status, $post ) {
 	/**
 	 * Filters the attachment and revision post types.
 	 *
-	 * If you want attachment indexing to cover other post types than just
-	 * attachment, you need to include the new post type in the array with
-	 * this filter.
+	 * When Relevanssi indexes posts, it also looks at the child posts. However,
+	 * if the indexed post is a revision or an attachment, the child posts are
+	 * not checked. You may extend this behaviour to other post types with this
+	 * hook.
 	 *
 	 * @param array Array of post types, default 'attachment' and 'revision'.
 	 */
