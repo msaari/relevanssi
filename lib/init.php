@@ -152,103 +152,7 @@ function relevanssi_init() {
 		wp_schedule_event( time(), 'weekly', 'relevanssi_update_counts' );
 	}
 
-	if ( function_exists( 'icl_object_id' ) && ! function_exists( 'pll_is_translated_post_type' ) ) {
-		require_once 'compatibility/wpml.php';
-	}
-
-	if ( class_exists( 'Polylang', false ) ) {
-		require_once 'compatibility/polylang.php';
-	}
-
-	if ( class_exists( 'WooCommerce', false ) ) {
-		require_once 'compatibility/woocommerce.php';
-	}
-
-	if ( class_exists( 'acf', false ) ) {
-		require_once 'compatibility/acf.php';
-	}
-
-	if ( class_exists( 'Obenland_Wp_Search_Suggest', false ) ) {
-		require_once 'compatibility/wp-search-suggest.php';
-	}
-
-	if ( function_exists( 'do_blocks' ) ) {
-		require_once 'compatibility/gutenberg.php';
-	}
-
-	if ( defined( 'WPFD_VERSION' ) ) {
-		require_once 'compatibility/wp-file-download.php';
-	}
-
-	if ( defined( 'WPSEO_FILE' ) ) {
-		require_once 'compatibility/yoast-seo.php';
-	}
-
-	if ( defined( 'AIOSEO_DIR' ) ) {
-		require_once 'compatibility/aioseo.php';
-	}
-
-	if ( function_exists( 'seopress_get_toggle_titles_option' ) && '1' === seopress_get_toggle_titles_option() ) {
-		require_once 'compatibility/seopress.php';
-	}
-
-	if ( defined( 'THE_SEO_FRAMEWORK_VERSION' ) ) {
-		require_once 'compatibility/seoframework.php';
-	}
-
-	if ( class_exists( 'RankMath', false ) ) {
-		require_once 'compatibility/rankmath.php';
-	}
-
-	if ( function_exists( 'members_content_permissions_enabled' ) ) {
-		require_once 'compatibility/members.php';
-	}
-
-	if ( defined( 'GROUPS_CORE_VERSION' ) ) {
-		require_once 'compatibility/groups.php';
-	}
-
-	if ( class_exists( 'MeprUpdateCtrl', false ) && MeprUpdateCtrl::is_activated() ) {
-		require_once 'compatibility/memberpress.php';
-	}
-
-	if ( defined( 'SIMPLE_WP_MEMBERSHIP_VER' ) ) {
-		require_once 'compatibility/simplemembership.php';
-	}
-
-	if ( function_exists( 'wp_jv_prg_user_can_see_a_post' ) ) {
-		require_once 'compatibility/wpjvpostreadinggroups.php';
-	}
-
-	if ( function_exists( 'rcp_user_can_access' ) ) {
-		require_once 'compatibility/restrictcontentpro.php';
-	}
-
-	// phpcs:disable WordPress.NamingConventions.ValidVariableName
-	global $userAccessManager;
-	if ( isset( $userAccessManager ) ) {
-		require_once 'compatibility/useraccessmanager.php';
-	}
-	// phpcs:enable WordPress.NamingConventions.ValidVariableName
-
-	if ( function_exists( 'pmpro_has_membership_access' ) ) {
-		require_once 'compatibility/paidmembershippro.php';
-	}
-
-	// Always required, the functions check if TablePress is active.
-	require_once 'compatibility/tablepress.php';
-
-	if ( defined( 'NINJA_TABLES_VERSION' ) ) {
-		require_once 'compatibility/ninjatables.php';
-	}
-
-	if ( defined( 'PRLI_PLUGIN_NAME' ) ) {
-		require_once 'compatibility/pretty-links.php';
-	}
-
-	if ( defined( 'CT_VERSION' ) ) {
-		require_once 'compatibility/oxygen.php';
-	}
+	relevanssi_load_compatibility_code();
 
 	if ( ! is_array( get_option( 'relevanssi_stopwords' ) ) ) {
 		// Version 2.12 / 4.10 changes stopwords option from a string to an
@@ -557,4 +461,41 @@ function relevanssi_export_log_check() {
 	if ( isset( $_REQUEST['relevanssi_export'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification, just checking the parameter exists.
 		relevanssi_export_log();
 	}
+}
+
+/**
+ * Loads in the Relevanssi plugin compatibility code.
+ */
+function relevanssi_load_compatibility_code() {
+	class_exists( 'acf', false ) && require_once 'compatibility/acf.php';
+	class_exists( 'MeprUpdateCtrl', false ) && MeprUpdateCtrl::is_activated() && require_once 'compatibility/memberpress.php';
+	class_exists( 'Obenland_Wp_Search_Suggest', false ) && require_once 'compatibility/wp-search-suggest.php';
+	class_exists( 'Polylang', false ) && require_once 'compatibility/polylang.php';
+	class_exists( 'RankMath', false ) && require_once 'compatibility/rankmath.php';
+	class_exists( 'WooCommerce', false ) && require_once 'compatibility/woocommerce.php';
+	defined( 'AIOSEO_DIR' ) && require_once 'compatibility/aioseo.php';
+	defined( 'CT_VERSION' ) && require_once 'compatibility/oxygen.php';
+	defined( 'GROUPS_CORE_VERSION' ) && require_once 'compatibility/groups.php';
+	defined( 'NINJA_TABLES_VERSION' ) && require_once 'compatibility/ninjatables.php';
+	defined( 'PRLI_PLUGIN_NAME' ) && require_once 'compatibility/pretty-links.php';
+	defined( 'SIMPLE_WP_MEMBERSHIP_VER' ) && require_once 'compatibility/simplemembership.php';
+	defined( 'THE_SEO_FRAMEWORK_VERSION' ) && require_once 'compatibility/seoframework.php';
+	defined( 'WPFD_VERSION' ) && require_once 'compatibility/wp-file-download.php';
+	defined( 'WPMEM_VERSION' ) && require_once 'compatibility/wp-members.php';
+	defined( 'WPSEO_FILE' ) && require_once 'compatibility/yoast-seo.php';
+	function_exists( 'do_blocks' ) && require_once 'compatibility/gutenberg.php';
+	function_exists( 'icl_object_id' ) && ! function_exists( 'pll_is_translated_post_type' ) && require_once 'compatibility/wpml.php';
+	function_exists( 'members_content_permissions_enabled' ) && require_once 'compatibility/members.php';
+	function_exists( 'pmpro_has_membership_access' ) && require_once 'compatibility/paidmembershippro.php';
+	function_exists( 'rcp_user_can_access' ) && require_once 'compatibility/restrictcontentpro.php';
+	function_exists( 'seopress_get_toggle_titles_option' ) && '1' === seopress_get_toggle_titles_option() && require_once 'compatibility/seopress.php';
+	function_exists( 'wp_jv_prg_user_can_see_a_post' ) && require_once 'compatibility/wpjvpostreadinggroups.php';
+
+	// phpcs:disable WordPress.NamingConventions.ValidVariableName
+	global $userAccessManager;
+	isset( $userAccessManager ) && require_once 'compatibility/useraccessmanager.php';
+	// phpcs:enable WordPress.NamingConventions.ValidVariableName
+
+	// Always required, the functions check if TablePress is active.
+	require_once 'compatibility/tablepress.php';
 }

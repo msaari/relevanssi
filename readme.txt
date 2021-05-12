@@ -132,6 +132,7 @@ Each document database is full of useless words. All the little words that appea
 
 == Changelog ==
 = 4.13.1 =
+* New feature: Adds compatibility for WP-Members plugin, preventing blocked posts from showing up in the search results.
 * Minor fix: Improves the Oxygen compatibility. Now also the [oxygen] shortcode tags are removed.
 
 = 4.13.0 =
