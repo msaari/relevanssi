@@ -231,6 +231,28 @@ function relevanssi_get_an_object( $source ) {
 }
 
 /**
+ * Returns the attachment filename suffix.
+ *
+ * Reads the filename from $post->guid and returns the file suffix.
+ *
+ * @param WP_Post|int $post The post object or post ID.
+ * @return string The suffix if it is found, an empty string otherwise.
+ */
+function relevanssi_get_attachment_suffix( $post ) : string {
+	if ( ! is_object( $post ) ) {
+		$post = relevanssi_get_post( $post );
+		if ( ! $post ) {
+			return '';
+		}
+	}
+	if ( 'attachment' !== $post->post_type ) {
+		return '';
+	}
+	list( , $type ) = explode( '.', basename( $post->guid ) );
+	return $type;
+}
+
+/**
  * Returns the locale or language code.
  *
  * If WPML or Polylang is not available, returns `get_locale()` value. With
