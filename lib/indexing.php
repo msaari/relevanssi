@@ -1047,7 +1047,7 @@ function relevanssi_remove_doc( $post_id, $keep_internal_links = false ) {
 			return;
 		}
 
-		$rows_updated = $wpdb->query(
+		$wpdb->query(
 			$wpdb->prepare(
 				'DELETE FROM ' . $relevanssi_variables['relevanssi_table'] . ' WHERE doc=%d', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 				$post_id
@@ -1287,7 +1287,7 @@ function relevanssi_index_custom_fields( &$insert_data, $post_id, $custom_fields
 			$context      = 'custom_field';
 			$remove_stops = true;
 			if ( '_relevanssi_pdf_content' === $field ) {
-				$context      = 'body';
+				$context      = 'content';
 				$remove_stops = 'body';
 			}
 
@@ -1672,6 +1672,7 @@ function relevanssi_convert_data_to_values( $insert_data, $post ) {
 		$mysqlcolumn        = isset( $data['mysqlcolumn'] ) ? $data['mysqlcolumn'] : 0;
 		$taxonomy_detail    = isset( $data['taxonomy_detail'] ) ? $data['taxonomy_detail'] : '';
 		$customfield_detail = isset( $data['customfield_detail'] ) ? $data['customfield_detail'] : '';
+		$mysqlcolumn_detail = isset( $data['mysqlcolumn_detail'] ) ? $data['mysqlcolumn_detail'] : '';
 
 		if ( 'utf8' === $charset ) {
 			$term = wp_encode_emoji( $term );
@@ -1680,7 +1681,7 @@ function relevanssi_convert_data_to_values( $insert_data, $post ) {
 		$term = trim( $term );
 
 		$value = $wpdb->prepare(
-			'(%d, %s, REVERSE(%s), %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %s, %s, %s, %d)',
+			'(%d, %s, REVERSE(%s), %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %s, %s, %s, %d, %s)',
 			$post->ID,
 			$term,
 			$term,
@@ -1697,7 +1698,8 @@ function relevanssi_convert_data_to_values( $insert_data, $post ) {
 			$type,
 			$taxonomy_detail,
 			$customfield_detail,
-			$mysqlcolumn
+			$mysqlcolumn,
+			$mysqlcolumn_detail
 		);
 
 		array_push( $values, $value );
