@@ -131,6 +131,9 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.13.2 =
+* New feature: This version makes Avada Live Search use Relevanssi.
+
 = 4.13.1 =
 * New feature: Adds compatibility for WP-Members plugin, preventing blocked posts from showing up in the search results.
 * New feature: New function `relevanssi_get_attachment_suffix()` can be used to return the attachment file suffix based on a post object or a post ID.

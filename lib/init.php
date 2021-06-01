@@ -474,6 +474,7 @@ function relevanssi_load_compatibility_code() {
 	class_exists( 'RankMath', false ) && require_once 'compatibility/rankmath.php';
 	class_exists( 'WooCommerce', false ) && require_once 'compatibility/woocommerce.php';
 	defined( 'AIOSEO_DIR' ) && require_once 'compatibility/aioseo.php';
+	defined( 'AVADA_VERSION' ) && require_once 'compatibility/avada.php';
 	defined( 'CT_VERSION' ) && require_once 'compatibility/oxygen.php';
 	defined( 'GROUPS_CORE_VERSION' ) && require_once 'compatibility/groups.php';
 	defined( 'NINJA_TABLES_VERSION' ) && require_once 'compatibility/ninjatables.php';
