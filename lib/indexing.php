@@ -578,7 +578,7 @@ function relevanssi_index_doc( $index_post, $remove_first = false, $custom_field
 
 	if ( ! empty( $values ) ) {
 		$values = implode( ', ', $values );
-		$query  = "INSERT IGNORE INTO $relevanssi_table (doc, term, term_reverse, content, title, comment, tag, link, author, category, excerpt, taxonomy, customfield, type, taxonomy_detail, customfield_detail, mysqlcolumn) VALUES $values";
+		$query  = "INSERT IGNORE INTO $relevanssi_table (doc, term, term_reverse, content, title, comment, tag, link, author, category, excerpt, taxonomy, customfield, type, taxonomy_detail, customfield_detail, mysqlcolumn, mysqlcolumn_detail) VALUES $values";
 		if ( $debug ) {
 			relevanssi_debug_echo( "Final indexing query:\n\t$query" );
 		}
