@@ -1416,10 +1416,10 @@ function relevanssi_update_term_hits( &$term_hits, &$match_arrays, $match, $term
  * Increases a value. If it's not set, sets it first to the default value.
  *
  * @param int $value    The value to increase (passed by reference).
- * @param int $increase The amount to increase the value.
+ * @param int $increase The amount to increase the value, default 1.
  * @param int $default  The default value, default 0.
  */
-function relevanssi_increase_value( &$value, $increase, $default = 0 ) {
+function relevanssi_increase_value( &$value, $increase = 1, $default = 0 ) {
 	if ( ! isset( $value ) ) {
 		$value = $default;
 	}
