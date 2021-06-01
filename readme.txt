@@ -134,6 +134,7 @@ Each document database is full of useless words. All the little words that appea
 = 4.13.2 =
 * New feature: This version makes Avada Live Search use Relevanssi.
 * Minor fix: Elementor library searches are not broken anymore when Relevanssi is enabled in admin.
+* Minor fix: Relevanssi now understands array-style post_type[] parameters.
 
 = 4.13.1 =
 * New feature: Adds compatibility for WP-Members plugin, preventing blocked posts from showing up in the search results.
