@@ -476,6 +476,7 @@ function relevanssi_load_compatibility_code() {
 	defined( 'AIOSEO_DIR' ) && require_once 'compatibility/aioseo.php';
 	defined( 'AVADA_VERSION' ) && require_once 'compatibility/avada.php';
 	defined( 'CT_VERSION' ) && require_once 'compatibility/oxygen.php';
+	defined( 'ELEMENTOR_VERSION' ) && require_once 'compatibility/elementor.php';
 	defined( 'GROUPS_CORE_VERSION' ) && require_once 'compatibility/groups.php';
 	defined( 'NINJA_TABLES_VERSION' ) && require_once 'compatibility/ninjatables.php';
 	defined( 'PRLI_PLUGIN_NAME' ) && require_once 'compatibility/pretty-links.php';
