@@ -170,6 +170,9 @@ function relevanssi_search( $args ) {
 	 * @param string The MySQL code that restricts the query.
 	 */
 	$query_restrictions = apply_filters( 'relevanssi_where', $query_restrictions );
+	if ( ! $query_restrictions ) {
+		$query_restrictions = '';
+	}
 
 	/**
 	 * Filters the meta query JOIN for the Relevanssi search query.
