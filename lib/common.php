@@ -1028,9 +1028,10 @@ function relevanssi_permalink( $link, $link_post = null ) {
 		$link = $link_post->relevanssi_link;
 	}
 
-	if ( is_search() && property_exists( $link_post, 'relevance_score' ) ) {
+	if ( is_search() && is_object( $link_post ) && property_exists( $link_post, 'relevance_score' ) ) {
 		$link = relevanssi_add_highlight( $link, $link_post );
 	}
+
 	return $link;
 }
 
