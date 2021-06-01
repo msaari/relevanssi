@@ -1597,13 +1597,13 @@ function relevanssi_adjust_match_doc( $match ) {
  * @param string $term               The search term.
  * @param bool   $search_again       If true, this is a repeat search (partial matching).
  * @param bool   $no_terms           If true, no search term is used.
- * @param string $query_join         The MySQL JOIN clause.
- * @param string $query_restrictions The MySQL query restrictions.
+ * @param string $query_join         The MySQL JOIN clause, default empty string.
+ * @param string $query_restrictions The MySQL query restrictions, default empty string.
  *
  * @return string The MySQL search query.
  */
 function relevanssi_generate_search_query( string $term, bool $search_again,
-bool $no_terms, string $query_join, string $query_restrictions ) : string {
+bool $no_terms, string $query_join = '', string $query_restrictions = '' ) : string {
 	global $relevanssi_variables;
 	$relevanssi_table = $relevanssi_variables['relevanssi_table'];
 
