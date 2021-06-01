@@ -966,25 +966,37 @@ function relevanssi_add_highlight( $permalink, $link_post = null ) {
 	$highlight_docs = get_option( 'relevanssi_highlight_docs', 'off' );
 	$query          = get_search_query();
 	if ( isset( $highlight_docs ) && 'off' !== $highlight_docs && ! empty( $query ) ) {
-		$frontpage_id = intval( get_option( 'page_on_front' ) );
-		// We won't add the highlight parameter for the front page, as that will break the link.
-		$front_page = false;
-		if ( is_object( $link_post ) ) {
-			if ( $link_post->ID === $frontpage_id ) {
-				$front_page = true;
-			}
-		} else {
-			global $post;
-			if ( is_object( $post ) && $post->ID === $frontpage_id ) {
-				$front_page = true;
-			}
-		}
-		if ( ! $front_page ) {
+		if ( ! relevanssi_is_front_page_id( isset( $link_post->ID ) ?? null ) ) {
 			$query     = str_replace( '&quot;', '"', $query );
 			$permalink = esc_attr( add_query_arg( array( 'highlight' => rawurlencode( $query ) ), $permalink ) );
 		}
 	}
 	return $permalink;
+}
+
+/**
+ * Checks if a post ID is the front page ID.
+ *
+ * Gets the front page ID from the `page_on_front` option and checks the given
+ * ID against that.
+ *
+ * @param integer $post_id The post ID to check. If null, checks the global
+ * $post ID. Default null.
+ * @return boolean True if the post ID or global $post matches the front page.
+ */
+function relevanssi_is_front_page_id( int $post_id = null ) : bool {
+	$frontpage_id = intval( get_option( 'page_on_front' ) );
+	if ( $post_id === $frontpage_id ) {
+		return true;
+	} elseif ( isset( $post_id ) ) {
+		return false;
+	}
+
+	global $post;
+	if ( is_object( $post ) && $post->ID === $frontpage_id ) {
+		return true;
+	}
+	return false;
 }
 
 /**
