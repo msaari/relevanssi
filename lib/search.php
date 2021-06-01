@@ -1703,7 +1703,19 @@ function relevanssi_compile_common_args( $query ) {
 	);
 }
 
-function relevanssi_add_include_matches( &$matches, $include, $params ) {
+/**
+ * Adds posts to the matches list from the other term queries.
+ *
+ * Without this functionality, AND searches would not return all posts. If a
+ * post appears within the best results for one word, but not for another word
+ * even though the word appears in the post (because of throttling), the post
+ * would be excluded. This functionality makes sure it is included.
+ *
+ * @param array $matches The found posts array.
+ * @param array $include The posts to include.
+ * @param array $params  Search parameters.
+ */
+function relevanssi_add_include_matches( array &$matches, array $include, array $params ) {
 	if ( count( $include['posts'] ) < 1 && count( $include['items'] ) < 1 ) {
 		return;
 	}
