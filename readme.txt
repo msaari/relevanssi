@@ -136,6 +136,7 @@ Each document database is full of useless words. All the little words that appea
 * New feature: Adds support for Fibo Search.
 * Minor fix: Elementor library searches are not broken anymore when Relevanssi is enabled in admin.
 * Minor fix: Relevanssi now understands array-style post_type[] parameters.
+* Minor fix: Relevanssi now automatically considers the Turkish 'ı' the same as 'i'.
 
 = 4.13.1 =
 * New feature: Adds compatibility for WP-Members plugin, preventing blocked posts from showing up in the search results.
