@@ -1719,3 +1719,28 @@ function relevanssi_replace_stems_in_terms( array $terms, array $all_terms = nul
 		)
 	);
 }
+
+/**
+ * Returns an array of bot user agents for Relevanssi to block.
+ *
+ * The bot user agent is the value and a human-readable name (not used for
+ * anything) is in the index. This same list is used for different contexts,
+ * and there are separate filters for modifying the list in various contexts.
+ *
+ * @return array An array of name => user-agent pairs.
+ */
+function relevanssi_bot_block_list() : array {
+	$bots = array(
+		'Google Mediapartners' => 'Mediapartners-Google',
+		'GoogleBot'            => 'Googlebot',
+		'Bing'                 => 'Bingbot',
+		'Yahoo'                => 'Slurp',
+		'DuckDuckGo'           => 'DuckDuckBot',
+		'Baidu'                => 'Baiduspider',
+		'Yandex'               => 'YandexBot',
+		'Sogou'                => 'Sogou',
+		'Exalead'              => 'Exabot',
+		'Majestic'             => 'MJ12Bot',
+	);
+	return $bots;
+}

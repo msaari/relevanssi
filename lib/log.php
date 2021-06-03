@@ -31,17 +31,6 @@ function relevanssi_update_log( $query, $hits ) {
 	$user_agent = '';
 	if ( isset( $_SERVER['HTTP_USER_AGENT'] ) ) {
 		$user_agent = $_SERVER['HTTP_USER_AGENT'];
-		$bots       = array(
-			'Google 1'   => 'Mediapartners-Google',
-			'Google 2'   => 'Googlebot',
-			'Bing'       => 'Bingbot',
-			'Yahoo'      => 'Slurp',
-			'DuckDuckGo' => 'DuckDuckBot',
-			'Baidu'      => 'Baiduspider',
-			'Yandex'     => 'YandexBot',
-			'Sogou'      => 'Sogou',
-			'Exalead'    => 'Exabot',
-		);
 
 		/**
 		 * Filters the bots Relevanssi should block from logs.
@@ -50,7 +39,7 @@ function relevanssi_update_log( $query, $hits ) {
 		 *
 		 * @param array $bots An array of bot user agents.
 		 */
-		$bots = apply_filters( 'relevanssi_bots_to_not_log', $bots );
+		$bots = apply_filters( 'relevanssi_bots_to_not_log', relevanssi_bot_block_list() );
 		foreach ( array_values( $bots ) as $lookfor ) {
 			if ( false !== stristr( $user_agent, $lookfor ) ) {
 				return false;
