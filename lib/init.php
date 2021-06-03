@@ -468,6 +468,7 @@ function relevanssi_export_log_check() {
  */
 function relevanssi_load_compatibility_code() {
 	class_exists( 'acf', false ) && require_once 'compatibility/acf.php';
+	class_exists( 'DGWT_WC_Ajax_Search', false ) && require_once 'compatibility/fibosearch.php';
 	class_exists( 'MeprUpdateCtrl', false ) && MeprUpdateCtrl::is_activated() && require_once 'compatibility/memberpress.php';
 	class_exists( 'Obenland_Wp_Search_Suggest', false ) && require_once 'compatibility/wp-search-suggest.php';
 	class_exists( 'Polylang', false ) && require_once 'compatibility/polylang.php';

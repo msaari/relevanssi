@@ -133,6 +133,7 @@ Each document database is full of useless words. All the little words that appea
 == Changelog ==
 = 4.13.2 =
 * New feature: This version makes Avada Live Search use Relevanssi.
+* New feature: Adds support for Fibo Search.
 * Minor fix: Elementor library searches are not broken anymore when Relevanssi is enabled in admin.
 * Minor fix: Relevanssi now understands array-style post_type[] parameters.
 
