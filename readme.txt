@@ -3,9 +3,9 @@ Contributors: msaari
 Donate link: https://www.relevanssi.com/buy-premium/
 Tags: search, relevance, better search, product search, woocommerce search
 Requires at least: 4.9
-Tested up to: 5.7.1
+Tested up to: 5.7.2
 Requires PHP: 7.0
-Stable tag: 4.13.1
+Stable tag: 4.13.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -132,7 +132,7 @@ Each document database is full of useless words. All the little words that appea
 
 == Changelog ==
 = 4.13.2 =
-* New feature: This version makes Avada Live Search use Relevanssi.
+* New feature: Adds support for Avada Live Search.
 * New feature: Adds support for Fibo Search.
 * Minor fix: Elementor library searches are not broken anymore when Relevanssi is enabled in admin.
 * Minor fix: Relevanssi now understands array-style post_type[] parameters.
@@ -233,6 +233,9 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: Improved Oxygen Builder support makes sure `ct_builder_shortcodes` custom field is always indexed.
 
 == Upgrade notice ==
+= 4.13.2 =
+* Small bug and compatibility fixes.
+
 = 4.13.1 =
 * Compatibility for WP-Members added.
 
