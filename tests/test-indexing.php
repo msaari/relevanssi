@@ -1326,7 +1326,7 @@ class IndexingTest extends WP_UnitTestCase {
 
 		$this->assertEquals(
 			$values,
-			array( "(1, '🍫', REVERSE('🍫'), 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'post', '', '', 0)" ),
+			array( "(1, '🍫', REVERSE('🍫'), 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'post', '', '', 0, '')" ),
 			'Emoji are not handled correctly.'
 		);
 
@@ -1336,7 +1336,7 @@ class IndexingTest extends WP_UnitTestCase {
 
 		$this->assertEquals(
 			$values,
-			array( "(1, '&#x1f36b;', REVERSE('&#x1f36b;'), 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'post', '', '', 0)" ),
+			array( "(1, '&#x1f36b;', REVERSE('&#x1f36b;'), 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'post', '', '', 0, '')" ),
 			'Emoji are not handled correctly.'
 		);
 
