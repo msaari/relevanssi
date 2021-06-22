@@ -111,7 +111,22 @@ function relevanssi_search_form( $atts ) {
 	if ( is_array( $atts ) ) {
 		$additional_fields = array();
 		foreach ( $atts as $key => $value ) {
-			if ( 'dropdown' === $key ) {
+			if ( 'dropdown' === $key && 'post_type' === $value ) {
+				$field = '<select name="post_type">';
+				$types = get_option( 'relevanssi_index_post_types' );
+				if ( ! is_array( $types ) ) {
+					$types = array();
+				}
+				foreach ( $types as $type ) {
+					if ( post_type_exists( $type ) ) {
+						$object = get_post_type_object( $type );
+						$field .= '<option value="$type">' . $object->labels->singular_name . '</option>';
+					}
+				}
+				$field              .= '</select>';
+				$additional_fields[] = $field;
+
+			} elseif ( 'dropdown' === $key && 'post_type' !== $value ) {
 				$name = $value;
 				if ( 'category' === $value ) {
 					$name = 'cat';

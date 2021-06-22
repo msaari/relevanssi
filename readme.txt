@@ -131,6 +131,8 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+* New feature: You can now add a post type dropdown to search forms with the [searchform] shortcode with the parameter 'dropdown' set to 'post_type'.
+
 = 4.13.2 =
 * New feature: Adds support for Avada Live Search.
 * New feature: Adds support for Fibo Search.
