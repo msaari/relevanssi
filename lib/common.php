@@ -387,6 +387,7 @@ function relevanssi_remove_punct( $a ) {
 		'“'                     => $quote_replacement,
 		'„'                     => $quote_replacement,
 		'´'                     => $quote_replacement,
+		'″'                     => $quote_replacement,
 		'-'                     => $hyphen_replacement,
 		'–'                     => $endash_replacement,
 		'—'                     => $emdash_replacement,
