@@ -134,6 +134,7 @@ Each document database is full of useless words. All the little words that appea
 * New feature: You can now add a post type dropdown to search forms with the [searchform] shortcode with the parameter 'dropdown' set to 'post_type'.
 * New feature: Adds compatibility for Product GTIN (EAN, UPC, ISBN) for WooCommerce plugin.
 * Minor fix: The ″ character is now counted as a quote.
+* Minor fix: Running indexing through WP CLI doesn't cause PHP notices anymore.
 
 = 4.13.2 =
 * New feature: Adds support for Avada Live Search.

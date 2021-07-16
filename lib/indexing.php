@@ -344,13 +344,13 @@ function relevanssi_build_index( $extend_offset = false, $verbose = null, $post_
 			// $n calculates the number of posts indexed.
 			$n++;
 		}
-		if ( defined( 'WP_CLI' ) && WP_CLI && $progress ) {
+		if ( defined( 'WP_CLI' ) && WP_CLI && isset( $progress ) ) {
 			// @codeCoverageIgnoreStart
 			$progress->tick();
 			// @codeCoverageIgnoreEnd
 		}
 	}
-	if ( defined( 'WP_CLI' ) && WP_CLI && $progress ) {
+	if ( defined( 'WP_CLI' ) && WP_CLI && isset( $progress ) ) {
 		// @codeCoverageIgnoreStart
 		$progress->finish();
 		// @codeCoverageIgnoreEnd
