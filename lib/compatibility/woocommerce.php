@@ -18,6 +18,8 @@ add_filter( 'relevanssi_indexing_restriction', 'relevanssi_woocommerce_restricti
  */
 add_action( 'woocommerce_before_shop_loop', 'relevanssi_wc_reset_loop' );
 
+RELEVANSSI_PREMIUM && add_filter( 'relevanssi_match', 'relevanssi_sku_boost' );
+
 /**
  * Resets the WC post loop in search queries.
  *
@@ -102,4 +104,28 @@ function relevanssi_woocommerce_indexing_filter() {
 		$restriction            .= " AND post.ID NOT IN (SELECT object_id FROM $wpdb->term_relationships WHERE object_id = post.ID AND term_taxonomy_id IN ($term_taxonomy_id_string)) ";
 	}
 	return $restriction;
+}
+
+/**
+ * SKU weight boost.
+ *
+ * Increases the weight for matches in the _sku custom field. The amount of
+ * boost can be adjusted with the `relevanssi_sku_boost` filter hook. The
+ * default is 2.
+ *
+ * @param object $match The match object.
+ *
+ * @return object The match object.
+ */
+function relevanssi_sku_boost( $match ) {
+	$custom_field_detail = json_decode( $match->customfield_detail );
+	if ( null !== $custom_field_detail && isset( $custom_field_detail->_sku ) ) {
+		/**
+		 * Filters the SKU boost value.
+		 *
+		 * @param float The boost multiplier, default 2.
+		 */
+		$match->weight *= apply_filters( 'relevanssi_sku_boost', 2 );
+	}
+	return $match;
 }
