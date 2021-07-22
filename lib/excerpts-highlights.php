@@ -39,7 +39,12 @@ function relevanssi_do_excerpt( $t_post, $query, $excerpt_length = null, $excerp
 	if ( null !== $post ) {
 		$old_global_post = $post;
 	}
-	$post = $t_post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+	/**
+	 * Allows filtering the indexed post before building an excerpt from it.
+	 *
+	 * @param object $post The post object.
+	 */
+	$post = apply_filters( 'relevanssi_post_to_excerpt', $t_post ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 
 	$remove_stopwords = 'body';
 

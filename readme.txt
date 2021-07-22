@@ -133,6 +133,7 @@ Each document database is full of useless words. All the little words that appea
 == Changelog ==
 * New feature: You can now add a post type dropdown to search forms with the [searchform] shortcode with the parameter 'dropdown' set to 'post_type'.
 * New feature: Adds compatibility for Product GTIN (EAN, UPC, ISBN) for WooCommerce plugin.
+* New feature: New filter hook `relevanssi_post_to_excerpt` lets you filter the post object before an excerpt is created from it.
 * Minor fix: The ″ character is now counted as a quote.
 * Minor fix: Running indexing through WP CLI doesn't cause PHP notices anymore.
 
