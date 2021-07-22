@@ -39,7 +39,7 @@ function relevanssi_polylang_filter( $query ) {
 		}
 
 		foreach ( $query->tax_query->queries as $tax_query ) {
-			if ( 'language' !== $tax_query['taxonomy'] ) {
+			if ( isset( $tax_query['taxonomy'] ) && 'language' !== $tax_query['taxonomy'] ) {
 				// Not a language tax query.
 				$ok_queries[] = $tax_query;
 			}
