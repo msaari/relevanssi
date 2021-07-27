@@ -120,7 +120,7 @@ function relevanssi_search_form( $atts ) {
 				foreach ( $types as $type ) {
 					if ( post_type_exists( $type ) ) {
 						$object = get_post_type_object( $type );
-						$field .= '<option value="$type">' . $object->labels->singular_name . '</option>';
+						$field .= '<option value="' . $type . '">' . $object->labels->singular_name . '</option>';
 					}
 				}
 				$field              .= '</select>';
