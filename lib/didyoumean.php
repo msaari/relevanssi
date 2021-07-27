@@ -172,8 +172,10 @@ function relevanssi_simple_generate_suggestion( $query ) {
 				$closest = '';
 				break;
 			} else {
-				if ( relevanssi_strlen( $token ) < 255 ) {
-					// The levenshtein() function has a max length of 255 characters.
+				if ( strlen( $token ) < 255 && strlen( $row->query ) < 255 ) {
+					// The levenshtein() function has a max length of 255
+					// characters. The function uses strlen(), so we must use
+					// too, instead of relevanssi_strlen().
 					$lev = levenshtein( $token, $row->query );
 					if ( $lev < 3 && ( $lev < $distance || $distance < 0 ) ) {
 						if ( $row->a > 0 ) {
