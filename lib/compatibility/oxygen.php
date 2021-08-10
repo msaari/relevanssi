@@ -14,6 +14,8 @@ add_filter( 'relevanssi_custom_field_value', 'relevanssi_oxygen_compatibility', 
 add_filter( 'relevanssi_index_custom_fields', 'relevanssi_add_oxygen' );
 add_filter( 'option_relevanssi_index_fields', 'relevanssi_oxygen_fix_none_setting' );
 add_filter( 'relevanssi_oxygen_section_content', 'relevanssi_oxygen_code_block' );
+add_filter( 'relevanssi_oxygen_section_content', 'relevanssi_oxygen_rich_text' );
+add_action( 'save_post', 'relevanssi_insert_edit', 99, 1 );
 
 /**
  * Cleans up the Oxygen Builder custom field for Relevanssi consumption.
@@ -33,6 +35,12 @@ add_filter( 'relevanssi_oxygen_section_content', 'relevanssi_oxygen_code_block' 
  * @return array|null An array of custom field values, null if no value exists.
  */
 function relevanssi_oxygen_compatibility( $value, $field, $post_id ) {
+	if ( 'ct_builder_shortcodes_revisions_dates' === $field ) {
+		return '';
+	}
+	if ( 'ct_builder_shortcodes_revisions' === $field ) {
+		return '';
+	}
 	if ( 'ct_builder_shortcodes' === $field ) {
 		if ( empty( $value ) ) {
 			return null;
@@ -122,6 +130,7 @@ function relevanssi_add_oxygen( $fields ) {
 	if ( ! in_array( 'ct_builder_shortcodes', $fields, true ) ) {
 		$fields[] = 'ct_builder_shortcodes';
 	}
+
 	return $fields;
 }
 
@@ -162,5 +171,17 @@ function relevanssi_oxygen_code_block( $content ) {
 			}
 		}
 	}
+	return $content;
+}
+
+/**
+ * Removes the Oxygen rich text shortcode.
+ *
+ * @param string $content The content of the Oxygen section.
+ *
+ * @return string The content with the oxy_rich_text shortcodes removed.
+ */
+function relevanssi_oxygen_rich_text( $content ) {
+	$content = preg_replace( '/\[\/?oxy_rich_text.*?\]/im', '', $content );
 	return $content;
 }
