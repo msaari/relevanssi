@@ -887,14 +887,16 @@ function relevanssi_strip_all_tags( $content ) : string {
 	if ( ! is_string( $content ) ) {
 		$content = '';
 	}
-	return preg_replace( '/<[!a-zA-Z\/][^>]*>/', ' ', $content );
+	$content = preg_replace( '/<!--.*?-->/ms', '', $content );
+	$content = preg_replace( '/<[!a-zA-Z\/][^>].*?>/ms', ' ', $content );
+	return $content;
 }
 
 /**
  * Strips invisible elements from text.
  *
  * Strips <style>, <script>, <object>, <embed>, <applet>, <noscript>, <noembed>,
- * <iframe>, and <del> tags and their contents from the text.
+ * <iframe> and <del> tags and their contents and comments from the text.
  *
  * @param string $text The source text.
  *
@@ -915,6 +917,7 @@ function relevanssi_strip_invisibles( $text ) {
 			'@<noembed[^>]*?.*?</noembed>@siu',
 			'@<iframe[^>]*?.*?</iframe>@siu',
 			'@<del[^>]*?.*?</del>@siu',
+			'@<!--.*?-->@siu',
 		),
 		' ',
 		$text
