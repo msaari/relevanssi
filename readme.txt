@@ -134,6 +134,7 @@ Each document database is full of useless words. All the little words that appea
 * New feature: You can now add a post type dropdown to search forms with the [searchform] shortcode with the parameter 'dropdown' set to 'post_type'.
 * New feature: Adds compatibility for Product GTIN (EAN, UPC, ISBN) for WooCommerce plugin.
 * New feature: New filter hook `relevanssi_post_to_excerpt` lets you filter the post object before an excerpt is created from it.
+* New feature: Relevanssi is now compatible with the Bricks page builder theme (requires Bricks 1.3.2).
 * Minor fix: The ″ character is now counted as a quote.
 * Minor fix: Running indexing through WP CLI doesn't cause PHP notices anymore.
 * Minor fix: Sometimes the Did you mean would return really weird long suggestions from the search logs. That won't happen anymore.
