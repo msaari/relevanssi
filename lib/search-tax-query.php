@@ -274,17 +274,36 @@ array $and_term_tax_ids, array $exist_queries ) : string {
 		// Clean: all variables are Relevanssi-generated.
 	}
 	if ( count( $and_term_tax_ids ) > 0 ) {
-		$and_term_tax_ids           = implode( ',', $and_term_tax_ids );
-		$n                          = count( explode( ',', $and_term_tax_ids ) );
-		$query_restriction_parts[] .= " relevanssi.doc IN (
-			SELECT ID FROM $wpdb->posts WHERE 1=1
-			AND (
-				SELECT COUNT(1)
-				FROM $wpdb->term_relationships AS tr
-				WHERE tr.term_taxonomy_id IN ($and_term_tax_ids)
-				AND tr.object_id = $wpdb->posts.ID ) = $n
-			)";
-		// Clean: all variables are Relevanssi-generated.
+		$single_term_ids = array();
+		foreach ( $and_term_tax_ids as $term_ids ) {
+			$n = count( explode( ',', $term_ids ) );
+			if ( 1 === $n ) {
+				$single_term_ids[] = $term_ids;
+				continue;
+			}
+			$query_restriction_parts[] .= " relevanssi.doc IN (
+				SELECT ID FROM $wpdb->posts WHERE 1=1
+				AND (
+					SELECT COUNT(1)
+					FROM $wpdb->term_relationships AS tr
+					WHERE tr.term_taxonomy_id IN ($term_ids)
+					AND tr.object_id = $wpdb->posts.ID ) = $n
+				)";
+			// Clean: all variables are Relevanssi-generated.
+		}
+		if ( count( $single_term_ids ) > 0 ) {
+			$n                          = count( $single_term_ids );
+			$term_ids                   = implode( ',', $single_term_ids );
+			$query_restriction_parts[] .= " relevanssi.doc IN (
+				SELECT ID FROM $wpdb->posts WHERE 1=1
+				AND (
+					SELECT COUNT(1)
+					FROM $wpdb->term_relationships AS tr
+					WHERE tr.term_taxonomy_id IN ($term_ids)
+					AND tr.object_id = $wpdb->posts.ID ) = $n
+				)";
+			// Clean: all variables are Relevanssi-generated.
+		}
 	}
 
 	if ( $exist_queries ) {

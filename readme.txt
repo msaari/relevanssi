@@ -137,6 +137,7 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: The ″ character is now counted as a quote.
 * Minor fix: Running indexing through WP CLI doesn't cause PHP notices anymore.
 * Minor fix: Sometimes the Did you mean would return really weird long suggestions from the search logs. That won't happen anymore.
+* Minor fix: Improves tax_query handling in fringe cases with multiple AND clauses joined together with OR.
 
 = 4.13.2 =
 * New feature: Adds support for Avada Live Search.

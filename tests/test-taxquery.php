@@ -7,7 +7,7 @@
  */
 
 /**
- * Test Relevanssi tax_quer handling.
+ * Test Relevanssi tax_query handling.
  *
  * @group tax_query
  */
@@ -129,6 +129,59 @@ END;
 		$this->assertDiscardWhitespace(
 			$target_query_restriction,
 			relevanssi_process_tax_query( 'and', $tax_query )
+		);
+	}
+
+	/**
+	 * Test two AND queries OR'd together.
+	 */
+	public function test_or_two_and_queries() {
+		global $wpdb;
+
+		$books_id  = self::$books_id;
+		$games_id  = self::$games_id;
+		$yellow_id = self::$yellow_id;
+		$blue_id   = self::$blue_id;
+
+		$tax_query = array(
+			array(
+				'taxonomy'         => 'category',
+				'terms'            => array( $books_id, $games_id ),
+				'operator'         => 'AND',
+				'include_children' => false,
+				// No "field" parameter, Relevanssi should assume "term_id".
+			),
+			array(
+				'taxonomy'         => 'post_tag',
+				'field'            => 'term_id',
+				'terms'            => array( $yellow_id, $blue_id ),
+				'operator'         => 'AND',
+				'include_children' => false,
+			),
+		);
+
+		$target_query_restriction = <<<END
+			AND (
+				relevanssi.doc IN (SELECT ID
+				FROM {$wpdb->prefix}posts
+				WHERE 1=1 AND (SELECT COUNT(1)
+					FROM {$wpdb->prefix}term_relationships AS tr
+					WHERE tr.term_taxonomy_id IN ($books_id, $games_id)
+					AND tr.object_id={$wpdb->prefix}posts.ID) = 2
+				)
+			OR relevanssi.doc IN (SELECT ID
+				FROM {$wpdb->prefix}posts
+				WHERE 1=1 AND (SELECT COUNT(1)
+					FROM {$wpdb->prefix}term_relationships AS tr
+					WHERE tr.term_taxonomy_id IN($blue_id,$yellow_id)
+					AND tr.object_id={$wpdb->prefix}posts.ID ) = 2
+				)
+			)
+END;
+
+		$this->assertDiscardWhitespace(
+			$target_query_restriction,
+			relevanssi_process_tax_query( 'or', $tax_query )
 		);
 	}
 
