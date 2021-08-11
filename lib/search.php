@@ -226,7 +226,7 @@ function relevanssi_search( $args ) {
 			);
 
 			$query   = relevanssi_generate_search_query( $term, $search_again, $no_terms, $query_join, $this_query_restrictions );
-			$matches = $wpdb->get_results( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$matches = $wpdb->get_results( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared.
 
 			if ( count( $matches ) < 1 ) {
 				continue;
@@ -713,10 +713,13 @@ function relevanssi_limit_filter( $query ) {
 		if ( $limit < 0 ) {
 			$limit = 500;
 		}
-		return $query . " ORDER BY tf DESC LIMIT $limit";
-	} else {
-		return $query;
+		if ( $termless_search ) {
+			$query = $query . " GROUP BY doc, item, type ORDER BY doc ASC LIMIT $limit";
+		} else {
+			$query = $query . " ORDER BY tf DESC LIMIT $limit";
+		}
 	}
+	return $query;
 }
 
 /**
@@ -1610,23 +1613,34 @@ bool $no_terms, string $query_join = '', string $query_restrictions = '' ) : str
 	global $relevanssi_variables;
 	$relevanssi_table = $relevanssi_variables['relevanssi_table'];
 
-	$term_cond = relevanssi_generate_term_where( $term, $search_again, $no_terms, get_option( 'relevanssi_fuzzy' ) );
+	if ( $no_terms ) {
+		$query = "SELECT DISTINCT(relevanssi.doc), 1 AS term, 1 AS term_reverse,
+		1 AS content, 1 AS title, 1 AS comment, 1 AS tag, 1 AS link, 1 AS
+		author, 1 AS category, 1 AS excerpt, 1 AS taxonomy, 1 AS customfield,
+		1 AS mysqlcolumn, 1 AS taxonomy_detail, 1 AS customfield_detail, 1 AS
+		mysqlcolumn_detail, type, item, 1 AS tf
+		FROM $relevanssi_table AS relevanssi $query_join
+		WHERE relevanssi.term = relevanssi.term $query_restrictions";
+	} else {
+		$term_cond = relevanssi_generate_term_where( $term, $search_again, $no_terms, get_option( 'relevanssi_fuzzy' ) );
 
-	$content_boost = floatval( get_option( 'relevanssi_content_boost', 1 ) );
-	$title_boost   = floatval( get_option( 'relevanssi_title_boost' ) );
-	$link_boost    = floatval( get_option( 'relevanssi_link_boost' ) );
-	$comment_boost = floatval( get_option( 'relevanssi_comment_boost' ) );
+		$content_boost = floatval( get_option( 'relevanssi_content_boost', 1 ) );
+		$title_boost   = floatval( get_option( 'relevanssi_title_boost' ) );
+		$link_boost    = floatval( get_option( 'relevanssi_link_boost' ) );
+		$comment_boost = floatval( get_option( 'relevanssi_comment_boost' ) );
 
-	$tag = ! empty( $post_type_weights['post_tag'] ) ? $post_type_weights['post_tag'] : $relevanssi_variables['post_type_weight_defaults']['post_tag'];
-	$cat = ! empty( $post_type_weights['category'] ) ? $post_type_weights['category'] : $relevanssi_variables['post_type_weight_defaults']['category'];
+		$tag = ! empty( $post_type_weights['post_tag'] ) ? $post_type_weights['post_tag'] : $relevanssi_variables['post_type_weight_defaults']['post_tag'];
+		$cat = ! empty( $post_type_weights['category'] ) ? $post_type_weights['category'] : $relevanssi_variables['post_type_weight_defaults']['category'];
 
-	// Clean: $term is escaped, as are $query_restrictions.
-	$query = "SELECT DISTINCT(relevanssi.doc), relevanssi.*, relevanssi.title * $title_boost +
-	relevanssi.content * $content_boost + relevanssi.comment * $comment_boost +
-	relevanssi.tag * $tag + relevanssi.link * $link_boost +
-	relevanssi.author + relevanssi.category * $cat + relevanssi.excerpt +
-	relevanssi.taxonomy + relevanssi.customfield + relevanssi.mysqlcolumn AS tf
-	FROM $relevanssi_table AS relevanssi $query_join WHERE $term_cond $query_restrictions";
+		// Clean: $term is escaped, as are $query_restrictions.
+		$query = "SELECT DISTINCT(relevanssi.doc), relevanssi.*, relevanssi.title * $title_boost +
+		relevanssi.content * $content_boost + relevanssi.comment * $comment_boost +
+		relevanssi.tag * $tag + relevanssi.link * $link_boost +
+		relevanssi.author + relevanssi.category * $cat + relevanssi.excerpt +
+		relevanssi.taxonomy + relevanssi.customfield + relevanssi.mysqlcolumn AS tf
+		FROM $relevanssi_table AS relevanssi $query_join WHERE $term_cond $query_restrictions";
+	}
+
 	/**
 	 * Filters the Relevanssi search query.
 	 *

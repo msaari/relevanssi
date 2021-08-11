@@ -140,6 +140,7 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: Sometimes the Did you mean would return really weird long suggestions from the search logs. That won't happen anymore.
 * Minor fix: Improves tax_query handling in fringe cases with multiple AND clauses joined together with OR.
 * Minor fix: Oxygen compatibility has been improved. Rich text fields and updating posts when they are saved in Oxygen now work better, and revisions are no longer indexed.
+* Minor fix: Searching without a search term works much better now, you get more posts in the results (default value is up to 500).
 
 = 4.13.2 =
 * New feature: Adds support for Avada Live Search.
