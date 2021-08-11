@@ -133,6 +133,60 @@ END;
 	}
 
 	/**
+	 * Test complex query from Mingyur.
+	 */
+	public function test_and_not_in_query() {
+		global $wpdb;
+
+		$books_id  = self::$books_id;
+		$games_id  = self::$games_id;
+		$yellow_id = self::$yellow_id;
+
+		$tax_query = array(
+			array(
+				'relation' => 'AND',
+				array(
+					'taxonomy'         => 'category',
+					'terms'            => $books_id,
+					'field'            => 'term_id',
+					'include_children' => false,
+				),
+				array(
+					'taxonomy'         => 'post_tag',
+					'terms'            => $yellow_id,
+					'field'            => 'term_id',
+					'include_children' => false,
+				),
+			),
+			array(
+				'taxonomy'         => 'category',
+				'terms'            => $games_id,
+				'operator'         => 'NOT IN',
+				'include_children' => false,
+			),
+		);
+
+		$target_query_restriction = <<<END
+		AND relevanssi.doc IN (
+			SELECT DISTINCT(tr.object_id)
+			FROM {$wpdb->prefix}term_relationships AS tr
+			WHERE tr.term_taxonomy_id IN ($books_id) )
+		AND relevanssi.doc IN (
+			SELECT DISTINCT(tr.object_id)
+			FROM {$wpdb->prefix}term_relationships AS tr
+			WHERE tr.term_taxonomy_id IN ($yellow_id) )
+		AND relevanssi.doc NOT IN (
+			SELECT DISTINCT(tr.object_id)
+			FROM {$wpdb->prefix}term_relationships AS tr
+			WHERE tr.term_taxonomy_id IN ($games_id) )
+END;
+		$this->assertDiscardWhitespace(
+			$target_query_restriction,
+			relevanssi_process_tax_query( 'and', $tax_query )
+		);
+	}
+
+	/**
 	 * Test two AND queries OR'd together.
 	 */
 	public function test_or_two_and_queries() {
