@@ -3,9 +3,9 @@ Contributors: msaari
 Donate link: https://www.relevanssi.com/buy-premium/
 Tags: search, relevance, better search, product search, woocommerce search
 Requires at least: 4.9
-Tested up to: 5.7.2
+Tested up to: 5.8
 Requires PHP: 7.0
-Stable tag: 4.13.3
+Stable tag: 4.13.3.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -131,6 +131,9 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.13.3.1 =
+* Minor fix: The Bricks compatibility was broken. This version fixes it.
+
 = 4.13.3 =
 * New feature: You can now add a post type dropdown to search forms with the [searchform] shortcode with the parameter 'dropdown' set to 'post_type'.
 * New feature: Adds compatibility for Product GTIN (EAN, UPC, ISBN) for WooCommerce plugin.
@@ -245,6 +248,9 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: Improved Oxygen Builder support makes sure `ct_builder_shortcodes` custom field is always indexed.
 
 == Upgrade notice ==
+= 4.13.3.1 =
+* Fixes the Bricks compatibility.
+
 = 4.13.3 =
 * Bug fixes and small improvements.
 
