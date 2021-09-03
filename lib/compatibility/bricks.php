@@ -13,7 +13,7 @@
 add_filter( 'bricks/posts/query_vars', 'relevanssi_bricks_enable', 10 );
 
 /**
- * Undocumented function
+ * Enables Relevanssi in the query when the 's' query var is set.
  *
  * @param array $query_vars The query variables.
  *
