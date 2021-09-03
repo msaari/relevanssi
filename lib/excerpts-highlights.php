@@ -617,7 +617,9 @@ function relevanssi_highlight_terms( $content, $query, $convert_entities = false
 
 	$content = strtr( $content, array( "\xC2\xAD" => '' ) );
 	$content = html_entity_decode( $content, ENT_QUOTES, 'UTF-8' );
-	$content = str_replace( "\n", ' ', $content );
+	if ( ! $convert_entities ) {
+		$content = str_replace( "\n", ' ', $content );
+	}
 
 	foreach ( $terms as $term ) {
 		$pr_term = preg_quote( $term, '/' );
