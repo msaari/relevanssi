@@ -551,19 +551,25 @@ function relevanssi_prevent_default_request( $request, $query ) {
  * 'body', also removes the body stopwords. Default true.
  * @param int            $min_word_length The minimum word length to include.
  * Default -1.
+ * @param string         $context         The context for tokenization, can be
+ * 'indexing' or 'search_query'.
  *
  * @return int[] An array of tokens as the keys and their frequency as the
  * value.
  */
-function relevanssi_tokenize( $string, $remove_stops = true, int $min_word_length = -1 ) : array {
+function relevanssi_tokenize( $string, $remove_stops = true, int $min_word_length = -1, $context = 'indexing' ) : array {
 	if ( ! $string || ( ! is_string( $string ) && ! is_array( $string ) ) ) {
 		return array();
 	}
-	$string_for_phrases = is_array( $string ) ? implode( ' ', $string ) : $string;
-	$phrases            = relevanssi_extract_phrases( $string_for_phrases );
-	$phrase_words       = array();
-	foreach ( $phrases as $phrase ) {
-		$phrase_words = array_merge( $phrase_words, explode( ' ', $phrase ) );
+
+	$phrase_words = array();
+	if ( RELEVANSSI_PREMIUM && 'search_query' === $context ) {
+		$string_for_phrases = is_array( $string ) ? implode( ' ', $string ) : $string;
+		$phrases            = relevanssi_extract_phrases( $string_for_phrases );
+		$phrase_words       = array();
+		foreach ( $phrases as $phrase ) {
+			$phrase_words = array_merge( $phrase_words, explode( ' ', $phrase ) );
+		}
 	}
 
 	$tokens = array();

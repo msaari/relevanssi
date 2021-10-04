@@ -136,6 +136,7 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: In some languages, iOS uses „“ for quotes. Relevanssi now understands those for the phrase operator.
 * Minor fix: Stops Relevanssi from blocking the admin search for WooCommerce coupons and other WooCommerce custom post types.
 * Minor fix: Fixes problems with the WP-Members compatibility.
+* Minor fix: New parameter for `relevanssi_tokenize()` introduces the context (indexing or search query). The `relevanssi_extract_phrases()` is only used on search queries.
 
 
 = 4.13.3.1 =

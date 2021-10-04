@@ -93,7 +93,7 @@ function relevanssi_index_acf( &$insert_data, $post_id, $field_name, $field_valu
 		$min_word_length = get_option( 'relevanssi_min_word_length', 3 );
 
 		/** This filter is documented in lib/indexing.php */
-		$value_tokens = apply_filters( 'relevanssi_indexing_tokens', relevanssi_tokenize( $value, true, $min_word_length ), 'custom_field' );
+		$value_tokens = apply_filters( 'relevanssi_indexing_tokens', relevanssi_tokenize( $value, true, $min_word_length, 'indexing' ), 'custom_field' );
 		foreach ( $value_tokens as $token => $count ) {
 			$n++;
 			if ( ! isset( $insert_data[ $token ]['customfield'] ) ) {

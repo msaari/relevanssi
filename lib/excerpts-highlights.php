@@ -69,7 +69,7 @@ function relevanssi_do_excerpt( $t_post, $query, $excerpt_length = null, $excerp
 		$min_word_length = 1;
 	}
 
-	$terms = relevanssi_tokenize( $query, $remove_stopwords, $min_word_length );
+	$terms = relevanssi_tokenize( $query, $remove_stopwords, $min_word_length, 'search_query' );
 
 	if ( is_array( $query ) ) {
 		$untokenized_terms = array_filter( $query );
@@ -379,7 +379,7 @@ function relevanssi_create_excerpts( $content, $terms, $query, $excerpt_length =
 	$remove_stopwords = false;
 	$non_phrase_terms = array();
 	foreach ( $phrases as $phrase ) {
-		$phrase_terms = array_keys( relevanssi_tokenize( $phrase, $remove_stopwords ) );
+		$phrase_terms = array_keys( relevanssi_tokenize( $phrase, $remove_stopwords, -1, 'search_query' ) );
 		foreach ( array_keys( $terms ) as $term ) { // array_keys(), because tokenized terms have the term as key.
 			if ( ! in_array( $term, $phrase_terms, true ) ) {
 				$non_phrase_terms[ $term ] = true;
@@ -567,7 +567,8 @@ function relevanssi_highlight_terms( $content, $query, $convert_entities = false
 		relevanssi_tokenize(
 			$query,
 			$remove_stopwords,
-			$min_word_length
+			$min_word_length,
+			'search_query'
 		)
 	);
 
@@ -603,7 +604,7 @@ function relevanssi_highlight_terms( $content, $query, $convert_entities = false
 	$remove_stopwords = false;
 	$non_phrase_terms = array();
 	foreach ( $phrases as $phrase ) {
-		$phrase_terms = array_keys( relevanssi_tokenize( $phrase, $remove_stopwords ) );
+		$phrase_terms = array_keys( relevanssi_tokenize( $phrase, $remove_stopwords, -1, 'search_query' ) );
 		foreach ( $terms as $term ) {
 			if ( ! in_array( $term, $phrase_terms, true ) ) {
 				$non_phrase_terms[] = $term;

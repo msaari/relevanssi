@@ -654,7 +654,7 @@ function relevanssi_index_taxonomy_terms( &$insert_data, $post_id, $taxonomy, $d
 	/** This filter is documented in lib/indexing.php */
 	$term_tokens = apply_filters(
 		'relevanssi_indexing_tokens',
-		relevanssi_tokenize( $term_string, true, $min_word_length ),
+		relevanssi_tokenize( $term_string, true, $min_word_length, 'indexing' ),
 		'taxonomy-' . $taxonomy
 	);
 
@@ -1160,7 +1160,7 @@ function relevanssi_index_comments( &$insert_data, $post_id, $min_word_length, $
 		 */
 		$post_comments_tokens = apply_filters(
 			'relevanssi_indexing_tokens',
-			relevanssi_tokenize( $post_comments, true, $min_word_length ),
+			relevanssi_tokenize( $post_comments, true, $min_word_length, 'indexing' ),
 			'comments'
 		);
 		if ( count( $post_comments_tokens ) > 0 ) {
@@ -1199,7 +1199,7 @@ function relevanssi_index_author( &$insert_data, $post_author, $min_word_length,
 	/** This filter is documented in lib/indexing.php */
 	$name_tokens = apply_filters(
 		'relevanssi_indexing_tokens',
-		relevanssi_tokenize( $display_name, false, $min_word_length ),
+		relevanssi_tokenize( $display_name, false, $min_word_length, 'indexing' ),
 		'author'
 	);
 	if ( $debug ) {
@@ -1294,7 +1294,7 @@ function relevanssi_index_custom_fields( &$insert_data, $post_id, $custom_fields
 			/** This filter is documented in lib/indexing.php */
 			$value_tokens = apply_filters(
 				'relevanssi_indexing_tokens',
-				relevanssi_tokenize( $value, $remove_stops, $min_word_length ),
+				relevanssi_tokenize( $value, $remove_stops, $min_word_length, 'indexing' ),
 				$context
 			);
 
@@ -1341,7 +1341,7 @@ function relevanssi_index_excerpt( &$insert_data, $excerpt, $min_word_length, $d
 	/** This filter is documented in common/indexing.php */
 	$excerpt_tokens = apply_filters(
 		'relevanssi_indexing_tokens',
-		relevanssi_tokenize( $excerpt, true, $min_word_length ),
+		relevanssi_tokenize( $excerpt, true, $min_word_length, 'indexing' ),
 		'excerpt'
 	);
 	foreach ( $excerpt_tokens as $token => $count ) {
@@ -1400,7 +1400,8 @@ function relevanssi_index_title( &$insert_data, $post, $min_word_length, $debug 
 		 * @param boolean If true, remove stopwords. Default true.
 		 */
 		apply_filters( 'relevanssi_remove_stopwords_in_titles', true ),
-		$min_word_length
+		$min_word_length,
+		'indexing'
 	);
 	/** This filter is documented in lib/indexing.php */
 	$title_tokens = apply_filters( 'relevanssi_indexing_tokens', $title_tokens, 'title' );
@@ -1510,12 +1511,14 @@ function relevanssi_index_content( &$insert_data, $post_object, $min_word_length
 	 * @param object $post_object The full post object.
 	 */
 	$contents = apply_filters( 'relevanssi_post_content_before_tokenize', $contents, $post_object );
+
 	/** This filter is documented in lib/indexing.php */
 	$content_tokens = apply_filters(
 		'relevanssi_indexing_tokens',
-		relevanssi_tokenize( $contents, 'body', $min_word_length ),
+		relevanssi_tokenize( $contents, 'body', $min_word_length, 'indexing' ),
 		'content'
 	);
+
 	if ( $debug ) {
 		relevanssi_debug_echo( "\tContent, tokenized:\n" . implode( ' ', array_keys( $content_tokens ) ) );
 	}

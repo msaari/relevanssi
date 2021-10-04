@@ -357,17 +357,17 @@ function relevanssi_search( $args ) {
 
 	if ( ! $remove_stopwords ) {
 		$strip_stops       = true;
-		$terms['no_stops'] = array_keys( relevanssi_tokenize( implode( ' ', $terms['terms'] ), $strip_stops, $min_length ) );
+		$terms['no_stops'] = array_keys( relevanssi_tokenize( implode( ' ', $terms['terms'] ), $strip_stops, $min_length, 'search_query' ) );
 
 		if ( $q !== $q_no_synonyms ) {
-			$terms['original_terms_no_stops'] = array_keys( relevanssi_tokenize( implode( ' ', $terms['original_terms'] ), $strip_stops, $min_length ) );
+			$terms['original_terms_no_stops'] = array_keys( relevanssi_tokenize( implode( ' ', $terms['original_terms'] ), $strip_stops, $min_length, 'search_query' ) );
 		} else {
 			$terms['original_terms_no_stops'] = $terms['no_stops'];
 		}
 
 		if ( has_filter( 'relevanssi_stemmer' ) ) {
 			do_action( 'relevanssi_disable_stemmer' );
-			$terms['original_terms_no_stops'] = array_keys( relevanssi_tokenize( implode( ' ', $terms['original_terms'] ), $strip_stops, $min_length ) );
+			$terms['original_terms_no_stops'] = array_keys( relevanssi_tokenize( implode( ' ', $terms['original_terms'] ), $strip_stops, $min_length, 'search_query' ) );
 			do_action( 'relevanssi_enable_stemmer' );
 		} else {
 			$terms['original_terms_no_stops'] = $terms['no_stops'];
