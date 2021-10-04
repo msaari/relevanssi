@@ -696,7 +696,14 @@ function relevanssi_highlight_terms( $content, $query, $convert_entities = false
 			}
 		}
 
-		if ( preg_match_all( '/&([a-z0-9]+|#[0-9]{1,6}|#x[0-9a-fA-F]{1,6});/U', $content, $matches ) > 0 ) {
+		$start_quoted = preg_quote( $start_emp_token, '/' );
+		$end_quoted   = preg_quote( $end_emp_token, '/' );
+		if (
+			preg_match_all(
+				'/&' . $start_quoted . '([a-z0-9]+|#[0-9]{1,6}|#x[0-9a-fA-F]{1,6})' . $end_quoted . ';/U',
+				$content,
+				$matches
+			) > 0 ) {
 			// Remove highlights from inside HTML entities.
 			foreach ( $matches as $match ) {
 				$new_match = str_replace( $start_emp_token, '', $match );
