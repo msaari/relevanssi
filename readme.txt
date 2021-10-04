@@ -132,6 +132,7 @@ Each document database is full of useless words. All the little words that appea
 
 == Changelog ==
 = 4.14.0 =
+* New feature: New filter hook `relevanssi_render_blocks` controls whether Relevanssi renders blocks in a post or not. If you are having problems updating long posts with lots of blocks, having this filter hook return `false` for the post in question will likely help, as rendering the blocks in a long post can take huge amounts of memory.
 * Minor fix: In some languages, iOS uses „“ for quotes. Relevanssi now understands those for the phrase operator.
 * Minor fix: Stops Relevanssi from blocking the admin search for WooCommerce coupons and other WooCommerce custom post types.
 * Minor fix: Fixes problems with the WP-Members compatibility.
