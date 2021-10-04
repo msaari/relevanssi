@@ -68,10 +68,27 @@ function relevanssi_get_next_key( &$orderby ) {
 		case 'relevance':
 			$key = 'relevance_score';
 			break;
+		case 'distance':
+			$key = 'proximity';
+			break;
 	}
 
-	$numeric_keys = array( 'meta_value_num', 'menu_order', 'ID', 'post_parent', 'post_author', 'comment_count', 'relevance_score' );
-	$date_keys    = array( 'post_date', 'post_date_gmt', 'post_modified', 'post_modified_gmt' );
+	$numeric_keys = array(
+		'meta_value_num',
+		'menu_order',
+		'ID',
+		'post_parent',
+		'post_author',
+		'comment_count',
+		'relevance_score',
+		'proximity',
+	);
+	$date_keys    = array(
+		'post_date',
+		'post_date_gmt',
+		'post_modified',
+		'post_modified_gmt',
+	);
 	$filter_keys  = array( 'post_type' );
 
 	$compare = 'string';
@@ -201,6 +218,8 @@ function relevanssi_get_compare_values( $key, $item_1, $item_2 ) {
 			 */
 			$key2 = apply_filters( 'relevanssi_missing_sort_key', $key2, $key );
 		}
+	} elseif ( 'proximity' === $key && function_exists( 'relevanssi_get_proximity_values' ) ) {
+		list( $key1, $key2 ) = relevanssi_get_proximity_values( $item_1, $item_2 );
 	} else {
 		global $relevanssi_meta_query;
 		if ( isset( $item_1->$key ) ) {
