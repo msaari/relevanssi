@@ -26,6 +26,7 @@ function relevanssi_drop_database_tables() {
 	$relevanssi_table = $wpdb->prefix . 'relevanssi';
 	$stopword_table   = $wpdb->prefix . 'relevanssi_stopwords';
 	$log_table        = $wpdb->prefix . 'relevanssi_log';
+	$tracking_table   = $wpdb->prefix . 'relevanssi_tracking';
 
 	// phpcs:disable WordPress.DB.PreparedSQL
 	if ( $wpdb->get_var( "SHOW TABLES LIKE '$stopword_table'" ) === $stopword_table ) {
@@ -38,6 +39,10 @@ function relevanssi_drop_database_tables() {
 
 	if ( $wpdb->get_var( "SHOW TABLES LIKE '$log_table'" ) === $log_table ) {
 		$wpdb->query( "DROP TABLE $log_table" );
+	}
+
+	if ( $wpdb->get_var( "SHOW TABLES LIKE '$tracking_table'" ) === $tracking_table ) {
+		$wpdb->query( "DROP TABLE $tracking_table" );
 	}
 	// phpcs:enable WordPress.DB.PreparedSQL
 }
