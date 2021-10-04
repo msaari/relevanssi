@@ -1199,6 +1199,11 @@ function relevanssi_get_forbidden_post_types() {
 		'wffn_optin',           // WooFunnel.
 		'wffn_oty',             // WooFunnel.
 		'wp_template',          // Block templates.
+		'memberpressrule',      // Memberpress.
+		'memberpresscoupon',    // Memberpress.
+		'fl-builder-template',  // Beaver Builder.
+		'itsec-dashboard',      // iThemes Security.
+		'itsec-dash-card',      // iThemes Security.
 	);
 }
 
@@ -1209,18 +1214,20 @@ function relevanssi_get_forbidden_post_types() {
  */
 function relevanssi_get_forbidden_taxonomies() {
 	return array(
-		'nav_menu',               // Navigation menus.
-		'link_category',          // Link categories.
-		'amp_validation_error',   // AMP.
-		'product_visibility',     // WooCommerce.
-		'wpforms_log_type',       // WP Forms.
-		'amp_template',           // AMP.
-		'edd_commission_status',  // Easy Digital Downloads.
-		'edd_log_type',           // Easy Digital Downloads.
-		'elementor_library_type', // Elementor.
-		'elementor_library_category', // Elementor.
-		'elementor_font_type',    // Elementor.
-		'wp_theme',               // WordPress themes.
+		'nav_menu',                     // Navigation menus.
+		'link_category',                // Link categories.
+		'amp_validation_error',         // AMP.
+		'product_visibility',           // WooCommerce.
+		'wpforms_log_type',             // WP Forms.
+		'amp_template',                 // AMP.
+		'edd_commission_status',        // Easy Digital Downloads.
+		'edd_log_type',                 // Easy Digital Downloads.
+		'elementor_library_type',       // Elementor.
+		'elementor_library_category',   // Elementor.
+		'elementor_font_type',          // Elementor.
+		'wp_theme',                     // WordPress themes.
+		'fl-builder-template-category', // Beaver Builder.
+		'fl-builder-template-type',     // Beaver Builder.
 	);
 }
 
