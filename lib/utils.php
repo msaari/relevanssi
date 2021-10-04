@@ -21,6 +21,17 @@ function get_relevanssi_taxonomy_walker() {
 }
 
 /**
+ * Adds apostrophes around a string.
+ *
+ * @param string $string The string.
+ *
+ * @return string The string with apostrophes around it.
+ */
+function relevanssi_add_apostrophes( $string ) {
+	return "'" . $string . "'";
+}
+
+/**
  * Adds quotes around a string.
  *
  * @param string $string The string.
@@ -43,6 +54,25 @@ function relevanssi_add_quotes( $string ) {
  */
 function relevanssi_array_walk_trim( string &$string ) {
 	$string = relevanssi_mb_trim( $string );
+}
+
+/**
+ * Converts sums in an array to averages, based on an array containing counts.
+ *
+ * Both arrays need to have (key, value) pairs with the same keys. The values
+ * in $array are then divided by the matching values in $counts, so when we have
+ * sums in $array and counts in $counts, we end up with averages.
+ *
+ * @param array $array  The array with sums, passed as reference.
+ * @param array $counts The array with counts.
+ */
+function relevanssi_average_array( array &$array, array $counts ) {
+	array_walk(
+		$array,
+		function ( &$value, $key ) use ( $counts ) {
+			$value = $value / $counts[ $key ];
+		}
+	);
 }
 
 /**
@@ -173,6 +203,79 @@ function relevanssi_flatten_array( array $array ) {
 		$return_value .= ' ' . $value;
 	}
 	return trim( $return_value );
+}
+
+/**
+ * Generates from and to date values from ranges.
+ *
+ * Possible values in the $request array: 'from' and 'to' for direct dates,
+ * 'this_year' for Jan 1st to today, 'this_month' for 1st of month to today,
+ * 'last_month' for 1st of previous month to last of previous month,
+ * 'this_week' for Monday of this week to today (or Sunday, if the
+ * relevanssi_week_starts_on_sunday returns `true`), 'last_week' for the
+ * previous week, 'last_30' for from 30 days ago to today, 'last_7' for from
+ * 7 days ago to today.
+ *
+ * @param array  $request The request array where the settings are.
+ * @param string $from    The default 'from' date in "Y-m-d" format.
+ * @return array The from date in 'from' and the to date in 'to' in "Y-m-d"
+ * format.
+ */
+function relevanssi_from_and_to( array $request, string $from ) : array {
+	$today      = gmdate( 'Y-m-d' );
+	$week_start = 'monday';
+	$to         = $today;
+
+	/**
+	 * Controls whether the week starts on Sunday or Monday.
+	 *
+	 * @param boolean If `true`, week starts on Sunday. Default `false`, week
+	 * starts on Monday.
+	 */
+	if ( apply_filters( 'relevanssi_week_starts_on_sunday', false ) ) {
+		$week_start = 'sunday';
+	}
+	if ( ! isset( $request['everything'] ) && isset( $request['from'] ) && $request['from'] > $from ) {
+		$from = $request['from'];
+	}
+	if ( ! isset( $request['everything'] ) && isset( $request['to'] ) && $request['to'] < $today ) {
+		$to = $request['to'];
+	}
+	if ( isset( $request['this_year'] ) ) {
+		$from = gmdate( 'Y-m-d', strtotime( 'first day of january this year' ) );
+		$to   = gmdate( 'Y-m-d' );
+	}
+	if ( isset( $request['this_month'] ) ) {
+		$from = gmdate( 'Y-m-d', strtotime( 'first day of this month' ) );
+		$to   = gmdate( 'Y-m-d' );
+	}
+	if ( isset( $request['last_month'] ) ) {
+		$from = gmdate( 'Y-m-d', strtotime( 'first day of previous month' ) );
+		$to   = gmdate( 'Y-m-d', strtotime( 'last day of previous month' ) );
+	}
+	if ( isset( $request['this_week'] ) ) {
+		$from = gmdate( 'Y-m-d', strtotime( 'previous ' . $week_start ) );
+		$to   = gmdate( 'Y-m-d' );
+	}
+	if ( isset( $request['last_week'] ) ) {
+		$start = 'sunday' === $week_start ? gmdate( 'w' ) + 7 : gmdate( 'w' ) + 6;
+		$end   = 'sunday' === $week_start ? gmdate( 'w' ) + 1 : gmdate( 'w' );
+		$from  = gmdate( 'Y-m-d', strtotime( '-' . $start . ' days' ) );
+		$to    = gmdate( 'Y-m-d', strtotime( '-' . $end . ' days' ) );
+	}
+	if ( isset( $request['last_30'] ) ) {
+		$from = gmdate( 'Y-m-d', strtotime( '-30 days' ) );
+		$to   = gmdate( 'Y-m-d' );
+	}
+	if ( isset( $request['last_7'] ) ) {
+		$from = gmdate( 'Y-m-d', strtotime( '-7 days' ) );
+		$to   = gmdate( 'Y-m-d' );
+	}
+
+	return array(
+		'from' => $from,
+		'to'   => $to,
+	);
 }
 
 /**
