@@ -148,13 +148,13 @@ function relevanssi_polylang_term_filter( $hits ) {
 				$original_hit = $hit;
 				$hit          = get_post( $hit );
 			}
-			if ( ! isset( $hit->post_content ) ) {
+			if ( ! isset( $hit->post_content ) && isset( $hit->ID ) ) {
 				// The "fields" is set to "id=>parent".
 				$original_hit = $hit;
 				$hit          = get_post( $hit->ID );
 			}
 
-			if ( -1 === $hit->ID && isset( $hit->term_id ) ) {
+			if ( isset( $hit->ID ) && -1 === $hit->ID && isset( $hit->term_id ) ) {
 				$term_id      = intval( $hit->term_id );
 				$translations = pll_get_term_translations( $term_id );
 				if (
