@@ -1434,10 +1434,11 @@ EOH;
  *
  * @param int     $post_id The post ID.
  * @param boolean $display If false, add "display: none" style to the element.
+ * @param string  $type    One of 'post', 'term' or 'user'. Default 'post'.
  *
  * @return string The HTML code for the "How Relevanssi sees this post".
  */
-function relevanssi_generate_how_relevanssi_sees( $post_id, $display = true ) {
+function relevanssi_generate_how_relevanssi_sees( $post_id, $display = true, $type = 'post' ) {
 	$style = '';
 	if ( ! $display ) {
 		$style = 'style="display: none"';
@@ -1445,12 +1446,12 @@ function relevanssi_generate_how_relevanssi_sees( $post_id, $display = true ) {
 
 	$element = '<div id="relevanssi_sees_container" ' . $style . '>';
 
-	$data = relevanssi_fetch_sees_data( $post_id );
+	$data = relevanssi_fetch_sees_data( $post_id, $type );
 
 	if ( empty( $data['terms_list'] ) && empty( $data['reason'] ) ) {
 		$element .= '<p>'
 			// Translators: %d is the post ID.
-			. sprintf( __( 'Nothing found for post ID %d.', 'relevanssi' ), $post_id )
+			. sprintf( __( 'Nothing found for ID %d.', 'relevanssi' ), $post_id )
 			. '</p>';
 		$element .= '</div>';
 		return $element;
@@ -1461,11 +1462,11 @@ function relevanssi_generate_how_relevanssi_sees( $post_id, $display = true ) {
 		$element .= '<p>' . esc_html( $data['reason'] ) . '</p>';
 	}
 	if ( ! empty( $data['title'] ) ) {
-		$element .= '<h3>' . esc_html__( 'Post title', 'relevanssi' ) . '</h3>';
+		$element .= '<h3>' . esc_html__( 'The title', 'relevanssi' ) . '</h3>';
 		$element .= '<p>' . esc_html( $data['title'] ) . '</p>';
 	}
 	if ( ! empty( $data['content'] ) ) {
-		$element .= '<h3>' . esc_html__( 'Post content', 'relevanssi' ) . '</h3>';
+		$element .= '<h3>' . esc_html__( 'The content', 'relevanssi' ) . '</h3>';
 		$element .= '<p>' . esc_html( $data['content'] ) . '</p>';
 	}
 	if ( ! empty( $data['comment'] ) ) {
@@ -1511,7 +1512,8 @@ function relevanssi_generate_how_relevanssi_sees( $post_id, $display = true ) {
 /**
  * Fetches the Relevanssi indexing data for a post.
  *
- * @param int $post_id The post ID.
+ * @param int    $post_id The post ID.
+ * @param string $type    One of 'post', 'term', or 'user'. Default 'post'.
  *
  * @global array  $relevanssi_variables The Relevanssi global variables array,
  * used for the database table name.
@@ -1520,16 +1522,29 @@ function relevanssi_generate_how_relevanssi_sees( $post_id, $display = true ) {
  * @return array The indexed terms for various parts of the post in an
  * associative array.
  */
-function relevanssi_fetch_sees_data( $post_id ) {
+function relevanssi_fetch_sees_data( $post_id, $type = 'post' ) {
 	global $wpdb, $relevanssi_variables;
 
-	$terms_list = $wpdb->get_results(
-		$wpdb->prepare(
+	if ( 'post' === $type ) {
+		$query = $wpdb->prepare(
 			'SELECT * FROM ' . $relevanssi_variables['relevanssi_table'] . ' WHERE doc = %d', // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
 			$post_id
-		),
-		OBJECT
-	);
+		);
+	}
+	if ( 'term' === $type ) {
+		$query = $wpdb->prepare(
+			'SELECT * FROM ' . $relevanssi_variables['relevanssi_table'] . ' WHERE type NOT IN ("post", "user") AND item = %d', // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
+			$post_id
+		);
+	}
+	if ( 'user' === $type ) {
+		$query = $wpdb->prepare(
+			'SELECT * FROM ' . $relevanssi_variables['relevanssi_table'] . ' WHERE type = "user" AND item = %d', // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
+			$post_id
+		);
+	}
+
+	$terms_list = $wpdb->get_results( $query, OBJECT ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
 
 	$terms['content']     = array();
 	$terms['title']       = array();
