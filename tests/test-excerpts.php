@@ -886,7 +886,7 @@ EOT;
 		$content = str_replace( "\n", ' ', $content );
 
 		$query = 'sclerisque "amet nisl"';
-		$terms = relevanssi_tokenize( $query, true );
+		$terms = relevanssi_tokenize( $query, true, -1, 'search_query' );
 
 		$length = 30;
 		$type   = 'words';
@@ -935,7 +935,7 @@ EOT;
 
 		$content = str_replace( "\n", ' ', $content );
 		$query   = 'dolor';
-		$terms   = relevanssi_tokenize( $query, true );
+		$terms   = relevanssi_tokenize( $query, true, -1, 'search_query' );
 
 		$length = 3;
 		$type   = 'words';
@@ -961,7 +961,7 @@ EOT;
 		remove_filter( 'relevanssi_optimize_excerpts', '__return_true' );
 
 		$query = 'nonexisting';
-		$terms = relevanssi_tokenize( $query, true );
+		$terms = relevanssi_tokenize( $query, true, -1, 'search_query' );
 
 		$length = 5;
 

@@ -33,7 +33,7 @@ class DidYouMeanTest extends WP_UnitTestCase {
 		 *
 		 * @since 2.5.0
 		 */
-		$content_tokenized = relevanssi_tokenize( $content );
+		$content_tokenized = relevanssi_tokenize( $content, true, -1, 'indexing' );
 		update_option(
 			'relevanssi_words',
 			array(

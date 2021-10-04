@@ -156,7 +156,7 @@ function relevanssi_simple_generate_suggestion( $query ) {
 	}
 
 	$query            = htmlspecialchars_decode( $query, ENT_QUOTES );
-	$tokens           = relevanssi_tokenize( $query );
+	$tokens           = relevanssi_tokenize( $query, true, -1, 'search_query' );
 	$suggestions_made = false;
 	$suggestion       = '';
 

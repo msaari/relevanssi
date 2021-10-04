@@ -136,15 +136,15 @@ function relevanssi_search( $args ) {
 	 */
 	$remove_stopwords = apply_filters( 'relevanssi_remove_stopwords_in_titles', true );
 
-	$terms['terms'] = array_keys( relevanssi_tokenize( $q, $remove_stopwords, $min_length ) );
+	$terms['terms'] = array_keys( relevanssi_tokenize( $q, $remove_stopwords, $min_length, 'search_query' ) );
 
 	$terms['original_terms'] = $q_no_synonyms !== $q
-		? array_keys( relevanssi_tokenize( $q_no_synonyms, $remove_stopwords, $min_length ) )
+		? array_keys( relevanssi_tokenize( $q_no_synonyms, $remove_stopwords, $min_length, 'search_query' ) )
 		: $terms['terms'];
 
 	if ( has_filter( 'relevanssi_stemmer' ) ) {
 		do_action( 'relevanssi_disable_stemmer' );
-		$terms['original_terms'] = array_keys( relevanssi_tokenize( $q_no_synonyms, $remove_stopwords, $min_length ) );
+		$terms['original_terms'] = array_keys( relevanssi_tokenize( $q_no_synonyms, $remove_stopwords, $min_length, 'search_query' ) );
 		do_action( 'relevanssi_enable_stemmer' );
 	}
 
