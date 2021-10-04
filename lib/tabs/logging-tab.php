@@ -14,10 +14,9 @@
  * Prints out the logging tab in Relevanssi settings.
  *
  * @global $wpdb                 The WordPress database interface.
- * @global $relevanssi_variables The global Relevanssi variables array.
  */
 function relevanssi_logging_tab() {
-	global $wpdb, $relevanssi_variables;
+	global $wpdb;
 
 	$log_queries         = get_option( 'relevanssi_log_queries' );
 	$log_queries         = relevanssi_check( $log_queries );
@@ -96,7 +95,7 @@ function relevanssi_logging_tab() {
 			} else {
 				echo '<p class="description">';
 				// Translators: %d is the setting for no trim (probably 0).
-				printf( esc_html__( ' Set to %d for no trimming.', 'relevanssi' ), 0 );
+				printf( esc_html__( 'Set to %d for no trimming.', 'relevanssi' ), 0 );
 				echo '</p>';
 			}
 			?>
@@ -115,4 +114,13 @@ function relevanssi_logging_tab() {
 
 	</table>
 	<?php
+
+	if ( function_exists( 'relevanssi_click_tracking_interface' ) ) {
+		relevanssi_click_tracking_interface();
+	} else {
+		?>
+		<h3><?php esc_html_e( 'Click tracking', 'relevanssi' ); ?></h3>
+		<p><?php esc_html_e( 'Relevanssi Premium has a click tracking feature where you can track which posts are clicked from the search results. That way you can tell what is your most interesting content and how the search is actually used to access posts.', 'relevanssi' ); ?></p>
+		<?php
+	}
 }

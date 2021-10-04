@@ -100,43 +100,10 @@ function relevanssi_options() {
 }
 
 /**
- * Prints out the 'User searches' page.
- */
-function relevanssi_search_stats() {
-	$relevanssi_hide_branding = get_option( 'relevanssi_hide_branding' );
-
-	if ( 'on' === $relevanssi_hide_branding ) {
-		$options_txt = __( 'User searches', 'relevanssi' );
-	} else {
-		$options_txt = __( 'Relevanssi User Searches', 'relevanssi' );
-	}
-
-	if ( isset( $_REQUEST['relevanssi_reset'] ) && current_user_can( 'manage_options' ) ) {
-		check_admin_referer( 'relevanssi_reset_logs', '_relresnonce' );
-		if ( isset( $_REQUEST['relevanssi_reset_code'] ) ) {
-			if ( 'reset' === $_REQUEST['relevanssi_reset_code'] ) {
-				$verbose = true;
-				relevanssi_truncate_logs( $verbose );
-			}
-		}
-	}
-
-	printf( "<div class='wrap'><h2>%s</h2>", esc_html( $options_txt ) );
-
-	if ( 'on' === get_option( 'relevanssi_log_queries' ) ) {
-		relevanssi_query_log();
-	} else {
-		printf( '<p>%s</p>', esc_html__( 'Enable query logging to see stats here.', 'relevanssi' ) );
-	}
-}
-
-/**
  * Prints out the 'Admin search' page.
  */
 function relevanssi_admin_search_page() {
 	global $relevanssi_variables;
-
-	$relevanssi_hide_branding = get_option( 'relevanssi_hide_branding' );
 
 	$options_txt = __( 'Admin Search', 'relevanssi' );
 
@@ -173,231 +140,12 @@ function relevanssi_truncate_logs( $verbose = true ) {
 }
 
 /**
- * Shows the query log with the most common queries
- *
- * Uses relevanssi_total_queries() and relevanssi_date_queries() to fetch the data.
- */
-function relevanssi_query_log() {
-	/**
-	 * Adjusts the number of days to show the logs in User searches page.
-	 *
-	 * @param int Number of days, default 1.
-	 */
-	$days1 = apply_filters( 'relevanssi_1day', 1 );
-
-	/**
-	 * Adjusts the number of days to show the logs in User searches page.
-	 *
-	 * @param int Number of days, default 7.
-	 */
-	$days7 = apply_filters( 'relevanssi_7days', 7 );
-
-	/**
-	 * Adjusts the number of days to show the logs in User searches page.
-	 *
-	 * @param int Number of days, default 30.
-	 */
-	$days30 = apply_filters( 'relevanssi_30days', 30 );
-
-	printf( '<h3>%s</h3>', esc_html__( 'Total Searches', 'relevanssi' ) );
-
-	printf( "<div style='width: 50%%; overflow: auto'>%s</div>", relevanssi_total_queries( __( 'Totals', 'relevanssi' ) ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-
-	echo '<div style="clear: both"></div>';
-
-	printf( '<h3>%s</h3>', esc_html__( 'Common Queries', 'relevanssi' ) );
-
-	/**
-	 * Filters the number of rows to show.
-	 *
-	 * @param int Number of top results to show, default 20.
-	 */
-	$limit = apply_filters( 'relevanssi_user_searches_limit', 20 );
-
-	// Translators: %d is the number of queries to show.
-	printf( '<p>%s</p>', esc_html( sprintf( __( 'Here you can see the %d most common user search queries, how many times those queries were made and how many results were found for those queries.', 'relevanssi' ), $limit ) ) );
-
-	echo "<div style='width: 30%; float: left; margin-right: 2%; overflow: auto'>";
-	if ( 1 === $days1 ) {
-		relevanssi_date_queries( $days1, __( 'Today and yesterday', 'relevanssi' ) );
-	} else {
-		// Translators: number of days to show.
-		relevanssi_date_queries( $days1, sprintf( __( 'Last %d days', 'relevanssi' ), $days1 ) );
-	}
-	echo '</div>';
-
-	echo "<div style='width: 30%; float: left; margin-right: 2%; overflow: auto'>";
-	// Translators: number of days to show.
-	relevanssi_date_queries( $days7, sprintf( __( 'Last %d days', 'relevanssi' ), $days7 ) );
-	echo '</div>';
-
-	echo "<div style='width: 30%; float: left; margin-right: 2%; overflow: auto'>";
-	// Translators: number of days to show.
-	relevanssi_date_queries( $days30, sprintf( __( 'Last %d days', 'relevanssi' ), $days30 ) );
-	echo '</div>';
-
-	echo '<div style="clear: both"></div>';
-
-	printf( '<h3>%s</h3>', esc_html__( 'Unsuccessful Queries', 'relevanssi' ) );
-
-	echo "<div style='width: 30%; float: left; margin-right: 2%; overflow: auto'>";
-	relevanssi_date_queries( 1, __( 'Today and yesterday', 'relevanssi' ), 'bad' );
-	echo '</div>';
-
-	echo "<div style='width: 30%; float: left; margin-right: 2%; overflow: auto'>";
-	relevanssi_date_queries( 7, __( 'Last 7 days', 'relevanssi' ), 'bad' );
-	echo '</div>';
-
-	echo "<div style='width: 30%; float: left; margin-right: 2%; overflow: auto'>";
-	// Translators: number of days to show.
-	relevanssi_date_queries( $days30, sprintf( __( 'Last %d days', 'relevanssi' ), $days30 ), 'bad' );
-	echo '</div>';
-
-	if ( current_user_can( 'manage_options' ) ) {
-
-		echo '<div style="clear: both"></div>';
-		printf( '<h3>%s</h3>', esc_html__( 'Reset Logs', 'relevanssi' ) );
-		print( "<form method='post'>" );
-		wp_nonce_field( 'relevanssi_reset_logs', '_relresnonce', true, true );
-		printf(
-			'<p><label for="relevanssi_reset_code">%s</label>
-			<input type="text" id="relevanssi_reset_code" name="relevanssi_reset_code" />
-			<input type="submit" name="relevanssi_reset" value="%s" class="button" /></p></form>',
-			// Translators: do not translate "reset".
-			esc_html__(
-				'To reset the logs, type "reset" into the box here and click the Reset button',
-				'relevanssi'
-			),
-			esc_html__( 'Reset', 'relevanssi' )
-		);
-	}
-
-	echo '</div>';
-}
-
-/**
- * Shows the total number of searches on 'User searches' page.
- *
- * @global object $wpdb                 The WP database interface.
- * @global array  $relevanssi_variables The global Relevanssi variables array.
- *
- * @param string $title The title that is printed out on top of the results.
- */
-function relevanssi_total_queries( $title ) {
-	global $wpdb, $relevanssi_variables;
-	$log_table = $relevanssi_variables['log_table'];
-
-	$count  = array();
-	$titles = array();
-
-	$titles[0] = __( 'Today and yesterday', 'relevanssi' );
-	$titles[1] = __( 'Last 7 days', 'relevanssi' );
-	$titles[2] = __( 'Last 30 days', 'relevanssi' );
-	$titles[3] = __( 'Forever', 'relevanssi' );
-
-	$count[0] = $wpdb->get_var( "SELECT COUNT(id) FROM $log_table WHERE TIMESTAMPDIFF(DAY, time, NOW()) <= 1;" ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-	$count[1] = $wpdb->get_var( "SELECT COUNT(id) FROM $log_table WHERE TIMESTAMPDIFF(DAY, time, NOW()) <= 7;" ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-	$count[2] = $wpdb->get_var( "SELECT COUNT(id) FROM $log_table WHERE TIMESTAMPDIFF(DAY, time, NOW()) <= 30;" ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-	$count[3] = $wpdb->get_var( "SELECT COUNT(id) FROM $log_table;" ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-
-	printf(
-		'<table class="widefat"><thead><tr><th colspan="2">%1$s</th></tr></thead><tbody><tr><th>%2$s</th><th style="text-align: center">%3$s</th></tr>',
-		esc_html( $title ),
-		esc_html__( 'When', 'relevanssi' ),
-		esc_html__( 'Searches', 'relevanssi' )
-	);
-
-	foreach ( $count as $key => $searches ) {
-		$when = $titles[ $key ];
-		printf( "<tr><td>%s</td><td style='text-align: center'>%d</td></tr>", esc_html( $when ), intval( $searches ) );
-	}
-	echo '</tbody></table>';
-}
-
-/**
- * Shows the most common search queries on different time periods.
- *
- * @global object $wpdb                 The WP database interface.
- * @global array  $relevanssi_variables The global Relevanssi variables array.
- *
- * @param int    $days    The number of days to show.
- * @param string $title   The title that is printed out on top of the results.
- * @param string $version If 'good', show the searches that found something; if
- * 'bad', show the searches that didn't find anything. Default 'good'.
- */
-function relevanssi_date_queries( $days, $title, $version = 'good' ) {
-	global $wpdb, $relevanssi_variables;
-	$log_table = $relevanssi_variables['log_table'];
-
-	/** Documented in lib/interface.php. */
-	$limit = apply_filters( 'relevanssi_user_searches_limit', 20 );
-
-	if ( 'good' === $version ) {
-		$queries = $wpdb->get_results(
-			$wpdb->prepare(
-				'SELECT COUNT(DISTINCT(id)) as cnt, query, hits ' .
-				"FROM $log_table " . // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-				'WHERE TIMESTAMPDIFF(DAY, time, NOW()) <= %d
-				GROUP BY query
-				ORDER BY cnt DESC
-				LIMIT %d',
-				$days,
-				$limit
-			)
-		);
-	}
-
-	if ( 'bad' === $version ) {
-		$queries = $wpdb->get_results(
-			$wpdb->prepare(
-				'SELECT COUNT(DISTINCT(id)) as cnt, query, hits ' .
-				"FROM $log_table " . // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-				'WHERE TIMESTAMPDIFF(DAY, time, NOW()) <= %d AND hits = 0
-				GROUP BY query
-				ORDER BY cnt DESC
-				LIMIT %d',
-				$days,
-				$limit
-			)
-		); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-	}
-
-	if ( count( $queries ) > 0 ) {
-		printf(
-			"<table class='widefat'><thead><tr><th colspan='3'>%s</th></tr></thead><tbody><tr><th>%s</th><th style='text-align: center'>#</th><th style='text-align: center'>%s</th></tr>",
-			esc_html( $title ),
-			esc_html__( 'Query', 'relevanssi' ),
-			esc_html__( 'Hits', 'relevanssi' )
-		);
-		$url = get_bloginfo( 'url' );
-		foreach ( $queries as $query ) {
-			$search_parameter = rawurlencode( $query->query );
-			/**
-			 * Filters the query URL for the user searches page.
-			 *
-			 * @param string Query URL.
-			 */
-			$query_url = apply_filters( 'relevanssi_user_searches_query_url', $url . '/?s=' . $search_parameter );
-			printf(
-				"<tr><td><a href='%s'>%s</a></td><td style='padding: 3px 5px; text-align: center'>%d</td><td style='padding: 3px 5px; text-align: center'>%d</td></tr>",
-				esc_attr( $query_url ),
-				esc_attr( $query->query ),
-				intval( $query->cnt ),
-				intval( $query->hits )
-			);
-		}
-		echo '</tbody></table>';
-	}
-}
-
-/**
  * Prints out the Relevanssi options form.
  *
- * @global object $wpdb                 The WP database interface.
- * @global array  $relevanssi_variables The global Relevanssi variables array.
+ * @global array $relevanssi_variables The global Relevanssi variables array.
  */
 function relevanssi_options_form() {
-	global $relevanssi_variables, $wpdb;
+	global $relevanssi_variables;
 
 	echo "<div class='postbox-container'>";
 	echo "<form method='post'>";
@@ -557,8 +305,10 @@ function relevanssi_add_admin_scripts( $hook ) {
 	$acceptable_hooks = array(
 		'toplevel_page_relevanssi-premium/relevanssi',
 		'settings_page_relevanssi-premium/relevanssi',
+		'dashboard_page_relevanssi-premium/relevanssi',
 		'toplevel_page_relevanssi/relevanssi',
 		'settings_page_relevanssi/relevanssi',
+		'dashboard_page_relevanssi/relevanssi',
 		'dashboard_page_relevanssi_admin_search',
 	);
 	/**
@@ -586,9 +336,14 @@ function relevanssi_add_admin_scripts( $hook ) {
 	}
 	wp_enqueue_style( 'relevanssi_admin_css', $plugin_dir_url . 'lib/admin_styles.css', array(), $relevanssi_variables['plugin_version'] );
 
+	if ( 'dashboard_page_relevanssi' === substr( $hook, 0, strlen( 'dashboard_page_relevanssi' ) ) ) {
+		wp_enqueue_script( 'chartjs', 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.3.2/chart.min.js', array(), '3.3.2', false );
+	}
+
 	$localizations = array(
 		'confirm'              => __( 'Click OK to copy Relevanssi options to all subsites', 'relevanssi' ),
 		'confirm_stopwords'    => __( 'Are you sure you want to remove all stopwords?', 'relevanssi' ),
+		'confirm_delete_query' => __( 'Are you sure you want to delete the query?', 'relevanssi' ),
 		'truncating_index'     => __( 'Wiping out the index...', 'relevanssi' ),
 		'done'                 => __( 'Done.', 'relevanssi' ),
 		'indexing_users'       => __( 'Indexing users...', 'relevanssi' ),
@@ -700,5 +455,65 @@ function relevanssi_form_tag_weight() {
 		<input type='text' id='relevanssi_weight_category' name='relevanssi_weight_category' size='4' value='<?php echo esc_attr( $category_value ); ?>' />
 	</td>
 </tr>
+	<?php
+}
+
+/**
+ * Creates a line chart.
+ *
+ * @param array $labels   An array of labels for the line chart. These will be
+ * wrapped in apostrophes.
+ * @param array $datasets An array of (label, dataset) pairs.
+ */
+function relevanssi_create_line_chart( array $labels, array $datasets ) {
+	$labels         = implode( ', ', array_map( 'relevanssi_add_apostrophes', $labels ) );
+	$datasets_array = array();
+	$bg_colors      = array(
+		"'rgba(255, 99, 132, 0.2)'",
+		"'rgba(0, 175, 255, 0.2)'",
+	);
+	$border_colors  = array(
+		"'rgba(255, 99, 132, 1)'",
+		"'rgba(0, 175, 255, 1)'",
+	);
+	foreach ( $datasets as $label => $values ) {
+		$values           = implode( ', ', $values );
+		$bg_color         = array_shift( $bg_colors );
+		$border_color     = array_shift( $border_colors );
+		$datasets_array[] = <<< EOJSON
+	{
+		label: "$label",
+		data: [ $values ],
+		backgroundColor: [ $bg_color ],
+		borderColor: [ $border_color ],
+		borderWidth: 2,
+		fill: {
+			target: 'origin',
+			below: $border_color,
+		},
+		pointRadius: 1,
+		cubicInterpolationMode: 'monotone'
+	}
+EOJSON;
+	}
+	?>
+<canvas id="search_chart" height="100"></canvas>
+<script>
+var ctx = document.getElementById('search_chart').getContext('2d');
+var myChart = new Chart(ctx, {
+	type: 'line',
+	data: {
+		labels: [<?php echo $labels; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>],
+		datasets: [<?php echo implode( ",\n", $datasets_array ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>],
+	},
+	options: {
+		scales: {
+			y: {
+				beginAtZero: true
+			}
+		}
+	}
+});
+</script>
 	<?php
 }

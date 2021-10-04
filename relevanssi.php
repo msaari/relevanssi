@@ -87,4 +87,5 @@ require_once 'lib/search-query-restrictions.php';
 require_once 'lib/shortcodes.php';
 require_once 'lib/sorting.php';
 require_once 'lib/stopwords.php';
+require_once 'lib/user-searches.php';
 require_once 'lib/utils.php';
