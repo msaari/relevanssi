@@ -10,7 +10,7 @@ table.form-table table.widefat th {
     width: 3em;
 }
 
-#relevanssi_trim_logs {
+#relevanssi_trim_logs, #relevanssi_trim_click_logs {
     width: 4em;
 }
 
