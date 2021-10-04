@@ -35,21 +35,26 @@ function relevanssi_search_tab() {
 			<select name='post_types' id='post_types'>
 				<option value="any"><?php esc_html_e( 'Any', 'relevanssi' ); ?></option>
 	<?php
-		echo implode(
-			' ',
-			array_map( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-				function ( $post_type ) {
-					$pt = get_post_type_object( $post_type );
-					if ( $pt ) {
-						$post_type_value = esc_attr( $post_type );
-						$post_type_name  = esc_html( $pt->labels->singular_name );
-						return "<option value='{$post_type_value}'>{$post_type_name}</option>";
-					}
-					return null;
-				},
-				get_option( 'relevanssi_index_post_types' )
-			)
-		);
+	echo implode(
+		' ',
+		array_map( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			function ( $post_type ) {
+				$pt = get_post_type_object( $post_type );
+				if ( $pt ) {
+					$post_type_value = esc_attr( $post_type );
+					$post_type_name  = esc_html( $pt->labels->singular_name );
+					return "<option value='{$post_type_value}'>{$post_type_name}</option>";
+				}
+				return null;
+			},
+			get_option( 'relevanssi_index_post_types' )
+		)
+	);
+	if ( 'on' === get_option( 'relevanssi_index_users' ) ) {
+		?>
+		<option value='user'><?php esc_html_e( 'Users', 'relevanssi' ); ?></option>
+		<?php
+	}
 	?>
 			</select>
 		</td>
