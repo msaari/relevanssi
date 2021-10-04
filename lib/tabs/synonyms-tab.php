@@ -15,8 +15,12 @@
  */
 function relevanssi_synonyms_tab() {
 	$current_language = relevanssi_get_current_language();
-	$synonyms_array   = get_option( 'relevanssi_synonyms', array() );
-	$synonyms         = isset( $synonyms_array[ $current_language ] ) ? $synonyms_array[ $current_language ] : '';
+	if ( class_exists( 'Polylang', false ) && ! $current_language ) {
+		relevanssi_polylang_all_languages_synonyms();
+		return;
+	}
+	$synonyms_array = get_option( 'relevanssi_synonyms', array() );
+	$synonyms       = isset( $synonyms_array[ $current_language ] ) ? $synonyms_array[ $current_language ] : '';
 
 	if ( isset( $synonyms ) ) {
 		$synonyms = str_replace( ';', "\n", $synonyms );
@@ -50,5 +54,16 @@ function relevanssi_synonyms_tab() {
 	</td>
 </tr>
 </table>
+	<?php
+}
+
+/**
+ * Displays an error message when Polylang is in all languages mode.
+ */
+function relevanssi_polylang_all_languages_synonyms() {
+	?>
+	<h3 id="synonyms"><?php esc_html_e( 'Synonyms', 'relevanssi' ); ?></h3>
+
+	<p class="description"><?php esc_html_e( 'You are using Polylang and are in "Show all languages" mode. Please select a language before adjusting the synonym settings.', 'relevanssi' ); ?></p>
 	<?php
 }

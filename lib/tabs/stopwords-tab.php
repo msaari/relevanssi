@@ -14,6 +14,10 @@
  * Prints out the stopwords tab in Relevanssi settings.
  */
 function relevanssi_stopwords_tab() {
+	if ( class_exists( 'Polylang', false ) && ! relevanssi_get_current_language() ) {
+		relevanssi_polylang_all_languages_stopwords();
+		return;
+	}
 	?>
 	<h3 id="stopwords"><?php esc_html_e( 'Stopwords', 'relevanssi' ); ?></h3>
 	<?php
@@ -131,3 +135,15 @@ function relevanssi_show_stopwords() {
 
 	<?php
 }
+
+/**
+ * Displays an error message when Polylang is in all languages mode.
+ */
+function relevanssi_polylang_all_languages_stopwords() {
+	?>
+	<h3 id="stopwords"><?php esc_html_e( 'Stopwords', 'relevanssi' ); ?></h3>
+
+	<p class="description"><?php esc_html_e( 'You are using Polylang and are in "Show all languages" mode. Please select a language before adjusting the stopword settings.', 'relevanssi' ); ?></p>
+	<?php
+}
+

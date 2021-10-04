@@ -137,7 +137,7 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: Stops Relevanssi from blocking the admin search for WooCommerce coupons and other WooCommerce custom post types.
 * Minor fix: Fixes problems with the WP-Members compatibility.
 * Minor fix: New parameter for `relevanssi_tokenize()` introduces the context (indexing or search query). The `relevanssi_extract_phrases()` is only used on search queries.
-
+* Minor fix: Relevanssi won't let you adjust synonyms and stopwords anymore if you use Polylang and are in 'Show all languages' mode.
 
 = 4.13.3.1 =
 * Minor fix: The Bricks compatibility was broken. This version fixes it.
