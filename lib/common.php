@@ -643,9 +643,11 @@ function relevanssi_tokenize( $string, $remove_stops = true, int $min_word_lengt
 			 * Filters the token through the Relevanssi Premium tokenizer to add
 			 * some Premium features to the tokenizing (mostly stemming).
 			 *
-			 * @param string $token Search query token.
+			 * @param string $token   Search query token.
+			 * @param string $context The context for tokenization, can be
+			 * 'indexing' or 'search_query'.
 			 */
-			$token = apply_filters( 'relevanssi_premium_tokenizer', $token );
+			$token = apply_filters( 'relevanssi_premium_tokenizer', $token, $context );
 		}
 
 		if ( $accept ) {
@@ -1038,6 +1040,10 @@ function relevanssi_permalink( $link, $link_post = null ) {
 
 	if ( is_search() && is_object( $link_post ) && property_exists( $link_post, 'relevance_score' ) ) {
 		$link = relevanssi_add_highlight( $link, $link_post );
+	}
+
+	if ( function_exists( 'relevanssi_add_tracking' ) ) {
+		$link = relevanssi_add_tracking( $link, $link_post );
 	}
 
 	return $link;
