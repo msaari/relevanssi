@@ -406,6 +406,17 @@ function relevanssi_create_database_tables( $relevanssi_db_version ) {
 			$wpdb->query( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.NoCaching
 		}
 
+		/**
+		 * Allows adding database tables.
+		 *
+		 * An action hook that runs in the create tables process if the database
+		 * version in the options doesn't match the database version in the
+		 * code.
+		 *
+		 * @param string $charset_collate The collation.
+		 */
+		do_action( 'relevanssi_create_tables', $charset_collate );
+
 		update_option( 'relevanssi_db_version', $relevanssi_db_version );
 	}
 
