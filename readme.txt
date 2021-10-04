@@ -133,6 +133,7 @@ Each document database is full of useless words. All the little words that appea
 == Changelog ==
 = 4.14.0 =
 * Minor fix: In some languages, iOS uses „“ for quotes. Relevanssi now understands those for the phrase operator.
+* Minor fix: Stops Relevanssi from blocking the admin search for WooCommerce coupons and other WooCommerce custom post types.
 
 
 = 4.13.3.1 =

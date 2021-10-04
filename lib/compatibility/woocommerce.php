@@ -11,6 +11,7 @@
  */
 
 add_filter( 'relevanssi_indexing_restriction', 'relevanssi_woocommerce_restriction' );
+add_filter( 'relevanssi_admin_search_blocked_post_types', 'relevanssi_woocommerce_admin_search_blocked_post_types' );
 
 /**
  * This action solves the problems introduced by adjust_posts_count() in
@@ -128,4 +129,26 @@ function relevanssi_sku_boost( $match ) {
 		$match->weight *= apply_filters( 'relevanssi_sku_boost', 2 );
 	}
 	return $match;
+}
+
+/**
+ * Adds blocked WooCommerce post types to the list of blocked post types.
+ *
+ *  Stops Relevanssi from taking over the admin search for the WooCommerce
+ * blocked post types using the relevanssi_admin_search_blocked_post_types
+ * filter hook.
+ *
+ * @param array $post_types The list of blocked post types.
+ * @return array
+ */
+function relevanssi_woocommerce_admin_search_blocked_post_types( array $post_types ) : array {
+	$woo_post_types = array(
+		'shop_coupon',
+		'shop_order',
+		'shop_order_refund',
+		'wc_order_status',
+		'wc_order_email',
+		'shop_webhook',
+	);
+	return array_merge( $post_types, $woo_post_types );
 }
