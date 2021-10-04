@@ -131,6 +131,10 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.14.0 =
+* Minor fix: In some languages, iOS uses „“ for quotes. Relevanssi now understands those for the phrase operator.
+
+
 = 4.13.3.1 =
 * Minor fix: The Bricks compatibility was broken. This version fixes it.
 

@@ -19,9 +19,9 @@
  * @return array An array of phrases (strings).
  */
 function relevanssi_extract_phrases( string $query ) {
-	// iOS uses “” as the default quotes, so Relevanssi needs to understand
-	// that as well.
-	$normalized_query = str_replace( array( '”', '“' ), '"', $query );
+	// iOS uses “” or „“ as the default quotes, so Relevanssi needs to
+	// understand those as well.
+	$normalized_query = str_replace( array( '”', '“', '„' ), '"', $query );
 	$pos              = relevanssi_stripos( $normalized_query, '"' );
 
 	$phrases = array();
