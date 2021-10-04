@@ -111,7 +111,29 @@ function relevanssi_search_form( $atts ) {
 	if ( is_array( $atts ) ) {
 		$additional_fields = array();
 		foreach ( $atts as $key => $value ) {
-			if ( 'dropdown' === $key && 'post_type' === $value ) {
+			if ( 'dropdown' === substr( $key, 0, 8 ) ) {
+				$key = 'dropdown';
+			}
+			if ( 'post_type_boxes' === $key ) {
+				$post_types = explode( ',', $value );
+				if ( is_array( $post_types ) ) {
+					$post_type_objects   = get_post_types( array(), 'objects' );
+					$additional_fields[] = '<div class="post_types"><strong>Post types</strong>: ';
+					foreach ( $post_types as $post_type ) {
+						$checked = '';
+						if ( '*' === substr( $post_type, 0, 1 ) ) {
+							$post_type = substr( $post_type, 1 );
+							$checked   = ' checked="checked" ';
+						}
+						if ( isset( $post_type_objects[ $post_type ] ) ) {
+							$additional_fields[] = '<span class="post_type post_type_' . $post_type . '">'
+							. '<input type="checkbox" name="post_types[]" value="' . $post_type . '"' . $checked . '/> '
+							. $post_type_objects[ $post_type ]->name . '</span>';
+						}
+					}
+					$additional_fields[] = '</div>';
+				}
+			} elseif ( 'dropdown' === $key && 'post_type' === $value ) {
 				$field = '<select name="post_type">';
 				$types = get_option( 'relevanssi_index_post_types' );
 				if ( ! is_array( $types ) ) {
