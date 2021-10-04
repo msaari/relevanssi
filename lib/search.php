@@ -1087,6 +1087,23 @@ function relevanssi_compile_search_args( $query, $q ) {
 		)
 	);
 
+	/**
+	 * Filters the Relevanssi search parameters after compiling.
+	 *
+	 * Relevanssi picks up the search parameters from the WP_Query query
+	 * variables and collects them in an array you can filter here.
+	 *
+	 * @param array    $search_params The search parameters.
+	 * @param WP_Query $query         The full WP_Query object.
+	 *
+	 * @return array The filtered parameters.
+	 */
+	$search_params = apply_filters(
+		'relevanssi_search_params',
+		$search_params,
+		$query
+	);
+
 	return $search_params;
 }
 
