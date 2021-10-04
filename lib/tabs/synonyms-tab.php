@@ -49,7 +49,14 @@ function relevanssi_synonyms_tab() {
 		<p class="description"><?php _e( "It's possible to use phrases for the value, but not for the key. <code>dog = \"great dane\"</code> works, but <code>\"great dane\" = dog</code> doesn't.", 'relevanssi' ); // phpcs:ignore WordPress.Security.EscapeOutput.UnsafePrintingFunction ?></p>
 
 		<?php if ( RELEVANSSI_PREMIUM ) : ?>
-			<p class="description"><?php esc_html_e( 'If you want to use synonyms in AND searches, enable synonym indexing on the Indexing tab.', 'relevanssi' ); ?></p>
+		</td>
+	</tr>
+	<tr>
+		<th scope="row">
+			<?php echo esc_html_e( 'Synonyms in AND searches', 'relevanssi' ); ?>
+		</th>
+		<td>
+			<p class="description"><?php esc_html_e( "If you want to use synonyms in AND searches, enable synonym indexing on the Indexing tab. Also, any changes to the synonyms won't take effect until you rebuild the index.", 'relevanssi' ); ?></p>
 		<?php endif; ?>
 	</td>
 </tr>
