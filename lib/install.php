@@ -91,7 +91,7 @@ function _relevanssi_install() {
 	add_option( 'relevanssi_expand_highlights', 'off' );
 	add_option( 'relevanssi_expand_shortcodes', 'on' );
 	add_option( 'relevanssi_extag', '0' );
-	add_option( 'relevanssi_fuzzy', 'sometimes' );
+	add_option( 'relevanssi_fuzzy', 'always' );
 	add_option( 'relevanssi_highlight', 'strong' );
 	add_option( 'relevanssi_highlight_comments', 'off' );
 	add_option( 'relevanssi_highlight_docs', 'off' );
