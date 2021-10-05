@@ -249,7 +249,6 @@ function relevanssi_nothing_found_queries( string $from, string $to ) {
 function relevanssi_date_queries( string $from, string $to, string $version = 'good' ) {
 	global $wpdb, $relevanssi_variables;
 	$log_table = $relevanssi_variables['log_table'];
-	$basename  = $relevanssi_variables['plugin_basename'];
 
 	/** Documented in lib/interface.php. */
 	$limit = apply_filters( 'relevanssi_user_searches_limit', 100 );
@@ -335,8 +334,11 @@ function relevanssi_date_queries( string $from, string $to, string $version = 'g
 			 */
 			$query_url = apply_filters( 'relevanssi_user_searches_query_url', $url . '/?s=' . $search_parameter );
 
-			$insights_url = admin_url( 'admin.php?page=' . rawurlencode( $basename ) ) . '&insights=' . rawurlencode( $query->query );
-			$insights     = sprintf( "<a href='%s'>%s</a>", esc_url( $insights_url ), $query->query );
+			if ( function_exists( 'relevanssi_insights_link' ) ) {
+				$query_link = relevanssi_insights_link( $query );
+			} else {
+				$query_link = $query->query;
+			}
 
 			if ( 'good' === $version ) {
 				printf(
@@ -346,7 +348,7 @@ function relevanssi_date_queries( string $from, string $to, string $version = 'g
 						<td style='padding: 3px 5px; text-align: center'>%d</td>
 						<td style='padding: 3px 5px; text-align: center'>%s</td>
 					</tr>",
-					$insights,  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					$query_link,  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					esc_attr( $query_url ),
 					intval( $query->cnt ),
 					intval( $query->hits ),
@@ -358,7 +360,7 @@ function relevanssi_date_queries( string $from, string $to, string $version = 'g
 						<td>%s <a href='%s'><span class='dashicons dashicons-external'></span></a></td>
 						<td style='padding: 3px 5px; text-align: center'>%d</td>
 					</tr>",
-					$insights,  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					$query_link,  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					esc_attr( $query_url ),
 					intval( $query->cnt )
 				);
