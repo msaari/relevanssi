@@ -141,8 +141,7 @@ function relevanssi_query_log() {
 				?>
 				<p><?php esc_html_e( 'In order to see the clicks, you need Relevanssi Premium.', 'relevanssi' ); ?></p>
 				<?php
-			}
-			if ( 'on' !== get_option( 'relevanssi_click_tracking' ) ) {
+			} elseif ( 'on' !== get_option( 'relevanssi_click_tracking' ) ) {
 				?>
 				<p><?php esc_html_e( 'In order to see the clicks, you need to enable click tracking. Click tracking is not currently enabled, and you\'re not collecting new clicks.', 'relevanssi' ); ?></p>
 				<?php
