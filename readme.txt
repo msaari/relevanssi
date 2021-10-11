@@ -3,9 +3,9 @@ Contributors: msaari
 Donate link: https://www.relevanssi.com/buy-premium/
 Tags: search, relevance, better search, product search, woocommerce search
 Requires at least: 4.9
-Tested up to: 5.8
+Tested up to: 5.8.1
 Requires PHP: 7.0
-Stable tag: 4.13.3.1
+Stable tag: 4.14.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -241,28 +241,10 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: Old legacy scripts that caused Javascript warnings on admin pages have been removed.
 * Minor fix: In some cases, having less than or greater than symbols in PDF content would block that PDF content from being indexed.
 
-= 4.10.2 =
-* New feature: You can force Relevanssi to be active by setting the query variable `relevanssi` to `true`. Thanks to Jan Willem Oostendorp.
-* Changed behaviour: Relevanssi has been moved from `the_posts` filter to `posts_pre_query`. This change doesn't do much, but increases performance slightly as WordPress needs to do less useless work, as now the default query is no longer run. Thanks to Jan Willem Oostendorp.
-* Minor fix: Highlighting didn't work properly when highlighting something immediately following a HTML tag.
-* Minor fix: You can no longer set the value of minimum word length to less than 1 or higher than 9 from the settings page.
-* Minor fix: Importing options broke synonym and stopword settings.
-* Minor fix: Improves the Rank Math SEO compatibility to avoid errors in plugin activation.
-* Minor fix: WPML search results that included non-post results caused fatal errors and crashes. This fixes the crashing and makes non-post results work better in both WPML and Polylang.
-
-= 4.10.1 =
-* Major fix: The multilingual stopwords and synonyms were used based on the global language. Now when indexing posts, the post language is used instead of the global language.
-
-= 4.10.0 =
-* New feature: Relevanssi now supports multilingual synonyms and stopwords. Relevanssi now has a different set of synonyms and stopwords for each language. This feature is compatible with WPML and Polylang.
-* New feature: SEO by Rank Math compatibility is added: posts marked as 'noindex' with Rank Math are not indexed by Relevanssi.
-* Minor fix: With keyword matching set to 'whole words' and the 'expand highlights' disabled, words that ended with an 's' weren't highlighted correctly.
-* Minor fix: The 'Post exclusion' setting didn't work correctly. It has been fixed.
-* Minor fix: It's now impossible to set negative weights in searching settings. They did not work as expected anyway.
-* Minor fix: Relevanssi had an unnecessary index on the `doc` column in the `wp_relevanssi` database table. It is now removed to save space. Thanks to Matthew Wang.
-* Minor fix: Improved Oxygen Builder support makes sure `ct_builder_shortcodes` custom field is always indexed.
-
 == Upgrade notice ==
+= 4.14.0 =
+* User searches page update, bug fixes and improvements.
+
 = 4.13.3.1 =
 * Fixes the Bricks compatibility.
 
