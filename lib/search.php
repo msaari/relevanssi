@@ -376,7 +376,7 @@ function relevanssi_search( $args ) {
 		$terms['no_stops']                = $terms['terms'];
 		$terms['original_terms_no_stops'] = $terms['original_terms'];
 	}
-	$total_terms = count( $terms['no_stops'] );
+	$total_terms = count( $terms['original_terms_no_stops'] );
 
 	if ( isset( $doc_weight ) ) {
 		/**
