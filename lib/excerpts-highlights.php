@@ -1503,16 +1503,28 @@ function relevanssi_add_excerpt( &$post, $query ) {
 	if ( isset( $post->blog_id ) ) {
 		switch_to_blog( $post->blog_id );
 	}
-	$excerpt_length         = get_option( 'relevanssi_excerpt_length' );
-	$excerpt_type           = get_option( 'relevanssi_excerpt_type' );
 	$post->original_excerpt = $post->post_excerpt;
-	$post->post_excerpt     = relevanssi_do_excerpt(
-		$post,
-		$query,
-		$excerpt_length,
-		$excerpt_type
-	);
-
+	/**
+	 * Filters whether an excerpt should be added to a post or not.
+	 *
+	 * If this filter hook returns false, Relevanssi does not create an excerpt
+	 * for the post. The original excerpt is still copied to
+	 * $post->original_excerpt.
+	 *
+	 * @param boolean If true, create an excerpt. Default true.
+	 * @param WP_Post $post  The post object.
+	 * @param string  $query The search quer.
+	 */
+	if ( apply_filters( 'relevanssi_excerpt_post', true, $post, $query ) ) {
+		$excerpt_length     = get_option( 'relevanssi_excerpt_length' );
+		$excerpt_type       = get_option( 'relevanssi_excerpt_type' );
+		$post->post_excerpt = relevanssi_do_excerpt(
+			$post,
+			$query,
+			$excerpt_length,
+			$excerpt_type
+		);
+	}
 	if ( isset( $post->blog_id ) ) {
 		restore_current_blog();
 	}
