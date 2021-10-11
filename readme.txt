@@ -5,7 +5,7 @@ Tags: search, relevance, better search, product search, woocommerce search
 Requires at least: 4.9
 Tested up to: 5.8.1
 Requires PHP: 7.0
-Stable tag: 4.14.0
+Stable tag: 4.14.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -131,6 +131,9 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.14.1 =
+* Adds a missing file.
+
 = 4.14.0 =
 * New feature: New filter hook `relevanssi_render_blocks` controls whether Relevanssi renders blocks in a post or not. If you are having problems updating long posts with lots of blocks, having this filter hook return `false` for the post in question will likely help, as rendering the blocks in a long post can take huge amounts of memory.
 * New feature: The user searches page has been improved a lot.
@@ -242,6 +245,9 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: In some cases, having less than or greater than symbols in PDF content would block that PDF content from being indexed.
 
 == Upgrade notice ==
+= 4.14.1 =
+* Adds a missing file.
+
 = 4.14.0 =
 * User searches page update, bug fixes and improvements.
 
