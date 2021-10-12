@@ -88,6 +88,7 @@ function relevanssi_oxygen_compatibility( $value, $field, $post_id ) {
 				array(
 					'/\[oxygen.*?\]/',
 					'/\[\/?ct_.*?\]/',
+					'/\[\/?oxy_.*?\]/',
 				),
 				' ',
 				/**
