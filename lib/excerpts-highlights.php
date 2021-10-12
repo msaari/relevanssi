@@ -1513,7 +1513,7 @@ function relevanssi_add_excerpt( &$post, $query ) {
 	 *
 	 * @param boolean If true, create an excerpt. Default true.
 	 * @param WP_Post $post  The post object.
-	 * @param string  $query The search quer.
+	 * @param string  $query The search query.
 	 */
 	if ( apply_filters( 'relevanssi_excerpt_post', true, $post, $query ) ) {
 		$excerpt_length     = get_option( 'relevanssi_excerpt_length' );
