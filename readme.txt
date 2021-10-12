@@ -131,6 +131,10 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.14.2 =
+* Fix: Remove unnecessary database calls from admin pages.
+* Fix: Improved Oxygen compatibility.
+
 = 4.14.1 =
 * Adds a missing file.
 
@@ -245,6 +249,9 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: In some cases, having less than or greater than symbols in PDF content would block that PDF content from being indexed.
 
 == Upgrade notice ==
+= 4.14.2 =
+* Removes database calls on admin pages.
+
 = 4.14.1 =
 * Adds a missing file.
 

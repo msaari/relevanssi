@@ -271,7 +271,7 @@ function relevanssi_query_vars( $qv ) {
 function relevanssi_create_database_tables( $relevanssi_db_version ) {
 	global $wpdb;
 
-	$current_db_version = get_option( 'relevanssi_db_version' );
+	$current_db_version = intval( get_option( 'relevanssi_db_version' ) );
 
 	if ( $current_db_version === $relevanssi_db_version ) {
 		return;
