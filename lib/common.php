@@ -1035,7 +1035,10 @@ function relevanssi_permalink( $link, $link_post = null ) {
 	}
 	// Using property_exists() to avoid troubles from magic variables.
 	if ( is_object( $link_post ) && property_exists( $link_post, 'relevanssi_link' ) ) {
-		$link = $link_post->relevanssi_link;
+		// $link_post->relevanssi_link can still be false.
+		if ( ! empty( $link_post->relevanssi_link ) ) {
+			$link = $link_post->relevanssi_link;
+		}
 	}
 
 	if ( is_search() && is_object( $link_post ) && property_exists( $link_post, 'relevance_score' ) ) {
