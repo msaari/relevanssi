@@ -16,3 +16,6 @@ For support, post to the [Relevanssi support forum](https://wordpress.org/suppor
 
 # Translations
 Relevanssi translations are handled by the [WordPress translations system](https://translate.wordpress.org/projects/wp-plugins/relevanssi).
+
+# Security policy
+[Security policy can be found here](https://github.com/msaari/relevanssi/blob/master/SECURITY.md).
