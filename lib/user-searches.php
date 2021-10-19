@@ -336,7 +336,7 @@ function relevanssi_date_queries( string $from, string $to, string $version = 'g
 			if ( function_exists( 'relevanssi_insights_link' ) ) {
 				$query_link = relevanssi_insights_link( $query );
 			} else {
-				$query_link = $query->query;
+				$query_link = wp_kses( $query->query, 'strip' );
 			}
 
 			if ( 'good' === $version ) {
@@ -347,7 +347,7 @@ function relevanssi_date_queries( string $from, string $to, string $version = 'g
 						<td style='padding: 3px 5px; text-align: center'>%d</td>
 						<td style='padding: 3px 5px; text-align: center'>%s</td>
 					</tr>",
-					$query_link,  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					$query_link, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					esc_attr( $query_url ),
 					intval( $query->cnt ),
 					intval( $query->hits ),
