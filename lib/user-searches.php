@@ -342,7 +342,7 @@ function relevanssi_date_queries( string $from, string $to, string $version = 'g
 			if ( 'good' === $version ) {
 				printf(
 					"<tr>
-						<td>%s <a href='%s'><span class='dashicons dashicons-external'></span></a></td>
+						<td>%s <a href='%s' target='_blank'><span class='dashicons dashicons-external'></span></a></td>
 						<td style='padding: 3px 5px; text-align: center'>%d</td>
 						<td style='padding: 3px 5px; text-align: center'>%d</td>
 						<td style='padding: 3px 5px; text-align: center'>%s</td>
@@ -356,7 +356,7 @@ function relevanssi_date_queries( string $from, string $to, string $version = 'g
 			} else {
 				printf(
 					"<tr>
-						<td>%s <a href='%s'><span class='dashicons dashicons-external'></span></a></td>
+						<td>%s <a href='%s' target='_blank'><span class='dashicons dashicons-external'></span></a></td>
 						<td style='padding: 3px 5px; text-align: center'>%d</td>
 					</tr>",
 					$query_link,  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
