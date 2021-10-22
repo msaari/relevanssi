@@ -131,6 +131,8 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+* Minor fix: `relevanssi_orderby` did not always accept an array-format orderby parameter.
+
 = 4.14.3 =
 * Security fix: User searches page had a XSS vulnerability.
 

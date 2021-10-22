@@ -1577,19 +1577,23 @@ function relevanssi_sort_results( &$hits, $orderby, $order, $meta_query ) {
 		 */
 		$orderby = apply_filters( 'relevanssi_orderby', $orderby );
 
-		/**
-		 * Filters the order parameter before Relevanssi sorts posts.
-		 *
-		 * @param string $order The order parameter, either 'asc' or 'desc'.
-		 * Default 'desc'.
-		 */
-		$order = apply_filters( 'relevanssi_order', $order );
+		if ( is_array( $orderby ) ) {
+			relevanssi_object_sort( $hits, $orderby, $meta_query );
+		} else {
+			/**
+			 * Filters the order parameter before Relevanssi sorts posts.
+			 *
+			 * @param string $order The order parameter, either 'asc' or 'desc'.
+			 * Default 'desc'.
+			 */
+			$order = apply_filters( 'relevanssi_order', $order );
 
-		if ( 'relevance' !== $orderby ) {
-			// Results are by default sorted by relevance, so no need to sort
-			// for that.
-			$orderby_array = array( $orderby => $order );
-			relevanssi_object_sort( $hits, $orderby_array, $meta_query );
+			if ( 'relevance' !== $orderby ) {
+				// Results are by default sorted by relevance, so no need to sort
+				// for that.
+				$orderby_array = array( $orderby => $order );
+				relevanssi_object_sort( $hits, $orderby_array, $meta_query );
+			}
 		}
 	}
 }
