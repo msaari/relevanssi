@@ -1785,6 +1785,7 @@ function relevanssi_bot_block_list() : array {
 		'Sogou'                => 'Sogou',
 		'Exalead'              => 'Exabot',
 		'Majestic'             => 'MJ12Bot',
+		'Ahrefs'               => 'AhrefsBot',
 	);
 	return $bots;
 }
