@@ -70,7 +70,7 @@ function relevanssi_average_array( array &$array, array $counts ) {
 	array_walk(
 		$array,
 		function ( &$value, $key ) use ( $counts ) {
-			$value = $value / $counts[ $key ];
+			$value = round( $value / $counts[ $key ], 2 );
 		}
 	);
 }
@@ -1432,4 +1432,32 @@ function relevanssi_update_sanitized( array $request, string $option, bool $auto
 		$value = sanitize_text_field( wp_unslash( $request[ $option ] ) );
 		update_option( $option, $value, $autoload );
 	}
+}
+
+/**
+ * Returns true if $_SERVER['HTTP_USER_AGENT'] is on the bot block list.
+ *
+ * Looks for bot user agents in the $_SERVER['HTTP_USER_AGENT'] and returns true
+ * if a match is found.
+ *
+ * @return bool True if $_SERVER['HTTP_USER_AGENT'] is a bot.
+ */
+function relevanssi_user_agent_is_bot() : bool {
+	if ( isset( $_SERVER['HTTP_USER_AGENT'] ) ) {
+		/**
+		 * Filters the bots Relevanssi should block from search queries.
+		 *
+		 * Lets you filter the bots that are blocked from Relevanssi search
+		 * queries.
+		 *
+		 * @param array $bots An array of bot user agents.
+		 */
+		$bots = apply_filters( 'relevanssi_bots_to_block', relevanssi_bot_block_list() );
+		foreach ( array_values( $bots ) as $lookfor ) {
+			if ( false !== stristr( $_SERVER['HTTP_USER_AGENT'], $lookfor ) ) {
+				return true;
+			}
+		}
+	}
+	return false;
 }

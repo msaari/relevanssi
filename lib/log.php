@@ -26,27 +26,6 @@ function relevanssi_update_log( $query, $hits ) {
 		return false;
 	}
 
-	// Bot filter, by Justin_K.
-	// See: http://wordpress.org/support/topic/bot-logging-problem-w-tested-solution.
-	$user_agent = '';
-	if ( isset( $_SERVER['HTTP_USER_AGENT'] ) ) {
-		$user_agent = $_SERVER['HTTP_USER_AGENT'];
-
-		/**
-		 * Filters the bots Relevanssi should block from logs.
-		 *
-		 * Lets you filter the bots that are blocked from Relevanssi logs.
-		 *
-		 * @param array $bots An array of bot user agents.
-		 */
-		$bots = apply_filters( 'relevanssi_bots_to_not_log', relevanssi_bot_block_list() );
-		foreach ( array_values( $bots ) as $lookfor ) {
-			if ( false !== stristr( $user_agent, $lookfor ) ) {
-				return false;
-			}
-		}
-	}
-
 	/**
 	 * Filters the current user for logs.
 	 *
@@ -55,16 +34,11 @@ function relevanssi_update_log( $query, $hits ) {
 	 *
 	 * @param WP_User The current user object.
 	 */
-	$user = apply_filters( 'relevanssi_log_get_user', wp_get_current_user() );
-	if ( 0 !== $user->ID && get_option( 'relevanssi_omit_from_logs' ) ) {
-		$omit = explode( ',', get_option( 'relevanssi_omit_from_logs' ) );
-		$omit = array_map( 'trim', $omit );
-		if ( in_array( strval( $user->ID ), $omit, true ) ) {
-			return false;
-		}
-		if ( in_array( $user->user_login, $omit, true ) ) {
-			return false;
-		}
+	$user       = apply_filters( 'relevanssi_log_get_user', wp_get_current_user() );
+	$user_agent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+
+	if ( ! relevanssi_is_ok_to_log( $user ) ) {
+		return false;
 	}
 
 	$ip = '';
@@ -294,4 +268,38 @@ function relevanssi_export_log() {
 	fclose( $df ); // phpcs:ignore WordPress.WP.AlternativeFunctions
 	echo ob_get_clean(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	die();
+}
+
+/**
+ * Checks if logging the query is ok.
+ *
+ * Returns false if the user agent is on the blocked bots list or if the
+ * current user is on the relevanssi_omit_from_logs option list.
+ *
+ * @param WP_User $user The current user. If null, gets the value from
+ * wp_get_current_user().
+ *
+ * @return boolean True, if the user is not a bot or not on the omit list.
+ */
+function relevanssi_is_ok_to_log( $user = null ) : bool {
+	if ( relevanssi_user_agent_is_bot() ) {
+		return false;
+	}
+
+	if ( ! $user ) {
+		$user = wp_get_current_user();
+	}
+
+	if ( 0 !== $user->ID && get_option( 'relevanssi_omit_from_logs' ) ) {
+		$omit = explode( ',', get_option( 'relevanssi_omit_from_logs' ) );
+		$omit = array_map( 'trim', $omit );
+		if ( in_array( strval( $user->ID ), $omit, true ) ) {
+			return false;
+		}
+		if ( in_array( $user->user_login, $omit, true ) ) {
+			return false;
+		}
+	}
+
+	return true;
 }
