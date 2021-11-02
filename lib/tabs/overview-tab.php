@@ -90,14 +90,6 @@ function relevanssi_overview_tab() {
 			<p><?php printf( esc_html__( 'If you like Relevanssi, leaving a five-star review on WordPress.org will help others discover Relevanssi. %1$sYou can add your review here%2$s.', 'relevanssi' ), "<a href='https://wordpress.org/support/plugin/relevanssi/reviews/#new-post'>", '</a>' ); ?></p>
 		</td>
 	</tr>
-	<tr>
-		<th scope="row">
-			<?php esc_html_e( 'Relevanssi on Facebook', 'relevanssi' ); ?>
-		</th>
-		<td>
-			<p><a href="https://www.facebook.com/relevanssi"><?php esc_html_e( 'Check out the Relevanssi page on Facebook for news and updates about Relevanssi.', 'relevanssi' ); ?></a></p>
-		</td>
-	</tr>
 	<?php if ( ! RELEVANSSI_PREMIUM ) { ?>
 	<tr>
 		<th scope="row">
