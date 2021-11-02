@@ -135,6 +135,7 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: `relevanssi_orderby` did not always accept an array-format orderby parameter.
 * Minor fix: Removes a highlighting problem stemming from uppercase search terms.
 * Minor fix: Relevanssi removes highlights better from inside multiline HTML tags.
+* Minor fix: When image attachment indexing was disabled, saving image attachments would still index the images. Image attachment blocking is now a `relevanssi_indexing_restriction` filter function, which means it's always active.
 
 = 4.14.3 =
 * Security fix: User searches page had a XSS vulnerability.

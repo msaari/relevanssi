@@ -9,6 +9,30 @@
  */
 
 add_filter( 'relevanssi_index_get_post_type', 'relevanssi_index_get_post_type', 1, 2 );
+add_filter( 'relevanssi_indexing_restriction', 'relevanssi_image_filter' );
+
+/**
+ * Blocks image attachments from the index.
+ *
+ * @param array $restriction An array with two values: 'mysql' for the MySQL
+ * query and 'reason' for the blocking reason.
+ *
+ * @return array The image attachment blocking MySQL code, if the image
+ * attachments are blocked.
+ */
+function relevanssi_image_filter( $restriction ) {
+	if ( 'off' === get_option( 'relevanssi_index_image_files', 'off' ) ) {
+		global $wpdb;
+
+		$restriction['mysql']  .= "
+		AND post.ID NOT IN (
+		SELECT ID FROM $wpdb->posts WHERE post_type = 'attachment'
+		AND post_mime_type LIKE 'image%' )";
+		$restriction['reason'] .= ' ' . __( 'Relevanssi image attachment filter', 'relevanssi' );
+	}
+
+	return $restriction;
+}
 
 /**
  * Returns the total number of posts to index.
@@ -98,14 +122,6 @@ function relevanssi_indexing_post_counter( $extend = false ) {
 function relevanssi_generate_indexing_query( $valid_status, $extend = false, $restriction = '', $limit = '' ) {
 	global $wpdb, $relevanssi_variables;
 	$relevanssi_table = $relevanssi_variables['relevanssi_table'];
-
-	if ( 'off' === get_option( 'relevanssi_index_image_files', 'off' ) ) {
-		$restriction .= "
-		AND post.ID NOT IN (
-		SELECT ID FROM $wpdb->posts WHERE post_type = 'attachment'
-		AND post_mime_type LIKE 'image%' )
-	";
-	}
 
 	/**
 	 * Filters the WHERE restriction for indexing queries.
