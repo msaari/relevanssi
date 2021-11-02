@@ -5,7 +5,7 @@ Tags: search, relevance, better search, product search, woocommerce search
 Requires at least: 4.9
 Tested up to: 5.8.1
 Requires PHP: 7.0
-Stable tag: 4.14.3
+Stable tag: 4.14.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -58,9 +58,6 @@ Do note that using Relevanssi may require large amounts (hundreds of megabytes) 
 * [WP CLI commands](https://www.relevanssi.com/user-manual/wp-cli/).
 * [Related posts](https://www.relevanssi.com/knowledge-base/related-posts/).
 * [Redirects for searches](https://www.relevanssi.com/user-manual/redirects/).
-
-= Relevanssi in Facebook =
-You can find [Relevanssi in Facebook](https://www.facebook.com/relevanssi).
 
 == Screenshots ==
 
@@ -258,7 +255,10 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: In some cases, having less than or greater than symbols in PDF content would block that PDF content from being indexed.
 
 == Upgrade notice ==
-= 4.14.3
+= 4.14.4 =
+* Small bug fixes.
+
+= 4.14.3 =
 * Security fix: User searches page had a XSS vulnerability.
 
 = 4.14.2 =
