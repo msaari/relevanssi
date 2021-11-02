@@ -131,7 +131,10 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.14.4 =
 * Minor fix: `relevanssi_orderby` did not always accept an array-format orderby parameter.
+* Minor fix: Removes a highlighting problem stemming from uppercase search terms.
+* Minor fix: Relevanssi removes highlights better from inside multiline HTML tags.
 
 = 4.14.3 =
 * Security fix: User searches page had a XSS vulnerability.
