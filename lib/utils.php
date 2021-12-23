@@ -413,8 +413,9 @@ function relevanssi_get_current_language( bool $locale = true ) {
 			}
 			if ( is_wp_error( $language_details ) ) {
 				$current_language = apply_filters( 'wpml_current_language', null );
+			} else {
+				$current_language = $language_details[ $locale ? 'locale' : 'language_code' ];
 			}
-			$current_language = $language_details[ $locale ? 'locale' : 'language_code' ];
 		} else {
 			if ( $locale ) {
 				$languages = apply_filters( 'wpml_active_languages', null );
