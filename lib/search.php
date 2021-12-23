@@ -321,23 +321,20 @@ function relevanssi_search( $args ) {
 			}
 		}
 
-		if ( $no_matches ) {
-			if ( $search_again ) {
-				// No hits even with fuzzy search!
-				$search_again = false;
-			} else {
-				if ( 'sometimes' === $fuzzy ) {
-					$search_again = true;
-				}
-			}
-		} else {
-			$search_again = false;
+		$search_again = false;
+		if ( $no_matches && ! $search_again && 'sometimes' === $fuzzy ) {
+			$search_again = true;
 		}
+
 		$params = array(
-			'no_matches'   => $no_matches,
-			'doc_weight'   => $doc_weight,
-			'terms'        => $terms,
-			'search_again' => $search_again,
+			'doc_weight'         => $doc_weight,
+			'no_matches'         => $no_matches,
+			'operator'           => $operator,
+			'phrase_queries'     => $phrase_queries,
+			'query_join'         => $query_join,
+			'query_restrictions' => $query_restrictions,
+			'search_again'       => $search_again,
+			'terms'              => $terms,
 		);
 		/**
 		 * Filters the parameters for fallback search.
@@ -348,11 +345,15 @@ function relevanssi_search( $args ) {
 		 *
 		 * @param array The search parameters.
 		 */
-		$params       = apply_filters( 'relevanssi_search_again', $params );
-		$search_again = $params['search_again'];
-		$terms        = $params['terms'];
-		$doc_weight   = $params['doc_weight'];
-		$no_matches   = $params['no_matches'];
+		$params             = apply_filters( 'relevanssi_search_again', $params );
+		$doc_weight         = $params['doc_weight'];
+		$no_matches         = $params['no_matches'];
+		$operator           = $params['operator'];
+		$phrase_queries     = $params['phrase_queries'];
+		$query_join         = $params['query_join'];
+		$query_restrictions = $params['query_restrictions'];
+		$search_again       = $params['search_again'];
+		$terms              = $params['terms'];
 	} while ( $search_again );
 
 	if ( ! $remove_stopwords ) {

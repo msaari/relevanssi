@@ -128,6 +128,8 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+* Changed behaviour: The `relevanssi_search_again` parameter array has more parameters the filter can modify.
+
 = 4.14.4 =
 * Minor fix: `relevanssi_orderby` did not always accept an array-format orderby parameter.
 * Minor fix: Removes a highlighting problem stemming from uppercase search terms.
