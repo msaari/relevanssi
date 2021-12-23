@@ -129,6 +129,7 @@ Each document database is full of useless words. All the little words that appea
 
 == Changelog ==
 * Changed behaviour: The `relevanssi_search_again` parameter array has more parameters the filter can modify.
+* Changed behaviour: The `relevanssi_show_matches` filter hook gets the post object as the second parameter.
 * Minor fix: The `cats` and `tags` parameters work better and support array values.
 
 = 4.14.4 =

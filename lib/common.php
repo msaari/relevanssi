@@ -99,8 +99,9 @@ function relevanssi_show_matches( $post ) {
 	 * filter lets you modify the breakdown before it is added to the excerpt.
 	 *
 	 * @param string $result The breakdown.
+	 * @param object $post   The post object
 	 */
-	return apply_filters( 'relevanssi_show_matches', $result );
+	return apply_filters( 'relevanssi_show_matches', $result, $post );
 }
 
 /**
