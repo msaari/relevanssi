@@ -128,6 +128,7 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+* New feature: The [searchform] shortcode has a new parameter, 'checklist', which you can use to create taxonomy checklists.
 * Changed behaviour: The `relevanssi_search_again` parameter array has more parameters the filter can modify.
 * Changed behaviour: The `relevanssi_show_matches` filter hook gets the post object as the second parameter.
 * Minor fix: The `cats` and `tags` parameters work better and support array values.
