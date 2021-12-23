@@ -1264,6 +1264,10 @@ function relevanssi_filter_custom_fields( $values, $field ) {
 		$values = array();
 	}
 
+	if ( ! $values ) {
+		return $values;
+	}
+
 	$values = array_map(
 		function( $value ) {
 			if ( is_string( $value ) && 'field_' === substr( $value, 0, 6 ) ) {
