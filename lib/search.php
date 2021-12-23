@@ -915,6 +915,7 @@ function relevanssi_compile_search_args( $query, $q ) {
 	 * @param string The default relation, default 'AND'.
 	 */
 	$tax_query_relation = apply_filters( 'relevanssi_default_tax_query_relation', 'AND' );
+	$terms_found        = false;
 	if ( isset( $query->tax_query ) && empty( $query->tax_query->queries ) ) {
 		// Tax query is empty, let's get rid of it.
 		$query->tax_query = null;
@@ -936,14 +937,21 @@ function relevanssi_compile_search_args( $query, $q ) {
 			}
 			if ( is_string( $type ) && 'queries' === $type ) {
 				foreach ( $item as $tax_query_row ) {
+					if ( isset( $tax_query_row['terms'] ) ) {
+						$terms_found = true;
+					}
 					$tax_query[] = $tax_query_row;
 				}
 			}
 		}
-	} else {
+	}
+	if ( ! $terms_found ) {
 		$cat = false;
 		if ( isset( $query->query_vars['cats'] ) ) {
 			$cat = $query->query_vars['cats'];
+			if ( is_array( $cat ) ) {
+				$cat = implode( ',', $cat );
+			}
 		}
 		if ( empty( $cat ) ) {
 			$cat = get_option( 'relevanssi_cat' );
@@ -952,8 +960,9 @@ function relevanssi_compile_search_args( $query, $q ) {
 			$cat         = explode( ',', $cat );
 			$tax_query[] = array(
 				'taxonomy' => 'category',
-				'field'    => 'id',
+				'field'    => 'term_id',
 				'terms'    => $cat,
+				'operator' => 'IN',
 			);
 		}
 		$excat = get_option( 'relevanssi_excat' );
@@ -974,6 +983,9 @@ function relevanssi_compile_search_args( $query, $q ) {
 		$tag = false;
 		if ( ! empty( $query->query_vars['tags'] ) ) {
 			$tag = $query->query_vars['tags'];
+			if ( is_array( $tag ) ) {
+				$tag = implode( ',', $tag );
+			}
 			if ( false !== strpos( $tag, '+' ) ) {
 				$tag      = explode( '+', $tag );
 				$operator = 'AND';

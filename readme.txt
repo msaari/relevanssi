@@ -129,6 +129,7 @@ Each document database is full of useless words. All the little words that appea
 
 == Changelog ==
 * Changed behaviour: The `relevanssi_search_again` parameter array has more parameters the filter can modify.
+* Minor fix: The `cats` and `tags` parameters work better and support array values.
 
 = 4.14.4 =
 * Minor fix: `relevanssi_orderby` did not always accept an array-format orderby parameter.
