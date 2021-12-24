@@ -560,7 +560,6 @@ class SearchingTest extends WP_UnitTestCase {
 	 * Uses both quotes for phrases and the "sentence" parameter.
 	 */
 	public function test_phrase_search() {
-
 		// Search for "test phrase" as a phrase.
 		$args = array(
 			's'           => '"test phrase"',
@@ -1366,8 +1365,9 @@ class SearchingTest extends WP_UnitTestCase {
 		$this->assertEquals(
 			array(
 				'taxonomy' => 'category',
-				'field'    => 'id',
+				'field'    => 'term_id',
 				'terms'    => array( 1, 2, 3 ),
+				'operator' => 'IN',
 			),
 			$search_params['tax_query'][0],
 			'cats is not interpreted correctly.'
