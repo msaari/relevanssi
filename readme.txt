@@ -128,6 +128,8 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.14.5 =
+* Security fix: Any registered user could empty the Relevanssi index by triggering the index truncate AJAX action. That is no longer possible.
 * New feature: The [searchform] shortcode has a new parameter, 'checklist', which you can use to create taxonomy checklists.
 * Changed behaviour: The `relevanssi_search_again` parameter array has more parameters the filter can modify.
 * Changed behaviour: The `relevanssi_show_matches` filter hook gets the post object as the second parameter.

@@ -23,6 +23,8 @@ add_action( 'wp_ajax_nopriv_relevanssi_update_counts', 'relevanssi_update_counts
  * Wipes the index clean using relevanssi_truncate_index().
  */
 function relevanssi_truncate_index_ajax_wrapper() {
+	check_ajax_referer( 'relevanssi_indexing_nonce', 'security' );
+
 	$response = relevanssi_truncate_index();
 	echo wp_json_encode( $response );
 	wp_die();
