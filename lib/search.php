@@ -321,8 +321,9 @@ function relevanssi_search( $args ) {
 			}
 		}
 
-		$search_again = false;
-		if ( $no_matches && ! $search_again && 'sometimes' === $fuzzy ) {
+		if ( $search_again ) {
+			$search_again = false;
+		} elseif ( $no_matches && ! $search_again && 'sometimes' === $fuzzy ) {
 			$search_again = true;
 		}
 
