@@ -3,9 +3,9 @@ Contributors: msaari
 Donate link: https://www.relevanssi.com/buy-premium/
 Tags: search, relevance, better search, product search, woocommerce search
 Requires at least: 4.9
-Tested up to: 5.8.1
+Tested up to: 5.8.2
 Requires PHP: 7.0
-Stable tag: 4.14.4
+Stable tag: 4.14.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -262,6 +262,9 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: In some cases, having less than or greater than symbols in PDF content would block that PDF content from being indexed.
 
 == Upgrade notice ==
+= 4.14.5 =
+* Security fix: registered users could delete the Relevanssi index.
+
 = 4.14.4 =
 * Small bug fixes.
 
