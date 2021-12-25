@@ -18,12 +18,32 @@ add_action( 'wp_ajax_relevanssi_update_counts', 'relevanssi_update_counts' );
 add_action( 'wp_ajax_nopriv_relevanssi_update_counts', 'relevanssi_update_counts' );
 
 /**
+ * Checks if current user can access Relevanssi options.
+ *
+ * If the current user doesn't have sufficient access to Relevanssi options,
+ * the function will die. If the user has access, nothing happens.
+ *
+ * @return void
+ */
+function relevanssi_current_user_can_access_options() {
+	/**
+	 * Filters the capability required to access Relevanssi options.
+	 *
+	 * @param string The capability required. Default 'manage_options'.
+	 */
+	if ( ! current_user_can( apply_filters( 'relevanssi_options_capability', 'manage_options' ) ) ) {
+		wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'relevanssi' ) );
+	}
+}
+
+/**
  * Truncates the Relevanssi index.
  *
  * Wipes the index clean using relevanssi_truncate_index().
  */
 function relevanssi_truncate_index_ajax_wrapper() {
 	check_ajax_referer( 'relevanssi_indexing_nonce', 'security' );
+	relevanssi_current_user_can_access_options();
 
 	$response = relevanssi_truncate_index();
 	echo wp_json_encode( $response );
@@ -38,6 +58,7 @@ function relevanssi_truncate_index_ajax_wrapper() {
  */
 function relevanssi_index_posts_ajax_wrapper() {
 	check_ajax_referer( 'relevanssi_indexing_nonce', 'security' );
+	relevanssi_current_user_can_access_options();
 
 	$completed = absint( $_POST['completed'] );
 	$total     = absint( $_POST['total'] );
@@ -112,6 +133,8 @@ function relevanssi_index_posts_ajax_wrapper() {
  * AJAX wrapper for relevanssi_count_total_posts().
  */
 function relevanssi_count_posts_ajax_wrapper() {
+	relevanssi_current_user_can_access_options();
+
 	$count = relevanssi_count_total_posts();
 	echo wp_json_encode( $count );
 	wp_die();
@@ -123,6 +146,8 @@ function relevanssi_count_posts_ajax_wrapper() {
  * AJAX wrapper for relevanssi_count_missing_posts().
  */
 function relevanssi_count_missing_posts_ajax_wrapper() {
+	relevanssi_current_user_can_access_options();
+
 	$count = relevanssi_count_missing_posts();
 	echo wp_json_encode( $count );
 	wp_die();
@@ -134,6 +159,8 @@ function relevanssi_count_missing_posts_ajax_wrapper() {
  * AJAX wrapper for get_categories().
  */
 function relevanssi_list_categories() {
+	relevanssi_current_user_can_access_options();
+
 	$categories = get_categories(
 		array(
 			'taxonomy'   => 'category',
@@ -153,6 +180,14 @@ function relevanssi_list_categories() {
  */
 function relevanssi_admin_search() {
 	check_ajax_referer( 'relevanssi_admin_search_nonce', 'security' );
+	/**
+	 * Filters the capability required to access Relevanssi admin search page.
+	 *
+	 * @param string The capability required. Default 'edit_posts'.
+	 */
+	if ( ! current_user_can( apply_filters( 'relevanssi_admin_search_capability', 'edit_posts' ) ) ) {
+		wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'relevanssi' ) );
+	}
 
 	$args = array();
 	if ( isset( $_POST['args'] ) ) {
@@ -291,7 +326,7 @@ EOH;
  * Formats the WP_Query parameters, looks at some filter hooks and presents the
  * information in an easy-to-read format.
  *
- * @param array $query The WP_Query object.
+ * @param WP_Query $query The WP_Query object.
  *
  * @return string The formatted debugging information.
  *

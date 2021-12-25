@@ -128,6 +128,9 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.14.6 =
+* Security fix: Extra hardening for AJAX requests. Some AJAX actions in Relevanssi could leak information to site subscribers who knew what to look for.
+
 = 4.14.5 =
 * Security fix: Any registered user could empty the Relevanssi index by triggering the index truncate AJAX action. That is no longer possible.
 * New feature: The [searchform] shortcode has a new parameter, 'checklist', which you can use to create taxonomy checklists.
@@ -262,6 +265,9 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: In some cases, having less than or greater than symbols in PDF content would block that PDF content from being indexed.
 
 == Upgrade notice ==
+= 4.14.6 =
+* Security fix: Extra security checks for AJAX actions.
+
 = 4.14.5 =
 * Security fix: registered users could delete the Relevanssi index.
 
