@@ -3,7 +3,7 @@ Contributors: msaari
 Donate link: https://www.relevanssi.com/buy-premium/
 Tags: search, relevance, better search, product search, woocommerce search
 Requires at least: 4.9
-Tested up to: 5.8.2
+Tested up to: 5.8.3
 Requires PHP: 7.0
 Stable tag: 4.14.6
 License: GPLv2 or later
