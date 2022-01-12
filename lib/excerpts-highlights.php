@@ -940,7 +940,7 @@ function relevanssi_remove_nested_highlights( $string, $begin, $end ) {
 }
 
 /**
- * Finds the  locations of each word.
+ * Finds the locations of each word.
  *
  * Originally lifted from http://www.boyter.org/2013/04/building-a-search-result-extract-generator-in-php/
  * Finds the location of each word in the fulltext.
