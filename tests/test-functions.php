@@ -684,6 +684,227 @@ class FunctionTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Test utility functions.
+	 */
+	public function test_utility_functions() {
+		$this->assertEquals( "'string'", relevanssi_add_apostrophes( 'string' ) );
+		$this->assertEquals( '"string"', relevanssi_add_quotes( 'string' ) );
+
+		$sums   = array( 10, 20, 30, 40 );
+		$counts = array( 1, 2, 3, 4 );
+		relevanssi_average_array( $sums, $counts );
+		$this->assertEquals( array( 10, 10, 10, 10 ), $sums );
+
+		$request['some_option'] = '10';
+		$this->assertEquals( 10, relevanssi_intval( $request, 'some_option' ) );
+		$this->assertEquals( null, relevanssi_intval( $request, 'none_option' ) );
+
+		$request['array_option'] = array( 'a', 'b', 'c', 'd' );
+		$this->assertEquals( 'a,b,c,d', relevanssi_implode( $request, 'array_option', ',' ) );
+		$this->assertEquals( '', relevanssi_implode( $request, 'some_option', ',' ) );
+
+		$this->assertEquals( '10', relevanssi_legal_value( $request, 'some_option', array( '10' ), 'a' ) );
+		$this->assertEquals( 'a', relevanssi_legal_value( $request, 'some_option', array( '20' ), 'a' ) );
+		$this->assertEquals( null, relevanssi_legal_value( $request, 'none_option', array( '10' ), 'a' ) );
+
+		$request['on_off'] = 'on';
+		$this->assertEquals( 'on', relevanssi_off_or_on( $request, 'on_off' ) );
+		$this->assertEquals( 'on', relevanssi_off_or_on( $request, 'some_option' ) );
+		$this->assertEquals( 'off', relevanssi_off_or_on( $request, 'none_option' ) );
+
+		$options = array( 'enabled' => 'on' );
+		$target  = array(
+			'enabled'  => 'on',
+			'disabled' => 'off',
+			'another'  => 'off',
+		);
+		relevanssi_turn_off_options( $options, array( 'disabled', 'another' ) );
+		$this->assertEquals( $target, $options );
+
+		$this->assertEquals( 'off', relevanssi_return_off() );
+
+		$this->assertEquals( '', relevanssi_sanitize_hex_color( '' ) );
+		$this->assertEquals( '#242424', relevanssi_sanitize_hex_color( '242424' ) );
+		$this->assertEquals( '', relevanssi_sanitize_hex_color( '242424242424' ) );
+
+		$this->assertEquals( '', relevanssi_strip_all_tags( array() ) );
+		$this->assertEquals( '10', relevanssi_strip_invisibles( 10 ) );
+		$this->assertEquals( '10', relevanssi_strip_tags( 10 ) );
+		$this->assertEquals( 2, relevanssi_strlen( 10 ) );
+		$this->assertEquals( '10', relevanssi_substr( 100, 0, 2 ) );
+
+		$request['float_option'] = '4.2';
+		relevanssi_update_floatval( $request, 'float_option', true, 0, true );
+		$this->assertEquals( 4.2, get_option( 'float_option' ) );
+
+		$request['float_option'] = '-4.2';
+		relevanssi_update_floatval( $request, 'float_option', true, 3, true );
+		$this->assertEquals( 3, get_option( 'float_option' ) );
+
+		$request['float_option'] = array();
+		relevanssi_update_floatval( $request, 'float_option', true, 3, true );
+		$this->assertEquals( 3, get_option( 'float_option' ) );
+
+		$request['int_option'] = '42';
+		relevanssi_update_intval( $request, 'int_option', true, 3, true );
+		$this->assertEquals( 42, get_option( 'int_option' ) );
+
+		$request['int_option'] = array();
+		relevanssi_update_intval( $request, 'int_option', true, 3, true );
+		$this->assertEquals( 3, get_option( 'int_option' ) );
+
+		$request['legal_option'] = 'bar';
+		relevanssi_update_legal_value( $request, 'legal_option', array( 'foo', 'bar', 'baz' ), 'foo', true );
+		$this->assertEquals( 'bar', get_option( 'legal_option' ) );
+
+		$request['legal_option'] = array();
+		relevanssi_update_legal_value( $request, 'legal_option', array( 'foo', 'bar', 'baz' ), 'foo', true );
+		$this->assertEquals( 'foo', get_option( 'legal_option' ) );
+
+		$request['onoff_option'] = 'on';
+		relevanssi_update_off_or_on( $request, 'onoff_option', true );
+		$this->assertEquals( 'on', get_option( 'onoff_option' ) );
+
+		$request['onoff_option'] = array();
+		relevanssi_update_off_or_on( $request, 'onoff_option', true );
+		$this->assertEquals( 'off', get_option( 'onoff_option' ) );
+
+		$request['sanitized_option'] = '<h2>Test string</h2>';
+		relevanssi_update_sanitized( $request, 'sanitized_option', true );
+		$this->assertEquals( 'Test string', get_option( 'sanitized_option' ) );
+	}
+
+	/**
+	 * Test relevanssi_close_tags.
+	 */
+	public function test_relevanssi_close_tags() {
+		$html = '<meta><p>This is a <b>test</b>.';
+		$this->assertEquals(
+			'<meta><p>This is a <b>test</b>.</p>',
+			relevanssi_close_tags( $html )
+		);
+	}
+
+	/**
+	 * Test relevanssi_from_and_to.
+	 */
+	public function test_relevanssi_from_and_to() {
+		$request = array(
+			'from' => '2022-01-01',
+			'to'   => '2022-01-09',
+		);
+
+		$this->assertEquals(
+			array(
+				'from' => '2022-01-01',
+				'to'   => '2022-01-09',
+			),
+			relevanssi_from_and_to( $request, '2021-12-31' )
+		);
+
+		$this->assertEquals(
+			array(
+				'from' => gmdate( 'Y-m-d', strtotime( 'first day of january this year' ) ),
+				'to'   => gmdate( 'Y-m-d' ),
+			),
+			relevanssi_from_and_to( array( 'this_year' => true ), '' )
+		);
+
+		$this->assertEquals(
+			array(
+				'from' => gmdate( 'Y-m-d', strtotime( 'first day of this month' ) ),
+				'to'   => gmdate( 'Y-m-d' ),
+			),
+			relevanssi_from_and_to( array( 'this_month' => true ), '' )
+		);
+
+		$this->assertEquals(
+			array(
+				'from' => gmdate( 'Y-m-d', strtotime( 'first day of previous month' ) ),
+				'to'   => gmdate( 'Y-m-d', strtotime( 'last day of previous month' ) ),
+			),
+			relevanssi_from_and_to( array( 'last_month' => true ), '' )
+		);
+
+		$this->assertEquals(
+			array(
+				'from' => gmdate( 'Y-m-d', strtotime( 'previous monday' ) ),
+				'to'   => gmdate( 'Y-m-d' ),
+			),
+			relevanssi_from_and_to( array( 'this_week' => true ), '' )
+		);
+
+		$this->assertEquals(
+			array(
+				'from' => gmdate( 'Y-m-d', strtotime( '-' . ( gmdate( 'w' ) + 6 ) . ' days' ) ),
+				'to'   => gmdate( 'Y-m-d', strtotime( '-' . gmdate( 'w' ) . ' days' ) ),
+			),
+			relevanssi_from_and_to( array( 'last_week' => true ), '' )
+		);
+
+		add_filter( 'relevanssi_week_starts_on_sunday', '__return_true' );
+
+		$this->assertEquals(
+			array(
+				'from' => gmdate( 'Y-m-d', strtotime( 'previous sunday' ) ),
+				'to'   => gmdate( 'Y-m-d' ),
+			),
+			relevanssi_from_and_to( array( 'this_week' => true ), '' )
+		);
+
+		$this->assertEquals(
+			array(
+				'from' => gmdate( 'Y-m-d', strtotime( '-' . ( gmdate( 'w' ) + 7 ) . ' days' ) ),
+				'to'   => gmdate( 'Y-m-d', strtotime( '-' . ( gmdate( 'w' ) + 1 ) . ' days' ) ),
+			),
+			relevanssi_from_and_to( array( 'last_week' => true ), '' )
+		);
+
+		$this->assertEquals(
+			array(
+				'from' => gmdate( 'Y-m-d', strtotime( '-30 days' ) ),
+				'to'   => gmdate( 'Y-m-d' ),
+			),
+			relevanssi_from_and_to( array( 'last_30' => true ), '' )
+		);
+
+		$this->assertEquals(
+			array(
+				'from' => gmdate( 'Y-m-d', strtotime( '-7 days' ) ),
+				'to'   => gmdate( 'Y-m-d' ),
+			),
+			relevanssi_from_and_to( array( 'last_7' => true ), '' )
+		);
+	}
+
+	/**
+	 * Test functions from common.php.
+	 */
+	public function test_relevanssi_common() {
+		global $post, $relevanssi_variables;
+
+		$post_id = $this->factory->post->create();
+
+		$this->assertFalse( relevanssi_is_front_page_id( $post_id ) );
+		$post = get_post( $post_id );
+		$this->assertFalse( relevanssi_is_front_page_id() );
+
+		update_option( 'page_on_front', $post_id );
+		$this->assertTrue( relevanssi_is_front_page_id( $post_id ) );
+		$this->assertTrue( relevanssi_is_front_page_id() );
+
+		$this->assertEquals(
+			array(
+				$relevanssi_variables['relevanssi_table'],
+				$relevanssi_variables['stopword_table'],
+				$relevanssi_variables['log_table'],
+			),
+			relevanssi_wpmu_drop( array() )
+		);
+
+	}
+
+	/**
 	 * Uninstalls Relevanssi.
 	 */
 	public static function wpTearDownAfterClass() {

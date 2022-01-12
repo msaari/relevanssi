@@ -1087,6 +1087,18 @@ class IndexingTest extends WP_UnitTestCase {
 
 		relevanssi_remove_doc( $post_id );
 		wp_delete_post( $post_id );
+
+		$attachment_id = wp_insert_attachment(
+			array( 'post_title' => 'Attachment' ),
+			false,
+			$post_id
+		);
+
+		$this->assertEquals(
+			'donotindex',
+			relevanssi_insert_edit( $attachment_id ),
+			"relevanssi_insert_edit() doesn't get the correct post status for attachment."
+		);
 	}
 
 	/**
@@ -1143,6 +1155,25 @@ class IndexingTest extends WP_UnitTestCase {
 		);
 
 		update_option( 'relevanssi_internal_links', 'noindex' );
+
+		add_filter( 'relevanssi_indexing_restriction', 'generate_query_test' );
+
+		$query = relevanssi_generate_indexing_query( 'publish', false, 'AND restriction=true', '' );
+		$this->assertDiscardWhitespace(
+			$query,
+			"SELECT post.ID FROM {$wpdb->prefix}posts post
+			LEFT JOIN {$wpdb->prefix}posts parent ON (post.post_parent=parent.ID)
+			WHERE (post.post_status IN (publish)
+			OR (post.post_status='inherit' AND(
+					(parent.ID is not null AND (parent.post_status IN (publish)))
+					OR (post.post_parent=0)
+				)
+			))
+		 	AND restriction=true ORDER BY post.ID DESC"
+		);
+
+		remove_filter( 'relevanssi_indexing_restriction', 'generate_query_test' );
+
 	}
 
 	/**
@@ -1421,6 +1452,13 @@ function insert_edit_test_filter() {
 		'mysql'  => " AND post_title != 'auto-draft' ",
 		'reason' => 'insert_edit_test',
 	);
+}
+
+/**
+ * Helper function for generate_query test.
+ */
+function generate_query_test() {
+	return 'AND restriction=true';
 }
 
 /**
