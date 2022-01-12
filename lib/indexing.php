@@ -149,8 +149,9 @@ function relevanssi_generate_indexing_query( $valid_status, $extend = false, $re
 	 * 2.8.0 in March 2020. Remove this eventually.
 	 */
 	if ( is_string( $restriction ) ) {
-		$restriction['mysql']  = $restriction;
-		$restriction['reason'] = 'relevanssi_indexing_restriction filter';
+		$restriction_array['mysql']  = $restriction;
+		$restriction_array['reason'] = 'relevanssi_indexing_restriction filter';
+		$restriction                 = $restriction_array;
 	}
 
 	if ( ! $extend ) {
