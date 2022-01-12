@@ -24,7 +24,7 @@ function relevanssi_options() {
 	if ( ! empty( $_REQUEST ) ) {
 		if ( isset( $_REQUEST['submit'] ) ) {
 			check_admin_referer( plugin_basename( $relevanssi_variables['file'] ), 'relevanssi_options' );
-			update_relevanssi_options();
+			update_relevanssi_options( $_REQUEST );
 		}
 
 		if ( isset( $_REQUEST['import_options'] ) ) {

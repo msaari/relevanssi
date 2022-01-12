@@ -11,21 +11,16 @@
 /**
  * Updates Relevanssi options.
  *
- * Checks the option values and updates the options. It's safe to use $_REQUEST
+ * Checks the option values and updates the options. It's safe to use $request
  * here, check_admin_referer() is done immediately before this function is
  * called.
+ *
+ * @param array $request The request array from $_REQUEST.
  */
-function update_relevanssi_options() {
-	// phpcs:disable WordPress.Security.NonceVerification
-	$data                  = relevanssi_process_weights_and_indexing( $_REQUEST );
-	$post_type_weights     = $data['post_type_weights'];
-	$index_post_types      = $data['index_post_types'];
-	$index_taxonomies_list = $data['index_taxonomies_list'];
-	$index_terms_list      = $data['index_terms_list'];
-
-	if ( 'indexing' === $_REQUEST['tab'] ) {
+function update_relevanssi_options( array $request ) {
+	if ( 'indexing' === $request['tab'] ) {
 		relevanssi_turn_off_options(
-			$_REQUEST,
+			$request,
 			array(
 				'relevanssi_expand_shortcodes',
 				'relevanssi_index_author',
@@ -34,17 +29,13 @@ function update_relevanssi_options() {
 				'relevanssi_seo_noindex',
 			)
 		);
-		relevanssi_update_intval( $_REQUEST, 'relevanssi_min_word_length', true, 3 );
-		update_option( 'relevanssi_index_taxonomies_list', array_keys( $index_taxonomies_list ), false );
-		if ( RELEVANSSI_PREMIUM ) {
-			update_option( 'relevanssi_index_terms', array_keys( $index_terms_list ), false );
-		}
-		do_action( 'relevanssi_indexing_options', $_REQUEST );
+		relevanssi_update_intval( $request, 'relevanssi_min_word_length', true, 3 );
+		do_action( 'relevanssi_indexing_options', $request );
 	}
 
-	if ( 'searching' === $_REQUEST['tab'] ) {
+	if ( 'searching' === $request['tab'] ) {
 		relevanssi_turn_off_options(
-			$_REQUEST,
+			$request,
 			array(
 				'relevanssi_admin_search',
 				'relevanssi_disable_or_fallback',
@@ -55,14 +46,14 @@ function update_relevanssi_options() {
 				'relevanssi_wpml_only_current',
 			)
 		);
-		relevanssi_update_floatval( $_REQUEST, 'relevanssi_content_boost', true, 1, true );
-		relevanssi_update_floatval( $_REQUEST, 'relevanssi_title_boost', true, 1, true );
-		relevanssi_update_floatval( $_REQUEST, 'relevanssi_comment_boost', true, 1, true );
+		relevanssi_update_floatval( $request, 'relevanssi_content_boost', true, 1, true );
+		relevanssi_update_floatval( $request, 'relevanssi_title_boost', true, 1, true );
+		relevanssi_update_floatval( $request, 'relevanssi_comment_boost', true, 1, true );
 	}
 
-	if ( 'logging' === $_REQUEST['tab'] ) {
+	if ( 'logging' === $request['tab'] ) {
 		relevanssi_turn_off_options(
-			$_REQUEST,
+			$request,
 			array(
 				'relevanssi_log_queries',
 				'relevanssi_log_queries_with_ip',
@@ -70,9 +61,9 @@ function update_relevanssi_options() {
 		);
 	}
 
-	if ( 'excerpts' === $_REQUEST['tab'] ) {
+	if ( 'excerpts' === $request['tab'] ) {
 		relevanssi_turn_off_options(
-			$_REQUEST,
+			$request,
 			array(
 				'relevanssi_excerpt_custom_fields',
 				'relevanssi_excerpts',
@@ -83,111 +74,23 @@ function update_relevanssi_options() {
 				'relevanssi_show_matches',
 			)
 		);
-		if ( isset( $_REQUEST['relevanssi_show_matches_text'] ) ) {
-			$value = $_REQUEST['relevanssi_show_matches_text'];
+		if ( isset( $request['relevanssi_show_matches_text'] ) ) {
+			$value = $request['relevanssi_show_matches_text'];
 			$value = str_replace( '"', "'", $value );
 			update_option( 'relevanssi_show_matches_text', $value );
 		}
+		relevanssi_update_intval( $request, 'relevanssi_excerpt_length', true, 10 );
 	}
 
-	if ( isset( $_REQUEST['relevanssi_synonyms'] ) ) {
-		$linefeeds = array( "\r\n", "\n", "\r" );
-		$value     = str_replace( $linefeeds, ';', $_REQUEST['relevanssi_synonyms'] );
-		$value     = stripslashes( $value );
+	relevanssi_process_weights_and_indexing( $request );
+	relevanssi_process_synonym_options( $request );
+	relevanssi_process_punctuation_options( $request );
+	relevanssi_process_index_fields_option( $request );
+	relevanssi_process_trim_logs_option( $request );
+	relevanssi_process_cat_option( $request );
+	relevanssi_process_excat_option( $request );
 
-		$synonym_option   = get_option( 'relevanssi_synonyms', array() );
-		$current_language = relevanssi_get_current_language();
-
-		$synonym_option[ $current_language ] = $value;
-
-		update_option( 'relevanssi_synonyms', $synonym_option );
-	}
-
-	$relevanssi_punct = array();
-	if ( isset( $_REQUEST['relevanssi_punct_quotes'] ) ) {
-		$relevanssi_punct['quotes'] = $_REQUEST['relevanssi_punct_quotes'];
-	}
-	if ( isset( $_REQUEST['relevanssi_punct_hyphens'] ) ) {
-		$relevanssi_punct['hyphens'] = $_REQUEST['relevanssi_punct_hyphens'];
-	}
-	if ( isset( $_REQUEST['relevanssi_punct_ampersands'] ) ) {
-		$relevanssi_punct['ampersands'] = $_REQUEST['relevanssi_punct_ampersands'];
-	}
-	if ( isset( $_REQUEST['relevanssi_punct_decimals'] ) ) {
-		$relevanssi_punct['decimals'] = $_REQUEST['relevanssi_punct_decimals'];
-	}
-	if ( ! empty( $relevanssi_punct ) ) {
-		update_option( 'relevanssi_punctuation', $relevanssi_punct );
-	}
-
-	if ( count( $post_type_weights ) > 0 ) {
-		update_option( 'relevanssi_post_type_weights', $post_type_weights );
-	}
-
-	if ( count( $index_post_types ) > 0 ) {
-		update_option( 'relevanssi_index_post_types', array_keys( $index_post_types ) );
-	}
-
-	if ( isset( $_REQUEST['relevanssi_index_fields_select'] ) ) {
-		$fields_option = '';
-		if ( 'all' === $_REQUEST['relevanssi_index_fields_select'] ) {
-			$fields_option = 'all';
-		}
-		if ( 'visible' === $_REQUEST['relevanssi_index_fields_select'] ) {
-			$fields_option = 'visible';
-		}
-		if ( 'some' === $_REQUEST['relevanssi_index_fields_select'] ) {
-			if ( isset( $_REQUEST['relevanssi_index_fields'] ) ) {
-				$fields_option = rtrim( $_REQUEST['relevanssi_index_fields'], " \t\n\r\0\x0B," );
-			}
-		}
-		update_option( 'relevanssi_index_fields', $fields_option, false );
-	}
-
-	if ( isset( $_REQUEST['relevanssi_trim_logs'] ) ) {
-		$trim_logs = $_REQUEST['relevanssi_trim_logs'];
-		if ( ! is_numeric( $trim_logs ) || $trim_logs < 0 ) {
-			$trim_logs = 0;
-		}
-		update_option( 'relevanssi_trim_logs', $trim_logs );
-	}
-
-	if ( isset( $_REQUEST['relevanssi_cat'] ) ) {
-		if ( is_array( $_REQUEST['relevanssi_cat'] ) ) {
-			$csv_cats = implode( ',', $_REQUEST['relevanssi_cat'] );
-			update_option( 'relevanssi_cat', $csv_cats );
-		}
-	} else {
-		if ( isset( $_REQUEST['relevanssi_cat_active'] ) ) {
-			update_option( 'relevanssi_cat', '' );
-		}
-	}
-
-	if ( isset( $_REQUEST['relevanssi_excat'] ) ) {
-		if ( is_array( $_REQUEST['relevanssi_excat'] ) ) {
-			$array_excats = $_REQUEST['relevanssi_excat'];
-			$cat          = get_option( 'relevanssi_cat' );
-			if ( $cat ) {
-				$array_cats   = explode( ',', $cat );
-				$valid_excats = array();
-				foreach ( $array_excats as $excat ) {
-					if ( ! in_array( $excat, $array_cats, true ) ) {
-						$valid_excats[] = $excat;
-					}
-				}
-			} else {
-				// No category restrictions, so everything's good.
-				$valid_excats = $array_excats;
-			}
-			$csv_excats = implode( ',', $valid_excats );
-			update_option( 'relevanssi_excat', $csv_excats );
-		}
-	} else {
-		if ( isset( $_REQUEST['relevanssi_excat_active'] ) ) {
-			update_option( 'relevanssi_excat', '' );
-		}
-	}
-
+	// The values control the autoloading.
 	$options = array(
 		'relevanssi_admin_search'           => false,
 		'relevanssi_bg_col'                 => true,
@@ -224,25 +127,22 @@ function update_relevanssi_options() {
 		'relevanssi_wpml_only_current'      => true,
 	);
 
-	if ( isset( $_REQUEST['relevanssi_exclude_posts'] ) ) {
-		$_REQUEST['relevanssi_exclude_posts'] = trim( $_REQUEST['relevanssi_exclude_posts'], ' ,' );
+	if ( isset( $request['relevanssi_exclude_posts'] ) ) {
+		$request['relevanssi_exclude_posts'] = trim( $request['relevanssi_exclude_posts'], ' ,' );
 	}
 
 	array_walk(
 		$options,
-		function( $autoload, $option ) {
-			if ( isset( $_REQUEST[ $option ] ) ) {
-				update_option( $option, $_REQUEST[ $option ], $autoload );
+		function( $autoload, $option ) use ( $request ) {
+			if ( isset( $request[ $option ] ) ) {
+				update_option( $option, $request[ $option ], $autoload );
 			}
 		}
 	);
 
-	relevanssi_update_intval( $_REQUEST, 'relevanssi_excerpt_length', true, 10 );
-
 	if ( function_exists( 'relevanssi_update_premium_options' ) ) {
 		relevanssi_update_premium_options();
 	}
-	// phpcs:enable
 }
 
 /**
@@ -251,9 +151,7 @@ function update_relevanssi_options() {
  * Goes through all options and picks up all options that have names that
  * contain post types, taxonomies and so on.
  *
- * @param array $request The $_REQUEST array.
- *
- * @return array Four arrays containing the required data.
+ * @param array $request The $request array.
  */
 function relevanssi_process_weights_and_indexing( $request ) {
 	$post_type_weights     = array();
@@ -297,14 +195,21 @@ function relevanssi_process_weights_and_indexing( $request ) {
 		}
 	}
 
-	$post_type_weights = array_map( 'relevanssi_sanitize_weights', $post_type_weights );
+	if ( count( $post_type_weights ) > 0 ) {
+		$post_type_weights = array_map( 'relevanssi_sanitize_weights', $post_type_weights );
+		update_option( 'relevanssi_post_type_weights', $post_type_weights );
+	}
 
-	return array(
-		'post_type_weights'     => $post_type_weights,
-		'index_post_types'      => $index_post_types,
-		'index_taxonomies_list' => $index_taxonomies_list,
-		'index_terms_list'      => $index_terms_list,
-	);
+	if ( count( $index_post_types ) > 0 ) {
+		update_option( 'relevanssi_index_post_types', array_keys( $index_post_types ) );
+	}
+
+	if ( 'indexing' === $request['tab'] ) {
+		update_option( 'relevanssi_index_taxonomies_list', array_keys( $index_taxonomies_list ), false );
+		if ( RELEVANSSI_PREMIUM ) {
+			update_option( 'relevanssi_index_terms', array_keys( $index_terms_list ), false );
+		}
+	}
 }
 
 /**
@@ -321,4 +226,157 @@ function relevanssi_sanitize_weights( $weight ) {
 		$weight = 1;
 	}
 	return $weight;
+}
+
+/**
+ * Compiles the punctuation settings from the request and updates the option.
+ *
+ * @param array $request The request array.
+ *
+ * @return boolean True, if update_option() succeeds, false otherwise.
+ */
+function relevanssi_process_punctuation_options( array $request ) : bool {
+	$relevanssi_punct = array();
+	if ( isset( $request['relevanssi_punct_quotes'] ) ) {
+		$relevanssi_punct['quotes'] = $request['relevanssi_punct_quotes'];
+	}
+	if ( isset( $request['relevanssi_punct_hyphens'] ) ) {
+		$relevanssi_punct['hyphens'] = $request['relevanssi_punct_hyphens'];
+	}
+	if ( isset( $request['relevanssi_punct_ampersands'] ) ) {
+		$relevanssi_punct['ampersands'] = $request['relevanssi_punct_ampersands'];
+	}
+	if ( isset( $request['relevanssi_punct_decimals'] ) ) {
+		$relevanssi_punct['decimals'] = $request['relevanssi_punct_decimals'];
+	}
+	if ( ! empty( $relevanssi_punct ) ) {
+		return update_option( 'relevanssi_punctuation', $relevanssi_punct );
+	}
+	return false;
+}
+
+/**
+ * Updates the synonym option in the current language.
+ *
+ * @param array $request The request array.
+ *
+ * @return boolean True, if update_option() succeeds, false otherwise.
+ */
+function relevanssi_process_synonym_options( array $request ) : bool {
+	if ( isset( $request['relevanssi_synonyms'] ) ) {
+		$linefeeds = array( "\r\n", "\n", "\r" );
+		$value     = str_replace( $linefeeds, ';', $request['relevanssi_synonyms'] );
+		$value     = stripslashes( $value );
+
+		$synonym_option   = get_option( 'relevanssi_synonyms', array() );
+		$current_language = relevanssi_get_current_language();
+
+		$synonym_option[ $current_language ] = $value;
+
+		return update_option( 'relevanssi_synonyms', $synonym_option );
+	}
+	return false;
+}
+
+/**
+ * Updates the index_fields option in the current language.
+ *
+ * @param array $request The request array.
+ *
+ * @return boolean True, if update_option() succeeds, false otherwise.
+ */
+function relevanssi_process_index_fields_option( array $request ) : bool {
+	if ( isset( $request['relevanssi_index_fields_select'] ) ) {
+		$fields_option = '';
+		if ( 'all' === $request['relevanssi_index_fields_select'] ) {
+			$fields_option = 'all';
+		}
+		if ( 'visible' === $request['relevanssi_index_fields_select'] ) {
+			$fields_option = 'visible';
+		}
+		if ( 'some' === $request['relevanssi_index_fields_select'] ) {
+			if ( isset( $request['relevanssi_index_fields'] ) ) {
+				$fields_option = rtrim( $request['relevanssi_index_fields'], " \t\n\r\0\x0B," );
+			}
+		}
+		return update_option( 'relevanssi_index_fields', $fields_option, false );
+	}
+	return false;
+}
+
+/**
+ * Updates the trim_logs option.
+ *
+ * @param array $request The request array.
+ *
+ * @return boolean True, if update_option() succeeds, false otherwise.
+ */
+function relevanssi_process_trim_logs_option( array $request ) : bool {
+	if ( isset( $request['relevanssi_trim_logs'] ) ) {
+		$trim_logs = $request['relevanssi_trim_logs'];
+		if ( ! is_numeric( $trim_logs ) || $trim_logs < 0 ) {
+			$trim_logs = 0;
+		}
+		return update_option( 'relevanssi_trim_logs', $trim_logs );
+	}
+	return false;
+}
+
+/**
+ * Updates the cat option.
+ *
+ * @param array $request The request array.
+ *
+ * @return boolean True, if update_option() succeeds, false otherwise.
+ */
+function relevanssi_process_cat_option( array $request ) : bool {
+	if ( isset( $request['relevanssi_cat'] ) ) {
+		if ( is_array( $request['relevanssi_cat'] ) ) {
+			return update_option(
+				'relevanssi_cat',
+				implode( ',', $request['relevanssi_cat'] )
+			);
+		}
+	} else {
+		if ( isset( $request['relevanssi_cat_active'] ) ) {
+			return update_option( 'relevanssi_cat', '' );
+		}
+	}
+	return false;
+}
+
+/**
+ * Updates the excat option.
+ *
+ * @param array $request The request array.
+ *
+ * @return boolean True, if update_option() succeeds, false otherwise.
+ */
+function relevanssi_process_excat_option( array $request ) : bool {
+	if ( isset( $request['relevanssi_excat'] ) ) {
+		if ( is_array( $request['relevanssi_excat'] ) ) {
+			$array_excats = $request['relevanssi_excat'];
+			$cat          = get_option( 'relevanssi_cat' );
+			if ( $cat ) {
+				$array_cats   = explode( ',', $cat );
+				$valid_excats = array();
+				foreach ( $array_excats as $excat ) {
+					if ( ! in_array( $excat, $array_cats, true ) ) {
+						$valid_excats[] = $excat;
+					}
+				}
+			} else {
+				// No category restrictions, so everything's good.
+				$valid_excats = $array_excats;
+			}
+			$csv_excats = implode( ',', $valid_excats );
+			return update_option( 'relevanssi_excat', $csv_excats );
+		}
+	} else {
+		if ( isset( $request['relevanssi_excat_active'] ) ) {
+			return update_option( 'relevanssi_excat', '' );
+		}
+	}
+
+	return false;
 }
