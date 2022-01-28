@@ -68,9 +68,16 @@ function relevanssi_overview_tab() {
 		</td>
 	</tr>
 	<tr>
+		<th scope="row"><?php esc_html_e( 'Relevanssi Live Ajax Search', 'relevanssi' ); ?></th>
+		<td>
+		<?php // Translators: %1$s opens the link, %2$s closes it. ?>
+			<p><?php printf( esc_html__( 'If you want a live search results, you can use the Relevanssi Live Ajax Search plugin. %1$sYou can find it in the plugin repository%2$s. It will make your search forms show instant results, powered by Relevanssi.', 'relevanssi' ), "<a href='https://wordpress.org/plugins/relevanssi-live-ajax-search/'>", '</a>' ); ?></p>
+		</td>
+	</tr>
+	<tr>
 		<th scope="row"><?php esc_html_e( 'Privacy and GDPR compliance', 'relevanssi' ); ?></th>
 		<td>
-			<?php // Translators: %1$s opens the link, %2$s closes the link. ?>
+			<?php // Translators: %1$s and %3$s open the links, %2$s closes them. ?>
 			<p><?php printf( esc_html__( '%1$sGDPR Compliance at Relevanssi knowledge base%2$s explains how using Relevanssi affects the GDPR compliance and the privacy policies of your site. Relevanssi also supports the %3$sprivacy policy tool%2$s and the WordPress user data export and erase tools.', 'relevanssi' ), "<a href='https://www.relevanssi.com/knowledge-base/gdpr-compliance/'>", '</a>', "<a href='privacy.php'>" ); ?></p>
 		</td>
 	</tr>
