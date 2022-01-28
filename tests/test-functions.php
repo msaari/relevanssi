@@ -55,7 +55,7 @@ class FunctionTest extends WP_UnitTestCase {
 		$string  = 'spaß 1.50 € a–b&c "®"';
 		$options = array(
 			'hyphens'    => 'replace',
-			'quote'      => 'remove',
+			'quotes'     => 'remove',
 			'ampersands' => 'keep',
 			'decimals'   => 'keep',
 		);
@@ -73,6 +73,27 @@ class FunctionTest extends WP_UnitTestCase {
 		$this->assertEquals( 'strass 1.50 a b&c', $string_post );
 
 		$this->assertEquals( '', relevanssi_remove_punct( new StdClass() ) );
+
+		$options = array(
+			'hyphens'    => 'remove',
+			'quotes'     => 'remove',
+			'ampersands' => 'remove',
+			'decimals'   => 'remove',
+		);
+		update_option( 'relevanssi_punctuation', $options );
+
+		$this->assertEquals( '', relevanssi_remove_punct( '-"&' ) );
+
+		$options = array(
+			'hyphens'    => 'keep',
+			'quotes'     => 'remove',
+			'ampersands' => 'remove',
+			'decimals'   => 'remove',
+		);
+		update_option( 'relevanssi_punctuation', $options );
+
+		$this->assertEquals( '-–—', relevanssi_remove_punct( '-–—' ) );
+
 	}
 
 	/**
@@ -902,6 +923,157 @@ class FunctionTest extends WP_UnitTestCase {
 			relevanssi_wpmu_drop( array() )
 		);
 
+	}
+
+	/**
+	 * Test relevanssi_prevent_default_request().
+	 *
+	 * @group test
+	 */
+	public function test_relevanssi_prevent_default_request() {
+		$request = 'request';
+		$query   = new WP_Query();
+
+		update_option( 'relevanssi_index_post_types', array( 'post', 'attachment' ) );
+		update_option( 'relevanssi_index_image_files', 'on' );
+
+		$args = array(
+			's'           => 'search',
+			'post_type'   => 'attachment',
+			'post_status' => 'inherit,private',
+		);
+		$query->parse_query( $args );
+
+		$this->assertContains(
+			'WHERE 1=2',
+			relevanssi_prevent_default_request( $request, $query )
+		);
+
+		update_option( 'relevanssi_index_image_files', 'off' );
+
+		$this->assertEquals(
+			$request,
+			relevanssi_prevent_default_request( $request, $query )
+		);
+
+		$args = array(
+			's'         => 'search',
+			'post_type' => array( 'topic', 'reply' ),
+		);
+		$query->parse_query( $args );
+
+		$this->assertEquals(
+			$request,
+			relevanssi_prevent_default_request( $request, $query )
+		);
+
+		$args = array(
+			's'         => 'search',
+			'post_type' => 'topic',
+		);
+		$query->parse_query( $args );
+
+		$this->assertEquals(
+			$request,
+			relevanssi_prevent_default_request( $request, $query )
+		);
+
+		$args = array(
+			's'         => 'search',
+			'post_type' => 'post',
+		);
+		$query->parse_query( $args );
+
+		$_REQUEST['action'] = 'acf_action';
+
+		$this->assertEquals(
+			$request,
+			relevanssi_prevent_default_request( $request, $query )
+		);
+
+		$args = array(
+			's'         => 'search',
+			'post_type' => 'post',
+			'action'    => 'acf_action',
+		);
+		$query->parse_query( $args );
+
+		unset( $_REQUEST['action'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+
+		$this->assertEquals(
+			$request,
+			relevanssi_prevent_default_request( $request, $query )
+		);
+
+		add_filter( 'relevanssi_prevent_default_request', '__return_true' );
+
+		$args = array(
+			's'         => '',
+			'post_type' => 'post',
+		);
+		$query->parse_query( $args );
+		$query->is_search = true;
+
+		$this->assertEquals(
+			$request,
+			relevanssi_prevent_default_request( $request, $query )
+		);
+
+		add_filter( 'relevanssi_prevent_default_request', '__return_true' );
+
+		$args = array(
+			's'         => 'search',
+			'post_type' => 'post',
+		);
+		$query->parse_query( $args );
+
+		$this->assertContains(
+			'WHERE 1=2',
+			relevanssi_prevent_default_request( $request, $query )
+		);
+
+		remove_filter( 'relevanssi_prevent_default_request', '__return_true' );
+
+		update_option( 'relevanssi_admin_search', 'on' );
+
+		$args = array(
+			's'         => 'search',
+			'post_type' => 'post',
+		);
+		$query->parse_query( $args );
+		$screen                    = WP_Screen::get( 'edit-post' );
+		$GLOBALS['current_screen'] = $screen;
+
+		$this->assertContains(
+			'WHERE 1=2',
+			relevanssi_prevent_default_request( $request, $query )
+		);
+
+		$args = array(
+			's'         => 'search',
+			'post_type' => 'post',
+			'fields'    => 'id=>parent',
+		);
+		$query->parse_query( $args );
+		$query->is_admin = true;
+
+		$this->assertEquals(
+			$request,
+			relevanssi_prevent_default_request( $request, $query )
+		);
+
+		$args = array(
+			's'         => 'search',
+			'post_type' => 'post',
+		);
+		$query->parse_query( $args );
+		$query->is_admin = true;
+		define( 'DOING_AJAX', true );
+
+		$this->assertEquals(
+			$request,
+			relevanssi_prevent_default_request( $request, $query )
+		);
 	}
 
 	/**
