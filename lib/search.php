@@ -878,14 +878,7 @@ function relevanssi_taxonomy_score( &$match, $post_type_weights ) {
 	if ( is_object( $match->taxonomy_detail ) ) {
 		foreach ( $match->taxonomy_detail as $tax => $count ) {
 			if ( empty( $post_type_weights[ 'post_tagged_with_' . $tax ] ) ) {
-				if ( ! empty( $post_type_weights[ $tax ] ) ) { // Legacy code, needed for 2.1.8, remove later.
-					// phpcs:ignore Squiz.Commenting.InlineComment
-					// @codeCoverageIgnoreStart
-					$match->taxonomy_score += $count * $post_type_weights[ $tax ];
-					// @codeCoverageIgnoreEnd
-				} else {
-					$match->taxonomy_score += $count * 1;
-				}
+				$match->taxonomy_score += $count * 1;
 			} else {
 				$match->taxonomy_score += $count * $post_type_weights[ 'post_tagged_with_' . $tax ];
 			}
