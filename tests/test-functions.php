@@ -127,16 +127,6 @@ class FunctionTest extends WP_UnitTestCase {
 
 		relevanssi_taxonomy_score( $match, $post_type_weights );
 		$this->assertEquals( 1, $match->taxonomy_score );
-
-		// Legacy code test.
-		$post_type_weights      = array(
-			'category' => 10,
-		);
-		$match                  = new StdClass();
-		$match->taxonomy_detail = '{"category":1}';
-
-		relevanssi_taxonomy_score( $match, $post_type_weights );
-		$this->assertEquals( 10, $match->taxonomy_score );
 	}
 
 	/**
