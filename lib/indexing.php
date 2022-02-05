@@ -1460,6 +1460,10 @@ function relevanssi_index_content( &$insert_data, $post_object, $min_word_length
 		return $n;
 	}
 
+	if ( 'on' === get_post_meta( $post_object->ID, '_relevanssi_hide_content', true ) ) {
+		return $n;
+	}
+
 	if ( $debug ) {
 		relevanssi_debug_echo( 'Indexing post content.' );
 	}
