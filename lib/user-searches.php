@@ -249,7 +249,11 @@ function relevanssi_date_queries( string $from, string $to, string $version = 'g
 	global $wpdb, $relevanssi_variables;
 	$log_table = $relevanssi_variables['log_table'];
 
-	/** Documented in lib/interface.php. */
+	/**
+	 * Filters the number of most common queries to show.
+	 *
+	 * @param int The number of most common queries to show, default 100.
+	 */
 	$limit = apply_filters( 'relevanssi_user_searches_limit', 100 );
 
 	if ( 'good' === $version ) {
