@@ -33,6 +33,10 @@ function relevanssi_add_matches( &$post, $data ) {
 	$hits['terms']                = $data['term_hits'][ $post->ID ] ?? array();
 	$hits['missing_terms']        = $data['missing_terms'][ $post->ID ] ?? array();
 
+	if ( function_exists( 'relevanssi_premium_add_matches' ) ) {
+		relevanssi_premium_add_matches( $hits, $data, $post->ID );
+	}
+
 	arsort( $hits['terms'] );
 
 	$post->relevanssi_hits = $hits;
