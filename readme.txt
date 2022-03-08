@@ -128,6 +128,16 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.15.0 =
+* New feature: New filter hook `relevanssi_author_query_filter` filters the post author MySQL query.
+* New feature: New filter hook `relevanssi_by_date_query_filter` filters the by_date MySQL query.
+* New feature: New filter hook `relevanssi_date_query_filter` filters the date query MySQL query.
+* New feature: New filter hook `relevanssi_parent_query_filter` filters the post parent MySQL query.
+* New feature: New filter hook `relevanssi_post_query_filter` filters the post__in and post__not_in MySQL query.
+* New feature: New filter hook `relevanssi_post_status_query_filter` filters the post_status MySQL query.
+* New feature: New filter hook `relevanssi_post_type_query_filter` filters the post_type MySQL query.
+
+
 = 4.14.7 =
 * User interface: The synonym settings page now alerts if the synonyms aren't active because of the AND search.
 
