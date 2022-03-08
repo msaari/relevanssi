@@ -167,6 +167,8 @@ function relevanssi_init() {
 		// style to new style. Remove eventually.
 		relevanssi_update_synonyms_setting();
 	}
+
+	do_action( 'relevanssi_init' );
 }
 
 /**
