@@ -1134,6 +1134,9 @@ function relevanssi_common_words( $limit = 25, $wp_cli = false ) {
  */
 function relevanssi_get_forbidden_post_types() {
 	return array(
+		'wp_template_part',     // WP template parts.
+		'wp_global_styles',     // WP global styles.
+		'wp_navigation',        // Navigation menus.
 		'nav_menu_item',        // Navigation menu items.
 		'revision',             // Never index revisions.
 		'acf',                  // Advanced Custom Fields.
@@ -1214,6 +1217,11 @@ function relevanssi_get_forbidden_post_types() {
 		'fl-builder-template',  // Beaver Builder.
 		'itsec-dashboard',      // iThemes Security.
 		'itsec-dash-card',      // iThemes Security.
+		'astra-advanced-hook',  // Astra.
+		'astra_adv_header',     // Astra.
+		'astra_adv_header',     // Astra.
+		'udb_widgets',          // Ultimate Dashboard.
+		'udb_admin_page',       // Ultimate Dashboard.
 	);
 }
 
@@ -1224,6 +1232,7 @@ function relevanssi_get_forbidden_post_types() {
  */
 function relevanssi_get_forbidden_taxonomies() {
 	return array(
+		'wp_template_part_area',        // WP templates.
 		'nav_menu',                     // Navigation menus.
 		'link_category',                // Link categories.
 		'amp_validation_error',         // AMP.
