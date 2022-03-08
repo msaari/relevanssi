@@ -151,7 +151,7 @@ function relevanssi_process_post_query( $post_query ) {
 	 *
 	 * @return string The MySQL query.
 	 */
-	return apply_filters( 'relevanssi_post_query_filter', $query_restrictions, $author );
+	return apply_filters( 'relevanssi_post_query_filter', $query_restrictions, $post_query );
 }
 
 /**
