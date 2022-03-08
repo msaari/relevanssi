@@ -28,6 +28,7 @@ function relevanssi_add_matches( &$post, $data ) {
 	$hits['author']               = $data['author_matches'][ $post->ID ] ?? 0;
 	$hits['excerpt']              = $data['excerpt_matches'][ $post->ID ] ?? 0;
 	$hits['customfield']          = $data['customfield_matches'][ $post->ID ] ?? 0;
+	$hits['mysqlcolumn']          = 0;
 	$hits['score']                = isset( $data['doc_weights'][ $post->ID ] ) ? round( $data['doc_weights'][ $post->ID ], 2 ) : 0;
 	$hits['terms']                = $data['term_hits'][ $post->ID ] ?? array();
 	$hits['missing_terms']        = $data['missing_terms'][ $post->ID ] ?? array();
