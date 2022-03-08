@@ -518,7 +518,6 @@ function relevanssi_search( $args ) {
 		'taxonomy_matches'    => $match_arrays['taxonomy'],
 		'link_matches'        => $match_arrays['link'],
 		'customfield_matches' => $match_arrays['customfield'],
-		'mysqlcolumn_matches' => $match_arrays['mysqlcolumn'],
 		'author_matches'      => $match_arrays['author'],
 		'excerpt_matches'     => $match_arrays['excerpt'],
 		'term_hits'           => $term_hits,
@@ -528,6 +527,9 @@ function relevanssi_search( $args ) {
 		'missing_terms'       => $missing_terms,
 	);
 
+	if ( function_exists( 'relevanssi_premium_update_return_array' ) ) {
+		relevanssi_premium_update_return_array( $return, $match_arrays );
+	}
 	return $return;
 }
 
@@ -1439,21 +1441,10 @@ function relevanssi_update_term_hits( &$term_hits, &$match_arrays, $match, $term
 	relevanssi_increase_value( $match_arrays['customfield'][ $match->doc ], $match->customfield );
 	relevanssi_increase_value( $match_arrays['author'][ $match->doc ], $match->author );
 	relevanssi_increase_value( $match_arrays['excerpt'][ $match->doc ], $match->excerpt );
-	relevanssi_increase_value( $match_arrays['mysqlcolumn'][ $match->doc ], $match->mysqlcolumn );
-}
 
-/**
- * Increases a value. If it's not set, sets it first to the default value.
- *
- * @param int $value    The value to increase (passed by reference).
- * @param int $increase The amount to increase the value, default 1.
- * @param int $default  The default value, default 0.
- */
-function relevanssi_increase_value( &$value, $increase = 1, $default = 0 ) {
-	if ( ! isset( $value ) ) {
-		$value = $default;
+	if ( function_exists( 'relevanssi_premium_update_term_hits' ) ) {
+		relevanssi_premium_update_term_hits( $term_hits, $match_arrays, $match, $term );
 	}
-	$value += $increase;
 }
 
 /**
