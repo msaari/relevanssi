@@ -11,7 +11,7 @@
 /**
  * Adds the search result match breakdown to the post object.
  *
- * Reads in the number of matches and stores it in the relevanssi_hits filed
+ * Reads in the number of matches and stores it in the relevanssi_hits field
  * of the post object. The post object is passed as a reference and modified
  * on the fly.
  *
@@ -28,7 +28,6 @@ function relevanssi_add_matches( &$post, $data ) {
 	$hits['author']               = $data['author_matches'][ $post->ID ] ?? 0;
 	$hits['excerpt']              = $data['excerpt_matches'][ $post->ID ] ?? 0;
 	$hits['customfield']          = $data['customfield_matches'][ $post->ID ] ?? 0;
-	$hits['mysqlcolumn']          = $data['mysqlcolumn_matches'][ $post->ID ] ?? 0;
 	$hits['score']                = isset( $data['doc_weights'][ $post->ID ] ) ? round( $data['doc_weights'][ $post->ID ], 2 ) : 0;
 	$hits['terms']                = $data['term_hits'][ $post->ID ] ?? array();
 	$hits['missing_terms']        = $data['missing_terms'][ $post->ID ] ?? array();
