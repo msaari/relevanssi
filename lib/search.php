@@ -518,6 +518,7 @@ function relevanssi_search( $args ) {
 		'taxonomy_matches'    => $match_arrays['taxonomy'],
 		'link_matches'        => $match_arrays['link'],
 		'customfield_matches' => $match_arrays['customfield'],
+		'mysqlcolumn_matches' => $match_arrays['mysqlcolumn'],
 		'author_matches'      => $match_arrays['author'],
 		'excerpt_matches'     => $match_arrays['excerpt'],
 		'term_hits'           => $term_hits,
