@@ -128,6 +128,9 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.15.1 =
+* Changed behaviour: Relevanssi now ignores WordPress metadata custom fields that aren't interesting for Relevanssi indexing.
+
 = 4.15.0 =
 * New feature: The action hook `relevanssi_init` runs at the end of the `relevanssi_init()` function.
 * New feature: New filter hook `relevanssi_author_query_filter` filters the post author MySQL query.

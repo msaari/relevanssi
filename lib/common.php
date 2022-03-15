@@ -1807,3 +1807,40 @@ function relevanssi_bot_block_list() : array {
 	);
 	return $bots;
 }
+
+/**
+ * Removes unwanted metadata fields from custom field indexing.
+ *
+ * This function hooks on to relevanssi_index_custom_fields and stops Relevanssi
+ * from indexing a bunch of custom fields than only contain metadata that is
+ * not useful to index.
+ *
+ * @param array $custom_fields A list of custom field names.
+ *
+ * @return @array The custom fields with the excluded fields removed.
+ */
+function relevanssi_remove_metadata_fields( array $custom_fields ) : array {
+	$excluded_fields = array(
+		'_edit_last',
+		'_edit_lock',
+		'_encloseme',
+		'_pingme',
+		'_relevanssi_hide_content',
+		'_relevanssi_hide_content',
+		'_relevanssi_hide_post',
+		'_relevanssi_pin_for_all',
+		'_relevanssi_pin_keywords',
+		'_relevanssi_related_exclude_ids',
+		'_relevanssi_related_include_ids',
+		'_relevanssi_related_keywords',
+		'_relevanssi_related_no_append',
+		'_relevanssi_related_not_related',
+		'_relevanssi_related_posts',
+		'_relevanssi_unpin_keywords',
+		'_thumbnail_id',
+		'_wp_attachment_metadata',
+		'_wp_page_template',
+		'classic-editor-remember',
+	);
+	return array_diff( $custom_fields, $excluded_fields );
+}
