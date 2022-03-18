@@ -5,7 +5,7 @@ Tags: search, relevance, better search, product search, woocommerce search
 Requires at least: 4.9
 Tested up to: 5.9
 Requires PHP: 7.0
-Stable tag: 4.15.0
+Stable tag: 4.15.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -146,5 +146,8 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: The Bricks compatibility was improved, Relevanssi now notices changes to Bricks posts more often. Relevanssi also only reads the text from the `_bricks_page_content_2` custom field.
 
 == Upgrade notice ==
+= 4.15.1 =
+* Fixes warnings, improves permalink functions and relevanssi_hits_filter.
+
 = 4.15.0 =
 * New filter hooks and improved Bricks compatibility.
