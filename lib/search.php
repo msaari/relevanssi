@@ -592,14 +592,15 @@ function relevanssi_do_query( &$query ) {
 	 * One of the key filters for Relevanssi. If you want to modify the results
 	 * Relevanssi finds, use this filter.
 	 *
-	 * @param array $filter_data The index 0 has an array of post objects (or
+	 * @param array    $filter_data The index 0 has an array of post objects (or
 	 * post IDs, or parent=>ID pairs, depending on the `fields` parameter) found
 	 * in the search, index 1 has the search query string.
+	 * @param WP_Query $query       The WP_Query object.
 	 *
 	 * @return array The return array composition is the same as the parameter
 	 * array, but Relevanssi only uses the index 0.
 	 */
-	$hits_filters_applied = apply_filters( 'relevanssi_hits_filter', $filter_data );
+	$hits_filters_applied = apply_filters( 'relevanssi_hits_filter', $filter_data, $query );
 	// array_values() to make sure the $hits array is indexed in numerical order
 	// Manipulating the array with array_unique() for example may mess with that.
 	$hits = array_values( $hits_filters_applied[0] );
