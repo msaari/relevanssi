@@ -579,7 +579,14 @@ function relevanssi_process_post_status( $post_status ) {
 	}
 
 	if ( $escaped_post_status ) {
+		$block_non_post_results = false;
 		if ( $wp_query->is_admin || $relevanssi_admin_test ) {
+			$block_non_post_results = true;
+		}
+		if ( $wp_query->is_admin && isset( $wp_query->query_vars['action'] ) && 'relevanssi_live_search' === $wp_query->query_vars['action'] ) {
+			$block_non_post_results = false;
+		}
+		if ( $block_non_post_results ) {
 			$query_restrictions .= " AND ((relevanssi.doc IN (SELECT DISTINCT(posts.ID) FROM $wpdb->posts AS posts
 				WHERE posts.post_status IN ($escaped_post_status))))";
 		} else {
