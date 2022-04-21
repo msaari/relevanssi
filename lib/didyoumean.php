@@ -161,6 +161,22 @@ function relevanssi_simple_generate_suggestion( $query ) {
 	$suggestion       = '';
 
 	foreach ( $tokens as $token => $count ) {
+		/**
+		 * Filters the tokens for Did you mean suggestions.
+		 *
+		 * You can use this filter hook to modify the tokens before Relevanssi
+		 * tries to come up with Did you mean suggestions for them. If you
+		 * return an empty string, the token will be skipped and no suggestion
+		 * will be made for the token.
+		 *
+		 * @param string $token An individual word from the search query.
+		 *
+		 * @return string The token.
+		 */
+		$token = apply_filters( 'relevanssi_didyoumean_token', trim( $token ) );
+		if ( ! $token ) {
+			continue;
+		}
 		$closest  = '';
 		$distance = -1;
 		foreach ( $data as $row ) {
