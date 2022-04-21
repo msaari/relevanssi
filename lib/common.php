@@ -1730,6 +1730,9 @@ function relevanssi_replace_synonyms_in_terms( array $terms ) : array {
 		function ( $term ) use ( $synonyms ) {
 			$new_term = array();
 			foreach ( $synonyms as $pair ) {
+				if ( empty( $pair ) ) {
+					continue;
+				}
 				list( $key, $value ) = explode( '=', $pair );
 				if ( $value === $term ) {
 					$new_term[] = $key;
