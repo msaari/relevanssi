@@ -132,6 +132,7 @@ Each document database is full of useless words. All the little words that appea
 * New feature: New filter hook `relevanssi_didyoumean_token` lets you filter Did you mean words before correction. You can use this filter hook to exclude words from being corrected.
 * Minor fix: Phrase search couldn't find phrases that include an ampersand if they matched the post title. This works now.
 * Minor fix: Relevanssi now adds spaces after table cell tags to avoid table cell content sticking together in excerpts.
+* Minor fix: The 'Allowable tags in excerpts' function now automatically corrects the entered value to match what Relevanssi expects the value to be.
 
 = 4.15.1 =
 * Changed behaviour: Relevanssi now ignores WordPress metadata custom fields that aren't interesting for Relevanssi indexing.
