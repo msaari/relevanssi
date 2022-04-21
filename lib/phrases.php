@@ -175,10 +175,11 @@ $custom_fields, string $excerpts ) : array {
 	$phrase_queries = array();
 
 	foreach ( $phrases as $phrase ) {
-		$queries = array();
-		$phrase  = $wpdb->esc_like( $phrase );
-		$phrase  = str_replace( array( '‘', '’', "'", '"', '”', '“', '“', '„', '´' ), '_', $phrase );
-		$phrase  = htmlspecialchars( $phrase );
+		$queries      = array();
+		$phrase       = $wpdb->esc_like( $phrase );
+		$phrase       = str_replace( array( '‘', '’', "'", '"', '”', '“', '“', '„', '´' ), '_', $phrase );
+		$title_phrase = $phrase;
+		$phrase       = htmlspecialchars( $phrase );
 
 		/**
 		 * Filters each phrase before it's passed through esc_sql() and used in
@@ -198,7 +199,7 @@ $custom_fields, string $excerpts ) : array {
 
 		$query = "(SELECT ID FROM $wpdb->posts
 			WHERE (post_content LIKE '%$phrase%'
-			OR post_title LIKE '%$phrase%' $excerpt)
+			OR post_title LIKE '%$title_phrase%' $excerpt)
 			AND post_status IN ($status))";
 
 		$queries[] = array(
