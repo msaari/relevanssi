@@ -1075,6 +1075,7 @@ function relevanssi_strip_tags( $content ) {
 		'/(<\/?hr.*?>)/',
 		'/(<\/?li.*?>)/',
 		'/(<img.*?>)/',
+		'/(<\/td>)/',
 	);
 
 	$content = preg_replace( $space_tags, '$1 ', $content );
