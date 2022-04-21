@@ -122,7 +122,11 @@ function relevanssi_do_excerpt( $t_post, $query, $excerpt_length = null, $excerp
 
 	// Add the custom field content.
 	if ( 'on' === get_option( 'relevanssi_excerpt_custom_fields' ) ) {
-		$content .= relevanssi_get_custom_field_content( $post->ID );
+		if ( 'user' === $post->post_type && function_exists( 'relevanssi_get_user_custom_field_content' ) ) {
+			$content .= relevanssi_get_user_custom_field_content( $post->ID );
+		} else {
+			$content .= relevanssi_get_custom_field_content( $post->ID );
+		}
 	}
 
 	/**
@@ -992,9 +996,11 @@ function relevanssi_extract_locations( $words, $fulltext ) {
  * @return int Number of times the words appear in the text.
  */
 function relevanssi_count_matches( $words, $complete_text ) {
-	$count          = 0;
-	$lowercase_text = relevanssi_strtolower( $complete_text, 'UTF-8' );
-	$text           = '';
+	$count = 0;
+	$text  = '';
+
+	// Add the space in case the match is the last word in the text.
+	$lowercase_text = relevanssi_strtolower( $complete_text, 'UTF-8' ) . ' ';
 
 	$count_words = count( $words );
 	for ( $t = 0; $t < $count_words; $t++ ) {
