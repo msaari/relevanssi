@@ -43,6 +43,7 @@ add_action( 'edit_attachment', 'relevanssi_insert_edit' );
 add_action( 'transition_post_status', 'relevanssi_update_child_posts', 99, 3 );
 
 // Relevanssi features.
+add_filter( 'relevanssi_remove_punctuation', 'remove_accents', 9 );
 add_filter( 'relevanssi_remove_punctuation', 'relevanssi_remove_punct' );
 add_filter( 'relevanssi_post_ok', 'relevanssi_default_post_ok', 9, 2 );
 add_filter( 'relevanssi_query_filter', 'relevanssi_limit_filter' );
