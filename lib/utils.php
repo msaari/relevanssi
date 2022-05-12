@@ -1086,9 +1086,10 @@ function relevanssi_strip_all_tags( $content ) : string {
 	if ( ! is_string( $content ) ) {
 		$content = '';
 	}
-	$content = preg_replace( '/<!--.*?-->/ms', '', $content );
-	$content = preg_replace( '/<[!a-zA-Z\/][^>].*?>/ms', ' ', $content );
-	return $content;
+	$content = preg_replace( '/<!--.*?-->/ums', '', $content );
+	$content = preg_replace( '/<[!a-zA-Z\/][^>].*?>/ums', ' ', $content );
+
+	return $content ?? '';
 }
 
 /**
