@@ -224,7 +224,7 @@ function relevanssi_default_post_ok( $post_ok, $post_id ) {
 		apply_filters( 'relevanssi_valid_admin_status', array( 'draft', 'pending', 'future' ) ),
 		true
 	)
-	&& is_admin() ) {
+	&& is_admin() && ! relevanssi_is_live_search() ) {
 		// Only show drafts, pending and future posts in admin search.
 		$post_ok = true;
 	}

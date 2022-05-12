@@ -129,6 +129,7 @@ Each document database is full of useless words. All the little words that appea
 
 == Changelog ==
 * Minor fix: Relevanssi used `the_category` filter with too few parameters. The missing parameters have been added.
+* Minor fix: Stops drafts and pending posts from showing up in Relevanssi Live Ajax Searches.
 
 = 4.15.2 =
 * New feature: New filter hook `relevanssi_didyoumean_token` lets you filter Did you mean words before correction. You can use this filter hook to exclude words from being corrected.

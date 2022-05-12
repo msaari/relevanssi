@@ -699,6 +699,23 @@ function relevanssi_intval( array $request, string $option ) {
 }
 
 /**
+ * Returns true if the search is from Relevanssi Live Ajax Search.
+ *
+ * Checks if $wp_query->query_vars['action'] is set to "relevanssi_live_search".
+ *
+ * @return bool True if the search is from Relevanssi Live Ajax Search, false
+ * otherwise.
+ */
+function relevanssi_is_live_search() {
+	global $wp_query;
+	$relevanssi_live_search = false;
+	if ( isset( $wp_query->query_vars['action'] ) && 'relevanssi_live_search' === $wp_query->query_vars['action'] ) {
+		$relevanssi_live_search = true;
+	}
+	return $relevanssi_live_search;
+}
+
+/**
  * Launches an asynchronous Ajax action.
  *
  * Makes a wp_remote_post() call with the specific action. Handles nonce
