@@ -128,6 +128,8 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+* Minor fix: Relevanssi used `the_category` filter with too few parameters. The missing parameters have been added.
+
 = 4.15.2 =
 * New feature: New filter hook `relevanssi_didyoumean_token` lets you filter Did you mean words before correction. You can use this filter hook to exclude words from being corrected.
 * Minor fix: Phrase search couldn't find phrases that include an ampersand if they matched the post title. This works now.
