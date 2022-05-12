@@ -1226,6 +1226,7 @@ function relevanssi_get_forbidden_post_types() {
 		'astra_adv_header',     // Astra.
 		'udb_widgets',          // Ultimate Dashboard.
 		'udb_admin_page',       // Ultimate Dashboard.
+		'oxy_user_library',     // Oxygen.
 	);
 }
 

@@ -35,6 +35,23 @@ add_action( 'save_post', 'relevanssi_insert_edit', 99, 1 );
  * @return array|null An array of custom field values, null if no value exists.
  */
 function relevanssi_oxygen_compatibility( $value, $field, $post_id ) {
+	if ( 'ct_builder_json' === $field ) {
+		$json = array();
+		foreach ( $value as $row ) {
+			$json[] = json_decode( $row );
+		}
+
+		$content = '';
+		if ( isset( $json[0]->children ) ) {
+			foreach ( $json[0]->children as $child ) {
+				$content .= relevanssi_process_oxygen_child( $child );
+			}
+		}
+
+		$value[0] = $content;
+		return $value;
+	}
+
 	if ( 'ct_builder_shortcodes_revisions_dates' === $field ) {
 		return '';
 	}
@@ -42,6 +59,9 @@ function relevanssi_oxygen_compatibility( $value, $field, $post_id ) {
 		return '';
 	}
 	if ( 'ct_builder_shortcodes' === $field ) {
+		if ( version_compare( CT_VERSION, '4.0', '>=' ) ) {
+			return null;
+		}
 		if ( empty( $value ) ) {
 			return null;
 		}
@@ -118,18 +138,66 @@ function relevanssi_oxygen_compatibility( $value, $field, $post_id ) {
 }
 
 /**
- * Adds the `ct_builder_shortcodes` to the list of indexed custom fields.
+ * Recursively processes the Oxygen JSON data.
+ *
+ * This function extracts all the ct_content data from the JSON. All elements
+ * are run through the relevanssi_oxygen_element filter hook. You can use that
+ * filter hook to modify or to eliminate elements from the JSON.
+ *
+ * @param array $child The child element array.
+ *
+ * @return string The content from the child and the grandchildren.
+ */
+function relevanssi_process_oxygen_child( $child ) : string {
+	/**
+	 * Filters the Oxygen JSON child element.
+	 *
+	 * If the filter returns an empty value, the child element and all its
+	 * children will be ignored.
+	 *
+	 * @param array $child The JSON child element.
+	 */
+	$child = apply_filters( 'relevanssi_oxygen_element', $child );
+	if ( empty( $child ) ) {
+		return '';
+	}
+
+	$child_content = ' ';
+	if ( isset( $child->options->ct_content ) ) {
+		$child_content .= $child->options->ct_content;
+	}
+
+	if ( isset( $child->options->original->{'code-php'} ) ) {
+		// For code and HTML blocks, strip all tags.
+		$child_content .= wp_strip_all_tags( $child->options->original->{'code-php'} );
+	}
+
+	if ( isset( $child->children ) ) {
+		foreach ( $child->children as $grandchild ) {
+			$child_content .= relevanssi_process_oxygen_child( $grandchild );
+		}
+	}
+
+	return $child_content;
+}
+
+/**
+ * Adds the Oxygen custom field to the list of indexed custom fields.
  *
  * @param array|boolean $fields An array of custom fields to index, or false.
  *
- * @return array An array of custom fields, including `ct_builder_shortcodes`.
+ * @return array An array of custom fields, including `ct_builder_json` or
+ * `ct_builder_shortcodes`.
  */
 function relevanssi_add_oxygen( $fields ) {
+	$oxygen_field = version_compare( CT_VERSION, '4.0', '>=' )
+		? 'ct_builder_json'
+		: 'ct_builder_shortcodes';
 	if ( ! is_array( $fields ) ) {
 		$fields = array();
 	}
-	if ( ! in_array( 'ct_builder_shortcodes', $fields, true ) ) {
-		$fields[] = 'ct_builder_shortcodes';
+	if ( ! in_array( $oxygen_field, $fields, true ) ) {
+		$fields[] = $oxygen_field;
 	}
 
 	return $fields;
@@ -143,11 +211,14 @@ function relevanssi_add_oxygen( $fields ) {
  * is ignored, Relevanssi disables this filter and then checks the option to
  * see what the value is.
  *
- * @return string If value is undefined, it's set to 'ct_builder_shortcodes'.
+ * @return string If value is undefined, it's set to 'ct_builder_json' or
+ * 'ct_builder_shortcodes'.
  */
 function relevanssi_oxygen_fix_none_setting( $value ) {
 	if ( ! $value ) {
-		$value = 'ct_builder_shortcodes';
+		$value = version_compare( CT_VERSION, '4.0', '>=' )
+			? 'ct_builder_json'
+			: 'ct_builder_shortcodes';
 	}
 
 	return $value;
