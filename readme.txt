@@ -132,6 +132,7 @@ Each document database is full of useless words. All the little words that appea
 * New feature: New filter hook `relevanssi_oxygen_element` is used to filter Oxygen JSON elements. The earlier `relevanssi_oxygen_section_filters` and `relevanssi_oxygen_section_content` filters are no longer used with Oxygen 4; this hook is the only way to filter Oxygen elements.
 * Minor fix: Relevanssi used `the_category` filter with too few parameters. The missing parameters have been added.
 * Minor fix: Stops drafts and pending posts from showing up in Relevanssi Live Ajax Searches.
+* Minor fix: Phrases weren't used in some cases where a multiple-word phrase looked like a single-word phrase.
 
 = 4.15.2 =
 * New feature: New filter hook `relevanssi_didyoumean_token` lets you filter Did you mean words before correction. You can use this filter hook to exclude words from being corrected.
