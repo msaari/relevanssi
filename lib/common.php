@@ -982,7 +982,7 @@ function relevanssi_add_highlight( $permalink, $link_post = null ) {
 	$highlight_docs = get_option( 'relevanssi_highlight_docs', 'off' );
 	$query          = get_search_query();
 	if ( isset( $highlight_docs ) && 'off' !== $highlight_docs && ! empty( $query ) ) {
-		if ( ! relevanssi_is_front_page_id( isset( $link_post->ID ) ?? null ) ) {
+		if ( ! relevanssi_is_front_page_id( $link_post->ID ?? null ) ) {
 			$query     = str_replace( '&quot;', '"', $query );
 			$permalink = esc_attr( add_query_arg( array( 'highlight' => rawurlencode( $query ) ), $permalink ) );
 		}
