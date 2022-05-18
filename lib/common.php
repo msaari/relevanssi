@@ -535,7 +535,8 @@ function relevanssi_prevent_default_request( $request, $query ) {
 
 		if ( ! is_admin() && $prevent ) {
 			$request = "SELECT * FROM $wpdb->posts WHERE 1=2";
-		} elseif ( 'on' === get_option( 'relevanssi_admin_search' ) && $admin_search_ok ) {
+		}
+		if ( is_admin() && 'on' === get_option( 'relevanssi_admin_search' ) && $admin_search_ok ) {
 			$request = "SELECT * FROM $wpdb->posts WHERE 1=2";
 		}
 	}

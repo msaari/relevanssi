@@ -128,6 +128,7 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+* Minor fix: Prevents Relevanssi from interfering in fringe cases (including The Event Calendar event search).
 = 4.16.0 =
 * New feature: Oxygen compatibility has been upgraded to support JSON data from Oxygen 4. This is still in early stages, so feedback from Oxygen users is welcome.
 * New feature: New filter hook `relevanssi_oxygen_element` is used to filter Oxygen JSON elements. The earlier `relevanssi_oxygen_section_filters` and `relevanssi_oxygen_section_content` filters are no longer used with Oxygen 4; this hook is the only way to filter Oxygen elements.
