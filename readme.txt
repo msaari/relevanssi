@@ -130,6 +130,7 @@ Each document database is full of useless words. All the little words that appea
 == Changelog ==
 * Minor fix: Prevents Relevanssi from interfering in fringe cases (including The Event Calendar event search).
 * Minor fix: Relevanssi added the `highlight` parameter to home page URLs, even though it shouldn't.
+* Minor fix: Indexing `nav_menu_item` posts is stopped earlier in the process to avoid problems with big menus.
 
 = 4.16.0 =
 * New feature: Oxygen compatibility has been upgraded to support JSON data from Oxygen 4. This is still in early stages, so feedback from Oxygen users is welcome.
