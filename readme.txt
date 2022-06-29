@@ -134,6 +134,7 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: If the `sentence` query variable is used to enable phrase searching, Relevanssi now adds quotes to the `highlight` parameter.
 * Minor fix: Add support for JetSmartFilters.
 * Minor fix: Add support for WooCommerce products attribute lookup table filtering.
+* Minor fix: Improve excerpts to avoid breaking HTML tags when tags are allowed.
 
 = 4.16.0 =
 * New feature: Oxygen compatibility has been upgraded to support JSON data from Oxygen 4. This is still in early stages, so feedback from Oxygen users is welcome.

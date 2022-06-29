@@ -158,6 +158,16 @@ function relevanssi_do_excerpt( $t_post, $query, $excerpt_length = null, $excerp
 	// Replace linefeeds and carriage returns with spaces.
 	$content = preg_replace( "/\n\r|\r\n|\n|\r/", ' ', $content );
 
+	// Replace spaces inside HTML tags to avoid splitting tags when doing
+	// word-based excerpts.
+	$content = preg_replace_callback(
+		'~<([!a-zA-Z\/][^>].*?)>~s',
+		function( $match ) {
+			return '<' . str_replace( ' ', '*VÄLILYÖNTI*', $match[1] ) . '>';
+		},
+		$content
+	);
+
 	if ( 'OR' === get_option( 'relevanssi_implicit_operator' ) || 'on' === get_option( 'relevanssi_index_synonyms' ) ) {
 		$query = relevanssi_add_synonyms( $query );
 	}
@@ -438,6 +448,12 @@ function relevanssi_create_excerpts( $content, $terms, $query, $excerpt_length =
 		}
 	}
 
+	array_walk(
+		$excerpts,
+		function( &$excerpt ) {
+			$excerpt['text'] = str_replace( '*VÄLILYÖNTI*', ' ', $excerpt['text'] );
+		}
+	);
 	return $excerpts;
 }
 
