@@ -1228,6 +1228,15 @@ function relevanssi_get_forbidden_post_types() {
 		'udb_widgets',          // Ultimate Dashboard.
 		'udb_admin_page',       // Ultimate Dashboard.
 		'oxy_user_library',     // Oxygen.
+		'aw_workflow',          // AutomateWoo.
+		'paypal_transaction',   // PayPal for WooCommerce.
+		'scheduled-action',
+		'divi_bars',            // Divi Bars.
+		'br_product_filter',    // BeRocket Product Filters.
+		'br_filters_group',     // BeRocket Product Filters.
+		'wfob_bump',            // WooFunnel.
+		'wfocu_funnel',         // WooFunnel.
+		'wfocu_offer',          // WooFunnel.
 	);
 }
 
