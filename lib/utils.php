@@ -387,7 +387,8 @@ function relevanssi_get_current_language( bool $locale = true ) {
 				$current_language = pll_get_post_language( $post->ID, $locale ? 'locale' : 'slug' );
 			}
 		} elseif ( function_exists( 'pll_current_language' ) ) {
-			$current_language = pll_current_language( $locale ? 'locale' : 'slug' );
+			$pll_language     = pll_current_language( $locale ? 'locale' : 'slug' );
+			$current_language = $pll_language ? $pll_language : $current_language;
 		}
 	}
 	if ( function_exists( 'icl_object_id' ) && ! function_exists( 'pll_is_translated_post_type' ) ) {
@@ -430,7 +431,6 @@ function relevanssi_get_current_language( bool $locale = true ) {
 			}
 		}
 	}
-
 	return $current_language;
 }
 
