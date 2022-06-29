@@ -983,6 +983,10 @@ function relevanssi_add_highlight( $permalink, $link_post = null ) {
 	$query          = get_search_query();
 	if ( isset( $highlight_docs ) && 'off' !== $highlight_docs && ! empty( $query ) ) {
 		if ( ! relevanssi_is_front_page_id( $link_post->ID ?? null ) ) {
+			global $wp_query;
+			if ( isset( $wp_query->query_vars['sentence'] ) && '&quot;' !== substr( $query, 0, 6 ) ) {
+				$query = relevanssi_add_quotes( $query );
+			}
 			$query     = str_replace( '&quot;', '"', $query );
 			$permalink = esc_attr( add_query_arg( array( 'highlight' => rawurlencode( $query ) ), $permalink ) );
 		}
