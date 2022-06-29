@@ -881,11 +881,11 @@ function relevanssi_taxonomy_score( &$match, $post_type_weights ) {
 	$match->taxonomy_detail = json_decode( $match->taxonomy_detail );
 	if ( is_object( $match->taxonomy_detail ) ) {
 		foreach ( $match->taxonomy_detail as $tax => $count ) {
-			if ( empty( $post_type_weights[ 'post_tagged_with_' . $tax ] ) ) {
-				$match->taxonomy_score += $count * 1;
-			} else {
-				$match->taxonomy_score += $count * $post_type_weights[ 'post_tagged_with_' . $tax ];
+			$weight = $post_type_weights[ 'post_tagged_with_' . $tax ] ?? null;
+			if ( ! $weight ) {
+				$weight = $post_type_weights[ $tax ] ?? 1;
 			}
+			$match->taxonomy_score += $count * $weight;
 		}
 	}
 }
@@ -1314,13 +1314,13 @@ function relevanssi_calculate_tf( $match, $post_type_weights ) {
 		relevanssi_taxonomy_score( $match, $post_type_weights );
 	} else {
 		$tag_weight = 1;
-		if ( isset( $post_type_weights['post_tagged_with_post_tag'] ) && is_numeric( $post_type_weights['post_tagged_with_post_tag'] ) ) {
-			$tag_weight = $post_type_weights['post_tagged_with_post_tag'];
+		if ( isset( $post_type_weights['post_tag'] ) && is_numeric( $post_type_weights['post_tag'] ) ) {
+			$tag_weight = $post_type_weights['post_tag'];
 		}
 
 		$category_weight = 1;
-		if ( isset( $post_type_weights['post_tagged_with_category'] ) && is_numeric( $post_type_weights['post_tagged_with_category'] ) ) {
-			$category_weight = $post_type_weights['post_tagged_with_category'];
+		if ( isset( $post_type_weights['category'] ) && is_numeric( $post_type_weights['category'] ) ) {
+			$category_weight = $post_type_weights['category'];
 		}
 
 		$taxonomy_weight = 1;
@@ -1645,10 +1645,11 @@ bool $no_terms, string $query_join = '', string $query_restrictions = '' ) : str
 	} else {
 		$term_cond = relevanssi_generate_term_where( $term, $search_again, $no_terms, get_option( 'relevanssi_fuzzy' ) );
 
-		$content_boost = floatval( get_option( 'relevanssi_content_boost', 1 ) );
-		$title_boost   = floatval( get_option( 'relevanssi_title_boost' ) );
-		$link_boost    = floatval( get_option( 'relevanssi_link_boost' ) );
-		$comment_boost = floatval( get_option( 'relevanssi_comment_boost' ) );
+		$content_boost     = floatval( get_option( 'relevanssi_content_boost', 1 ) );
+		$title_boost       = floatval( get_option( 'relevanssi_title_boost' ) );
+		$link_boost        = floatval( get_option( 'relevanssi_link_boost' ) );
+		$comment_boost     = floatval( get_option( 'relevanssi_comment_boost' ) );
+		$post_type_weights = get_option( 'relevanssi_post_type_weights' );
 
 		$tag = ! empty( $post_type_weights['post_tag'] ) ? $post_type_weights['post_tag'] : $relevanssi_variables['post_type_weight_defaults']['post_tag'];
 		$cat = ! empty( $post_type_weights['category'] ) ? $post_type_weights['category'] : $relevanssi_variables['post_type_weight_defaults']['category'];
