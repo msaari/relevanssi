@@ -144,6 +144,7 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: Improve WPFD file content indexing support. Relevanssi indexing now happens after the WPFD indexing is done.
 * Minor fix: Add support for TablePress `table_filter` shortcodes.
 * Minor fix: Stopped some problems with Did you mean suggestions suggesting the same word if a hyphen was included.
+* Minor fix: Paging didn't work in admin searches for hierarchical post types (like pages).
 
 = 4.16.0 =
 * New feature: Oxygen compatibility has been upgraded to support JSON data from Oxygen 4. This is still in early stages, so feedback from Oxygen users is welcome.
