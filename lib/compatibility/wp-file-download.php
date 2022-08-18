@@ -12,6 +12,7 @@
  */
 
 add_filter( 'relevanssi_content_to_index', 'relevanssi_wpfd_content', 10, 2 );
+add_action( 'wpfd_file_indexed', 'relevanssi_wpfd_index' );
 
 /**
  * Adds the WPFD indexed content to wpfd_file posts.
@@ -43,4 +44,15 @@ function relevanssi_wpfd_content( $content, $post ) {
 		}
 	}
 	return $content;
+}
+
+/**
+ * Runs Relevanssi indexing after WPFD indexing is done.
+ *
+ * @param int $wpfd_id The WPFD post index.
+ */
+function relevanssi_wpfd_index( $wpfd_id ) {
+	global $wpdb;
+	$post_id = $wpdb->get_var( $wpdb->prepare( "SELECT tid FROM {$wpdb->prefix}wpfd_index WHERE id=%d", $wpfd_id ) );
+	relevanssi_insert_edit( $post_id );
 }
