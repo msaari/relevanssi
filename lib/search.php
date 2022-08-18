@@ -1874,6 +1874,9 @@ function relevanssi_get_boundaries( $query ) : array {
 		$search_low_boundary  += $query->query_vars['offset'];
 	}
 
+	if ( $search_low_boundary < 0 ) {
+		$search_low_boundary = 0;
+	}
 	if ( $search_high_boundary > $hits_count ) {
 		$search_high_boundary = $hits_count;
 	}
