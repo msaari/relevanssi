@@ -51,6 +51,8 @@ add_action( 'relevanssi_trim_logs', 'relevanssi_trim_logs' );
 add_action( 'relevanssi_update_counts', 'relevanssi_update_counts' );
 add_action( 'relevanssi_custom_field_value', 'relevanssi_filter_custom_fields', 10, 2 );
 add_filter( 'relevanssi_index_custom_fields', 'relevanssi_remove_metadata_fields' );
+add_filter( 'relevanssi_join', 'relevanssi_post_date_throttle_join', 1 );
+add_filter( 'relevanssi_where', 'relevanssi_post_date_throttle_where', 1 );
 
 // Excerpts and highlights.
 add_action( 'relevanssi_pre_the_content', 'relevanssi_kill_autoembed' );

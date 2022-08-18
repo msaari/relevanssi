@@ -719,8 +719,11 @@ function relevanssi_limit_filter( $query ) {
 		if ( $limit < 0 ) {
 			$limit = 500;
 		}
+
 		if ( $termless_search ) {
 			$query = $query . " GROUP BY doc, item, type ORDER BY doc ASC LIMIT $limit";
+		} elseif ( 'post_date' === get_option( 'relevanssi_default_orderby' ) ) {
+			$query = $query . " ORDER BY p.post_date DESC LIMIT $limit";
 		} else {
 			$query = $query . " ORDER BY tf DESC LIMIT $limit";
 		}
@@ -1920,4 +1923,41 @@ function relevanssi_generate_id_type( string $post_id ) {
 		$object->type = 'post';
 	}
 	return $object;
+}
+
+/**
+ * Adds a join for wp_posts for post_date searches.
+ *
+ * If the default orderby is post_date, this function adds a wp_posts join to
+ * the search query.
+ *
+ * @param string $query_join The join query.
+ *
+ * @return string The modified join query.
+ */
+function relevanssi_post_date_throttle_join( $query_join ) {
+	if ( 'post_date' === get_option( 'relevanssi_default_orderby' ) &&
+		'on' === get_option( 'relevanssi_throttle', 'on' ) ) {
+		global $wpdb;
+		$query_join = ', ' . $wpdb->posts . ' AS p';
+	}
+	return $query_join;
+}
+
+/**
+ * Adds a join for wp_posts for post_date searches.
+ *
+ * If the default orderby is post_date, this function connects the wp_posts
+ * table joined in another filter function.
+ *
+ * @param string $query_restrictions The where query restrictions.
+ *
+ * @return string The modified query restrictions.
+ */
+function relevanssi_post_date_throttle_where( $query_restrictions ) {
+	if ( 'post_date' === get_option( 'relevanssi_default_orderby' ) &&
+		'on' === get_option( 'relevanssi_throttle', 'on' ) ) {
+		$query_restrictions .= ' AND p.ID = relevanssi.doc';
+	}
+	return $query_restrictions;
 }
