@@ -25,7 +25,7 @@ add_filter( 'relevanssi_prevent_default_request', 'relevanssi_block_on_admin_sea
 add_filter( 'relevanssi_search_ok', 'relevanssi_control_media_queries', 11, 2 );
 
 // Post indexing.
-add_action( 'wp_insert_post', 'relevanssi_insert_edit', 99, 1 );
+add_action( 'wp_after_insert_post', 'relevanssi_insert_edit', 99, 1 );
 add_action( 'delete_post', 'relevanssi_remove_doc' );
 
 // Comment indexing.
