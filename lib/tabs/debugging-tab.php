@@ -15,7 +15,9 @@
  */
 function relevanssi_debugging_tab() {
 	$how_relevanssi_sees = '';
+	$db_post_view        = '';
 	$current_post_id     = 0;
+	$current_db_post_id  = 0;
 	$selected            = 'post';
 	if ( isset( $_REQUEST['post_id'] ) ) {
 		wp_verify_nonce( '_relevanssi_nonce', 'relevanssi_how_relevanssi_sees' );
@@ -37,6 +39,14 @@ function relevanssi_debugging_tab() {
 				true,
 				$type
 			);
+		}
+	}
+
+	if ( isset( $_REQUEST['db_post_id'] ) ) {
+		wp_verify_nonce( '_relevanssi_nonce', 'relevanssi_how_relevanssi_sees' );
+		if ( intval( $_REQUEST['db_post_id'] ) > 0 ) {
+			$current_db_post_id = intval( $_REQUEST['db_post_id'] );
+			$db_post_view       = relevanssi_generate_db_post_view( $current_db_post_id );
 		}
 	}
 	wp_nonce_field( 'relevanssi_how_relevanssi_sees', '_relevanssi_nonce', true, true );
@@ -90,9 +100,58 @@ function relevanssi_debugging_tab() {
 			value='<?php esc_attr_e( 'Check the post', 'relevanssi' ); ?>'
 			class='button button-primary' />
 	</p>
+
 	<?php echo $how_relevanssi_sees; // phpcs:ignore WordPress.Security.EscapeOutput ?>
+
+	<h2><?php esc_html_e( 'How does the post look like in the database?', 'relevanssi' ); ?></h2>
+
+	<p><?php esc_html_e( "This feature will show you how the post looks like in the database. It can sometimes be very helpful for debugging why a post isn't indexed the way you expect it to be.", 'relevanssi' ); ?></p>
+
+	<p><label for="db_post_id"><?php esc_html_e( 'The ID', 'relevanssi' ); ?></label>:
+	<input type="text" name="db_post_id" id="db_post_id"
+	<?php
+	if ( $current_db_post_id > 0 ) {
+		echo 'value="' . esc_attr( $current_db_post_id ) . '"';
+	}
+	?>
+	/>
+	</p>
+	<p>
+		<input
+			type='submit' name='submit'
+			value='<?php esc_attr_e( 'Check the post', 'relevanssi' ); ?>'
+			class='button button-primary' />
+	</p>
+
+	<?php echo $db_post_view; // phpcs:ignore WordPress.Security.EscapeOutput ?>
 
 	<?php do_action( 'relevanssi_debugging_tab' ); ?>
 
 	<?php
+}
+
+/**
+ * Generates the debugging view for a post.
+ *
+ * @param int $post_id ID of the post.
+ *
+ * @return string The debugging view in a div container.
+ */
+function relevanssi_generate_db_post_view( int $post_id ) {
+	global $wpdb;
+
+	$element = '<div id="relevanssi_db_view_container">';
+
+	$post_object = get_post( $post_id );
+
+	if ( ! $post_object ) {
+		$element .= '<p>' . esc_html__( 'Post not found', 'relevanssi' ) . '</p>';
+		$element .= '</div>';
+		return $element;
+	}
+
+	$element .= '<p>' . esc_html( $post_object->post_content ) . '</p>';
+
+	$element .= '</div>';
+	return $element;
 }

@@ -128,6 +128,7 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+* New feature: You can now look at how the posts appear in the database from the Debugging tab.
 * Minor fix: Prevents Relevanssi from interfering in fringe cases (including The Event Calendar event search).
 * Minor fix: Relevanssi added the `highlight` parameter to home page URLs, even though it shouldn't.
 * Minor fix: Indexing `nav_menu_item` posts is stopped earlier in the process to avoid problems with big menus.
