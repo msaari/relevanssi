@@ -129,6 +129,7 @@ Each document database is full of useless words. All the little words that appea
 
 == Changelog ==
 * New feature: You can now look at how the posts appear in the database from the Debugging tab.
+* New feature: Relevanssi now works with WooCommerce layered navigation filters. The filter post counts should now match the Relevanssi search results.
 * Minor fix: Prevents Relevanssi from interfering in fringe cases (including The Event Calendar event search).
 * Minor fix: Relevanssi added the `highlight` parameter to home page URLs, even though it shouldn't.
 * Minor fix: Indexing `nav_menu_item` posts is stopped earlier in the process to avoid problems with big menus.

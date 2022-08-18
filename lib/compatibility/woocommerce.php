@@ -13,6 +13,7 @@
 add_filter( 'relevanssi_indexing_restriction', 'relevanssi_woocommerce_restriction' );
 add_filter( 'relevanssi_admin_search_blocked_post_types', 'relevanssi_woocommerce_admin_search_blocked_post_types' );
 add_filter( 'relevanssi_modify_wp_query', 'relevanssi_woocommerce_filters' );
+add_filter( 'woocommerce_get_filtered_term_product_counts_query', 'relevanssi_filtered_term_product_counts_query' );
 
 /**
  * This action solves the problems introduced by adjust_posts_count() in
@@ -244,6 +245,35 @@ function relevanssi_woocommerce_filters( $query ) {
 		);
 	}
 	$query->set( 'tax_query', $tax_query );
+
+	return $query;
+}
+
+/**
+ * Provides layered navigation term counts based on Relevanssi searches.
+ *
+ * Hooks onto woocommerce_get_filtered_term_product_counts_query to provide
+ * accurate term counts.
+ *
+ * @param array $query The MySQL query parts.
+ *
+ * @return array The modified query.
+ */
+function relevanssi_filtered_term_product_counts_query( $query ) {
+	global $relevanssi_variables, $wpdb;
+
+	if ( false !== stripos( $query['select'], 'product_or_parent_id' ) ) {
+		$query['from']  = str_replace( 'FROM ', "FROM {$relevanssi_variables['relevanssi_table']} AS relevanssi, ", $query['from'] );
+		$query['where'] = str_replace( 'WHERE ', " WHERE relevanssi.doc = $wpdb->posts.ID AND ", $query['where'] );
+		$query['where'] = preg_replace( '/\(\w+posts.post_title LIKE(.*?)\)\)/', 'relevanssi.term LIKE\1)', $query['where'] );
+		$query['where'] = preg_replace( array( '/OR \(\w+posts.post_excerpt LIKE .*?\)/', '/OR \(\w+posts.post_content LIKE .*?\)/' ), '', $query['where'] );
+	} else {
+		$query['select'] = 'SELECT COUNT( DISTINCT( relevanssi.doc ) ) AS term_count, terms.term_id AS term_count_id';
+		$query['from']   = "FROM {$relevanssi_variables['relevanssi_table']} AS relevanssi, $wpdb->posts";
+		$query['where']  = str_replace( 'WHERE ', " WHERE relevanssi.doc = $wpdb->posts.ID AND ", $query['where'] );
+		$query['where']  = preg_replace( '/\(\w+posts.post_title LIKE(.*?)\)\)/', 'relevanssi.term LIKE\1)', $query['where'] );
+		$query['where']  = preg_replace( array( '/OR \(\w+posts.post_excerpt LIKE .*?\)/', '/OR \(\w+posts.post_content LIKE .*?\)/' ), '', $query['where'] );
+	}
 
 	return $query;
 }
