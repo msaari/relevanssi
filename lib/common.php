@@ -1051,11 +1051,23 @@ function relevanssi_permalink( $link, $link_post = null ) {
 		}
 	}
 
-	if ( is_search() && is_object( $link_post ) && property_exists( $link_post, 'relevance_score' ) ) {
+	global $wp_query;
+
+	$add_highlight_and_tracking = false;
+	if ( is_search() && ! is_admin() ) {
+		$add_highlight_and_tracking = true;
+	}
+	if ( is_search() && is_admin() &&
+		( isset( $wp_query->query_vars['relevanssi'] ) || isset( $wp_query->query_vars['rlvquery'] ) )
+		) {
+		$add_highlight_and_tracking = true;
+	}
+
+	if ( $add_highlight_and_tracking && is_object( $link_post ) && property_exists( $link_post, 'relevance_score' ) ) {
 		$link = relevanssi_add_highlight( $link, $link_post );
 	}
 
-	if ( function_exists( 'relevanssi_add_tracking' ) ) {
+	if ( $add_highlight_and_tracking && function_exists( 'relevanssi_add_tracking' ) ) {
 		$link = relevanssi_add_tracking( $link, $link_post );
 	}
 
