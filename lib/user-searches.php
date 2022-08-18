@@ -340,7 +340,7 @@ function relevanssi_date_queries( string $from, string $to, string $version = 'g
 			if ( function_exists( 'relevanssi_insights_link' ) ) {
 				$query_link = relevanssi_insights_link( $query );
 			} else {
-				$query_link = wp_kses( $query->query, 'strip' );
+				$query_link = wp_kses( relevanssi_hyphenate( $query->query ), 'strip' );
 			}
 
 			if ( 'good' === $version ) {

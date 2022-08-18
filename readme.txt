@@ -137,6 +137,7 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: Improve excerpts to avoid breaking HTML tags when tags are allowed.
 * Minor fix: Fix broken tag and category weight settings.
 * Minor fix: Improve Polylang language detection.
+* Minor fix: Relevanssi now hyphenates long search terms in the User searches page. This prevents long search terms from messing up the display.
 
 = 4.16.0 =
 * New feature: Oxygen compatibility has been upgraded to support JSON data from Oxygen 4. This is still in early stages, so feedback from Oxygen users is welcome.

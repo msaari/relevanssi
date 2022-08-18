@@ -649,6 +649,18 @@ function relevanssi_get_the_title( $post ) {
 }
 
 /**
+ * Adds a soft hyphen to a string at every five characters.
+ *
+ * @param string $string The string to hyphenate.
+ *
+ * @return string The hyphenated string.
+ */
+function relevanssi_hyphenate( $string ) {
+	$string = preg_replace( '/([^\s]{8})([^\s])/u', '$1&shy;$2', html_entity_decode( $string ) );
+	return $string;
+}
+
+/**
  * Returns an imploded string if the option exists and is an array, an empty
  * string otherwise.
  *
