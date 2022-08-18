@@ -206,8 +206,10 @@ function relevanssi_simple_generate_suggestion( $query ) {
 			}
 		}
 		if ( ! empty( $closest ) ) {
-			$query            = str_ireplace( $token, $closest, $query );
-			$suggestions_made = true;
+			$query = str_ireplace( $token, $closest, $query, $replacement_count );
+			if ( $replacement_count > 0 ) {
+				$suggestions_made = true;
+			}
 		}
 	}
 
