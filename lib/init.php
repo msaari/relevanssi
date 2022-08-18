@@ -472,14 +472,20 @@ function relevanssi_rest_api_disable() {
 /**
  * Checks if a log export is requested.
  *
- * If the 'relevanssi_export' query variable is set, a log export has been requested
- * and one will be provided by relevanssi_export_log().
+ * If the 'relevanssi_export' query variable is set, a log export has been
+ * requested and one will be provided by relevanssi_export_log(). The click
+ * tracking log export checks 'relevanssi_export_clicks' and uses the function
+ * relevanssi_export_click_log().
  *
  * @see relevanssi_export_log
+ * @see relevanssi_export_click_log
  */
 function relevanssi_export_log_check() {
 	if ( isset( $_REQUEST['relevanssi_export'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification, just checking the parameter exists.
 		relevanssi_export_log();
+	}
+	if ( isset( $_REQUEST['relevanssi_export_clicks'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification, just checking the parameter exists.
+		function_exists( 'relevanssi_export_click_log' ) && relevanssi_export_click_log();
 	}
 }
 

@@ -127,6 +127,10 @@ function relevanssi_truncate_logs( $verbose = true ) {
 	global $wpdb, $relevanssi_variables;
 
 	$result = $wpdb->query( 'TRUNCATE ' . $relevanssi_variables['log_table'] ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+	if ( isset( $relevanssi_variables['tracking_table'] ) ) {
+		$tracking_result = $wpdb->query( 'TRUNCATE ' . $relevanssi_variables['tracking_table'] ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+		$results         = $result && $tracking_result;
+	}
 
 	if ( $verbose ) {
 		if ( false !== $result ) {

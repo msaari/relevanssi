@@ -163,15 +163,26 @@ function relevanssi_query_log() {
 		printf( '<h3>%s</h3>', esc_html__( 'Reset Logs', 'relevanssi' ) );
 		print( "<form method='post'>" );
 		wp_nonce_field( 'relevanssi_reset_logs', '_relresnonce', true, true );
+
+		// Translators: do not translate "reset".
+		$message = esc_html__(
+			'To reset the logs, type "reset" into the box here and click the Reset button',
+			'relevanssi'
+		);
+
+		if ( RELEVANSSI_PREMIUM ) {
+			// Translators: do not translate "reset".
+			$message = esc_html__(
+				'To reset the logs, type "reset" into the box here and click the Reset button. This will reset both the search log and the click tracking log.',
+				'relevanssi'
+			);
+		}
+
 		printf(
 			'<p><label for="relevanssi_reset_code">%s</label>
 			<input type="text" id="relevanssi_reset_code" name="relevanssi_reset_code" />
 			<input type="submit" name="relevanssi_reset" value="%s" class="button" /></p></form>',
-			// Translators: do not translate "reset".
-			esc_html__(
-				'To reset the logs, type "reset" into the box here and click the Reset button',
-				'relevanssi'
-			),
+			$message, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- already escaped.
 			esc_html__( 'Reset', 'relevanssi' )
 		);
 	}
