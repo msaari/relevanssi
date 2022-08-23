@@ -129,6 +129,51 @@ function relevanssi_close_tags( string $html ) {
 }
 
 /**
+ * Counts search term occurrances in the Relevanssi index.
+ *
+ * @param string $query The search query. Will be split at spaces.
+ * @param string $mode  Output mode. Possible values 'array' or 'string'.
+ * Default is 'array'.
+ *
+ * @return array|string An array of search term occurrances, or a string with
+ * the number of occurrances.
+ */
+function relevanssi_count_term_occurrances( string $query, string $mode = 'array' ) {
+	global $wpdb, $relevanssi_variables;
+
+	$terms  = explode( ' ', $query );
+	$counts = array();
+
+	foreach ( $terms as $term ) {
+		$term = trim( $term );
+		if ( empty( $term ) ) {
+			continue;
+		}
+		$counts[ $term ] = $wpdb->get_var(
+			$wpdb->prepare(
+				'SELECT SUM(content + title + comment + tag +
+				link + author + category + excerpt + taxonomy + customfield
+				+ mysqlcolumn) AS total FROM ' .
+				$relevanssi_variables['relevanssi_table'] . // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				' WHERE term = %s
+				GROUP BY term',
+				$term
+			)
+		);
+	}
+
+	if ( 'array' === $mode ) {
+		return $counts;
+	} elseif ( 'string' === $mode ) {
+		$strings = array();
+		foreach ( $counts as $term => $count ) {
+			$strings[] = "<span class='search_term'>$term</span>: <span class='count'>$count</span>";
+		}
+		return implode( ', ', $strings );
+	}
+}
+
+/**
  * Prints out debugging notices.
  *
  * If WP_CLI is available, prints out the debug notice as a WP_CLI::log(),
