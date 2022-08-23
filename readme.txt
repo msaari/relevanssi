@@ -148,6 +148,7 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: Stopped some problems with Did you mean suggestions suggesting the same word if a hyphen was included.
 * Minor fix: Paging didn't work in admin searches for hierarchical post types (like pages).
 * Minor fix: In-document highlighting could break certain elements thanks to Relevanssi messing up data attributes.
+* Minor fix: Relevanssi now recursively runs `relevanssi_block_to_render` and the CSS `relevanssi_noindex` filtering for inner blocks.
 
 = 4.16.0 =
 * New feature: Oxygen compatibility has been upgraded to support JSON data from Oxygen 4. This is still in early stages, so feedback from Oxygen users is welcome.
