@@ -260,6 +260,10 @@ function relevanssi_woocommerce_filters( $query ) {
  * @return array The modified query.
  */
 function relevanssi_filtered_term_product_counts_query( $query ) {
+	if ( defined( 'BeRocket_AJAX_filters_version' ) ) {
+		return $query;
+	}
+
 	global $relevanssi_variables, $wpdb;
 
 	if ( false !== stripos( $query['select'], 'product_or_parent_id' ) ) {
