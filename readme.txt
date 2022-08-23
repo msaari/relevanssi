@@ -5,7 +5,7 @@ Tags: search, relevance, better search, product search, woocommerce search
 Requires at least: 4.9
 Tested up to: 6.0
 Requires PHP: 7.0
-Stable tag: 4.16.0
+Stable tag: 4.17.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -128,6 +128,7 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.17.0 =
 * New feature: You can now look at how the posts appear in the database from the Debugging tab.
 * New feature: Relevanssi now works with WooCommerce layered navigation filters. The filter post counts should now match the Relevanssi search results.
 * New feature: New function `relevanssi_count_term_occurrances()` can be used to display how many times search terms appear in the database.
@@ -183,5 +184,8 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: The Bricks compatibility was improved, Relevanssi now notices changes to Bricks posts more often. Relevanssi also only reads the text from the `_bricks_page_content_2` custom field.
 
 == Upgrade notice ==
+= 4.17.0 =
+* Large number of bug fixes and general improvements.
+
 = 4.16.0 =
 * Indexing update; please reindex after the upgrade! Oxygen 4 compatibility.
