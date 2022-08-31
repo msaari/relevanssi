@@ -13,7 +13,6 @@
 add_filter( 'relevanssi_indexing_restriction', 'relevanssi_woocommerce_restriction' );
 add_filter( 'relevanssi_admin_search_blocked_post_types', 'relevanssi_woocommerce_admin_search_blocked_post_types' );
 add_filter( 'relevanssi_modify_wp_query', 'relevanssi_woocommerce_filters' );
-add_filter( 'woocommerce_get_filtered_term_product_counts_query', 'relevanssi_filtered_term_product_counts_query' );
 
 /**
  * This action solves the problems introduced by adjust_posts_count() in

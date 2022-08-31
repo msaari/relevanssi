@@ -128,6 +128,7 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+* Minor fix: WooCommerce layered navigation compatibility caused enough problems that I've disabled it by default. You can enable it with `add_filter( 'woocommerce_get_filtered_term_product_counts_query', 'relevanssi_filtered_term_product_counts_query' );`.
 * Minor fix: Data attribute handling for in-document highlighting is now better.
 
 = 4.17.0 =
