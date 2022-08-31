@@ -128,6 +128,8 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+* Minor fix: Data attribute handling for in-document highlighting is now better.
+
 = 4.17.0 =
 * New feature: You can now look at how the posts appear in the database from the Debugging tab.
 * New feature: Relevanssi now works with WooCommerce layered navigation filters. The filter post counts should now match the Relevanssi search results.
