@@ -1566,7 +1566,7 @@ function relevanssi_add_excerpt( &$post, $query ) {
  */
 function relevanssi_entity_decode( $content, $flags = ENT_QUOTES, $charset = 'UTF-8' ) {
 	$content = html_entity_decode( $content, $flags, $charset );
-	if ( preg_match_all( '/data-.+?="(.*?)"/sm', $content, $matches ) ) {
+	if ( preg_match_all( '/data-[\w-]+?="([^"]*?)"/sm', $content, $matches ) ) {
 		$source  = array();
 		$replace = array();
 		foreach ( $matches[1] as $match ) {
