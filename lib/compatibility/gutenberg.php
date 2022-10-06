@@ -10,6 +10,8 @@
  * @see     https://www.relevanssi.com/
  */
 
+add_filter( 'relevanssi_post_content', 'relevanssi_gutenberg_block_rendering', 10, 2 );
+
 /**
  * Registers rest_after_insert_{post_type} actions for all indexed post types.
  *
@@ -36,8 +38,6 @@ function relevanssi_register_gutenberg_actions() {
 		}
 	);
 }
-
-add_filter( 'relevanssi_post_content', 'relevanssi_gutenberg_block_rendering', 10, 2 );
 
 /**
  * Renders Gutenberg blocks.
