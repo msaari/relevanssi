@@ -128,6 +128,9 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+* New feature: Relevanssi now shows the MySQL `max_allowed_packet` size on the debug tab.
+* New feature: Relevanssi now shows the indexing query on the debug tab.
+
 = 4.17.1 =
 * Minor fix: WooCommerce layered navigation compatibility caused enough problems that I've disabled it by default. You can enable it with `add_filter( 'woocommerce_get_filtered_term_product_counts_query', 'relevanssi_filtered_term_product_counts_query' );`.
 * Minor fix: Data attribute handling for in-document highlighting is now better.

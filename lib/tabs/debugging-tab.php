@@ -125,6 +125,26 @@ function relevanssi_debugging_tab() {
 
 	<?php echo $db_post_view; // phpcs:ignore WordPress.Security.EscapeOutput ?>
 
+	<h2><?php esc_html_e( 'Debugging information', 'relevanssi' ); ?></h2>
+
+	<?php
+	global $wpdb;
+	$max_allowed_packet = $wpdb->get_var( 'SELECT @@global.max_allowed_packet' );
+	$max_allowed_packet = round( $max_allowed_packet / 1024 / 1024, 2 );
+	echo '<p>max_allowed_packet: ' . $max_allowed_packet . 'M</p>'; // phpcs:ignore WordPress.Security.EscapeOutput
+
+	$indexing_query = relevanssi_generate_indexing_query(
+		relevanssi_valid_status_array(),
+		false,
+		relevanssi_post_type_restriction(),
+		0
+	);
+	?>
+	<p><?php esc_html_e( 'Indexing query', 'relevanssi' ); ?>:</p>
+	<?php
+	echo '<code>' . $indexing_query . '</code>'; // phpcs:ignore WordPress.Security.EscapeOutput
+	?>
+
 	<?php do_action( 'relevanssi_debugging_tab' ); ?>
 
 	<?php
