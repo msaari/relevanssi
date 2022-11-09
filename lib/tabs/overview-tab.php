@@ -33,6 +33,9 @@ function relevanssi_overview_tab() {
 	if ( function_exists( 'relevanssi_form_do_not_call_home' ) ) {
 		relevanssi_form_do_not_call_home();
 	}
+	if ( function_exists( 'relevanssi_form_update_translations' ) ) {
+		relevanssi_form_update_translations();
+	}
 	?>
 	<tr>
 		<th scope="row"><?php esc_html_e( 'Getting started', 'relevanssi' ); ?></th>
