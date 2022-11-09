@@ -1067,7 +1067,7 @@ function relevanssi_permalink( $link, $link_post = null ) {
 		$link = relevanssi_add_highlight( $link, $link_post );
 	}
 
-	if ( $add_highlight_and_tracking && function_exists( 'relevanssi_add_tracking' ) ) {
+	if ( $add_highlight_and_tracking && function_exists( 'relevanssi_add_tracking' ) && property_exists( $link_post, 'relevance_score' ) ) {
 		$link = relevanssi_add_tracking( $link, $link_post );
 	}
 
