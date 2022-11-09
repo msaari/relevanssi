@@ -322,3 +322,45 @@ function relevanssi_is_ok_to_log( $user = null ) : bool {
 
 	return true;
 }
+
+/**
+ * Deletes a query from log.
+ *
+ * @param string $query The query to delete.
+ */
+function relevanssi_delete_query_from_log( string $query ) {
+	global $wpdb, $relevanssi_variables;
+
+	$deleted = $wpdb->query(
+		$wpdb->prepare(
+			"DELETE FROM {$relevanssi_variables['log_table']} WHERE query = %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
+			$query
+		)
+	);
+
+	if ( $deleted ) {
+		printf(
+			"<div id='message' class='updated fade'><p>%s</p></div>",
+			sprintf(
+				// Translators: %s is the stopword.
+				esc_html__(
+					"The query '%s' deleted from the log.",
+					'relevanssi'
+				),
+				esc_html( stripslashes( $query ) )
+			)
+		);
+	} else {
+		printf(
+			"<div id='message' class='updated fade'><p>%s</p></div>",
+			sprintf(
+				// Translators: %s is the stopword.
+				esc_html__(
+					"Couldn't remove the query '%s' from the log.",
+					'relevanssi'
+				),
+				esc_html( stripslashes( $query ) )
+			)
+		);
+	}
+}
