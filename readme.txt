@@ -133,6 +133,7 @@ Each document database is full of useless words. All the little words that appea
 * New feature: ACF field settings now include a 'Exclude from Relevanssi index' setting. You can use that to exclude ACF fields from the Relevanssi index.
 * Minor fix: Relevanssi was adding extra quotes around search terms in the `highlight` parameter.
 * Minor fix: Yet another update to data attributes in highlighting. Thanks to Faeddur.
+* Minor fix: Taxonomy query handling was improved. This should help in particular Polylang users who've had problems with Relevanssi ignoring Polylang language restrictions.
 
 = 4.17.1 =
 * Minor fix: WooCommerce layered navigation compatibility caused enough problems that I've disabled it by default. You can enable it with `add_filter( 'woocommerce_get_filtered_term_product_counts_query', 'relevanssi_filtered_term_product_counts_query' );`.
