@@ -3,9 +3,9 @@ Contributors: msaari
 Donate link: https://www.relevanssi.com/buy-premium/
 Tags: search, relevance, better search, product search, woocommerce search
 Requires at least: 4.9
-Tested up to: 6.0
+Tested up to: 6.1
 Requires PHP: 7.0
-Stable tag: 4.17.1
+Stable tag: 4.18.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -128,6 +128,7 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.18.0 =
 * New feature: Relevanssi now shows the MySQL `max_allowed_packet` size on the debug tab.
 * New feature: Relevanssi now shows the indexing query on the debug tab.
 * New feature: ACF field settings now include a 'Exclude from Relevanssi index' setting. You can use that to exclude ACF fields from the Relevanssi index.
@@ -171,35 +172,12 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: Phrases weren't used in some cases where a multiple-word phrase looked like a single-word phrase.
 * Minor fix: Prevents fatal errors from `relevanssi_strip_all_tags()`.
 
-= 4.15.2 =
-* New feature: New filter hook `relevanssi_didyoumean_token` lets you filter Did you mean words before correction. You can use this filter hook to exclude words from being corrected.
-* Minor fix: Phrase search couldn't find phrases that include an ampersand if they matched the post title. This works now.
-* Minor fix: Relevanssi now adds spaces after table cell tags to avoid table cell content sticking together in excerpts.
-* Minor fix: The 'Allowable tags in excerpts' function now automatically corrects the entered value to match what Relevanssi expects the value to be.
-
-= 4.15.1 =
-* Changed behaviour: Relevanssi now ignores WordPress metadata custom fields that aren't interesting for Relevanssi indexing.
-* Changed behaviour: Both `relevanssi_get_permalink()` and `relevanssi_the_permalink()` now can take post ID or a post object as a parameter and can thus be used outside the Loop.
-* Changed behaviour: The `relevanssi_hits_filter` hook now gets the WP_Query object as the second parameter.
-* Minor fix: Avoid error messages for missing `mysqlcolumn_matches` array key.
-
-= 4.15.0 =
-* New feature: The action hook `relevanssi_init` runs at the end of the `relevanssi_init()` function.
-* New feature: New filter hook `relevanssi_author_query_filter` filters the post author MySQL query.
-* New feature: New filter hook `relevanssi_by_date_query_filter` filters the by_date MySQL query.
-* New feature: New filter hook `relevanssi_date_query_filter` filters the date query MySQL query.
-* New feature: New filter hook `relevanssi_parent_query_filter` filters the post parent MySQL query.
-* New feature: New filter hook `relevanssi_post_query_filter` filters the post__in and post__not_in MySQL query.
-* New feature: New filter hook `relevanssi_post_status_query_filter` filters the post_status MySQL query.
-* New feature: New filter hook `relevanssi_post_type_query_filter` filters the post_type MySQL query.
-* Minor fix: The Bricks compatibility was improved, Relevanssi now notices changes to Bricks posts more often. Relevanssi also only reads the text from the `_bricks_page_content_2` custom field.
-
 == Upgrade notice ==
+= 4.18.0 =
+* Debugging features, improved ACF support and bug fixes.
+
 = 4.17.1 =
 * Disables the WooCommerce layered navigation support by default.
 
 = 4.17.0 =
 * Large number of bug fixes and general improvements.
-
-= 4.16.0 =
-* Indexing update; please reindex after the upgrade! Oxygen 4 compatibility.

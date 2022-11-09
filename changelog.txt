@@ -1,3 +1,26 @@
+= 4.15.2 =
+* New feature: New filter hook `relevanssi_didyoumean_token` lets you filter Did you mean words before correction. You can use this filter hook to exclude words from being corrected.
+* Minor fix: Phrase search couldn't find phrases that include an ampersand if they matched the post title. This works now.
+* Minor fix: Relevanssi now adds spaces after table cell tags to avoid table cell content sticking together in excerpts.
+* Minor fix: The 'Allowable tags in excerpts' function now automatically corrects the entered value to match what Relevanssi expects the value to be.
+
+= 4.15.1 =
+* Changed behaviour: Relevanssi now ignores WordPress metadata custom fields that aren't interesting for Relevanssi indexing.
+* Changed behaviour: Both `relevanssi_get_permalink()` and `relevanssi_the_permalink()` now can take post ID or a post object as a parameter and can thus be used outside the Loop.
+* Changed behaviour: The `relevanssi_hits_filter` hook now gets the WP_Query object as the second parameter.
+* Minor fix: Avoid error messages for missing `mysqlcolumn_matches` array key.
+
+= 4.15.0 =
+* New feature: The action hook `relevanssi_init` runs at the end of the `relevanssi_init()` function.
+* New feature: New filter hook `relevanssi_author_query_filter` filters the post author MySQL query.
+* New feature: New filter hook `relevanssi_by_date_query_filter` filters the by_date MySQL query.
+* New feature: New filter hook `relevanssi_date_query_filter` filters the date query MySQL query.
+* New feature: New filter hook `relevanssi_parent_query_filter` filters the post parent MySQL query.
+* New feature: New filter hook `relevanssi_post_query_filter` filters the post__in and post__not_in MySQL query.
+* New feature: New filter hook `relevanssi_post_status_query_filter` filters the post_status MySQL query.
+* New feature: New filter hook `relevanssi_post_type_query_filter` filters the post_type MySQL query.
+* Minor fix: The Bricks compatibility was improved, Relevanssi now notices changes to Bricks posts more often. Relevanssi also only reads the text from the `_bricks_page_content_2` custom field.
+
 = 4.14.7 =
 * User interface: The synonym settings page now alerts if the synonyms aren't active because of the AND search.
 
