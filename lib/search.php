@@ -149,9 +149,10 @@ function relevanssi_search( $args ) {
 	}
 
 	if ( function_exists( 'relevanssi_process_terms' ) ) {
-		$process_terms_results = relevanssi_process_terms( $terms['terms'], $q );
-		$query_restrictions   .= $process_terms_results['query_restrictions'];
-		$terms['terms']        = $process_terms_results['terms'];
+		$process_terms_results   = relevanssi_process_terms( $terms['terms'], $terms['original_terms'], $q );
+		$query_restrictions     .= $process_terms_results['query_restrictions'];
+		$terms['terms']          = $process_terms_results['terms'];
+		$terms['original_terms'] = $process_terms_results['original_terms'];
 	}
 
 	$no_terms = false;
