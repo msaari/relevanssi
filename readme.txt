@@ -130,6 +130,7 @@ Each document database is full of useless words. All the little words that appea
 == Changelog ==
 * New feature: Relevanssi now shows the MySQL `max_allowed_packet` size on the debug tab.
 * New feature: Relevanssi now shows the indexing query on the debug tab.
+* New feature: ACF field settings now include a 'Exclude from Relevanssi index' setting. You can use that to exclude ACF fields from the Relevanssi index.
 * Minor fix: Relevanssi was adding extra quotes around search terms in the `highlight` parameter.
 * Minor fix: Yet another update to data attributes in highlighting. Thanks to Faeddur.
 

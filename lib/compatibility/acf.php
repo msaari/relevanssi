@@ -10,7 +10,9 @@
  * @see     https://www.relevanssi.com/
  */
 
+add_action( 'acf/render_field_settings', 'relevanssi_acf_exclude_setting' );
 add_filter( 'relevanssi_search_ok', 'relevanssi_acf_relationship_fields' );
+add_filter( 'relevanssi_index_custom_fields', 'relevanssi_acf_exclude_fields' );
 
 /**
  * Disables Relevanssi in the ACF Relationship field post search.
@@ -109,4 +111,51 @@ function relevanssi_index_acf( &$insert_data, $post_id, $field_name, $field_valu
 	}
 
 	return $n;
+}
+
+/**
+ * Adds a Relevanssi exclude setting to ACF fields.
+ *
+ * @param array $field The field object array.
+ */
+function relevanssi_acf_exclude_setting( $field ) {
+	if ( ! function_exists( 'acf_render_field_setting' ) ) {
+		return;
+	}
+    acf_render_field_setting(
+		$field,
+		array(
+			'label'        => __( 'Exclude from Relevanssi index', 'relevanssi' ),
+			'instructions' => __( 'If this setting is enabled, Relevanssi will not index the value of this field for posts.', 'relevanssi' ),
+			'name'         => 'relevanssi_exclude',
+			'type'         => 'true_false',
+			'ui'           => 1,
+		),
+		true
+	);
+}
+
+/**
+ * Excludes ACF fields based on the exclude setting.
+ *
+ * Hooks on to relevanssi_index_custom_fields.
+ *
+ * @param array $fields The list of custom fields to index.
+ *
+ * @return array Filtered list of custom fields.
+ */
+function relevanssi_acf_exclude_fields( $fields ) {
+	$included_fields = array();
+	foreach ( $fields as $field ) {
+		$field_object = get_field_object( $field );
+		if ( ! $field_object || ! is_array( $field_object ) ) {
+			$included_fields[] = $field;
+		} else {
+			if ( isset( $field_object['relevanssi_exclude'] ) && 1 === $field_object['relevanssi_exclude'] ) {
+				continue;
+			}
+			$included_fields[] = $field;
+		}
+	}
+	return $included_fields;
 }
