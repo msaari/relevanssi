@@ -334,7 +334,7 @@ function relevanssi_delete_query_from_log( string $query ) {
 	$deleted = $wpdb->query(
 		$wpdb->prepare(
 			"DELETE FROM {$relevanssi_variables['log_table']} WHERE query = %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
-			$query
+			stripslashes( $query )
 		)
 	);
 
