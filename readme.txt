@@ -131,6 +131,7 @@ Each document database is full of useless words. All the little words that appea
 * Changed behaviour: The 'relevanssi_wpml_filter' filter function now runs on priority 9 instead of 10 to avoid problems with custom filters on relevanssi_hits_filter.
 * Minor fix: Handle cases of missing posts better; relevanssi_get_post() now returns a WP_Error if no post is found.
 * Minor fix: Search queries that contain apostrophes and quotes can now be deleted from the log.
+* Minor fix: Avoid a slow query on the searching tab when the throttle is not enabled.
 
 = 4.18.0 =
 * New feature: Relevanssi now shows the MySQL `max_allowed_packet` size on the debug tab.

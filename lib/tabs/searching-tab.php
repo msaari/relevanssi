@@ -60,7 +60,11 @@ function relevanssi_searching_tab() {
 	}
 
 	if ( ! $throttle ) {
-		$docs_count = $wpdb->get_var( 'SELECT COUNT(DISTINCT doc) FROM ' . $relevanssi_variables['relevanssi_table'] . ' WHERE doc != -1' );  // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
+		$docs_count = get_transient( 'relevanssi_docs_count' );
+		if ( ! $docs_count ) {
+			$docs_count = $wpdb->get_var( 'SELECT COUNT(DISTINCT doc) FROM ' . $relevanssi_variables['relevanssi_table'] . ' WHERE doc != -1' );  // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
+			set_transient( 'relevanssi_docs_count', $docs_count, WEEK_IN_SECONDS );
+		}
 	} else {
 		$docs_count = null;
 	}
