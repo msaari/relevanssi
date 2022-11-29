@@ -202,7 +202,7 @@ function relevanssi_default_post_ok( $post_ok, $post_id ) {
 		$current_user = wp_get_current_user();
 		if ( ! $post_ok && $current_user->ID > 0 ) {
 			$post = relevanssi_get_post( $post_id );
-			if ( $current_user->ID === (int) $post->post_author ) {
+			if ( ! is_wp_error( $post ) && $current_user->ID === (int) $post->post_author ) {
 				// Allow authors to see their own private posts.
 				$post_ok = true;
 			}

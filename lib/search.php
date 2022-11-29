@@ -437,8 +437,11 @@ function relevanssi_search( $args ) {
 					$hits[ intval( $i ) ] = relevanssi_generate_id_type( $doc );
 				}
 			} else {
-				$hits[ intval( $i ) ]                  = relevanssi_get_post( $doc );
-				$hits[ intval( $i ) ]->relevance_score = round( $weight, 2 );
+				$post_object = relevanssi_get_post( $doc );
+				if ( ! is_wp_error( $post_object ) ) {
+					$hits[ intval( $i ) ]                  = $post_object;
+					$hits[ intval( $i ) ]->relevance_score = round( $weight, 2 );
+				}
 
 				if ( isset( $missing_terms[ $doc ] ) ) {
 					$hits[ intval( $i ) ]->missing_terms = $missing_terms[ $doc ];
@@ -1381,7 +1384,7 @@ function relevanssi_calculate_weight( $match, $idf, $post_type_weights, $query )
 		$recency_cutoff_date = $recency_details['cutoff'];
 		if ( $recency_bonus ) {
 			$post = relevanssi_get_post( $match->doc );
-			if ( strtotime( $post->post_date ) > $recency_cutoff_date ) {
+			if ( ! is_wp_error( $post ) && strtotime( $post->post_date ) > $recency_cutoff_date ) {
 				$weight = $weight * $recency_bonus;
 			}
 		}
@@ -1404,10 +1407,10 @@ function relevanssi_calculate_weight( $match, $idf, $post_type_weights, $query )
 
 		$post        = relevanssi_get_post( $match->doc );
 		$clean_query = str_replace( '"', '', $query );
-		if ( stristr( $post->post_title, $clean_query ) !== false ) {
+		if ( ! is_wp_error( $post ) && stristr( $post->post_title, $clean_query ) !== false ) {
 			$weight *= $exact_match_boost['title'];
 		}
-		if ( stristr( $post->post_content, $clean_query ) !== false ) {
+		if ( ! is_wp_error( $post ) && stristr( $post->post_content, $clean_query ) !== false ) {
 			$weight *= $exact_match_boost['content'];
 		}
 	}

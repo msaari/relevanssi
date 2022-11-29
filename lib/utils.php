@@ -389,7 +389,7 @@ function relevanssi_get_an_object( $source ) {
 function relevanssi_get_attachment_suffix( $post ) : string {
 	if ( ! is_object( $post ) ) {
 		$post = relevanssi_get_post( $post );
-		if ( ! $post ) {
+		if ( is_wp_error( $post ) ) {
 			return '';
 		}
 	}
@@ -514,7 +514,8 @@ function relevanssi_get_permalink( $post = 0 ) {
  * @param int        $blog_id The blog ID, default -1. If -1, will be replaced
  * with the actual current blog ID from get_current_blog_id().
  *
- * @return object The post object.
+ * @return object|WP_Error The post object or a WP_Error object if the post
+ * doesn't exist.
  */
 function relevanssi_get_post( $post_id, int $blog_id = -1 ) {
 	if ( -1 === $blog_id ) {
@@ -534,6 +535,9 @@ function relevanssi_get_post( $post_id, int $blog_id = -1 ) {
 		$post = get_post( $post_id );
 
 		$relevanssi_post_array[ $post_id ] = $post;
+	}
+	if ( ! $post ) {
+		$post = new WP_Error( 'post_not_found', __( 'The requested post does not exist.' ) );
 	}
 	return $post;
 }
@@ -587,8 +591,9 @@ function relevanssi_get_post_meta_for_all_posts( array $post_ids, string $field 
  * @param int|string $post_id An ID, either an integer post ID or a
  * **type**id string for terms and users.
  *
- * @return WP_Post|WP_Term|WP_User An object, type of which depends on the
- * target object.
+ * @return WP_Post|WP_Term|WP_User|WP_Error An object, type of which depends on
+ * the target object. If relevanssi_get_post() doesn't find the post, this
+ * returns a WP_Error.
  */
 function relevanssi_get_post_object( $post_id ) {
 	$object = null;
@@ -678,14 +683,15 @@ function relevanssi_get_the_tags( string $before = '', string $separator = ', ',
  *
  * @param int|WP_Post $post The post ID or a post object.
  *
- * @return string The post title with highlights.
+ * @return string The post title with highlights and an empty string, if the
+ * post cannot be found.
  */
 function relevanssi_get_the_title( $post ) {
 	if ( is_numeric( $post ) ) {
 		$post = relevanssi_get_post( $post );
 	}
-	if ( ! is_object( $post ) ) {
-		return null;
+	if ( is_wp_error( $post ) ) {
+		return '';
 	}
 	if ( empty( $post->post_highlighted_title ) ) {
 		$post->post_highlighted_title = $post->post_title;

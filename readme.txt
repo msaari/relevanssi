@@ -128,6 +128,8 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+* Minor fix: Handle cases of missing posts better; relevanssi_get_post() now returns a WP_Error if no post is found.
+
 = 4.18.0 =
 * New feature: Relevanssi now shows the MySQL `max_allowed_packet` size on the debug tab.
 * New feature: Relevanssi now shows the indexing query on the debug tab.
