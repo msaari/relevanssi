@@ -1516,7 +1516,7 @@ function relevanssi_turn_off_options( array &$request, array $options ) {
  * @param boolean $positive If true, replace negative values and zeroes with
  * $default.
  */
-function relevanssi_update_floatval( array $request, string $option, bool $autoload = true, int $default = 0, bool $positive = false ) {
+function relevanssi_update_floatval( array $request, string $option, bool $autoload = true, float $default = 0, bool $positive = false ) {
 	if ( isset( $request[ $option ] ) ) {
 		$value = floatval( $request[ $option ] );
 		if ( ! $value ) {
