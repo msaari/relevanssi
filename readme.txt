@@ -128,6 +128,7 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+* Changed behaviour: The 'relevanssi_wpml_filter' filter function now runs on priority 9 instead of 10 to avoid problems with custom filters on relevanssi_hits_filter.
 * Minor fix: Handle cases of missing posts better; relevanssi_get_post() now returns a WP_Error if no post is found.
 
 = 4.18.0 =

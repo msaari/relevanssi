@@ -10,7 +10,7 @@
  * @see     https://www.relevanssi.com/
  */
 
-add_filter( 'relevanssi_hits_filter', 'relevanssi_wpml_filter' );
+add_filter( 'relevanssi_hits_filter', 'relevanssi_wpml_filter', 9 );
 add_filter( 'relevanssi_tag_before_tokenize', 'relevanssi_wpml_term_fix', 10, 4 );
 
 /**
