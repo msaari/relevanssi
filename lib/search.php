@@ -682,7 +682,11 @@ function relevanssi_do_query( &$query ) {
 	 *
 	 * @return array An array of post objects.
 	 */
-	foreach ( apply_filters( 'relevanssi_hits_to_show', $hits_to_show, $query ) as $post ) {
+	$hits_to_show = apply_filters( 'relevanssi_hits_to_show', $hits_to_show, $query );
+	if ( ! is_array( $hits_to_show ) ) {
+		$hits_to_show = array();
+	}
+	foreach ( $hits_to_show as $post ) {
 		if ( $highlight_title && $return_posts ) {
 			relevanssi_highlight_post_title( $post, $q );
 		}
