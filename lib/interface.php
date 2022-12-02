@@ -240,7 +240,7 @@ function relevanssi_options_form() {
 			'name'     => __( 'Debugging', 'relevanssi' ),
 			'require'  => 'tabs/debugging-tab.php',
 			'callback' => 'relevanssi_debugging_tab',
-			'save'     => false,
+			'save'     => true,
 		),
 	);
 

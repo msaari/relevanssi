@@ -68,6 +68,7 @@ function relevanssi_uninstall_free() {
 	delete_option( 'relevanssi_content_boost' );
 	delete_option( 'relevanssi_css' );
 	delete_option( 'relevanssi_db_version' );
+	delete_option( 'relevanssi_debugging_mode' );
 	delete_option( 'relevanssi_default_orderby' );
 	delete_option( 'relevanssi_disable_or_fallback' );
 	delete_option( 'relevanssi_disable_shortcodes' );

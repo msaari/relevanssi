@@ -147,31 +147,20 @@ function relevanssi_debugging_tab() {
 
 	<?php do_action( 'relevanssi_debugging_tab' ); ?>
 
+	<h2><?php esc_html_e( 'Debugging mode', 'relevanssi' ); ?></h2>
+
 	<?php
-}
+	$enable_debugging_mode = relevanssi_check( get_option( 'relevanssi_debugging_mode' ) );
+	?>
 
-/**
- * Generates the debugging view for a post.
- *
- * @param int $post_id ID of the post.
- *
- * @return string The debugging view in a div container.
- */
-function relevanssi_generate_db_post_view( int $post_id ) {
-	global $wpdb;
+	<fieldset>
+		<legend class="screen-reader-text"><?php esc_html_e( 'Enable the debugging mode.', 'relevanssi' ); ?></legend>
+		<label for='relevanssi_debugging_mode'>
+			<input type='checkbox' name='relevanssi_debugging_mode' id='relevanssi_debugging_mode' <?php echo esc_html( $enable_debugging_mode ); ?> />
+			<?php esc_html_e( 'Enable the debugging mode.', 'relevanssi' ); ?>
+		</label>
+		<p class="description"><?php esc_html_e( "Relevanssi support may ask you to enable the debugging mode. When you check this box, it's possible to see debugging information from the front-end.", 'relevanssi' ); ?></p>
+	</fieldset>
 
-	$element = '<div id="relevanssi_db_view_container">';
-
-	$post_object = get_post( $post_id );
-
-	if ( ! $post_object ) {
-		$element .= '<p>' . esc_html__( 'Post not found', 'relevanssi' ) . '</p>';
-		$element .= '</div>';
-		return $element;
-	}
-
-	$element .= '<p>' . esc_html( $post_object->post_content ) . '</p>';
-
-	$element .= '</div>';
-	return $element;
+	<?php
 }

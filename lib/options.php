@@ -89,6 +89,10 @@ function update_relevanssi_options( array $request ) {
 		}
 	}
 
+	if ( 'debugging' === $request['tab'] ) {
+		relevanssi_turn_off_options( $request, array( 'relevanssi_debugging_mode' ) );
+	}
+
 	relevanssi_process_weights_and_indexing( $request );
 	relevanssi_process_synonym_options( $request );
 	relevanssi_process_punctuation_options( $request );
@@ -103,6 +107,7 @@ function update_relevanssi_options( array $request ) {
 		'relevanssi_bg_col'                 => true,
 		'relevanssi_class'                  => true,
 		'relevanssi_css'                    => true,
+		'relevanssi_debugging_mode'         => true,
 		'relevanssi_default_orderby'        => true,
 		'relevanssi_disable_or_fallback'    => true,
 		'relevanssi_exact_match_bonus'      => true,

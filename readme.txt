@@ -128,6 +128,9 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.18.2 =
+* New feature: Relevanssi now has a debug mode that will help troubleshooting and support.
+
 = 4.18.1 =
 * New feature: New filter hook `relevanssi_add_highlight_and_tracking` can be used to force Relevanssi to add the `highlight` and tracking parameters to permalinks.
 * Changed behaviour: The 'relevanssi_wpml_filter' filter function now runs on priority 9 instead of 10 to avoid problems with custom filters on relevanssi_hits_filter.
@@ -180,6 +183,9 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: Prevents fatal errors from `relevanssi_strip_all_tags()`.
 
 == Upgrade notice ==
+= 4.18.2 =
+* Fixes problems with broken permalinks.
+
 = 4.18.1 =
 * Small bug fixes.
 
