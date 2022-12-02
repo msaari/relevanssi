@@ -71,6 +71,7 @@ $relevanssi_variables['plugin_version']                        = '4.18.1';
 
 require_once 'lib/admin-ajax.php';
 require_once 'lib/common.php';
+require_once 'lib/debug.php';
 require_once 'lib/didyoumean.php';
 require_once 'lib/excerpts-highlights.php';
 require_once 'lib/indexing.php';
