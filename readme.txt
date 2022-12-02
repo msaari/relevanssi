@@ -130,6 +130,7 @@ Each document database is full of useless words. All the little words that appea
 == Changelog ==
 = 4.18.2 =
 * New feature: Relevanssi now has a debug mode that will help troubleshooting and support.
+* Minor fix: Using the_permalink() caused problems with search result links. That is now fixed. Relevanssi no longer hooks onto `the_permalink` hook and instead uses `post_link` and other similar hooks.
 
 = 4.18.1 =
 * New feature: New filter hook `relevanssi_add_highlight_and_tracking` can be used to force Relevanssi to add the `highlight` and tracking parameters to permalinks.

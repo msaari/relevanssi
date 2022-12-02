@@ -69,8 +69,9 @@ add_filter( 'relevanssi_pre_excerpt_content', 'relevanssi_remove_page_builder_sh
 add_filter( 'relevanssi_post_content', 'relevanssi_remove_page_builder_shortcodes', 9 );
 
 // Permalink handling.
-add_filter( 'the_permalink', 'relevanssi_permalink', 10, 2 );
 add_filter( 'post_link', 'relevanssi_permalink', 10, 2 );
+add_filter( 'post_type_link', 'relevanssi_permalink', 10, 2 );
+add_filter( 'attachment_link', 'relevanssi_permalink', 10, 2 );
 add_filter( 'page_link', 'relevanssi_permalink', 10, 2 );
 add_filter( 'relevanssi_permalink', 'relevanssi_permalink' );
 

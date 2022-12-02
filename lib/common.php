@@ -1043,6 +1043,12 @@ function relevanssi_permalink( $link, $link_post = null ) {
 	} elseif ( is_int( $link_post ) ) {
 		$link_post = relevanssi_get_post( $link_post );
 	}
+	if ( is_object( $link_post ) && ! property_exists( $link_post, 'relevance_score' ) ) {
+		// get_permalink( $post_id ) uses get_post() which eliminates Relevanssi
+		// data from the post, thus we use relevanssi_get_post() to get it.
+		$link_post = relevanssi_get_post( $link_post->ID );
+	}
+
 	// Using property_exists() to avoid troubles from magic variables.
 	if ( is_object( $link_post ) && property_exists( $link_post, 'relevanssi_link' ) ) {
 		// $link_post->relevanssi_link can still be false.
