@@ -5,7 +5,7 @@ Tags: search, relevance, better search, product search, woocommerce search
 Requires at least: 4.9
 Tested up to: 6.1
 Requires PHP: 7.0
-Stable tag: 4.18.2
+Stable tag: 4.18.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -128,6 +128,7 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.18.3 =
 * New feature: New filter hook `relevanssi_blocked_field_types` can be used to control which ACF field types are excluded from the index. By default, this includes 'repeater', 'flexible_content', and 'group'.
 * New feature: New filter hook `relevanssi_acf_field_object` can be used to filter the ACF field object before Relevanssi indexes it. Return false to have Relevanssi ignore the field type.
 * New feature: Relevanssi debug mode has more features now.
@@ -191,6 +192,9 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: Prevents fatal errors from `relevanssi_strip_all_tags()`.
 
 == Upgrade notice ==
+= 4.18.3 =
+* Better ACF field controls, bug fixes.
+
 = 4.18.2 =
 * Fixes problems with broken permalinks.
 
