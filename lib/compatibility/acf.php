@@ -12,7 +12,7 @@
 
 add_action( 'acf/render_field_settings', 'relevanssi_acf_exclude_setting' );
 add_filter( 'relevanssi_search_ok', 'relevanssi_acf_relationship_fields' );
-add_filter( 'relevanssi_index_custom_fields', 'relevanssi_acf_exclude_fields' );
+add_filter( 'relevanssi_index_custom_fields', 'relevanssi_acf_exclude_fields', 10, 2 );
 
 /**
  * Disables Relevanssi in the ACF Relationship field post search.
@@ -122,7 +122,10 @@ function relevanssi_acf_exclude_setting( $field ) {
 	if ( ! function_exists( 'acf_render_field_setting' ) ) {
 		return;
 	}
-    acf_render_field_setting(
+	if ( 'clone' === $field['type'] ) {
+		return;
+	}
+	acf_render_field_setting(
 		$field,
 		array(
 			'label'        => __( 'Exclude from Relevanssi index', 'relevanssi' ),
@@ -140,22 +143,136 @@ function relevanssi_acf_exclude_setting( $field ) {
  *
  * Hooks on to relevanssi_index_custom_fields.
  *
- * @param array $fields The list of custom fields to index.
+ * @param array $fields  The list of custom fields to index.
+ * @param int   $post_id The post ID.
  *
  * @return array Filtered list of custom fields.
  */
-function relevanssi_acf_exclude_fields( $fields ) {
+function relevanssi_acf_exclude_fields( $fields, $post_id ) {
 	$included_fields = array();
+	$excluded_fields = array();
+
+	/**
+	 * Filters the types of ACF fields to exclude from indexing.
+	 *
+	 * By default, blocks 'repeater', 'flexible_content' and 'group' are
+	 * excluded from Relevanssi indexing. You can add other field types here.
+	 *
+	 * @param array $excluded_field_types The field types to exclude.
+	 */
+	$blocked_field_types = apply_filters(
+		'relevanssi_blocked_field_types',
+		array( 'repeater', 'flexible_content', 'group' )
+	);
+
 	foreach ( $fields as $field ) {
 		$field_object = get_field_object( $field );
+
 		if ( ! $field_object || ! is_array( $field_object ) ) {
-			$included_fields[] = $field;
-		} else {
+			$field_id = relevanssi_acf_get_field_id( $field, $post_id );
+			if ( ! $field_id ) {
+				// No field ID -> not an ACF field. Include.
+				$included_fields[] = $field;
+			} else {
+				/*
+				 * This field has a field ID, but get_field_object() does not
+				 * return a field object. This may be a clone field, in which
+				 * case we can try to get the field object from the field ID.
+				 * Clone fields have keys like field_xxx_field_yyy, where the
+				 * field_yyy is the part we need.
+				 */
+				$field_id     = preg_replace( '/.*_(field_.*)/', '$1', $field_id );
+				$field_object = get_field_object( $field_id );
+			}
+		}
+		if ( $field_object ) {
+			/**
+			 * Filters the ACF field object.
+			 *
+			 * If the filter returns a false value, Relevanssi will not index
+			 * the field.
+			 *
+			 * @param array $field_object The field object.
+			 * @param int   $post_id      The post ID.
+			 *
+			 * @return array The filtered field object.
+			 */
+			$field_object = apply_filters(
+				'relevanssi_acf_field_object',
+				$field_object,
+				$post_id
+			);
+
+			if ( ! $field_object ) {
+				continue;
+			}
 			if ( isset( $field_object['relevanssi_exclude'] ) && 1 === $field_object['relevanssi_exclude'] ) {
+				continue;
+			}
+			if ( relevanssi_acf_is_parent_excluded( $field_object ) ) {
+				continue;
+			}
+			if ( isset( $field_object['type'] ) && in_array( $field_object['type'], $blocked_field_types, true ) ) {
 				continue;
 			}
 			$included_fields[] = $field;
 		}
 	}
 	return $included_fields;
+}
+
+/**
+ * Checks if the field has an excluded parent field.
+ *
+ * If the field has a "parent" value set, this function gets the parent field
+ * post based on the post ID in the "parent" value. This is done recursively
+ * until we reach the top or find an excluded parent.
+ *
+ * @param array $field_object The field object.
+ *
+ * @return bool Returns true if the post has an excluded parent.
+ */
+function relevanssi_acf_is_parent_excluded( $field_object ) {
+	if ( isset( $field_object['parent'] ) ) {
+		$parent = $field_object['parent'];
+		if ( $parent ) {
+			$parent_field_post = get_post( $parent );
+			if ( $parent_field_post ) {
+				$parent_object = get_field_object( $parent_field_post->post_name );
+				if ( $parent_object ) {
+					if ( isset( $parent_object['relevanssi_exclude'] ) && 1 === $parent_object['relevanssi_exclude'] ) {
+						return true;
+					}
+					return relevanssi_acf_is_parent_excluded( $parent_object );
+				}
+			}
+		}
+	}
+	return false;
+}
+
+/**
+ * Gets the field ID from the field name.
+ *
+ * The field ID is stored in the postmeta table with the field name prefixed
+ * with an underscore as the key.
+ *
+ * @param string $field_name The field name.
+ * @param int    $post_id    The post ID.
+ *
+ * @return string The field ID.
+ */
+function relevanssi_acf_get_field_id( $field_name, $post_id ) {
+	global $wpdb;
+
+	$field_id = $wpdb->get_var(
+		$wpdb->prepare(
+			"SELECT meta_value FROM $wpdb->postmeta
+			WHERE post_id = %d
+			AND meta_key = %s",
+			$post_id,
+			'_' . $field_name
+		)
+	);
+	return $field_id;
 }
