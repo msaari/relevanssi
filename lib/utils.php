@@ -1512,7 +1512,7 @@ function relevanssi_turn_off_options( array &$request, array $options ) {
  * @param array   $request  An array of option values.
  * @param string  $option   The key to check.
  * @param boolean $autoload Should the option autoload, default true.
- * @param int     $default  The default value if floatval() fails, default 0.
+ * @param float   $default  The default value if floatval() fails, default 0.
  * @param boolean $positive If true, replace negative values and zeroes with
  * $default.
  */
