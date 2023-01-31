@@ -1556,6 +1556,10 @@ function relevanssi_add_excerpt( &$post, $query ) {
 /**
  * Runs html_entity_decode(), then restores entities inside data attributes.
  *
+ * First replace all &quot; entities inside data attributes with REL_QUOTE,
+ * then decode, then replace REL_QUOTE with &quot; to restore the data
+ * attributes.
+ *
  * @uses html_entity_decode
  *
  * @param string $content The content to decode.
@@ -1565,6 +1569,15 @@ function relevanssi_add_excerpt( &$post, $query ) {
  * @return string The decoded content.
  */
 function relevanssi_entity_decode( $content, $flags = ENT_QUOTES, $charset = 'UTF-8' ) {
+	if ( preg_match_all( '/data-[\w-]+?="([^"]*?)"/sm', $content, $matches ) ) {
+		$source  = array();
+		$replace = array();
+		foreach ( $matches[1] as $match ) {
+			$source[]  = $match;
+			$replace[] = str_replace( '&quot;', 'REL_QUOTE', $match );
+		}
+		$content = str_replace( $source, $replace, $content );
+	}
 	$content = html_entity_decode( $content, $flags, $charset );
 	if ( preg_match_all( '/data-[\w-]+?="([^"]*?)"/sm', $content, $matches ) ) {
 		$source  = array();
@@ -1576,5 +1589,6 @@ function relevanssi_entity_decode( $content, $flags = ENT_QUOTES, $charset = 'UT
 		$content = str_replace( $source, $replace, $content );
 	}
 
+	$content = str_replace( 'REL_QUOTE', '&quot;', $content );
 	return $content;
 }
