@@ -92,6 +92,11 @@ function relevanssi_indexing_tab() {
 	$docs_count  = get_option( 'relevanssi_doc_count', 0 );
 	$terms_count = get_option( 'relevanssi_terms_count', 0 );
 	$lowest_doc  = $wpdb->get_var( 'SELECT doc FROM ' . $relevanssi_variables['relevanssi_table'] . ' WHERE doc > 0 ORDER BY doc ASC LIMIT 1' );  // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
+	if ( null === $lowest_doc ) {
+		// The database table is empty or doesn't exist.
+		$lowest_doc = 0;
+		relevanssi_create_database_tables( 0 );
+	}
 
 	if ( RELEVANSSI_PREMIUM ) {
 		$user_count    = get_option( 'relevanssi_user_count', 0 );
