@@ -112,6 +112,8 @@ function relevanssi_query( $posts, $query = false ) {
 function relevanssi_search( $args ) {
 	global $wpdb;
 
+	relevanssi_is_debug() && relevanssi_debug_search_settings();
+
 	/**
 	 * Filters the search parameters.
 	 *
