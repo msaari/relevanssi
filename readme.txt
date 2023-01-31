@@ -130,6 +130,7 @@ Each document database is full of useless words. All the little words that appea
 == Changelog ==
 * New feature: New filter hook `relevanssi_blocked_field_types` can be used to control which ACF field types are excluded from the index. By default, this includes 'repeater', 'flexible_content', and 'group'.
 * New feature: New filter hook `relevanssi_acf_field_object` can be used to filter the ACF field object before Relevanssi indexes it. Return false to have Relevanssi ignore the field type.
+* New feature: Relevanssi debug mode has more features now.
 * Minor fix: ACF field exclusion is now recursive. If a parent field is excluded, all sub fields will also be excluded.
 * Minor fix: Handling of data attributes in in-document highlighting had a bug that caused problems with third-party plugins.
 * Minor fix: The indexing settings tab now checks if the wp_relevanssi database table exists and will create the table if it doesn't.
