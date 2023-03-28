@@ -137,7 +137,7 @@ function relevanssi_debugging_tab() {
 		relevanssi_valid_status_array(),
 		false,
 		relevanssi_post_type_restriction(),
-		0
+		'LIMIT 0'
 	);
 	?>
 	<p><?php esc_html_e( 'Indexing query', 'relevanssi' ); ?>:</p>
