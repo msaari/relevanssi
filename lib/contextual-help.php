@@ -54,7 +54,7 @@ function rlv_partial_inside_words( $query ) {
 			'id'      => 'relevanssi-search-restrictions',
 			'title'   => __( 'Restrictions', 'relevanssi' ),
 			'content' => '<ul>' .
-				'<li>' . __( 'If you want the general search to target all posts, but have a single search form target only certain posts, you can add a hidden input variable to the search form. ', 'relevanssi' ) . '</li>' .
+				'<li>' . __( 'If you want the general search to target all posts, but have a single search form target only certain posts, you can add a hidden input variable to the search form.', 'relevanssi' ) . '</li>' .
 				'<li>' . __( 'For example in order to restrict the search to categories 10, 14 and 17, you could add this to the search form:', 'relevanssi' ) .
 				'<pre>&lt;input type="hidden" name="cats" value="10,14,17" /&gt;</pre></li>' .
 				'<li>' . __( 'To restrict the search to posts tagged with alfa AND beta, you could add this to the search form:', 'relevanssi' ) .
