@@ -47,7 +47,7 @@ function relevanssi_search_tab() {
 				}
 				return null;
 			},
-			get_option( 'relevanssi_index_post_types' )
+			get_option( 'relevanssi_index_post_types', array() )
 		)
 	);
 	if ( 'on' === get_option( 'relevanssi_index_users' ) ) {

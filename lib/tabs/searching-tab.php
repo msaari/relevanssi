@@ -35,7 +35,7 @@ function relevanssi_searching_tab() {
 	$cat                 = get_option( 'relevanssi_cat' );
 	$excat               = get_option( 'relevanssi_excat' );
 	$exclude_posts       = get_option( 'relevanssi_exclude_posts' );
-	$index_post_types    = get_option( 'relevanssi_index_post_types' );
+	$index_post_types    = get_option( 'relevanssi_index_post_types', array() );
 	$index_users         = get_option( 'relevanssi_index_users' );
 	$index_terms         = get_option( 'relevanssi_index_taxonomies' );
 

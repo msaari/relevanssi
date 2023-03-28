@@ -213,7 +213,7 @@ function relevanssi_post_type_restriction() {
 	$post_types  = array();
 	$restriction = '';
 
-	$types = get_option( 'relevanssi_index_post_types' );
+	$types = get_option( 'relevanssi_index_post_types', array() );
 	if ( ! is_array( $types ) ) {
 		$types = array();
 	}
@@ -774,7 +774,7 @@ function relevanssi_update_child_posts( $new_status, $old_status, $post ) {
 		return $did_nothing;
 	}
 
-	$post_types  = get_option( 'relevanssi_index_post_types' );
+	$post_types  = get_option( 'relevanssi_index_post_types', array() );
 	$args        = array(
 		'post_parent' => $post->ID,
 		'post_type'   => $post_types,

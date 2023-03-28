@@ -19,7 +19,7 @@
 function relevanssi_indexing_tab() {
 	global $wpdb, $relevanssi_variables;
 
-	$index_post_types      = get_option( 'relevanssi_index_post_types' );
+	$index_post_types      = get_option( 'relevanssi_index_post_types', array() );
 	$index_taxonomies_list = get_option( 'relevanssi_index_taxonomies_list' );
 	$index_comments        = get_option( 'relevanssi_index_comments' );
 	$index_fields          = get_option( 'relevanssi_index_fields' );

@@ -138,7 +138,7 @@ function relevanssi_search_form( $atts ) {
 				}
 			} elseif ( 'dropdown' === $key && 'post_type' === $value ) {
 				$field = '<select name="post_type">';
-				$types = get_option( 'relevanssi_index_post_types' );
+				$types = get_option( 'relevanssi_index_post_types', array() );
 				if ( ! is_array( $types ) ) {
 					$types = array();
 				}
