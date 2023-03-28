@@ -116,7 +116,7 @@ function relevanssi_searching_tab() {
 			<?php // Translators: name of the query variable. ?>
 			<p class="description"><?php printf( esc_html__( 'If you want to override this or use multi-layered ordering (eg. first order by relevance, but sort ties by post title), you can use the %s query variable. See Help for more information.', 'relevanssi' ), '<code>orderby</code>' ); ?></p>
 			<?php if ( RELEVANSSI_PREMIUM ) { ?>
-			<p class="description"><?php esc_html_e( ' If you want date-based results, see the recent post bonus in the Weights section.', 'relevanssi' ); ?></p>
+			<p class="description"><?php esc_html_e( 'If you want date-based results, see the recent post bonus in the Weights section.', 'relevanssi' ); ?></p>
 			<?php } // End if ( RELEVANSSI_PREMIUM ). ?>
 		</td>
 	</tr>
