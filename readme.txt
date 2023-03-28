@@ -129,6 +129,7 @@ Each document database is full of useless words. All the little words that appea
 
 == Changelog ==
 * New feature: New filter hook `relevanssi_highlight_query` lets you modify the search query for highlighting.
+* Changed behavior: Relevanssi no longer searches in feed searches by default.
 
 = 4.18.3 =
 * New feature: New filter hook `relevanssi_blocked_field_types` can be used to control which ACF field types are excluded from the index. By default, this includes 'repeater', 'flexible_content', and 'group'.

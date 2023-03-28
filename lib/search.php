@@ -50,6 +50,10 @@ function relevanssi_query( $posts, $query = false ) {
 		$search_ok = false; // No search term.
 	}
 
+	if ( $query->is_feed ) {
+		$search_ok = false;
+	}
+
 	if ( $query->get( 'relevanssi' ) ) {
 		$search_ok = true; // Manual override, always search.
 	}
