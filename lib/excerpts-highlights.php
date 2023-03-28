@@ -571,6 +571,17 @@ function relevanssi_highlight_terms( $content, $query, $convert_entities = false
 	 */
 	do_action( 'relevanssi_highlight_tokenize' );
 
+	/**
+	 * Filters the query during highlighting before tokenizing it.
+	 *
+	 * This filter hook allows you to modify the search query when it is used
+	 * in highlighting. You could, for example, remove unwanted words from the
+	 * search term or to force phrase highlighting for non-phrase searches.
+	 *
+	 * @param string $query The search query.
+	 */
+	$query = apply_filters( 'relevanssi_highlight_query', $query );
+
 	// Setting min_word_length to 2, in order to avoid 1-letter highlights.
 	$min_word_length = 2;
 	/**
