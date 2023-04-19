@@ -128,6 +128,9 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.19.0 =
+* New feature: Logging now includes a session ID (based on user ID for logged-in users, HTTP user agent for others, and current time, stable for 10 minutes per user). This is used to remove duplicate searches from live searches, keeping only the final search query.
+
 = 4.18.4 =
 * New feature: New filter hook `relevanssi_highlight_query` lets you modify the search query for highlighting.
 * Changed behavior: Relevanssi no longer searches in feed searches by default.

@@ -73,18 +73,68 @@ function relevanssi_update_log( $query, $hits ) {
 	if ( $ok_to_log ) {
 		global $wpdb, $relevanssi_variables;
 
+		if ( ! $user ) {
+			$session_id = md5( $user_agent . round( time() / 600 ) * 600 );
+		} else {
+			$session_id = md5( $user->ID . round( time() / 600 ) * 600 );
+		}
+
+		relevanssi_delete_session_logs( $session_id, $query );
+
 		$wpdb->query(
 			$wpdb->prepare(
-				'INSERT INTO ' . $relevanssi_variables['log_table'] . ' (query, hits, user_id, ip, time) VALUES (%s, %d, %d, %s, NOW())', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				'INSERT INTO ' . $relevanssi_variables['log_table'] . ' (query, hits, user_id, ip, time, session_id) VALUES (%s, %d, %d, %s, NOW(), %s)', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 				$query,
 				intval( $hits ),
 				$user->ID,
-				$ip
+				$ip,
+				$session_id
 			)
 		);
+
 		return true;
 	}
 	return false;
+}
+
+/**
+ * Deletes partial string match log entries from the same session.
+ *
+ * Deletes all log entries that match the beginning of the current query. This
+ * is used to avoid logging partial string matches from live search.
+ *
+ * @global object $wpdb                 The WordPress database interface.
+ * @global array  $relevanssi_variables The global Relevanssi variables, used
+ * for database table names.
+ *
+ * @param string $session_id The session ID.
+ * @param string $query      The current query.
+ */
+function relevanssi_delete_session_logs( string $session_id, string $query ) {
+	global $wpdb, $relevanssi_variables;
+
+	// Get all log entries with the same session ID.
+	$session_queries = $wpdb->get_results(
+		$wpdb->prepare(
+			'SELECT * FROM ' . $relevanssi_variables['log_table'] . ' WHERE session_id = %s', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$session_id
+		)
+	);
+
+	if ( $session_queries ) {
+		$deleted_entries = array();
+		foreach ( $session_queries as $session_query ) {
+			// If current query begins with the session query, remove the $session_query.
+			if ( 0 === relevanssi_stripos( $query, $session_query->query ) ) {
+				$deleted_entries[] = $session_query->id;
+			}
+		}
+		if ( $deleted_entries ) {
+			$wpdb->query(
+				'DELETE FROM ' . $relevanssi_variables['log_table'] . ' WHERE id IN (' . implode( ',', $deleted_entries ) . ')' // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			);
+		}
+	}
 }
 
 /**

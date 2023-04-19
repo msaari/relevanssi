@@ -42,6 +42,23 @@ class LoggingTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Tests partial query string removal.
+	 *
+	 * @group new
+	 */
+	public function test_session_id() {
+		relevanssi_update_log( 'tes', 1 );
+		relevanssi_update_log( 'test', 1 );
+		relevanssi_update_log( 'testi', 1 );
+		relevanssi_update_log( 'testin', 1 );
+		relevanssi_update_log( 'testing', 1 );
+
+		global $wpdb;
+		$count = $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}relevanssi_log WHERE query LIKE 'tes%'" );
+		$this->assertEquals( 1, $count );
+	}
+
+	/**
 	 * Tests relevanssi_trim_logs().
 	 */
 	public function test_trim_logs() {
