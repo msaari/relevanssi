@@ -38,5 +38,10 @@
     "scripts": {
         "lint": "./vendor/bin/phpcs -p -s",
         "test": "./vendor/bin/phpunit"
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
     }
 }
