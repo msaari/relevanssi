@@ -5,7 +5,7 @@ Tags: search, relevance, better search, product search, woocommerce search
 Requires at least: 4.9
 Tested up to: 6.2
 Requires PHP: 7.0
-Stable tag: 4.18.4
+Stable tag: 4.19.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -189,16 +189,10 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: In-document highlighting could break certain elements thanks to Relevanssi messing up data attributes.
 * Minor fix: Relevanssi now recursively runs `relevanssi_block_to_render` and the CSS `relevanssi_noindex` filtering for inner blocks.
 
-= 4.16.0 =
-* New feature: Oxygen compatibility has been upgraded to support JSON data from Oxygen 4. This is still in early stages, so feedback from Oxygen users is welcome.
-* New feature: New filter hook `relevanssi_oxygen_element` is used to filter Oxygen JSON elements. The earlier `relevanssi_oxygen_section_filters` and `relevanssi_oxygen_section_content` filters are no longer used with Oxygen 4; this hook is the only way to filter Oxygen elements.
-* Changed behaviour: Relevanssi now applies `remove_accents()` to all strings. This is because default database collations do not care for accents and having accents may cause missing information in indexing. If you use a database collation that doesn't ignore accents, make sure you disable this filter.
-* Minor fix: Relevanssi used `the_category` filter with too few parameters. The missing parameters have been added.
-* Minor fix: Stops drafts and pending posts from showing up in Relevanssi Live Ajax Searches.
-* Minor fix: Phrases weren't used in some cases where a multiple-word phrase looked like a single-word phrase.
-* Minor fix: Prevents fatal errors from `relevanssi_strip_all_tags()`.
-
 == Upgrade notice ==
+= 4.19.0 =
+* Logs now include a session ID.
+
 = 4.18.4 =
 * No more searching in RSS feeds, new filter hook.
 
