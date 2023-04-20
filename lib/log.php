@@ -125,7 +125,7 @@ function relevanssi_delete_session_logs( string $session_id, string $query ) {
 		$deleted_entries = array();
 		foreach ( $session_queries as $session_query ) {
 			// If current query begins with the session query, remove the $session_query.
-			if ( 0 === relevanssi_stripos( $query, $session_query->query ) ) {
+			if ( $query !== $session_query->query && 0 === relevanssi_stripos( $query, $session_query->query ) ) {
 				$deleted_entries[] = $session_query->id;
 			}
 		}
