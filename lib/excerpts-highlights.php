@@ -170,7 +170,8 @@ function relevanssi_do_excerpt( $t_post, $query, $excerpt_length = null, $excerp
 		$content
 	);
 
-	if ( 'OR' === get_option( 'relevanssi_implicit_operator' ) || 'on' === get_option( 'relevanssi_index_synonyms' ) ) {
+	if ( 'OR' === get_option( 'relevanssi_implicit_operator' )
+		|| 'on' === get_option( 'relevanssi_index_synonyms' ) ) {
 		$query = relevanssi_add_synonyms( $query );
 	}
 

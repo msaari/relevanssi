@@ -137,7 +137,7 @@ function relevanssi_indexing_tab() {
 		</td>
 	</tr>
 	<tr>
-		<th scope="row"><?php esc_html_e( 'State of the index', 'relevanssi' ); ?></td>
+		<th scope="row"><?php esc_html_e( 'State of the index', 'relevanssi' ); ?></th>
 		<td id="stateoftheindex"><p><?php echo esc_html( $docs_count ); ?> <?php echo esc_html( _n( 'document in the index.', 'documents in the index.', $docs_count, 'relevanssi' ) ); ?>
 	<?php if ( RELEVANSSI_PREMIUM ) : ?>
 		<br /><?php echo esc_html( $user_count ); ?> <?php echo esc_html( _n( 'user in the index.', 'users in the index.', $user_count, 'relevanssi' ) ); ?><br />

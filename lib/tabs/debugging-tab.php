@@ -103,7 +103,7 @@ function relevanssi_debugging_tab() {
 
 	<?php echo $how_relevanssi_sees; // phpcs:ignore WordPress.Security.EscapeOutput ?>
 
-	<h2><?php esc_html_e( 'How does the post look like in the database?', 'relevanssi' ); ?></h2>
+	<h2><?php esc_html_e( 'What does the post look like in the database?', 'relevanssi' ); ?></h2>
 
 	<p><?php esc_html_e( "This feature will show you how the post looks like in the database. It can sometimes be very helpful for debugging why a post isn't indexed the way you expect it to be.", 'relevanssi' ); ?></p>
 
