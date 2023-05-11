@@ -121,11 +121,13 @@ function relevanssi_do_excerpt( $t_post, $query, $excerpt_length = null, $excerp
 	$content = preg_replace_callback( "/$pattern/", 'strip_shortcode_tag', $content );
 
 	// Add the custom field content.
-	if ( 'on' === get_option( 'relevanssi_excerpt_custom_fields' ) ) {
+	if ( 'on' === get_option( 'relevanssi_excerpt_custom_fields' )
+		&& 'off' === get_option( 'relevanssi_excerpt_specific_fields' ) ) {
 		if ( 'user' === $post->post_type && function_exists( 'relevanssi_get_user_custom_field_content' ) ) {
 			$content .= relevanssi_get_user_custom_field_content( $post->ID );
 		} else {
-			$content .= relevanssi_get_custom_field_content( $post->ID );
+			$field_content = relevanssi_get_custom_field_content( $post->ID );
+			$content      .= $field_content[0];
 		}
 	}
 
@@ -176,6 +178,36 @@ function relevanssi_do_excerpt( $t_post, $query, $excerpt_length = null, $excerp
 	$excerpts = relevanssi_create_excerpts( $content, $terms, $query, $excerpt_length, $excerpt_type );
 	if ( function_exists( 'relevanssi_add_source_to_excerpts' ) ) {
 		relevanssi_add_source_to_excerpts( $excerpts, 'content' );
+	}
+
+	$custom_field_excerpts = array();
+	if ( 'on' === get_option( 'relevanssi_excerpt_specific_fields' )
+		&& 'on' === get_option( 'relevanssi_excerpt_custom_fields' ) ) {
+		$custom_field_content  = relevanssi_get_custom_field_content( $post->ID );
+		$custom_field_excerpts = array();
+		foreach ( $custom_field_content as $field => $value ) {
+			$field_excerpts = relevanssi_create_excerpts(
+				$value,
+				$terms,
+				$query,
+				$excerpt_length,
+				$excerpt_type
+			);
+			if ( function_exists( 'relevanssi_add_source_to_excerpts' ) ) {
+				relevanssi_add_source_to_excerpts( $field_excerpts, $field );
+				$field_excerpts = array_filter(
+					$field_excerpts,
+					function( $excerpt ) {
+						return $excerpt['hits'];
+					}
+				);
+			} elseif ( is_array( $field_excerpts ) ) {
+				if ( $field_excerpts[0]['hits'] > $excerpts[0]['hits'] ) {
+					$excerpts = $field_excerpts;
+				}
+			}
+			$custom_field_excerpts = array_merge( $custom_field_excerpts, $field_excerpts );
+		}
 	}
 
 	$comment_excerpts = array();
@@ -237,7 +269,8 @@ function relevanssi_do_excerpt( $t_post, $query, $excerpt_length = null, $excerp
 			$post->ID,
 			$excerpts,
 			$comment_excerpts,
-			$excerpt_excerpts
+			$excerpt_excerpts,
+			$custom_field_excerpts
 		);
 	}
 
@@ -1385,15 +1418,21 @@ function relevanssi_add_accent_variations( $word ) {
  *
  * @param int $post_id The post ID.
  *
- * @return string The custom field content.
+ * @return array The custom field content in an array. The array either has the
+ * the field names as keys (if relevanssi_excerpt_specific_fields is on) or has
+ * everything in one string in index 0 (if relevanssi_excerpt_specific_fields is
+ * off).
  */
-function relevanssi_get_custom_field_content( $post_id ) {
-	$custom_field_content = '';
+function relevanssi_get_custom_field_content( $post_id ) : array {
+	$custom_field_content = array();
+	$custom_field_string  = '';
 
 	$custom_fields = relevanssi_generate_list_of_custom_fields( $post_id );
 
+	$child_pdf_content = array();
 	if ( function_exists( 'relevanssi_get_child_pdf_content' ) ) {
-		$custom_field_content .= ' ' . relevanssi_get_child_pdf_content( $post_id );
+		$child_pdf_content = relevanssi_get_child_pdf_content( $post_id );
+		$custom_fields[]   = '_relevanssi_child_pdf_content';
 	}
 
 	foreach ( $custom_fields as $field ) {
@@ -1408,6 +1447,9 @@ function relevanssi_get_custom_field_content( $post_id ) {
 			$field,
 			$post_id
 		);
+		if ( '_relevanssi_child_pdf_content' === $field ) {
+			$values = $child_pdf_content;
+		}
 		if ( empty( $values ) || ! is_array( $values ) ) {
 			continue;
 		}
@@ -1431,22 +1473,46 @@ function relevanssi_get_custom_field_content( $post_id ) {
 				);
 				$value = $value_as_string;
 			}
-			$custom_field_content .= ' ' . $value;
+			if ( ! isset( $custom_field_content[ $field ] ) ) {
+				$custom_field_content[ $field ] = '';
+			}
+			$custom_field_content[ $field ] .= ' ' . $value;
+			$custom_field_string            .= ' ' . $value;
 		}
 	}
-	/**
-	 * Filters the custom field content for excerpt use.
-	 *
-	 * @param string $custom_field_content Custom field content for excerpts.
-	 * @param int    $post_id              The post ID.
-	 * @param array  $custom_fields        The list of custom field names.
-	 */
-	return apply_filters(
-		'relevanssi_excerpt_custom_field_content',
-		$custom_field_content,
-		$post_id,
-		$custom_fields
-	);
+
+	if ( 'off' === get_option( 'relevanssi_excerpt_specific_fields' ) ) {
+		return array(
+			/**
+			 * Filters the custom field content for excerpt use.
+			 *
+			 * @param string $custom_field_content Custom field content for excerpts.
+			 * @param int    $post_id              The post ID.
+			 * @param array  $custom_fields        The list of custom field names.
+			 */
+			apply_filters(
+				'relevanssi_excerpt_custom_field_content',
+				$custom_field_string,
+				$post_id,
+				$custom_fields
+			),
+		);
+	} else {
+		/**
+		 * Filters the custom field content for excerpt use.
+		 *
+		 * Here the custom field content is in an array, with the field names as
+		 * keys.
+		 *
+		 * @param array $custom_field_content Custom field content for excerpts.
+		 * @param int   $post_id              The post ID.
+		 */
+		return apply_filters(
+			'relevanssi_excerpt_specific_custom_field_content',
+			$custom_field_content,
+			$post_id
+		);
+	}
 }
 
 /**

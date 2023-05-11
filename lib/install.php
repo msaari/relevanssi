@@ -86,6 +86,7 @@ function _relevanssi_install() {
 	add_option( 'relevanssi_excerpt_allowable_tags', '' );
 	add_option( 'relevanssi_excerpt_custom_fields', 'off' );
 	add_option( 'relevanssi_excerpt_length', '30' );
+	add_option( 'relevanssi_excerpt_specific_fields', 'off' );
 	add_option( 'relevanssi_excerpt_type', 'words' );
 	add_option( 'relevanssi_excerpts', 'on' );
 	add_option( 'relevanssi_exclude_posts', '' );

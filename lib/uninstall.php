@@ -78,6 +78,7 @@ function relevanssi_uninstall_free() {
 	delete_option( 'relevanssi_excerpt_allowable_tags' );
 	delete_option( 'relevanssi_excerpt_custom_fields' );
 	delete_option( 'relevanssi_excerpt_length' );
+	delete_option( 'relevanssi_excerpt_specific_fields' );
 	delete_option( 'relevanssi_excerpt_type' );
 	delete_option( 'relevanssi_excerpts' );
 	delete_option( 'relevanssi_exclude_posts' );

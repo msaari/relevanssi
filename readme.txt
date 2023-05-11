@@ -128,7 +128,10 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+* New feature: Relevanssi can now create custom field specific excerpts that come from one custom field only and know which field that is.
 * New feature: You can see the list of indexed custom field names in the indexing and excerpt settings.
+* New feature: New filter hook `relevanssi_excerpt_specific_custom_field_content` filters the excerpt custom field content if `relevanssi_excerpt_specific_fields` is enabled.
+* Changed behaviour: The `relevanssi_get_custom_field_content()` function now returns an array instead of string. If `relevanssi_excerpt_specific_fields` is off, the previous string return value is returned as a single-item array with the string in index 0. If the setting is on, the array keys are the field names.
 * Minor fix: The stopword population during the multisite installation used the wrong database table, leading to failed population.
 
 = 4.19.0 =

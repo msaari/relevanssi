@@ -14,23 +14,24 @@
  * Prints out the excerpts tab in Relevanssi settings.
  */
 function relevanssi_excerpts_tab() {
-	$excerpts               = get_option( 'relevanssi_excerpts' );
-	$excerpt_length         = get_option( 'relevanssi_excerpt_length' );
-	$excerpt_type           = get_option( 'relevanssi_excerpt_type' );
-	$excerpt_allowable_tags = get_option( 'relevanssi_excerpt_allowable_tags' );
-	$excerpt_custom_fields  = get_option( 'relevanssi_excerpt_custom_fields' );
-	$highlight              = get_option( 'relevanssi_highlight' );
-	$txt_col                = get_option( 'relevanssi_txt_col' );
-	$bg_col                 = get_option( 'relevanssi_bg_col' );
-	$css                    = get_option( 'relevanssi_css' );
-	$class                  = get_option( 'relevanssi_class' );
-	$highlight_title        = get_option( 'relevanssi_hilite_title' );
-	$highlight_docs         = get_option( 'relevanssi_highlight_docs' );
-	$highlight_coms         = get_option( 'relevanssi_highlight_comments' );
-	$show_matches           = get_option( 'relevanssi_show_matches' );
-	$show_matches_text      = get_option( 'relevanssi_show_matches_text' );
-	$index_fields           = get_option( 'relevanssi_index_fields' );
-	$expand_highlights      = get_option( 'relevanssi_expand_highlights' );
+	$excerpts                 = get_option( 'relevanssi_excerpts' );
+	$excerpt_length           = get_option( 'relevanssi_excerpt_length' );
+	$excerpt_type             = get_option( 'relevanssi_excerpt_type' );
+	$excerpt_allowable_tags   = get_option( 'relevanssi_excerpt_allowable_tags' );
+	$excerpt_custom_fields    = get_option( 'relevanssi_excerpt_custom_fields' );
+	$excerpt_specific_fields  = get_option( 'relevanssi_excerpt_specific_fields' );
+	$highlight                = get_option( 'relevanssi_highlight' );
+	$txt_col                  = get_option( 'relevanssi_txt_col' );
+	$bg_col                   = get_option( 'relevanssi_bg_col' );
+	$css                      = get_option( 'relevanssi_css' );
+	$class                    = get_option( 'relevanssi_class' );
+	$highlight_title          = get_option( 'relevanssi_hilite_title' );
+	$highlight_docs           = get_option( 'relevanssi_highlight_docs' );
+	$highlight_coms           = get_option( 'relevanssi_highlight_comments' );
+	$show_matches             = get_option( 'relevanssi_show_matches' );
+	$show_matches_text        = get_option( 'relevanssi_show_matches_text' );
+	$index_fields             = get_option( 'relevanssi_index_fields' );
+	$expand_highlights        = get_option( 'relevanssi_expand_highlights' );
 
 	if ( '#' !== substr( $txt_col, 0, 1 ) ) {
 		$txt_col = '#' . $txt_col;
@@ -43,23 +44,24 @@ function relevanssi_excerpts_tab() {
 
 	$show_matches_text = stripslashes( $show_matches_text );
 
-	$excerpts              = relevanssi_check( $excerpts );
-	$excerpt_custom_fields = relevanssi_check( $excerpt_custom_fields );
-	$highlight_title       = relevanssi_check( $highlight_title );
-	$highlight_docs        = relevanssi_check( $highlight_docs );
-	$highlight_coms        = relevanssi_check( $highlight_coms );
-	$show_matches          = relevanssi_check( $show_matches );
-	$expand_highlights     = relevanssi_check( $expand_highlights );
-	$excerpt_chars         = relevanssi_select( $excerpt_type, 'chars' );
-	$excerpt_words         = relevanssi_select( $excerpt_type, 'words' );
-	$highlight_none        = relevanssi_select( $highlight, 'no' );
-	$highlight_mark        = relevanssi_select( $highlight, 'mark' );
-	$highlight_em          = relevanssi_select( $highlight, 'em' );
-	$highlight_strong      = relevanssi_select( $highlight, 'strong' );
-	$highlight_col         = relevanssi_select( $highlight, 'col' );
-	$highlight_bgcol       = relevanssi_select( $highlight, 'bgcol' );
-	$highlight_style       = relevanssi_select( $highlight, 'css' );
-	$highlight_class       = relevanssi_select( $highlight, 'class' );
+	$excerpts                = relevanssi_check( $excerpts );
+	$excerpt_custom_fields   = relevanssi_check( $excerpt_custom_fields );
+	$excerpt_specific_fields = relevanssi_check( $excerpt_specific_fields );
+	$highlight_title         = relevanssi_check( $highlight_title );
+	$highlight_docs          = relevanssi_check( $highlight_docs );
+	$highlight_coms          = relevanssi_check( $highlight_coms );
+	$show_matches            = relevanssi_check( $show_matches );
+	$expand_highlights       = relevanssi_check( $expand_highlights );
+	$excerpt_chars           = relevanssi_select( $excerpt_type, 'chars' );
+	$excerpt_words           = relevanssi_select( $excerpt_type, 'words' );
+	$highlight_none          = relevanssi_select( $highlight, 'no' );
+	$highlight_mark          = relevanssi_select( $highlight, 'mark' );
+	$highlight_em            = relevanssi_select( $highlight, 'em' );
+	$highlight_strong        = relevanssi_select( $highlight, 'strong' );
+	$highlight_col           = relevanssi_select( $highlight, 'col' );
+	$highlight_bgcol         = relevanssi_select( $highlight, 'bgcol' );
+	$highlight_style         = relevanssi_select( $highlight, 'css' );
+	$highlight_class         = relevanssi_select( $highlight, 'class' );
 
 	$txt_col_display = 'screen-reader-text';
 	$bg_col_display  = 'screen-reader-text';
@@ -190,6 +192,18 @@ function relevanssi_excerpts_tab() {
 		}
 		?>
 		</p>
+
+		<p><label>
+				<input type='checkbox' name='relevanssi_excerpt_specific_fields' id='relevanssi_excerpt_specific_fields' <?php echo esc_html( $excerpt_specific_fields ); ?>
+				<?php
+				if ( empty( $excerpts ) || empty( $index_fields ) ) {
+					echo "disabled='disabled'";
+				}
+				?>
+				/>
+				<?php esc_html_e( 'Create custom field specific excerpts', 'relevanssi' ); ?>
+			</label></p>
+		<p class="description"><?php esc_html_e( 'The default method of adding custom field content to excerpts cannot tell which custom fields is the source of the excerpts. Using custom field specific excerpts is slower, but you can tell which custom field was the source of the excerpt.', 'relevanssi' ); ?>
 
 		<p class="description"><?php esc_html_e( 'Current custom field setting', 'relevanssi' ); ?>:
 		<?php
