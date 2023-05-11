@@ -1897,3 +1897,40 @@ function relevanssi_remove_metadata_fields( array $custom_fields ) : array {
 	);
 	return array_diff( $custom_fields, $excluded_fields );
 }
+
+/**
+ * Returns the list of custom fields included in the index.
+ *
+ * This list contains the names of all the custom fields that are assigned to
+ * the posts in the Relevanssi index. This also includes ACF fields excluded
+ * with filters and from ACF field settings.
+ *
+ * @see relevanssi_list_custom_fields()
+ *
+ * @return string A comma-separated list of custom field names.
+ */
+function relevanssi_list_all_indexed_custom_fields() {
+	global $wpdb, $relevanssi_variables;
+
+	$custom_fields = get_option( 'relevanssi_index_fields' );
+
+	if ( 'visible' === $custom_fields ) {
+		$custom_fields = $wpdb->get_col(
+			"SELECT DISTINCT(meta_key)
+			FROM $wpdb->postmeta AS pm, {$relevanssi_variables['relevanssi_table']} AS r
+			WHERE pm.post_id = r.doc AND meta_key NOT LIKE '\_%'
+			ORDER BY meta_key ASC"
+		);
+	} else if ( 'all' === $custom_fields ) {
+		$custom_fields = $wpdb->get_col(
+			"SELECT DISTINCT(meta_key)
+			FROM $wpdb->postmeta AS pm, {$relevanssi_variables['relevanssi_table']} AS r
+			WHERE pm.post_id = r.doc
+			ORDER BY meta_key ASC"
+		);
+	} else {
+		$custom_fields = explode( ',', $custom_fields );
+	}
+
+	return implode( ', ', $custom_fields );
+}
