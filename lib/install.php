@@ -11,11 +11,11 @@
 /**
  * Installs Relevanssi on a new plugin if Relevanssi is network active.
  *
- * Hooks on to 'wpmu_new_blog' and 'wp_insert_site' action hooks and runs
+ * Hooks on to 'wpmu_new_blog' and 'wp_initialize_site' action hooks and runs
  * '_relevanssi_install' on the new blog.
  *
  * @param int|object $blog Either the blog ID (if 'wpmu_new_blog') or new site
- * object (if 'wp_insert_site').
+ * object (if 'wp_initialize_site').
  */
 function relevanssi_new_blog( $blog ) {
 	if ( is_int( $blog ) ) {
