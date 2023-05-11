@@ -440,7 +440,7 @@ function relevanssi_create_database_tables( $relevanssi_db_version ) {
 
 	$stopwords = relevanssi_fetch_stopwords();
 	if ( empty( $stopwords ) ) {
-		relevanssi_populate_stopwords();
+		relevanssi_populate_stopwords( false, $relevanssi_stopword_table );
 	}
 }
 

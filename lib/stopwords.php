@@ -20,16 +20,20 @@
  * @global object $wpdb                 The WordPress database interface.
  * @global array  $relevanssi_variables The global Relevanssi variables array.
  *
- * @param boolean $verbose If true, output results. Default false.
+ * @param boolean $verbose        If true, output results. Default false.
+ * @param string  $stopword_table Name of the stopword table to use. Default
+ * empty, which means the default table.
  *
  * @return string Result: 'database' for reading from database, 'file' for
  * reading from file, 'no_file' for non-existing file, 'file_error' for file
  * with non-acceptable data.
  */
-function relevanssi_populate_stopwords( $verbose = false ) {
+function relevanssi_populate_stopwords( $verbose = false, string $stopword_table = '' ) {
 	global $relevanssi_variables, $wpdb;
 
-	$stopword_table       = $relevanssi_variables['stopword_table'];
+	if ( empty( $stopword_table ) ) {
+		$stopword_table = $relevanssi_variables['stopword_table'];
+	}
 	$stopwords_from_table = $wpdb->get_col( "SELECT * FROM $stopword_table" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 	if ( count( $stopwords_from_table ) > 1 ) {
 		array_walk( $stopwords_from_table, 'relevanssi_add_single_stopword' );

@@ -129,6 +129,7 @@ Each document database is full of useless words. All the little words that appea
 
 == Changelog ==
 * New feature: You can see the list of indexed custom field names in the indexing and excerpt settings.
+* Minor fix: The stopword population during the multisite installation used the wrong database table, leading to failed population.
 
 = 4.19.0 =
 * New feature: Logging now includes a session ID (based on user ID for logged-in users, HTTP user agent for others, and current time, stable for 10 minutes per user). This is used to remove duplicate searches from live searches, keeping only the final search query.
