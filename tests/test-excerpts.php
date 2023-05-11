@@ -495,37 +495,56 @@ EOT;
 		update_post_meta( $post_id, 'array_field', array( 'random_key' => 'arrayvalue' ) );
 
 		update_option( 'relevanssi_index_fields', 'all' );
+		update_option( 'relevanssi_excerpt_specific_fields', 'off' );
 		$this->assertNotEquals(
 			false,
-			strpos( relevanssi_get_custom_field_content( $post_id ), 'test value' ),
+			strpos( relevanssi_get_custom_field_content( $post_id )[0], 'test value' ),
 			"relevanssi_get_custom_field_content() doesn't return correct content for 'all'"
 		);
 		$this->assertNotEquals(
 			false,
-			strpos( relevanssi_get_custom_field_content( $post_id ), 'pods' ),
+			strpos( relevanssi_get_custom_field_content( $post_id )[0], 'pods' ),
 			"relevanssi_get_custom_field_content() doesn't return correct content for 'all'"
 		);
 		$this->assertNotEquals(
 			false,
-			strpos( relevanssi_get_custom_field_content( $post_id ), 'arrayvalue' ),
+			strpos( relevanssi_get_custom_field_content( $post_id )[0], 'arrayvalue' ),
 			"relevanssi_get_custom_field_content() doesn't return correct content for 'all'"
 		);
 
+		update_option( 'relevanssi_excerpt_specific_fields', 'on' );
+		$this->assertNotEquals(
+			false,
+			strpos( relevanssi_get_custom_field_content( $post_id )['visiblefield'], 'test value' ),
+			"relevanssi_get_custom_field_content() doesn't return correct content for 'all'"
+		);
+		$this->assertNotEquals(
+			false,
+			strpos( relevanssi_get_custom_field_content( $post_id )['pods_field'], 'pods' ),
+			"relevanssi_get_custom_field_content() doesn't return correct content for 'all'"
+		);
+		$this->assertNotEquals(
+			false,
+			strpos( relevanssi_get_custom_field_content( $post_id )['array_field'], 'arrayvalue' ),
+			"relevanssi_get_custom_field_content() doesn't return correct content for 'all'"
+		);
+
+		update_option( 'relevanssi_excerpt_specific_fields', 'off' );
 		update_option( 'relevanssi_index_fields', 'visible' );
 		$this->assertNotEquals(
 			false,
-			strpos( relevanssi_get_custom_field_content( $post_id ), 'test value' ),
+			strpos( relevanssi_get_custom_field_content( $post_id )[0], 'test value' ),
 			"relevanssi_get_custom_field_content() doesn't return correct content for 'visible'"
 		);
 		$this->assertFalse(
-			strpos( relevanssi_get_custom_field_content( $post_id ), 'invisible' ),
+			strpos( relevanssi_get_custom_field_content( $post_id )[0], 'invisible' ),
 			"relevanssi_get_custom_field_content() doesn't return correct content for 'visible'"
 		);
 
 		add_filter( 'relevanssi_custom_field_value', '__return_empty_array' );
 		$this->assertEquals(
 			'',
-			strpos( relevanssi_get_custom_field_content( $post_id ), 'test value' ),
+			strpos( relevanssi_get_custom_field_content( $post_id )[0], 'test value' ),
 			"relevanssi_get_custom_field_content() doesn't return correct content for empty custom fields"
 		);
 	}

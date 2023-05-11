@@ -68,7 +68,7 @@ class ShortcodeTest extends WP_UnitTestCase {
 					<input type="submit" id="searchsubmit" value="Search"/>
 				</div>
 				<select name=\'cat\' id=\'cat\' class=\'postform\'>
-					<option value=\'-1\'>None</option>
+					<option value=\'0\' selected=\'selected\'>None</option>
 					<option class="level-0" value="1">Uncategorized</option>
 					<option class="level-0" value="' . $cats[0] . '">foo</option>
 				</select>
@@ -90,7 +90,7 @@ class ShortcodeTest extends WP_UnitTestCase {
 					<input type="submit" id="searchsubmit" value="Search"/>
 				</div>
 				<select name=\'tag\' id=\'tag\' class=\'postform\'>
-					<option value=\'-1\'>None</option>
+					<option value=\'0\' selected=\'selected\'>None</option>
 					<option class="level-0" value="' . $tags[0] . '">bar</option>
 				</select>
 				<input type=\'hidden\' name=\'field\' value=\'value\'/>
