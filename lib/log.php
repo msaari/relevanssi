@@ -190,11 +190,12 @@ function relevanssi_export_log_data( $user_id, $page ) {
 	$export_items = array();
 
 	foreach ( $log_data as $row ) {
-		$time  = $row->time;
-		$query = $row->query;
-		$id    = $row->id;
-		$ip    = $row->ip;
-		$hits  = $row->hits;
+		$time    = $row->time;
+		$query   = $row->query;
+		$id      = $row->id;
+		$ip      = $row->ip;
+		$hits    = $row->hits;
+		$session = $row->session_id;
 
 		$item_id     = "relevanssi_logged_search-{$id}";
 		$group_id    = 'relevanssi_logged_searches';
@@ -215,6 +216,10 @@ function relevanssi_export_log_data( $user_id, $page ) {
 			array(
 				'name'  => __( 'IP address', 'relevanssi' ),
 				'value' => $ip,
+			),
+			array(
+				'name'  => __( 'Session ID', 'relevanssi' ),
+				'value' => $session,
 			),
 		);
 
