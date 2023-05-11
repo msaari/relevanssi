@@ -16,6 +16,7 @@ add_action( 'wp_ajax_relevanssi_list_categories', 'relevanssi_list_categories' )
 add_action( 'wp_ajax_relevanssi_admin_search', 'relevanssi_admin_search' );
 add_action( 'wp_ajax_relevanssi_update_counts', 'relevanssi_update_counts' );
 add_action( 'wp_ajax_nopriv_relevanssi_update_counts', 'relevanssi_update_counts' );
+add_action( 'wp_ajax_relevanssi_list_custom_fields', 'relevanssi_list_custom_fields' );
 
 /**
  * Checks if current user can access Relevanssi options.
@@ -454,4 +455,16 @@ function relevanssi_update_counts() {
 		update_option( 'relevanssi_user_count', is_null( $user_count ) ? 0 : $user_count, false );
 		update_option( 'relevanssi_taxterm_count', is_null( $taxterm_count ) ? 0 : $taxterm_count, false );
 	}
+}
+
+/**
+ * Returns a comma-separated list of indexed custom field names.
+ *
+ * @uses relevanssi_list_all_indexed_custom_fields()
+ */
+function relevanssi_list_custom_fields() {
+	$response = relevanssi_list_all_indexed_custom_fields();
+
+	echo wp_json_encode( $response );
+	wp_die();
 }
