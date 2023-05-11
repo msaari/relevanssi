@@ -5,7 +5,7 @@ Tags: search, relevance, better search, product search, woocommerce search
 Requires at least: 4.9
 Tested up to: 6.2
 Requires PHP: 7.0
-Stable tag: 4.19.0
+Stable tag: 4.20.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -128,6 +128,7 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.20.0 =
 * New feature: Relevanssi can now create custom field specific excerpts that come from one custom field only and know which field that is.
 * New feature: You can see the list of indexed custom field names in the indexing and excerpt settings.
 * New feature: New filter hook `relevanssi_excerpt_specific_custom_field_content` filters the excerpt custom field content if `relevanssi_excerpt_specific_fields` is enabled.
@@ -171,34 +172,10 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: Yet another update to data attributes in highlighting. Thanks to Faeddur.
 * Minor fix: Taxonomy query handling was improved. This should help in particular Polylang users who've had problems with Relevanssi ignoring Polylang language restrictions.
 
-= 4.17.1 =
-* Minor fix: WooCommerce layered navigation compatibility caused enough problems that I've disabled it by default. You can enable it with `add_filter( 'woocommerce_get_filtered_term_product_counts_query', 'relevanssi_filtered_term_product_counts_query' );`.
-* Minor fix: Data attribute handling for in-document highlighting is now better.
-
-= 4.17.0 =
-* New feature: You can now look at how the posts appear in the database from the Debugging tab.
-* New feature: Relevanssi now works with WooCommerce layered navigation filters. The filter post counts should now match the Relevanssi search results.
-* New feature: New function `relevanssi_count_term_occurrances()` can be used to display how many times search terms appear in the database.
-* Changed behaviour: Relevanssi post update trigger is now on `wp_after_insert_post` instead of `wp_insert_post`. This makes the indexing more reliable and better compatible with other plugins.
-* Changed behaviour: Previously, throttling searches has been impossible when results are sorted by date. Now if you set Relevanssi to sort by post date from the searching settings, you can enable the throttle and the throttling will make sure to keep the most recent posts. This does not work if you set the `orderby` to `post_date` elsewhere.
-* Minor fix: Prevents Relevanssi from interfering in fringe cases (including The Event Calendar event search).
-* Minor fix: Relevanssi added the `highlight` parameter to home page URLs, even though it shouldn't.
-* Minor fix: Indexing `nav_menu_item` posts is stopped earlier in the process to avoid problems with big menus.
-* Minor fix: If the `sentence` query variable is used to enable phrase searching, Relevanssi now adds quotes to the `highlight` parameter.
-* Minor fix: Add support for JetSmartFilters.
-* Minor fix: Add support for WooCommerce products attribute lookup table filtering.
-* Minor fix: Improve excerpts to avoid breaking HTML tags when tags are allowed.
-* Minor fix: Fix broken tag and category weight settings.
-* Minor fix: Improve Polylang language detection.
-* Minor fix: Relevanssi now hyphenates long search terms in the User searches page. This prevents long search terms from messing up the display.
-* Minor fix: Improve WPFD file content indexing support. Relevanssi indexing now happens after the WPFD indexing is done.
-* Minor fix: Add support for TablePress `table_filter` shortcodes.
-* Minor fix: Stopped some problems with Did you mean suggestions suggesting the same word if a hyphen was included.
-* Minor fix: Paging didn't work in admin searches for hierarchical post types (like pages).
-* Minor fix: In-document highlighting could break certain elements thanks to Relevanssi messing up data attributes.
-* Minor fix: Relevanssi now recursively runs `relevanssi_block_to_render` and the CSS `relevanssi_noindex` filtering for inner blocks.
-
 == Upgrade notice ==
+= 4.20.0 =
+* Better method for handling custom fields in excerpts, bug fixes.
+
 = 4.19.0 =
 * Logs now include a session ID.
 
@@ -216,9 +193,3 @@ Each document database is full of useless words. All the little words that appea
 
 = 4.18.0 =
 * Debugging features, improved ACF support and bug fixes.
-
-= 4.17.1 =
-* Disables the WooCommerce layered navigation support by default.
-
-= 4.17.0 =
-* Large number of bug fixes and general improvements.
