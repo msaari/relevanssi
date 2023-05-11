@@ -208,6 +208,21 @@ function relevanssi_excerpts_tab() {
 		</p>
 		</td>
 	</tr>
+	<?php if ( 'visible' === $index_fields || 'all' === $index_fields ) : ?>
+	<tr>
+		<th scope="row">
+			<?php esc_html_e( 'List custom fields', 'relevanssi' ); ?>
+		</th>
+		<td>
+			<button type="button" class="button button-primary" id="list_custom_fields"><?php esc_html_e( 'List custom fields', 'relevanssi' ); ?></button>
+			<p class="description"><?php esc_html_e( 'Click the button above to see the list of indexed custom fields.', 'relevanssi' ); ?></p>
+			<div id="relevanssi_custom_field_list"></div>
+			<?php if ( class_exists( 'acf', false ) ) : ?>
+				<p class="description"><?php esc_html_e( 'Fields excluded from ACF settings and with filter functions are included here.', 'relevanssi' ); ?></p>
+			<?php endif; ?>
+		</td>
+	</tr>
+	<?php endif; ?>
 	</table>
 
 	<h2><?php esc_html_e( 'Search hit highlighting', 'relevanssi' ); ?></h2>

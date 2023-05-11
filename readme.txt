@@ -128,6 +128,8 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+* New feature: You can see the list of indexed custom field names in the indexing and excerpt settings.
+
 = 4.19.0 =
 * New feature: Logging now includes a session ID (based on user ID for logged-in users, HTTP user agent for others, and current time, stable for 10 minutes per user). This is used to remove duplicate searches from live searches, keeping only the final search query.
 
