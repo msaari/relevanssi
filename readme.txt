@@ -135,6 +135,7 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: The stopword population during the multisite installation used the wrong database table, leading to failed population.
 * Minor fix: Multisite installation is moved from `wp_insert_site` (priority 10) to `wp_initialize_site` (priority 200) in order to avoid trouble.
 * Minor fix: The session ID is now included in the log export.
+* Minor fix: The "none" value in category dropdowns from the searchform shortcode is changed from -1 to 0.
 
 = 4.19.0 =
 * New feature: Logging now includes a session ID (based on user ID for logged-in users, HTTP user agent for others, and current time, stable for 10 minutes per user). This is used to remove duplicate searches from live searches, keeping only the final search query.
