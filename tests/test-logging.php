@@ -28,12 +28,12 @@ class LoggingTest extends WP_UnitTestCase {
 		$this->assertFalse( relevanssi_update_log( 'test', 1 ) );
 		$_SERVER['HTTP_USER_AGENT'] = '';
 
-		add_filter( 'relevanssi_log_get_user', 'set_user' );
+		add_filter( 'relevanssi_log_get_user', array( $this, 'set_user' ) );
 		update_option( 'relevanssi_omit_from_logs', '5' );
 		$this->assertFalse( relevanssi_update_log( 'test', 1 ) );
 		update_option( 'relevanssi_omit_from_logs', 'lucy, mikko, alice, carol' );
 		$this->assertFalse( relevanssi_update_log( 'test', 1 ) );
-		remove_filter( 'relevanssi_log_get_user', 'set_user' );
+		remove_filter( 'relevanssi_log_get_user', array( $this, 'set_user' ) );
 
 		update_option( 'relevanssi_log_queries_with_ip', 'on' );
 		$this->assertTrue( relevanssi_update_log( 'test', 1 ) );
@@ -118,9 +118,9 @@ class LoggingTest extends WP_UnitTestCase {
 	 * Uninstalls Relevanssi.
 	 */
 	public static function wpTearDownAfterClass() {
-		require_once dirname( dirname( __FILE__ ) ) . '/lib/uninstall.php';
+		require_once dirname( __DIR__ ) . '/lib/uninstall.php';
 		if ( RELEVANSSI_PREMIUM ) {
-			require_once dirname( dirname( __FILE__ ) ) . '/premium/uninstall.php';
+			require_once dirname( __DIR__ ) . '/premium/uninstall.php';
 		}
 
 		if ( function_exists( 'relevanssi_uninstall' ) ) {
@@ -130,16 +130,16 @@ class LoggingTest extends WP_UnitTestCase {
 			relevanssi_uninstall_free();
 		}
 	}
-}
 
-/**
- * Returns a plain user object.
- *
- * @return stdClass An object with ID and user_login set.
- */
-function set_user() {
-	$user             = new stdClass();
-	$user->ID         = 5;
-	$user->user_login = 'mikko';
-	return $user;
+	/**
+	 * Returns a plain user object.
+	 *
+	 * @return stdClass An object with ID and user_login set.
+	 */
+	public static function set_user() {
+		$user             = new stdClass();
+		$user->ID         = 5;
+		$user->user_login = 'mikko';
+		return $user;
+	}
 }

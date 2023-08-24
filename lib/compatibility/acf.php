@@ -97,7 +97,7 @@ function relevanssi_index_acf( &$insert_data, $post_id, $field_name, $field_valu
 		/** This filter is documented in lib/indexing.php */
 		$value_tokens = apply_filters( 'relevanssi_indexing_tokens', relevanssi_tokenize( $value, true, $min_word_length, 'indexing' ), 'custom_field' );
 		foreach ( $value_tokens as $token => $count ) {
-			$n++;
+			++$n;
 			if ( ! isset( $insert_data[ $token ]['customfield'] ) ) {
 				$insert_data[ $token ]['customfield'] = 0;
 			}

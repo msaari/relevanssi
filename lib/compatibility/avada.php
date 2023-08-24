@@ -12,7 +12,7 @@
 
 add_filter(
 	'fusion_live_search_query_args',
-	function( $args ) {
+	function ( $args ) {
 		$args['relevanssi'] = true;
 		return $args;
 	}

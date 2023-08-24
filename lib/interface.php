@@ -257,7 +257,7 @@ function relevanssi_options_form() {
 	<?php
 	array_walk(
 		$tabs,
-		function( $tab ) use ( $this_page, $active_tab ) {
+		function ( $tab ) use ( $this_page, $active_tab ) {
 			?>
 			<a href="<?php echo esc_attr( $this_page ); ?>&amp;tab=<?php echo esc_attr( $tab['slug'] ); ?>"
 			class="nav-tab <?php echo esc_attr( $tab['slug'] === $active_tab ? 'nav-tab-active' : '' ); ?>">

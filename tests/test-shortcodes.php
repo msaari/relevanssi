@@ -51,7 +51,7 @@ class ShortcodeTest extends WP_UnitTestCase {
 	 * Tests search form shortcode.
 	 */
 	public function test_search_form() {
-		add_filter( 'get_search_form', 'base_search_form' );
+		add_filter( 'get_search_form', array( $this, 'base_search_form' ) );
 
 		$cat_ids    = array();
 		$cat_ids[0] = wp_create_category( 'foo' );
@@ -108,9 +108,9 @@ class ShortcodeTest extends WP_UnitTestCase {
 	 * Uninstalls Relevanssi.
 	 */
 	public static function wpTearDownAfterClass() {
-		require_once dirname( dirname( __FILE__ ) ) . '/lib/uninstall.php';
+		require_once dirname( __DIR__ ) . '/lib/uninstall.php';
 		if ( RELEVANSSI_PREMIUM ) {
-			require_once dirname( dirname( __FILE__ ) ) . '/premium/uninstall.php';
+			require_once dirname( __DIR__ ) . '/premium/uninstall.php';
 		}
 
 		if ( function_exists( 'relevanssi_uninstall' ) ) {
@@ -120,17 +120,17 @@ class ShortcodeTest extends WP_UnitTestCase {
 			relevanssi_uninstall_free();
 		}
 	}
-}
 
-/**
- * Returns a base search form.
- */
-function base_search_form() {
-	return '<form role="search" method="get" id="searchform" class="searchform" action="http://example.org/">
-		<div>
-			<label class="screen-reader-text" for="s">Search for:</label>
-			<input type="text" value="" name="s" id="s" />
-			<input type="submit" id="searchsubmit" value="Search"/>
-		</div>
-	</form>';
+	/**
+	 * Returns a base search form.
+	 */
+	public static function base_search_form() {
+		return '<form role="search" method="get" id="searchform" class="searchform" action="http://example.org/">
+			<div>
+				<label class="screen-reader-text" for="s">Search for:</label>
+				<input type="text" value="" name="s" id="s" />
+				<input type="submit" id="searchsubmit" value="Search"/>
+			</div>
+		</form>';
+	}
 }

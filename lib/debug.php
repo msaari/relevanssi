@@ -19,7 +19,7 @@ add_action( 'wp', 'relevanssi_debug_post' );
  *
  * @return boolean True if debug mode is enabled, false if not.
  */
-function relevanssi_is_debug() : bool {
+function relevanssi_is_debug(): bool {
 	$debug = false;
 	if ( defined( 'RELEVANSSI_DEBUG' ) && RELEVANSSI_DEBUG ) {
 		$debug = true;
@@ -59,25 +59,25 @@ function relevanssi_debug_posts( $posts ) {
 /**
  * Prints out an array in a preformatted block.
  *
- * @param array  $array The array to print.
- * @param string $title The title for the array.
+ * @param array  $array_value The array to print.
+ * @param string $title       The title for the array.
  */
-function relevanssi_debug_array( $array, $title ) {
+function relevanssi_debug_array( $array_value, $title ) {
 	echo '<h2>' . esc_html( $title ) . '</h2>';
 	echo '<pre>';
-	print_r( $array ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
+	print_r( $array_value ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
 	echo '</pre>';
 }
 
 /**
  * Prints out a string in a preformatted block.
  *
- * @param string $string The string to print.
- * @param string $title  The title for the string.
+ * @param string $str   The string to print.
+ * @param string $title The title for the string.
  */
-function relevanssi_debug_string( $string, $title ) {
+function relevanssi_debug_string( $str, $title ) {
 	echo '<h2>' . esc_html( $title ) . '</h2>';
-	echo '<pre>' . esc_html( $string ) . '</pre>';
+	echo '<pre>' . esc_html( $str ) . '</pre>';
 }
 
 /**

@@ -23,23 +23,23 @@ function get_relevanssi_taxonomy_walker() {
 /**
  * Adds apostrophes around a string.
  *
- * @param string $string The string.
+ * @param string $str The string.
  *
  * @return string The string with apostrophes around it.
  */
-function relevanssi_add_apostrophes( $string ) {
-	return "'" . $string . "'";
+function relevanssi_add_apostrophes( $str ) {
+	return "'" . $str . "'";
 }
 
 /**
  * Adds quotes around a string.
  *
- * @param string $string The string.
+ * @param string $str The string.
  *
  * @return string The string with quotes around it.
  */
-function relevanssi_add_quotes( $string ) {
-	return '"' . $string . '"';
+function relevanssi_add_quotes( $str ) {
+	return '"' . $str . '"';
 }
 
 /**
@@ -50,25 +50,25 @@ function relevanssi_add_quotes( $string ) {
  *
  * @see relevanssi_mb_trim.
  *
- * @param string $string String to trim.
+ * @param string $str String to trim.
  */
-function relevanssi_array_walk_trim( string &$string ) {
-	$string = relevanssi_mb_trim( $string );
+function relevanssi_array_walk_trim( string &$str ) {
+	$str = relevanssi_mb_trim( $str );
 }
 
 /**
  * Converts sums in an array to averages, based on an array containing counts.
  *
  * Both arrays need to have (key, value) pairs with the same keys. The values
- * in $array are then divided by the matching values in $counts, so when we have
- * sums in $array and counts in $counts, we end up with averages.
+ * in $arr are then divided by the matching values in $counts, so when we have
+ * sums in $arr and counts in $counts, we end up with averages.
  *
- * @param array $array  The array with sums, passed as reference.
+ * @param array $arr    The array with sums, passed as reference.
  * @param array $counts The array with counts.
  */
-function relevanssi_average_array( array &$array, array $counts ) {
+function relevanssi_average_array( array &$arr, array $counts ) {
 	array_walk(
-		$array,
+		$arr,
 		function ( &$value, $key ) use ( $counts ) {
 			$value = round( $value / $counts[ $key ], 2 );
 		}
@@ -177,13 +177,15 @@ function relevanssi_count_term_occurrances( string $query, string $mode = 'array
  * Prints out debugging notices.
  *
  * If WP_CLI is available, prints out the debug notice as a WP_CLI::log(),
- * otherwise just echo.
+ * otherwise if debug mode is on, uses error_log(), otherwise just echo.
  *
  * @param string $notice The notice to print out.
  */
 function relevanssi_debug_echo( string $notice ) {
 	if ( defined( 'WP_CLI' ) && WP_CLI ) {
 		WP_CLI::log( $notice );
+	} elseif ( relevanssi_log_debug() ) {
+		error_log( 'RELEVANSSI: ' . $notice ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 	} else {
 		echo esc_html( $notice ) . "\n";
 	}
@@ -202,7 +204,7 @@ function relevanssi_debug_echo( string $notice ) {
  *
  * @return string
  */
-function relevanssi_do_shortcode( string $content ) : string {
+function relevanssi_do_shortcode( string $content ): string {
 	if ( 'on' === get_option( 'relevanssi_expand_shortcodes' ) ) {
 		// TablePress support.
 		if ( function_exists( 'relevanssi_enable_tablepress_shortcodes' ) ) {
@@ -238,13 +240,13 @@ function relevanssi_do_shortcode( string $content ) : string {
 /**
  * Recursively flattens a multidimensional array to produce a string.
  *
- * @param array $array The source array.
+ * @param array $arr The source array.
  *
  * @return string The array contents as a string.
  */
-function relevanssi_flatten_array( array $array ) {
+function relevanssi_flatten_array( array $arr ) {
 	$return_value = '';
-	foreach ( new RecursiveIteratorIterator( new RecursiveArrayIterator( $array ) ) as $value ) {
+	foreach ( new RecursiveIteratorIterator( new RecursiveArrayIterator( $arr ) ) as $value ) {
 		$return_value .= ' ' . $value;
 	}
 	return trim( $return_value );
@@ -266,7 +268,7 @@ function relevanssi_flatten_array( array $array ) {
  * @return array The from date in 'from' and the to date in 'to' in "Y-m-d"
  * format.
  */
-function relevanssi_from_and_to( array $request, string $from ) : array {
+function relevanssi_from_and_to( array $request, string $from ): array {
 	$today      = gmdate( 'Y-m-d' );
 	$week_start = 'monday';
 	$to         = $today;
@@ -386,7 +388,7 @@ function relevanssi_get_an_object( $source ) {
  * @param WP_Post|int $post The post object or post ID.
  * @return string The suffix if it is found, an empty string otherwise.
  */
-function relevanssi_get_attachment_suffix( $post ) : string {
+function relevanssi_get_attachment_suffix( $post ): string {
 	if ( ! is_object( $post ) ) {
 		$post = relevanssi_get_post( $post );
 		if ( is_wp_error( $post ) ) {
@@ -462,18 +464,16 @@ function relevanssi_get_current_language( bool $locale = true ) {
 			} else {
 				$current_language = $language_details[ $locale ? 'locale' : 'language_code' ];
 			}
-		} else {
-			if ( $locale ) {
-				$languages = apply_filters( 'wpml_active_languages', null );
-				foreach ( $languages as $l ) {
-					if ( $l['active'] ) {
-						$current_language = $l['default_locale'];
-						break;
-					}
+		} elseif ( $locale ) {
+			$languages = apply_filters( 'wpml_active_languages', null );
+			foreach ( $languages as $l ) {
+				if ( $l['active'] ) {
+					$current_language = $l['default_locale'];
+					break;
 				}
-			} else {
-				$current_language = apply_filters( 'wpml_current_language', null );
 			}
+		} else {
+			$current_language = apply_filters( 'wpml_current_language', null );
 		}
 	}
 	return $current_language;
@@ -555,7 +555,7 @@ function relevanssi_get_post( $post_id, int $blog_id = -1 ) {
  *
  * @return array An array of post_id, meta_value pairs.
  */
-function relevanssi_get_post_meta_for_all_posts( array $post_ids, string $field ) : array {
+function relevanssi_get_post_meta_for_all_posts( array $post_ids, string $field ): array {
 	global $wpdb;
 
 	$post_ids_string = implode( ',', $post_ids );
@@ -702,13 +702,13 @@ function relevanssi_get_the_title( $post ) {
 /**
  * Adds a soft hyphen to a string at every five characters.
  *
- * @param string $string The string to hyphenate.
+ * @param string $str The string to hyphenate.
  *
  * @return string The hyphenated string.
  */
-function relevanssi_hyphenate( $string ) {
-	$string = preg_replace( '/([^\s]{8})([^\s])/u', '$1&shy;$2', html_entity_decode( $string ) );
-	return $string;
+function relevanssi_hyphenate( $str ) {
+	$str = preg_replace( '/([^\s]{8})([^\s])/u', '$1&shy;$2', html_entity_decode( $str ) );
+	return $str;
 }
 
 /**
@@ -733,13 +733,13 @@ function relevanssi_implode( array $request, string $option, string $glue = ',' 
 /**
  * Increases a value. If it's not set, sets it first to the default value.
  *
- * @param int $value    The value to increase (passed by reference).
- * @param int $increase The amount to increase the value, default 1.
- * @param int $default  The default value, default 0.
+ * @param int $value     The value to increase (passed by reference).
+ * @param int $increase  The amount to increase the value, default 1.
+ * @param int $def_value The default value, default 0.
  */
-function relevanssi_increase_value( &$value, $increase = 1, $default = 0 ) {
+function relevanssi_increase_value( &$value, $increase = 1, $def_value = 0 ) {
 	if ( ! isset( $value ) ) {
-		$value = $default;
+		$value = $def_value;
 	}
 	$value += $increase;
 }
@@ -784,28 +784,28 @@ function relevanssi_is_live_search() {
  * Replaces hyphens, quotes and ampersands with spaces if necessary based on
  * the Relevanssi advanced indexing settings.
  *
- * @param string $string The string to check.
+ * @param string $str The string to check.
  *
  * @return boolean True if the string is a multiple-word phrase, false otherwise.
  */
-function relevanssi_is_multiple_words( string $string ) : bool {
-	if ( empty( $string ) ) {
+function relevanssi_is_multiple_words( string $str ): bool {
+	if ( empty( $str ) ) {
 		return false;
 	}
 	$punctuation = get_option( 'relevanssi_punctuation' );
 	if ( 'replace' === $punctuation['hyphens'] ) {
-		$string = str_replace(
+		$str = str_replace(
 			array(
 				'-',
 				'–',
 				'—',
 			),
 			' ',
-			$string
+			$str
 		);
 	}
 	if ( 'replace' === $punctuation['quotes'] ) {
-		$string = str_replace(
+		$str = str_replace(
 			array(
 				'&#8217;',
 				"'",
@@ -818,22 +818,22 @@ function relevanssi_is_multiple_words( string $string ) : bool {
 				'″',
 			),
 			' ',
-			$string
+			$str
 		);
 	}
 	if ( 'replace' === $punctuation['ampersands'] ) {
-		$string = str_replace(
+		$str = str_replace(
 			array(
 				'&#038;',
 				'&amp;',
 				'&',
 			),
 			' ',
-			$string
+			$str
 		);
 	}
 
-	if ( count( explode( ' ', $string ) ) > 1 ) {
+	if ( count( explode( ' ', $str ) ) > 1 ) {
 		return true;
 	}
 
@@ -886,15 +886,15 @@ function relevanssi_launch_ajax_action( string $action, array $payload_args = ar
  * @param array  $request An array of option values.
  * @param string $option  The key to check.
  * @param array  $values  The legal values.
- * @param string $default The default value.
+ * @param string $def_val The default value.
  *
  * @return string|null A legal value or the default value, null if the option
  * isn't set.
  */
-function relevanssi_legal_value( array $request, string $option, array $values, string $default ) {
+function relevanssi_legal_value( array $request, string $option, array $values, string $def_val ) {
 	$value = null;
 	if ( isset( $request[ $option ] ) ) {
-		$value = $default;
+		$value = $def_val;
 		if ( in_array( $request[ $option ], $values, true ) ) {
 			$value = $request[ $option ];
 		}
@@ -920,7 +920,7 @@ function relevanssi_legal_value( array $request, string $option, array $values, 
  * @return int $val Returns < 0 if str1 is less than str2; > 0 if str1 is
  * greater than str2, and 0 if they are equal.
  */
-function relevanssi_mb_strcasecmp( $str1, $str2, $encoding = '' ) : int {
+function relevanssi_mb_strcasecmp( $str1, $str2, $encoding = '' ): int {
 	if ( ! function_exists( 'mb_internal_encoding' ) ) {
 		return strnatcasecmp( $str1, $str2 );
 	} else {
@@ -937,15 +937,15 @@ function relevanssi_mb_strcasecmp( $str1, $str2, $encoding = '' ) : int {
  * Removes the 194+160 non-breakable spaces, removes null bytes and removes
  * whitespace.
  *
- * @param string $string The source string.
+ * @param string $str The source string.
  *
  * @return string Trimmed string.
  */
-function relevanssi_mb_trim( string $string ) {
-	$string = str_replace( chr( 194 ) . chr( 160 ), '', $string );
-	$string = str_replace( "\0", '', $string );
-	$string = preg_replace( '/(^\s+)|(\s+$)/us', '', $string );
-	return $string;
+function relevanssi_mb_trim( string $str ) {
+	$str = str_replace( chr( 194 ) . chr( 160 ), '', $str );
+	$str = str_replace( "\0", '', $str );
+	$str = preg_replace( '/(^\s+)|(\s+$)/us', '', $str );
+	return $str;
 }
 
 /**
@@ -966,12 +966,12 @@ function relevanssi_off_or_on( array $request, string $option ) {
 /**
  * Removes quotes (", ”, “) from a string.
  *
- * @param string $string The string to clean.
+ * @param string $str The string to clean.
  *
  * @return string The cleaned string.
  */
-function relevanssi_remove_quotes( string $string ) {
-	return str_replace( array( '”', '“', '"' ), '', $string );
+function relevanssi_remove_quotes( string $str ) {
+	return str_replace( array( '”', '“', '"' ), '', $str );
 }
 
 /**
@@ -983,19 +983,19 @@ function relevanssi_remove_quotes( string $string ) {
  *
  * @uses relevanssi_remove_quotes() This does the actual work.
  *
- * @param array $array An array to process.
+ * @param array $arr An array to process.
  *
  * @return array The same array with quotes removed from the keys.
  */
-function relevanssi_remove_quotes_from_array_keys( array $array ) {
-	$array = array_keys( $array );
+function relevanssi_remove_quotes_from_array_keys( array $arr ) {
+	$arr = array_keys( $arr );
 	array_walk(
-		$array,
-		function( &$key ) {
+		$arr,
+		function ( &$key ) {
 			$key = relevanssi_remove_quotes( $key );
 		}
 	);
-	return array_flip( $array );
+	return array_flip( $arr );
 }
 
 /**
@@ -1145,7 +1145,7 @@ function relevanssi_select( string $option, string $value ) {
  *
  * @return string The content with tags stripped.
  */
-function relevanssi_strip_all_tags( $content ) : string {
+function relevanssi_strip_all_tags( $content ): string {
 	if ( ! is_string( $content ) ) {
 		$content = '';
 	}
@@ -1283,7 +1283,7 @@ function relevanssi_stripos( $haystack, $needle, int $offset = 0 ) {
 			if ( $pos && $pos > $offset ) {
 				$pos_found = true;
 			} elseif ( $pos ) {
-				$offset++;
+				++$offset;
 			} else {
 				$pos_found = true;
 			}
@@ -1331,18 +1331,18 @@ function relevanssi_strlen( $s ) {
  * If multibyte string functions are available, returns mb_strtolower() and
  * falls back to strtolower() if multibyte functions are not available.
  *
- * @param string $string The string to lowercase.
+ * @param string $str The string to lowercase.
  *
- * @return string $string The string in lowercase.
+ * @return string $str The string in lowercase.
  */
-function relevanssi_strtolower( $string ) {
-	if ( ! is_string( $string ) ) {
-		$string = strval( $string );
+function relevanssi_strtolower( $str ) {
+	if ( ! is_string( $str ) ) {
+		$str = strval( $str );
 	}
 	if ( ! function_exists( 'mb_strtolower' ) ) {
-		return strtolower( $string );
+		return strtolower( $str );
 	} else {
-		return mb_strtolower( $string );
+		return mb_strtolower( $str );
 	}
 }
 
@@ -1352,7 +1352,7 @@ function relevanssi_strtolower( $string ) {
  * If multibyte string functions are available, returns mb_substr() and falls
  * back to substr() if multibyte functions are not available.
  *
- * @param string   $string The source string.
+ * @param string   $str The source string.
  * @param int      $start  If start is non-negative, the returned string will
  * start at the start'th position in str, counting from zero. If start is
  * negative, the returned string will start at the start'th character from the
@@ -1360,16 +1360,16 @@ function relevanssi_strtolower( $string ) {
  * @param int|null $length Maximum number of characters to use from string. If
  * omitted or null is passed, extract all characters to the end of the string.
  *
- * @return string $string The string in lowercase.
+ * @return string $str The string in lowercase.
  */
-function relevanssi_substr( $string, int $start, $length = null ) {
-	if ( ! is_string( $string ) ) {
-		$string = strval( $string );
+function relevanssi_substr( $str, int $start, $length = null ) {
+	if ( ! is_string( $str ) ) {
+		$str = strval( $str );
 	}
 	if ( ! function_exists( 'mb_substr' ) ) {
-		return substr( $string, $start, $length );
+		return substr( $str, $start, $length );
 	} else {
-		return mb_substr( $string, $start, $length );
+		return mb_substr( $str, $start, $length );
 	}
 }
 
@@ -1415,10 +1415,10 @@ function relevanssi_the_permalink( $post = 0 ) {
  * @param string  $before    What is printed before the tags, default ''.
  * @param string  $separator The separator between items, default ', '.
  * @param string  $after     What is printed after the tags, default ''.
- * @param boolean $echo      If true, echo, otherwise return the result. Default true.
+ * @param boolean $echoed    If true, echo, otherwise return the result. Default true.
  * @param int     $post_id   The post ID. Default current post ID (in the Loop).
  */
-function relevanssi_the_tags( string $before = '', string $separator = ', ', string $after = '', bool $echo = true, int $post_id = 0 ) {
+function relevanssi_the_tags( string $before = '', string $separator = ', ', string $after = '', bool $echoed = true, int $post_id = 0 ) {
 	$tag_list = get_the_tag_list( $before, $separator, $after, $post_id );
 	$found    = preg_match_all( '~<a href=".*?" rel="tag">(.*?)</a>~', $tag_list, $matches );
 	if ( $found ) {
@@ -1435,7 +1435,7 @@ function relevanssi_the_tags( string $before = '', string $separator = ', ', str
 		$tag_list = str_replace( $originals, $highlighted, $tag_list );
 	}
 
-	if ( $echo ) {
+	if ( $echoed ) {
 		echo $tag_list; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	} else {
 		return $tag_list;
@@ -1457,19 +1457,19 @@ function relevanssi_the_tags( string $before = '', string $separator = ', ', str
  * @param boolean|string $before Markup to prepend to the title. Can also be a
  * boolean for whether to echo or return the title.
  * @param string         $after  Markup to append to the title.
- * @param boolean        $echo   Whether to echo or return the title. Default
+ * @param boolean        $echoed   Whether to echo or return the title. Default
  * true for echo.
  *
- * @return void|string Void if $echo argument is true, current post title with
- * highlights if $echo is false.
+ * @return void|string Void if $echoed argument is true, current post title with
+ * highlights if $echoed is false.
  */
-function relevanssi_the_title( $before = true, string $after = '', bool $echo = true ) {
+function relevanssi_the_title( $before = true, string $after = '', bool $echoed = true ) {
 	if ( true === $before ) {
 		$before = '';
-		$echo   = true;
+		$echoed = true;
 	} elseif ( false === $before ) {
 		$before = '';
-		$echo   = false;
+		$echoed = false;
 	}
 	global $post;
 	if ( empty( $post->post_highlighted_title ) ) {
@@ -1479,7 +1479,7 @@ function relevanssi_the_title( $before = true, string $after = '', bool $echo = 
 		return;
 	}
 	$title = $before . $post->post_highlighted_title . $after;
-	if ( $echo ) {
+	if ( $echoed ) {
 		echo $title; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	} else {
 		return $title;
@@ -1498,7 +1498,7 @@ function relevanssi_the_title( $before = true, string $after = '', bool $echo = 
 function relevanssi_turn_off_options( array &$request, array $options ) {
 	array_walk(
 		$options,
-		function( $option ) use ( &$request ) {
+		function ( $option ) use ( &$request ) {
 			if ( ! isset( $request[ $option ] ) ) {
 				$request[ $option ] = 'off';
 			}
@@ -1512,18 +1512,18 @@ function relevanssi_turn_off_options( array &$request, array $options ) {
  * @param array   $request  An array of option values.
  * @param string  $option   The key to check.
  * @param boolean $autoload Should the option autoload, default true.
- * @param float   $default  The default value if floatval() fails, default 0.
+ * @param float   $def_val  The default value if floatval() fails, default 0.
  * @param boolean $positive If true, replace negative values and zeroes with
- * $default.
+ * $def_val.
  */
-function relevanssi_update_floatval( array $request, string $option, bool $autoload = true, float $default = 0, bool $positive = false ) {
+function relevanssi_update_floatval( array $request, string $option, bool $autoload = true, float $def_val = 0, bool $positive = false ) {
 	if ( isset( $request[ $option ] ) ) {
 		$value = floatval( $request[ $option ] );
 		if ( ! $value ) {
-			$value = $default;
+			$value = $def_val;
 		}
 		if ( $positive && $value <= 0 ) {
-			$value = $default;
+			$value = $def_val;
 		}
 		update_option( $option, $value, $autoload );
 	}
@@ -1535,13 +1535,13 @@ function relevanssi_update_floatval( array $request, string $option, bool $autol
  * @param array   $request  An array of option values.
  * @param string  $option   The key to check.
  * @param boolean $autoload Should the option autoload, default true.
- * @param int     $default  The default value if intval() fails, default 0.
+ * @param int     $def_val  The default value if intval() fails, default 0.
  */
-function relevanssi_update_intval( array $request, string $option, bool $autoload = true, int $default = 0 ) {
+function relevanssi_update_intval( array $request, string $option, bool $autoload = true, int $def_val = 0 ) {
 	if ( isset( $request[ $option ] ) ) {
 		$value = intval( $request[ $option ] );
 		if ( ! $value ) {
-			$value = $default;
+			$value = $def_val;
 		}
 		update_option( $option, $value, $autoload );
 	}
@@ -1553,12 +1553,12 @@ function relevanssi_update_intval( array $request, string $option, bool $autoloa
  * @param array   $request  An array of option values.
  * @param string  $option   The key to check.
  * @param array   $values   The legal values.
- * @param string  $default  The default value.
+ * @param string  $def_val  The default value.
  * @param boolean $autoload Should the option autoload, default true.
  */
-function relevanssi_update_legal_value( array $request, string $option, array $values, string $default, bool $autoload = true ) {
+function relevanssi_update_legal_value( array $request, string $option, array $values, string $def_val, bool $autoload = true ) {
 	if ( isset( $request[ $option ] ) ) {
-		$value = $default;
+		$value = $def_val;
 		if ( in_array( $request[ $option ], $values, true ) ) {
 			$value = $request[ $option ];
 		}
@@ -1605,7 +1605,7 @@ function relevanssi_update_sanitized( array $request, string $option, bool $auto
  *
  * @return bool True if $_SERVER['HTTP_USER_AGENT'] is a bot.
  */
-function relevanssi_user_agent_is_bot() : bool {
+function relevanssi_user_agent_is_bot(): bool {
 	if ( isset( $_SERVER['HTTP_USER_AGENT'] ) ) {
 		/**
 		 * Filters the bots Relevanssi should block from search queries.

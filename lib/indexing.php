@@ -359,7 +359,7 @@ function relevanssi_build_index( $extend_offset = false, $verbose = null, $post_
 		$result = relevanssi_index_doc( $post->ID, $remove_first, $custom_fields, $bypass_global_post );
 		if ( is_numeric( $result ) && $result > 0 ) {
 			// $n calculates the number of posts indexed.
-			$n++;
+			++$n;
 		}
 		if ( defined( 'WP_CLI' ) && WP_CLI && isset( $progress ) ) {
 			// @codeCoverageIgnoreStart
@@ -438,6 +438,14 @@ function relevanssi_index_doc( $index_post, $remove_first = false, $custom_field
 	$relevanssi_table = $relevanssi_variables['relevanssi_table'];
 	$post_was_null    = true;
 	$previous_post    = null;
+
+	if ( relevanssi_log_debug() ) {
+		$debug = true;
+	}
+
+	if ( $debug ) {
+		relevanssi_debug_echo( 'Indexing post ID ' . $index_post . '...' );
+	}
 
 	// Check if this is a Jetpack Contact Form entry.
 	if ( isset( $_REQUEST['contact-form-id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
@@ -677,7 +685,7 @@ function relevanssi_index_taxonomy_terms( &$insert_data, $post_id, $taxonomy, $d
 
 	if ( count( $term_tokens ) > 0 ) {
 		foreach ( $term_tokens as $token => $count ) {
-			$n++;
+			++$n;
 
 			switch ( $taxonomy ) {
 				case 'post_tag':
@@ -787,12 +795,12 @@ function relevanssi_update_child_posts( $new_status, $old_status, $post ) {
 		if ( ! in_array( $new_status, $index_statuses, true ) ) {
 			foreach ( $child_posts as $post ) {
 				relevanssi_remove_doc( $post->ID );
-				$removed++;
+				++$removed;
 			}
 		} else {
 			foreach ( $child_posts as $post ) {
 				relevanssi_publish( $post->ID );
-				$indexed++;
+				++$indexed;
 			}
 		}
 	}
@@ -1187,7 +1195,7 @@ function relevanssi_index_comments( &$insert_data, $post_id, $min_word_length, $
 		);
 		if ( count( $post_comments_tokens ) > 0 ) {
 			foreach ( $post_comments_tokens as $token => $count ) {
-				$n++;
+				++$n;
 				$insert_data[ $token ]['comment'] = $count;
 			}
 		}
@@ -1228,7 +1236,7 @@ function relevanssi_index_author( &$insert_data, $post_author, $min_word_length,
 		relevanssi_debug_echo( 'Indexing post author as: ' . implode( ' ', array_keys( $name_tokens ) ) );
 	}
 	foreach ( $name_tokens as $token => $count ) {
-		$n++;
+		++$n;
 		if ( ! isset( $insert_data[ $token ]['author'] ) ) {
 			$insert_data[ $token ]['author'] = 0;
 		}
@@ -1321,7 +1329,7 @@ function relevanssi_index_custom_fields( &$insert_data, $post_id, $custom_fields
 			);
 
 			foreach ( $value_tokens as $token => $count ) {
-				$n++;
+				++$n;
 				if ( ! isset( $insert_data[ $token ]['customfield'] ) ) {
 					$insert_data[ $token ]['customfield'] = 0;
 				}
@@ -1367,7 +1375,7 @@ function relevanssi_index_excerpt( &$insert_data, $excerpt, $min_word_length, $d
 		'excerpt'
 	);
 	foreach ( $excerpt_tokens as $token => $count ) {
-		$n++;
+		++$n;
 		if ( ! isset( $insert_data[ $token ]['excerpt'] ) ) {
 			$insert_data[ $token ]['excerpt'] = 0;
 		}
@@ -1433,7 +1441,7 @@ function relevanssi_index_title( &$insert_data, $post, $min_word_length, $debug 
 	}
 
 	foreach ( $title_tokens as $token => $count ) {
-		$n++;
+		++$n;
 		if ( ! isset( $insert_data[ $token ]['title'] ) ) {
 			$insert_data[ $token ]['title'] = 0;
 		}
@@ -1550,7 +1558,7 @@ function relevanssi_index_content( &$insert_data, $post_object, $min_word_length
 	}
 
 	foreach ( $content_tokens as $token => $count ) {
-		$n++;
+		++$n;
 		if ( ! isset( $insert_data[ $token ]['content'] ) ) {
 			$insert_data[ $token ]['content'] = 0;
 		}
@@ -1640,7 +1648,6 @@ function relevanssi_disable_shortcodes() {
 		remove_shortcode( trim( $shortcode ) );
 		add_shortcode( trim( $shortcode ), '__return_empty_string' );
 	}
-
 }
 
 /**

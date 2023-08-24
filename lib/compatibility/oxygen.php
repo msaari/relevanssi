@@ -95,7 +95,7 @@ function relevanssi_oxygen_compatibility( $value, $field, $post_id ) {
 			);
 			array_walk(
 				$filters,
-				function( $filter ) use ( &$content ) {
+				function ( $filter ) use ( &$content ) {
 					foreach ( $filter as $key => $value ) {
 						if ( stristr( $content, '"' . $key . '":"' . $value . '"' ) !== false ) {
 							$content = '';
@@ -148,7 +148,7 @@ function relevanssi_oxygen_compatibility( $value, $field, $post_id ) {
  *
  * @return string The content from the child and the grandchildren.
  */
-function relevanssi_process_oxygen_child( $child ) : string {
+function relevanssi_process_oxygen_child( $child ): string {
 	/**
 	 * Filters the Oxygen JSON child element.
 	 *

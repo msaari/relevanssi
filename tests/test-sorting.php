@@ -194,7 +194,7 @@ class SortingTest extends WP_UnitTestCase {
 		$post_1   = get_post( $post_ids[0] );
 		$post_2   = get_post( $post_ids[1] );
 
-		add_filter( 'relevanssi_missing_sort_key', 'return_sort_key', 10, 2 );
+		add_filter( 'relevanssi_missing_sort_key', array( $this, 'return_sort_key' ), 10, 2 );
 		$keys = relevanssi_get_compare_values( 'meta_value', $post_1, $post_2 );
 		$this->assertEquals(
 			array(
@@ -242,8 +242,8 @@ class SortingTest extends WP_UnitTestCase {
 			$keys
 		);
 
-		remove_filter( 'relevanssi_missing_sort_key', 'return_sort_key', 10, 2 );
-		add_filter( 'relevanssi_missing_sort_key', 'return_sort_key_array', 10, 2 );
+		remove_filter( 'relevanssi_missing_sort_key', array( $this, 'return_sort_key' ), 10, 2 );
+		add_filter( 'relevanssi_missing_sort_key', array( $this, 'return_sort_key_array' ), 10, 2 );
 
 		update_post_meta( $post_2->ID, 'custom_field_name', 'second_post_value' );
 		delete_post_meta( $post_1->ID, 'custom_field_name' );
@@ -267,7 +267,6 @@ class SortingTest extends WP_UnitTestCase {
 			),
 			$keys
 		);
-
 	}
 
 	/**
@@ -282,7 +281,7 @@ class SortingTest extends WP_UnitTestCase {
 		$this->assertEquals( -1, relevanssi_compare_values( '1', '2', 'number' ) );
 		$this->assertEquals( 0, relevanssi_compare_values( '3', '3', 'number' ) );
 
-		add_filter( 'relevanssi_comparison_order', 'return_filter_array' );
+		add_filter( 'relevanssi_comparison_order', array( $this, 'return_filter_array' ) );
 
 		$this->assertEquals( 2, relevanssi_compare_values( 'book', 'post', 'filter' ) );
 		$this->assertEquals( -1, relevanssi_compare_values( 'post', 'page', 'filter' ) );
@@ -327,9 +326,9 @@ class SortingTest extends WP_UnitTestCase {
 	 * Uninstalls Relevanssi.
 	 */
 	public static function wpTearDownAfterClass() {
-		require_once dirname( dirname( __FILE__ ) ) . '/lib/uninstall.php';
+		require_once dirname( __DIR__ ) . '/lib/uninstall.php';
 		if ( RELEVANSSI_PREMIUM ) {
-			require_once dirname( dirname( __FILE__ ) ) . '/premium/uninstall.php';
+			require_once dirname( __DIR__ ) . '/premium/uninstall.php';
 		}
 
 		if ( function_exists( 'relevanssi_uninstall' ) ) {
@@ -339,38 +338,38 @@ class SortingTest extends WP_UnitTestCase {
 			relevanssi_uninstall_free();
 		}
 	}
-}
 
-/**
- * Returns 'foo'.
- *
- * @param string $value Not used.
- * @param string $key   Not used.
- */
-function return_sort_key( $value, $key ) {
-	return 'foo';
-}
+	/**
+	 * Returns 'foo'.
+	 *
+	 * @param string $value Not used.
+	 * @param string $key   Not used.
+	 */
+	public static function return_sort_key( $value, $key ) {
+		return 'foo';
+	}
 
-/**
- * Returns 'foo' in an array.
- *
- * @param string $value Not used.
- * @param string $key   Not used.
- */
-function return_sort_key_array( $value, $key ) {
-	return array( 'foo' );
-}
+	/**
+	 * Returns 'foo' in an array.
+	 *
+	 * @param string $value Not used.
+	 * @param string $key   Not used.
+	 */
+	public static function return_sort_key_array( $value, $key ) {
+		return array( 'foo' );
+	}
 
-/**
- * Returns filter array where post = 0, page = 1 and book = 2.
- *
- * @param array $order Ordering array.
- */
-function return_filter_array( array $order ) {
-	$order = array(
-		'post' => 0,
-		'page' => 1,
-		'book' => 2,
-	);
-	return $order;
+	/**
+	 * Returns filter array where post = 0, page = 1 and book = 2.
+	 *
+	 * @param array $order Ordering array.
+	 */
+	public static function return_filter_array( array $order ) {
+		$order = array(
+			'post' => 0,
+			'page' => 1,
+			'book' => 2,
+		);
+		return $order;
+	}
 }

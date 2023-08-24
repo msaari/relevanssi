@@ -79,12 +79,9 @@ function relevanssi_noindex_shortcode( $atts, $content ) {
  *
  * During indexing, the [noindex] shortcode returns nothing.
  *
- * @param array  $atts    The shortcode attributes. Not used.
- * @param string $content The content inside the shortcode tags.
- *
  * @return string An empty string.
  */
-function relevanssi_noindex_shortcode_indexing( $atts, $content ) {
+function relevanssi_noindex_shortcode_indexing() {
 	return '';
 }
 

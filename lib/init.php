@@ -107,7 +107,7 @@ function relevanssi_init() {
 			if ( 'indexing' === $_GET['tab'] ) { // phpcs:ignore WordPress.Security.NonceVerification
 				add_action(
 					'admin_notices',
-					function() use ( $restriction_notice ) {
+					function () use ( $restriction_notice ) {
 						echo $restriction_notice; // phpcs:ignore WordPress.Security.EscapeOutput
 					}
 				);
@@ -119,7 +119,7 @@ function relevanssi_init() {
 		if ( 'options-general.php' === $pagenow && $on_relevanssi_page ) {
 			add_action(
 				'admin_notices',
-				function() {
+				function () {
 					printf(
 						"<div id='relevanssi-warning' class='update-nag'><p><strong>%s</strong></p></div>",
 						esc_html__( 'You do not have an index! Remember to build the index (click the "Build the index" button), otherwise searching won\'t work.', 'relevanssi' )
@@ -152,10 +152,8 @@ function relevanssi_init() {
 		if ( ! wp_next_scheduled( 'relevanssi_trim_logs' ) ) {
 			wp_schedule_event( time(), 'daily', 'relevanssi_trim_logs' );
 		}
-	} else {
-		if ( wp_next_scheduled( 'relevanssi_trim_logs' ) ) {
+	} elseif ( wp_next_scheduled( 'relevanssi_trim_logs' ) ) {
 			wp_clear_scheduled_hook( 'relevanssi_trim_logs' );
-		}
 	}
 
 	if ( ! wp_next_scheduled( 'relevanssi_update_counts' ) ) {
@@ -299,10 +297,8 @@ function relevanssi_create_database_tables( $relevanssi_db_version ) {
 	if ( strpos( $wpdb->collate, '_' ) > 0 ) {
 		$charset_collate_bin_column .= ' COLLATE ' . substr( $wpdb->collate, 0, strpos( $wpdb->collate, '_' ) ) . '_bin';
 		$charset_collate            .= " COLLATE $wpdb->collate";
-	} else {
-		if ( '' === $wpdb->collate && 'utf8' === $wpdb->charset ) {
-			$charset_collate_bin_column .= ' COLLATE utf8_bin';
-		}
+	} elseif ( '' === $wpdb->collate && 'utf8' === $wpdb->charset ) {
+		$charset_collate_bin_column .= ' COLLATE utf8_bin';
 	}
 
 	$relevanssi_table          = $wpdb->prefix . 'relevanssi';

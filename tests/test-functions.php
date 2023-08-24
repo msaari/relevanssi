@@ -63,9 +63,9 @@ class FunctionTest extends WP_UnitTestCase {
 
 		add_filter(
 			'relevanssi_punctuation_filter',
-			function ( $array ) {
-				$array['p'] = 'tr';
-				return $array;
+			function ( $punctuation_array ) {
+				$punctuation_array['p'] = 'tr';
+				return $punctuation_array;
 			}
 		);
 
@@ -93,7 +93,6 @@ class FunctionTest extends WP_UnitTestCase {
 		update_option( 'relevanssi_punctuation', $options );
 
 		$this->assertEquals( '-–—', relevanssi_remove_punct( '-–—' ) );
-
 	}
 
 	/**
@@ -616,7 +615,7 @@ class FunctionTest extends WP_UnitTestCase {
 	 */
 	public function test_wordpress_seo_indexing() {
 		$post_id = self::factory()->post->create();
-		require_once dirname( dirname( __FILE__ ) ) . '/lib/compatibility/yoast-seo.php';
+		require_once dirname( __DIR__ ) . '/lib/compatibility/yoast-seo.php';
 		$this->assertFalse( relevanssi_yoast_noindex( false, $post_id ) );
 		update_post_meta( $post_id, '_yoast_wpseo_meta-robots-noindex', '1' );
 		$this->assertEquals( 'Yoast SEO', relevanssi_yoast_noindex( false, $post_id ) );
@@ -912,7 +911,6 @@ class FunctionTest extends WP_UnitTestCase {
 			),
 			relevanssi_wpmu_drop( array() )
 		);
-
 	}
 
 	/**
@@ -1070,9 +1068,9 @@ class FunctionTest extends WP_UnitTestCase {
 	 * Uninstalls Relevanssi.
 	 */
 	public static function wpTearDownAfterClass() {
-		require_once dirname( dirname( __FILE__ ) ) . '/lib/uninstall.php';
+		require_once dirname( __DIR__ ) . '/lib/uninstall.php';
 		if ( RELEVANSSI_PREMIUM ) {
-			require_once dirname( dirname( __FILE__ ) ) . '/premium/uninstall.php';
+			require_once dirname( __DIR__ ) . '/premium/uninstall.php';
 		}
 
 		if ( function_exists( 'relevanssi_uninstall' ) ) {

@@ -15,23 +15,23 @@
  * is available, will use relevanssi_premium_didyoumean(), otherwise the
  * relevanssi_simple_didyoumean() is used.
  *
- * @param string  $query The query.
- * @param string  $pre   Printed out before the suggestion.
- * @param string  $post  Printed out after the suggestion.
- * @param int     $n     Maximum number of search results found for the
+ * @param string  $query   The query.
+ * @param string  $pre     Printed out before the suggestion.
+ * @param string  $post    Printed out after the suggestion.
+ * @param int     $n       Maximum number of search results found for the
  * suggestions to show up. Default 5.
- * @param boolean $echo  If true, echo out. Default true.
+ * @param boolean $echoed  If true, echo out. Default true.
  *
  * @return string|null The suggestion HTML element.
  */
-function relevanssi_didyoumean( $query, $pre, $post, $n = 5, $echo = true ) {
+function relevanssi_didyoumean( $query, $pre, $post, $n = 5, $echoed = true ) {
 	if ( function_exists( 'relevanssi_premium_didyoumean' ) ) {
 		$result = relevanssi_premium_didyoumean( $query, $pre, $post, $n );
 	} else {
 		$result = relevanssi_simple_didyoumean( $query, $pre, $post, $n );
 	}
 
-	if ( $echo ) {
+	if ( $echoed ) {
 		echo $result; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 
@@ -187,19 +187,17 @@ function relevanssi_simple_generate_suggestion( $query ) {
 			if ( $token === $row->query ) {
 				$closest = '';
 				break;
-			} else {
-				if ( strlen( $token ) < 255 && strlen( $row->query ) < 255 ) {
-					// The levenshtein() function has a max length of 255
-					// characters. The function uses strlen(), so we must use
-					// too, instead of relevanssi_strlen().
-					$lev = levenshtein( $token, $row->query );
-					if ( $lev < 3 && ( $lev < $distance || $distance < 0 ) ) {
-						if ( $row->a > 0 ) {
-							$distance = $lev;
-							$closest  = $row->query;
-							if ( $lev < 2 ) {
-								break; // get the first with distance of 1 and go.
-							}
+			} elseif ( strlen( $token ) < 255 && strlen( $row->query ) < 255 ) {
+				// The levenshtein() function has a max length of 255
+				// characters. The function uses strlen(), so we must use
+				// too, instead of relevanssi_strlen().
+				$lev = levenshtein( $token, $row->query );
+				if ( $lev < 3 && ( $lev < $distance || $distance < 0 ) ) {
+					if ( $row->a > 0 ) {
+						$distance = $lev;
+						$closest  = $row->query;
+						if ( $lev < 2 ) {
+							break; // get the first with distance of 1 and go.
 						}
 					}
 				}

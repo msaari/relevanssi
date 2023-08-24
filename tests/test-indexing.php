@@ -616,7 +616,6 @@ class IndexingTest extends WP_UnitTestCase {
 		);
 
 		remove_filter( 'relevanssi_do_not_index', '__return_true' );
-
 	}
 
 	/**
@@ -968,7 +967,7 @@ class IndexingTest extends WP_UnitTestCase {
 		update_option( 'relevanssi_expand_shortcodes', 'on' );
 		add_shortcode(
 			'testcode',
-			function() {
+			function () {
 				return 'testing';
 			}
 		);
@@ -988,7 +987,7 @@ class IndexingTest extends WP_UnitTestCase {
 
 		add_filter(
 			'relevanssi_content_to_index',
-			function() {
+			function () {
 				return 'filtered';
 			},
 			56
@@ -1062,7 +1061,7 @@ class IndexingTest extends WP_UnitTestCase {
 			"relevanssi_insert_edit() doesn't recognise auto-drafts correctly."
 		);
 
-		add_filter( 'relevanssi_indexing_restriction', 'insert_edit_test_filter' );
+		add_filter( 'relevanssi_indexing_restriction', array( $this, 'insert_edit_test_filter' ) );
 
 		wp_insert_post(
 			array(
@@ -1077,7 +1076,7 @@ class IndexingTest extends WP_UnitTestCase {
 			"relevanssi_insert_edit() doesn't handle indexing restriction filter correctly."
 		);
 
-		remove_filter( 'relevanssi_indexing_restriction', 'insert_edit_test_filter' );
+		remove_filter( 'relevanssi_indexing_restriction', array( $this, 'insert_edit_test_filter' ) );
 
 		$this->assertEquals(
 			2,
@@ -1156,7 +1155,7 @@ class IndexingTest extends WP_UnitTestCase {
 
 		update_option( 'relevanssi_internal_links', 'noindex' );
 
-		add_filter( 'relevanssi_indexing_restriction', 'generate_query_test' );
+		add_filter( 'relevanssi_indexing_restriction', array( $this, 'generate_query_test' ) );
 
 		$query = relevanssi_generate_indexing_query( 'publish', false, 'AND restriction=true', '' );
 		$this->assertDiscardWhitespace(
@@ -1172,8 +1171,7 @@ class IndexingTest extends WP_UnitTestCase {
 		 	AND restriction=true ORDER BY post.ID DESC"
 		);
 
-		remove_filter( 'relevanssi_indexing_restriction', 'generate_query_test' );
-
+		remove_filter( 'relevanssi_indexing_restriction', array( $this, 'generate_query_test' ) );
 	}
 
 	/**
@@ -1361,7 +1359,7 @@ class IndexingTest extends WP_UnitTestCase {
 			'Emoji are not handled correctly.'
 		);
 
-		add_filter( 'pre_get_col_charset', 'return_utf8' );
+		add_filter( 'pre_get_col_charset', array( $this, 'return_utf8' ) );
 
 		$values = relevanssi_convert_data_to_values( $insert_data, $post );
 
@@ -1371,7 +1369,7 @@ class IndexingTest extends WP_UnitTestCase {
 			'Emoji are not handled correctly.'
 		);
 
-		remove_filter( 'pre_get_col_charset', 'return_utf8' );
+		remove_filter( 'pre_get_col_charset', array( $this, 'return_utf8' ) );
 	}
 
 	/**
@@ -1379,6 +1377,8 @@ class IndexingTest extends WP_UnitTestCase {
 	 */
 	public function test_wp_query_shortcodes() {
 		$this->delete_all_posts();
+
+		add_shortcode( 'insert_post', array( $this, 'insert_post_shortcode' ) );
 
 		update_option( 'relevanssi_index_post_types', array( 'post' ) );
 
@@ -1430,9 +1430,9 @@ class IndexingTest extends WP_UnitTestCase {
 	 * Uninstalls Relevanssi.
 	 */
 	public static function wpTearDownAfterClass() {
-		require_once dirname( dirname( __FILE__ ) ) . '/lib/uninstall.php';
+		require_once dirname( __DIR__ ) . '/lib/uninstall.php';
 		if ( RELEVANSSI_PREMIUM ) {
-			require_once dirname( dirname( __FILE__ ) ) . '/premium/uninstall.php';
+			require_once dirname( __DIR__ ) . '/premium/uninstall.php';
 		}
 
 		if ( function_exists( 'relevanssi_uninstall' ) ) {
@@ -1442,48 +1442,47 @@ class IndexingTest extends WP_UnitTestCase {
 			relevanssi_uninstall_free();
 		}
 	}
-}
 
-/**
- * Helper function for insert_edit test.
- */
-function insert_edit_test_filter() {
-	return array(
-		'mysql'  => " AND post_title != 'auto-draft' ",
-		'reason' => 'insert_edit_test',
-	);
-}
-
-/**
- * Helper function for generate_query test.
- */
-function generate_query_test() {
-	return 'AND restriction=true';
-}
-
-/**
- * Helper function for emoji indexing test.
- */
-function return_utf8() {
-	return 'utf8';
-}
-
-add_shortcode( 'insert_post', 'insert_post_shortcode' );
-/**
- * Helper function that runs a WP_Query and returns "flipflop".
- *
- * @param array $atts The shortcode attributes array.
- *
- * @return string "Flipflop".
- */
-function insert_post_shortcode( $atts ) {
-	$args     = array(
-		'p' => $atts['id'],
-	);
-	$wp_query = new WP_Query( $args );
-	while ( $wp_query->have_posts() ) {
-		$wp_query->the_post();
-		global $post;
+	/**
+	 * Helper function for insert_edit test.
+	 */
+	public static function insert_edit_test_filter() {
+		return array(
+			'mysql'  => " AND post_title != 'auto-draft' ",
+			'reason' => 'insert_edit_test',
+		);
 	}
-	return 'flipflop';
+
+	/**
+	 * Helper function for generate_query test.
+	 */
+	public static function generate_query_test() {
+		return 'AND restriction=true';
+	}
+
+	/**
+	 * Helper function for emoji indexing test.
+	 */
+	public static function return_utf8() {
+		return 'utf8';
+	}
+
+	/**
+	 * Helper function that runs a WP_Query and returns "flipflop".
+	 *
+	 * @param array $atts The shortcode attributes array.
+	 *
+	 * @return string "Flipflop".
+	 */
+	public static function insert_post_shortcode( $atts ) {
+		$args     = array(
+			'p' => $atts['id'],
+		);
+		$wp_query = new WP_Query( $args );
+		while ( $wp_query->have_posts() ) {
+			$wp_query->the_post();
+			global $post;
+		}
+		return 'flipflop';
+	}
 }

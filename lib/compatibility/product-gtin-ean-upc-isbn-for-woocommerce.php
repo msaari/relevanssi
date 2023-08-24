@@ -20,11 +20,9 @@ add_filter( 'option_relevanssi_index_fields', 'relevanssi_wpm_pgw_fix_none_setti
  * If this option is enabled, it will break Relevanssi search when there's a
  * match for the code.
  *
- * @param string $value Not used.
- *
  * @return string 'no'.
  */
-function relevanssi_disable_gtin_code( $value ) {
+function relevanssi_disable_gtin_code() {
 	return 'no';
 }
 

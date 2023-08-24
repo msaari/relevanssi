@@ -17,7 +17,7 @@ add_filter( 'dgwt/wcas/search_query/args', 'relevanssi_enable_relevanssi_in_fibo
  *
  * Uses the dgwt/wcas/search_query_args filter hook to modify the search query.
  *
- * @params array $args The search arguments.
+ * @param array $args The search arguments.
  *
  * @return array
  */

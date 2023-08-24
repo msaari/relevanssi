@@ -520,13 +520,10 @@ function relevanssi_process_post_type( $post_type, $admin_search, $include_attac
 			$restriction = str_replace( '*np*', '', $restriction );
 		}
 		$query_restrictions .= $restriction;
-	} else {
-		// No regular post types.
-		if ( $non_post_post_type ) {
-			// But there is a non-post post type restriction.
-			$query_restrictions .= " AND (relevanssi.type IN ($non_post_post_type))";
-			// Clean: $non_post_post_types is escaped.
-		}
+	} elseif ( $non_post_post_type ) { // No regular post types.
+		// But there is a non-post post type restriction.
+		$query_restrictions .= " AND (relevanssi.type IN ($non_post_post_type))";
+		// Clean: $non_post_post_types is escaped.
 	}
 
 	if ( $negative_post_type ) {

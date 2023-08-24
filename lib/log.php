@@ -355,7 +355,7 @@ function relevanssi_output_exported_log( string $filename, array $data, string $
  *
  * @return boolean True, if the user is not a bot or not on the omit list.
  */
-function relevanssi_is_ok_to_log( $user = null ) : bool {
+function relevanssi_is_ok_to_log( $user = null ): bool {
 	if ( relevanssi_user_agent_is_bot() ) {
 		return false;
 	}

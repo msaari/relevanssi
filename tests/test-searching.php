@@ -176,11 +176,11 @@ class SearchingTest extends WP_UnitTestCase {
 				update_post_meta( $id, 'keywords', 'cat dog' );
 				wp_set_post_terms( $id, array( 'foo', 'bar', 'baz' ), 'post_tag', true );
 				wp_set_post_terms( $id, $cat_ids, 'category', true );
-				self::$and_matches++;
-				self::$taxonomy_matches++;
+				++self::$and_matches;
+				++self::$taxonomy_matches;
 			} else {
 				update_post_meta( $id, 'visible', 'buzzword' );
-				self::$visible++;
+				++self::$visible;
 				update_post_meta( $id, 'keywords', 'cat' );
 			}
 
@@ -217,7 +217,7 @@ class SearchingTest extends WP_UnitTestCase {
 			);
 			wp_update_post( $args );
 
-			$counter++;
+			++$counter;
 		}
 
 		// Create two pages, make one parent of the other.
@@ -395,7 +395,7 @@ class SearchingTest extends WP_UnitTestCase {
 		update_option( 'relevanssi_throttle', 'on' );
 		add_filter(
 			'pre_option_relevanssi_throttle_limit',
-			function( $limit ) {
+			function ( $limit ) {
 				return 2;
 			}
 		);
@@ -877,7 +877,7 @@ class SearchingTest extends WP_UnitTestCase {
 			$author_id = self::$post_author_id;
 			if ( $counter > 1 ) {
 				$author_id = self::$other_author_id;
-				$author_count++;
+				++$author_count;
 			}
 			$args = array(
 				'ID'          => $private_post_id,
@@ -886,7 +886,7 @@ class SearchingTest extends WP_UnitTestCase {
 			);
 			wp_update_post( $args );
 			relevanssi_index_doc( $private_post_id, false, false, true, false );
-			$counter++;
+			++$counter;
 		}
 
 		wp_set_current_user( self::$post_author_id );
@@ -1080,9 +1080,9 @@ class SearchingTest extends WP_UnitTestCase {
 	public function test_relevanssi_match_killer() {
 		add_filter(
 			'relevanssi_match',
-			function ( $match ) {
-				$match->weight = 0;
-				return $match;
+			function ( $match_object ) {
+				$match_object->weight = 0;
+				return $match_object;
 			}
 		);
 
@@ -2188,7 +2188,6 @@ class SearchingTest extends WP_UnitTestCase {
 				"Missing terms list isn't generated correctly."
 			);
 		}
-
 	}
 
 
@@ -2252,7 +2251,7 @@ class SearchingTest extends WP_UnitTestCase {
 	private static function no_posts_have_taxonomy( $posts, $term_id, $taxonomy ) {
 		return ! array_reduce(
 			$posts,
-			function( $value, $post ) use ( $term_id, $taxonomy ) {
+			function ( $value, $post ) use ( $term_id, $taxonomy ) {
 				return $value || has_term( $term_id, $taxonomy, $post );
 			},
 			false
@@ -2271,7 +2270,7 @@ class SearchingTest extends WP_UnitTestCase {
 	private static function all_posts_have_taxonomy( $posts, $term_id, $taxonomy ) {
 		return array_reduce(
 			$posts,
-			function( $value, $post ) use ( $term_id, $taxonomy ) {
+			function ( $value, $post ) use ( $term_id, $taxonomy ) {
 				return $value && has_term( $term_id, $taxonomy, $post );
 			},
 			true
@@ -2299,9 +2298,9 @@ class SearchingTest extends WP_UnitTestCase {
 	 * Uninstalls Relevanssi.
 	 */
 	public static function wpTearDownAfterClass() {
-		require_once dirname( dirname( __FILE__ ) ) . '/lib/uninstall.php';
+		require_once dirname( __DIR__ ) . '/lib/uninstall.php';
 		if ( RELEVANSSI_PREMIUM ) {
-			require_once dirname( dirname( __FILE__ ) ) . '/premium/uninstall.php';
+			require_once dirname( __DIR__ ) . '/premium/uninstall.php';
 		}
 
 		if ( function_exists( 'relevanssi_uninstall' ) ) {
@@ -2311,5 +2310,4 @@ class SearchingTest extends WP_UnitTestCase {
 			relevanssi_uninstall_free();
 		}
 	}
-
 }

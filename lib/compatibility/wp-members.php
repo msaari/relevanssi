@@ -24,7 +24,7 @@ add_filter( 'relevanssi_post_ok', 'relevanssi_wpmembers_compatibility', 10, 2 );
  *
  * @return bool
  */
-function relevanssi_wpmembers_compatibility( bool $post_ok, $post_id ) : bool {
+function relevanssi_wpmembers_compatibility( bool $post_ok, $post_id ): bool {
 	global $wpmem;
 
 	if ( is_user_logged_in() ) {

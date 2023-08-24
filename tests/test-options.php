@@ -193,7 +193,7 @@ EOT;
 		$this->assertEquals( '4', get_option( 'relevanssi_content_boost' ) );
 
 		$request = array(
-			'tab'                => 'logging',
+			'tab' => 'logging',
 		);
 
 		update_relevanssi_options( $request );
@@ -257,9 +257,9 @@ EOT;
 	 * Uninstalls Relevanssi.
 	 */
 	public static function wpTearDownAfterClass() {
-		require_once dirname( dirname( __FILE__ ) ) . '/lib/uninstall.php';
+		require_once dirname( __DIR__ ) . '/lib/uninstall.php';
 		if ( RELEVANSSI_PREMIUM ) {
-			require_once dirname( dirname( __FILE__ ) ) . '/premium/uninstall.php';
+			require_once dirname( __DIR__ ) . '/premium/uninstall.php';
 		}
 
 		if ( function_exists( 'relevanssi_uninstall' ) ) {

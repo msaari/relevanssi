@@ -11,7 +11,7 @@
  */
 
 add_filter( 'bricks/posts/query_vars', 'relevanssi_bricks_enable', 10 );
-add_filter( 'relevanssi_custom_field_value', 'relevanssi_bricks_values', 10, 3 );
+add_filter( 'relevanssi_custom_field_value', 'relevanssi_bricks_values', 10, 2 );
 add_filter( 'relevanssi_index_custom_fields', 'relevanssi_add_bricks' );
 add_filter( 'option_relevanssi_index_fields', 'relevanssi_bricks_fix_none_setting' );
 add_action( 'save_post', 'relevanssi_insert_edit', 99, 1 );
@@ -56,12 +56,11 @@ function relevanssi_add_bricks( $fields ) {
  *
  * @param array  $value   An array of custom field values.
  * @param string $field   The name of the custom field.
- * @param int    $post_id The post ID.
  *
  * @return array An array containing a string with all the values concatenated
  * together.
  */
-function relevanssi_bricks_values( $value, $field, $post_id ) {
+function relevanssi_bricks_values( $value, $field ) {
 	if ( '_bricks_page_content_2' !== $field ) {
 		return $value;
 	}
@@ -69,7 +68,7 @@ function relevanssi_bricks_values( $value, $field, $post_id ) {
 	$content = '';
 	array_walk_recursive(
 		$value,
-		function( $text, $key ) use ( &$content ) {
+		function ( $text, $key ) use ( &$content ) {
 			if ( 'text' === $key ) {
 				$content .= ' ' . $text;
 			}

@@ -551,7 +551,7 @@ function relevanssi_prevent_default_request( $request, $query ) {
  * source material. If the parameter is an array of string, each string is
  * tokenized separately and the resulting tokens are combined into one array.
  *
- * @param string|array   $string          The string, or an array of strings, to
+ * @param string|array   $str             The string, or an array of strings, to
  *                                        tokenize.
  * @param boolean|string $remove_stops    If true, stopwords are removed. If
  * 'body', also removes the body stopwords. Default true.
@@ -563,14 +563,14 @@ function relevanssi_prevent_default_request( $request, $query ) {
  * @return int[] An array of tokens as the keys and their frequency as the
  * value.
  */
-function relevanssi_tokenize( $string, $remove_stops = true, int $min_word_length = -1, $context = 'indexing' ) : array {
-	if ( ! $string || ( ! is_string( $string ) && ! is_array( $string ) ) ) {
+function relevanssi_tokenize( $str, $remove_stops = true, int $min_word_length = -1, $context = 'indexing' ): array {
+	if ( ! $str || ( ! is_string( $str ) && ! is_array( $str ) ) ) {
 		return array();
 	}
 
 	$phrase_words = array();
 	if ( RELEVANSSI_PREMIUM && 'search_query' === $context ) {
-		$string_for_phrases = is_array( $string ) ? implode( ' ', $string ) : $string;
+		$string_for_phrases = is_array( $str ) ? implode( ' ', $str ) : $str;
 		$phrases            = relevanssi_extract_phrases( $string_for_phrases );
 		$phrase_words       = array();
 		foreach ( $phrases as $phrase ) {
@@ -579,9 +579,9 @@ function relevanssi_tokenize( $string, $remove_stops = true, int $min_word_lengt
 	}
 
 	$tokens = array();
-	if ( is_array( $string ) ) {
+	if ( is_array( $str ) ) {
 		// If we get an array, tokenize each string in the array.
-		foreach ( $string as $substring ) {
+		foreach ( $str as $substring ) {
 			if ( is_string( $substring ) ) {
 				$tokens = array_merge( $tokens, relevanssi_tokenize( $substring, $remove_stops, $min_word_length ) );
 			}
@@ -614,7 +614,7 @@ function relevanssi_tokenize( $string, $remove_stops = true, int $min_word_lengt
 
 	if ( function_exists( 'relevanssi_apply_thousands_separator' ) ) {
 		// A Premium feature.
-		$string = relevanssi_apply_thousands_separator( $string );
+		$str = relevanssi_apply_thousands_separator( $str );
 	}
 
 	/**
@@ -623,13 +623,13 @@ function relevanssi_tokenize( $string, $remove_stops = true, int $min_word_lengt
 	 * The default function on this filter is relevanssi_remove_punct(), which
 	 * removes some punctuation and replaces some with spaces.
 	 *
-	 * @param string $string String with punctuation.
+	 * @param string $str String with punctuation.
 	 */
-	$string = apply_filters( 'relevanssi_remove_punctuation', $string );
+	$str = apply_filters( 'relevanssi_remove_punctuation', $str );
 
-	$string = relevanssi_strtolower( $string );
+	$str = relevanssi_strtolower( $str );
 
-	$token = strtok( $string, "\n\t " );
+	$token = strtok( $str, "\n\t " );
 	while ( false !== $token ) {
 		$token  = strval( $token );
 		$accept = true;
@@ -672,7 +672,7 @@ function relevanssi_tokenize( $string, $remove_stops = true, int $min_word_lengt
 				if ( ! isset( $tokens[ $token ] ) ) {
 					$tokens[ $token ] = 1;
 				} else {
-					$tokens[ $token ]++;
+					++$tokens[ $token ];
 				}
 			}
 		}
@@ -946,11 +946,8 @@ function relevanssi_async_update_doc_count() {
  * @global object $wpdb                 The WordPress database interface.
  *
  * @author Teemu Muikku
- *
- * @param int $new_blog  The new blog ID.
- * @param int $prev_blog The old blog ID.
  */
-function relevanssi_switch_blog( $new_blog, $prev_blog ) {
+function relevanssi_switch_blog() {
 	global $relevanssi_variables, $wpdb;
 
 	if ( ! isset( $relevanssi_variables ) || ! isset( $relevanssi_variables['relevanssi_table'] ) ) {
@@ -1004,7 +1001,7 @@ function relevanssi_add_highlight( $permalink, $link_post = null ) {
  * $post ID. Default null.
  * @return boolean True if the post ID or global $post matches the front page.
  */
-function relevanssi_is_front_page_id( int $post_id = null ) : bool {
+function relevanssi_is_front_page_id( int $post_id = null ): bool {
 	$frontpage_id = intval( get_option( 'page_on_front' ) );
 	if ( $post_id === $frontpage_id ) {
 		return true;
@@ -1332,7 +1329,7 @@ function relevanssi_filter_custom_fields( $values, $field ) {
 	}
 
 	$values = array_map(
-		function( $value ) {
+		function ( $value ) {
 			if ( is_string( $value ) && 'field_' === substr( $value, 0, 6 ) ) {
 				return '';
 			}
@@ -1715,7 +1712,7 @@ function relevanssi_generate_list_of_custom_fields( $post_id, $custom_fields = n
 	if ( $remove_underscore_fields ) {
 		$custom_fields = array_filter(
 			$custom_fields,
-			function( $field ) {
+			function ( $field ) {
 				if ( '_relevanssi_pdf_content' === $field || '_' !== substr( $field, 0, 1 ) ) {
 					return $field;
 				}
@@ -1772,7 +1769,7 @@ function relevanssi_update_synonyms_setting() {
  *
  * @return array An array of words with backwards synonym replacement.
  */
-function relevanssi_replace_synonyms_in_terms( array $terms ) : array {
+function relevanssi_replace_synonyms_in_terms( array $terms ): array {
 	$all_synonyms = get_option( 'relevanssi_synonyms', array() );
 	$synonyms     = explode( ';', $all_synonyms[ relevanssi_get_current_language() ] ?? '' );
 
@@ -1806,7 +1803,7 @@ function relevanssi_replace_synonyms_in_terms( array $terms ) : array {
  * @return array An array of words with stemmed words replaced with their
  * originals.
  */
-function relevanssi_replace_stems_in_terms( array $terms, array $all_terms = null ) : array {
+function relevanssi_replace_stems_in_terms( array $terms, array $all_terms = null ): array {
 	if ( ! $all_terms ) {
 		$all_terms = $terms;
 	}
@@ -1844,7 +1841,7 @@ function relevanssi_replace_stems_in_terms( array $terms, array $all_terms = nul
  *
  * @return array An array of name => user-agent pairs.
  */
-function relevanssi_bot_block_list() : array {
+function relevanssi_bot_block_list(): array {
 	$bots = array(
 		'Google Mediapartners' => 'Mediapartners-Google',
 		'GoogleBot'            => 'Googlebot',
@@ -1872,7 +1869,7 @@ function relevanssi_bot_block_list() : array {
  *
  * @return @array The custom fields with the excluded fields removed.
  */
-function relevanssi_remove_metadata_fields( array $custom_fields ) : array {
+function relevanssi_remove_metadata_fields( array $custom_fields ): array {
 	$excluded_fields = array(
 		'_edit_last',
 		'_edit_lock',
@@ -1916,17 +1913,17 @@ function relevanssi_list_all_indexed_custom_fields() {
 
 	if ( 'visible' === $custom_fields ) {
 		$custom_fields = $wpdb->get_col(
-			"SELECT DISTINCT(meta_key)
-			FROM $wpdb->postmeta AS pm, {$relevanssi_variables['relevanssi_table']} AS r
-			WHERE pm.post_id = r.doc AND meta_key NOT LIKE '\_%'
+			'SELECT DISTINCT(meta_key) ' .
+			"FROM $wpdb->postmeta AS pm, {$relevanssi_variables['relevanssi_table']} AS r " . // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			"WHERE pm.post_id = r.doc AND meta_key NOT LIKE '\_%'
 			ORDER BY meta_key ASC"
 		);
-	} else if ( 'all' === $custom_fields ) {
+	} elseif ( 'all' === $custom_fields ) {
 		$custom_fields = $wpdb->get_col(
-			"SELECT DISTINCT(meta_key)
-			FROM $wpdb->postmeta AS pm, {$relevanssi_variables['relevanssi_table']} AS r
-			WHERE pm.post_id = r.doc
-			ORDER BY meta_key ASC"
+			'SELECT DISTINCT(meta_key) ' .
+			"FROM $wpdb->postmeta AS pm, {$relevanssi_variables['relevanssi_table']} AS r " . // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			'WHERE pm.post_id = r.doc
+			ORDER BY meta_key ASC'
 		);
 	} else {
 		$custom_fields = explode( ',', $custom_fields );

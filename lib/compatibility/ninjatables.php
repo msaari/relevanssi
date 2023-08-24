@@ -78,7 +78,7 @@ function relevanssi_index_ninja_table( $table_id ) {
 	);
 	foreach ( $rows as $row ) {
 		$array_values = array_map(
-			function( $value ) {
+			function ( $value ) {
 				if ( is_object( $value ) ) {
 					return '';
 				}

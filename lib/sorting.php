@@ -290,12 +290,10 @@ function relevanssi_compare_values( $key1, $key2, $compare ) {
 		$val = relevanssi_mb_strcasecmp( $key1, $key2 );
 	} elseif ( 'filter' === $compare ) {
 		$val = relevanssi_filter_compare( $key1, $key2 );
-	} else {
-		if ( $key1 > $key2 ) {
-			$val = 1;
-		} elseif ( $key1 < $key2 ) {
-			$val = -1;
-		}
+	} elseif ( $key1 > $key2 ) {
+		$val = 1;
+	} elseif ( $key1 < $key2 ) {
+		$val = -1;
 	}
 	return $val;
 }
@@ -373,10 +371,10 @@ function relevanssi_cmp_function( $a, $b ) {
 	}
 
 	while ( 0 === $val ) {
-		$level++;
+		++$level;
 		if ( ! isset( $relevanssi_keys[ $level ] ) ) {
 			// No more levels; we've hit the bedrock.
-			$level--;
+			--$level;
 			break;
 		}
 		$compare        = $relevanssi_compares[ $level ];

@@ -115,21 +115,21 @@ function relevanssi_woocommerce_indexing_filter() {
  * boost can be adjusted with the `relevanssi_sku_boost` filter hook. The
  * default is 2.
  *
- * @param object $match The match object.
+ * @param object $match_object The match object.
  *
  * @return object The match object.
  */
-function relevanssi_sku_boost( $match ) {
-	$custom_field_detail = json_decode( $match->customfield_detail );
+function relevanssi_sku_boost( $match_object ) {
+	$custom_field_detail = json_decode( $match_object->customfield_detail );
 	if ( null !== $custom_field_detail && isset( $custom_field_detail->_sku ) ) {
 		/**
 		 * Filters the SKU boost value.
 		 *
 		 * @param float The boost multiplier, default 2.
 		 */
-		$match->weight *= apply_filters( 'relevanssi_sku_boost', 2 );
+		$match_object->weight *= apply_filters( 'relevanssi_sku_boost', 2 );
 	}
-	return $match;
+	return $match_object;
 }
 
 /**
@@ -142,7 +142,7 @@ function relevanssi_sku_boost( $match ) {
  * @param array $post_types The list of blocked post types.
  * @return array
  */
-function relevanssi_woocommerce_admin_search_blocked_post_types( array $post_types ) : array {
+function relevanssi_woocommerce_admin_search_blocked_post_types( array $post_types ): array {
 	$woo_post_types = array(
 		'shop_coupon',
 		'shop_order',

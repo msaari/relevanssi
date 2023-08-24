@@ -350,7 +350,7 @@ function relevanssi_remove_stopword( $term, $verbose = true ) {
 	$term      = stripslashes( $term );
 	$stopwords = array_filter(
 		$stopwords,
-		function( $stopword ) use ( $term ) {
+		function ( $stopword ) use ( $term ) {
 			return $stopword !== $term;
 		}
 	);

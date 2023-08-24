@@ -20,7 +20,7 @@ add_filter( 'relevanssi_search_ok', 'relevanssi_block_elementor_library', 10, 2 
  *
  * @return bool Returns false, if this is an Elementor library search.
  */
-function relevanssi_block_elementor_library( bool $ok, WP_Query $query ) : bool {
+function relevanssi_block_elementor_library( bool $ok, WP_Query $query ): bool {
 	if ( 'elementor_library' === $query->query_vars['post_type'] ) {
 		$ok = false;
 	}

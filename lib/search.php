@@ -466,7 +466,7 @@ function relevanssi_search( $args ) {
 					$hits[ intval( $i ) ]->missing_terms = $missing_terms[ $doc ];
 				}
 			}
-			$i++;
+			++$i;
 		}
 	}
 
@@ -903,19 +903,19 @@ function relevanssi_generate_term_where( $term, $force_fuzzy = false, $no_terms 
  *
  * @since 2.1.5
  *
- * @param object $match             The match object, used as a reference.
+ * @param object $match_object      The match object, used as a reference.
  * @param array  $post_type_weights The post type and taxonomy weights array.
  */
-function relevanssi_taxonomy_score( &$match, $post_type_weights ) {
-	$match->taxonomy_score  = 0;
-	$match->taxonomy_detail = json_decode( $match->taxonomy_detail );
-	if ( is_object( $match->taxonomy_detail ) ) {
-		foreach ( $match->taxonomy_detail as $tax => $count ) {
+function relevanssi_taxonomy_score( &$match_object, $post_type_weights ) {
+	$match_object->taxonomy_score  = 0;
+	$match_object->taxonomy_detail = json_decode( $match_object->taxonomy_detail );
+	if ( is_object( $match_object->taxonomy_detail ) ) {
+		foreach ( $match_object->taxonomy_detail as $tax => $count ) {
 			$weight = $post_type_weights[ 'post_tagged_with_' . $tax ] ?? null;
 			if ( ! $weight ) {
 				$weight = $post_type_weights[ $tax ] ?? 1;
 			}
-			$match->taxonomy_score += $count * $weight;
+			$match_object->taxonomy_score += $count * $weight;
 		}
 	}
 }
@@ -1293,7 +1293,7 @@ function relevanssi_meta_query_from_query_vars( $query ) {
  *
  * @return boolean If true, allow the search.
  */
-function relevanssi_control_media_queries( bool $search_ok, WP_Query $query ) : bool {
+function relevanssi_control_media_queries( bool $search_ok, WP_Query $query ): bool {
 	if ( ! $search_ok ) {
 		// Something else has already disabled the search, this won't enable.
 		return $search_ok;
@@ -1329,19 +1329,19 @@ function relevanssi_control_media_queries( bool $search_ok, WP_Query $query ) : 
 /**
  * Calculates the TF value.
  *
- * @param stdClass $match             The match object.
+ * @param stdClass $match_object      The match object.
  * @param array    $post_type_weights An array of post type weights.
  *
  * @return float The TF value.
  */
-function relevanssi_calculate_tf( $match, $post_type_weights ) {
+function relevanssi_calculate_tf( $match_object, $post_type_weights ) {
 	$content_boost = floatval( get_option( 'relevanssi_content_boost', 1 ) );
 	$title_boost   = floatval( get_option( 'relevanssi_title_boost' ) );
 	$link_boost    = floatval( get_option( 'relevanssi_link_boost' ) );
 	$comment_boost = floatval( get_option( 'relevanssi_comment_boost' ) );
 
-	if ( ! empty( $match->taxonomy_detail ) ) {
-		relevanssi_taxonomy_score( $match, $post_type_weights );
+	if ( ! empty( $match_object->taxonomy_detail ) ) {
+		relevanssi_taxonomy_score( $match_object, $post_type_weights );
 	} else {
 		$tag_weight = 1;
 		if ( isset( $post_type_weights['post_tag'] ) && is_numeric( $post_type_weights['post_tag'] ) ) {
@@ -1355,22 +1355,22 @@ function relevanssi_calculate_tf( $match, $post_type_weights ) {
 
 		$taxonomy_weight = 1;
 
-		$match->taxonomy_score =
-			$match->tag * $tag_weight +
-			$match->category * $category_weight +
-			$match->taxonomy * $taxonomy_weight;
+		$match_object->taxonomy_score =
+			$match_object->tag * $tag_weight +
+			$match_object->category * $category_weight +
+			$match_object->taxonomy * $taxonomy_weight;
 	}
 
 	$tf =
-		$match->title * $title_boost +
-		$match->content * $content_boost +
-		$match->comment * $comment_boost +
-		$match->link * $link_boost +
-		$match->author +
-		$match->excerpt +
-		$match->taxonomy_score +
-		$match->customfield +
-		$match->mysqlcolumn;
+		$match_object->title * $title_boost +
+		$match_object->content * $content_boost +
+		$match_object->comment * $comment_boost +
+		$match_object->link * $link_boost +
+		$match_object->author +
+		$match_object->excerpt +
+		$match_object->taxonomy_score +
+		$match_object->customfield +
+		$match_object->mysqlcolumn;
 
 	return $tf;
 }
@@ -1378,27 +1378,27 @@ function relevanssi_calculate_tf( $match, $post_type_weights ) {
 /**
  * Calculates the match weight based on TF, IDF and bonus multipliers.
  *
- * @param stdClass $match             The match object.
+ * @param stdClass $match_object      The match object.
  * @param float    $idf               The inverse document frequency.
  * @param array    $post_type_weights The post type weights.
  * @param string   $query             The search query.
  *
  * @return float The weight.
  */
-function relevanssi_calculate_weight( $match, $idf, $post_type_weights, $query ) {
+function relevanssi_calculate_weight( $match_object, $idf, $post_type_weights, $query ) {
 	if ( $idf < 1 ) {
 		$idf = 1;
 	}
-	$weight = $match->tf * $idf;
+	$weight = $match_object->tf * $idf;
 
-	$type = relevanssi_get_post_type( $match->doc );
+	$type = relevanssi_get_post_type( $match_object->doc );
 	if ( ! is_wp_error( $type ) && ! empty( $post_type_weights[ $type ] ) ) {
 		$weight = $weight * $post_type_weights[ $type ];
 	}
 
 	/* Weight boost for taxonomy terms based on taxonomy. */
-	if ( ! empty( $post_type_weights[ 'taxonomy_term_' . $match->type ] ) ) {
-		$weight = $weight * $post_type_weights[ 'taxonomy_term_' . $match->type ];
+	if ( ! empty( $post_type_weights[ 'taxonomy_term_' . $match_object->type ] ) ) {
+		$weight = $weight * $post_type_weights[ 'taxonomy_term_' . $match_object->type ];
 	}
 
 	if ( function_exists( 'relevanssi_get_recency_bonus' ) ) {
@@ -1406,7 +1406,7 @@ function relevanssi_calculate_weight( $match, $idf, $post_type_weights, $query )
 		$recency_bonus       = $recency_details['bonus'];
 		$recency_cutoff_date = $recency_details['cutoff'];
 		if ( $recency_bonus ) {
-			$post = relevanssi_get_post( $match->doc );
+			$post = relevanssi_get_post( $match_object->doc );
 			if ( ! is_wp_error( $post ) && strtotime( $post->post_date ) > $recency_cutoff_date ) {
 				$weight = $weight * $recency_bonus;
 			}
@@ -1428,7 +1428,7 @@ function relevanssi_calculate_weight( $match, $idf, $post_type_weights, $query )
 			)
 		);
 
-		$post        = relevanssi_get_post( $match->doc );
+		$post        = relevanssi_get_post( $match_object->doc );
 		$clean_query = str_replace( '"', '', $query );
 		if ( ! is_wp_error( $post ) && stristr( $post->post_title, $clean_query ) !== false ) {
 			$weight *= $exact_match_boost['title'];
@@ -1447,35 +1447,35 @@ function relevanssi_calculate_weight( $match, $idf, $post_type_weights, $query )
  *
  * @param array    $term_hits    The term hits array (passed as reference).
  * @param array    $match_arrays The matches array (passed as reference).
- * @param stdClass $match        The match object.
+ * @param stdClass $match_object The match object.
  * @param string   $term         The search term.
  */
-function relevanssi_update_term_hits( &$term_hits, &$match_arrays, $match, $term ) {
-	$term_hits[ $match->doc ][ $term ] =
-		$match->title +
-		$match->content +
-		$match->comment +
-		$match->tag +
-		$match->link +
-		$match->author +
-		$match->category +
-		$match->excerpt +
-		$match->taxonomy +
-		$match->customfield;
+function relevanssi_update_term_hits( &$term_hits, &$match_arrays, $match_object, $term ) {
+	$term_hits[ $match_object->doc ][ $term ] =
+		$match_object->title +
+		$match_object->content +
+		$match_object->comment +
+		$match_object->tag +
+		$match_object->link +
+		$match_object->author +
+		$match_object->category +
+		$match_object->excerpt +
+		$match_object->taxonomy +
+		$match_object->customfield;
 
-	relevanssi_increase_value( $match_arrays['body'][ $match->doc ], $match->content );
-	relevanssi_increase_value( $match_arrays['title'][ $match->doc ], $match->title );
-	relevanssi_increase_value( $match_arrays['link'][ $match->doc ], $match->link );
-	relevanssi_increase_value( $match_arrays['tag'][ $match->doc ], $match->tag );
-	relevanssi_increase_value( $match_arrays['category'][ $match->doc ], $match->category );
-	relevanssi_increase_value( $match_arrays['taxonomy'][ $match->doc ], $match->taxonomy );
-	relevanssi_increase_value( $match_arrays['comment'][ $match->doc ], $match->comment );
-	relevanssi_increase_value( $match_arrays['customfield'][ $match->doc ], $match->customfield );
-	relevanssi_increase_value( $match_arrays['author'][ $match->doc ], $match->author );
-	relevanssi_increase_value( $match_arrays['excerpt'][ $match->doc ], $match->excerpt );
+	relevanssi_increase_value( $match_arrays['body'][ $match_object->doc ], $match_object->content );
+	relevanssi_increase_value( $match_arrays['title'][ $match_object->doc ], $match_object->title );
+	relevanssi_increase_value( $match_arrays['link'][ $match_object->doc ], $match_object->link );
+	relevanssi_increase_value( $match_arrays['tag'][ $match_object->doc ], $match_object->tag );
+	relevanssi_increase_value( $match_arrays['category'][ $match_object->doc ], $match_object->category );
+	relevanssi_increase_value( $match_arrays['taxonomy'][ $match_object->doc ], $match_object->taxonomy );
+	relevanssi_increase_value( $match_arrays['comment'][ $match_object->doc ], $match_object->comment );
+	relevanssi_increase_value( $match_arrays['customfield'][ $match_object->doc ], $match_object->customfield );
+	relevanssi_increase_value( $match_arrays['author'][ $match_object->doc ], $match_object->author );
+	relevanssi_increase_value( $match_arrays['excerpt'][ $match_object->doc ], $match_object->excerpt );
 
 	if ( function_exists( 'relevanssi_premium_update_term_hits' ) ) {
-		relevanssi_premium_update_term_hits( $term_hits, $match_arrays, $match, $term );
+		relevanssi_premium_update_term_hits( $term_hits, $match_arrays, $match_object, $term );
 	}
 }
 
@@ -1512,7 +1512,7 @@ function relevanssi_initialize_match_arrays() {
  *
  * @return array An array of DF values for each term.
  */
-function relevanssi_generate_df_counts( array $terms, array $args ) : array {
+function relevanssi_generate_df_counts( array $terms, array $args ): array {
 	global $wpdb, $relevanssi_variables;
 	$relevanssi_table = $relevanssi_variables['relevanssi_table'];
 
@@ -1632,18 +1632,18 @@ function relevanssi_sort_results( &$hits, $orderby, $order, $meta_query ) {
  * Adjusts the $match->doc ID in case of users, post type archives and
  * taxonomy terms.
  *
- * @param stdClass $match The match object.
+ * @param stdClass $match_object The match object.
  *
  * @return int|string The doc ID, modified if necessary.
  */
-function relevanssi_adjust_match_doc( $match ) {
-	$doc = $match->doc;
-	if ( 'user' === $match->type ) {
-		$doc = 'u_' . $match->item;
-	} elseif ( 'post_type' === $match->type ) {
-		$doc = 'p_' . $match->item;
-	} elseif ( ! in_array( $match->type, array( 'post', 'attachment' ), true ) ) {
-		$doc = '**' . $match->type . '**' . $match->item;
+function relevanssi_adjust_match_doc( $match_object ) {
+	$doc = $match_object->doc;
+	if ( 'user' === $match_object->type ) {
+		$doc = 'u_' . $match_object->item;
+	} elseif ( 'post_type' === $match_object->type ) {
+		$doc = 'p_' . $match_object->item;
+	} elseif ( ! in_array( $match_object->type, array( 'post', 'attachment' ), true ) ) {
+		$doc = '**' . $match_object->type . '**' . $match_object->item;
 	}
 	return $doc;
 }
@@ -1659,8 +1659,13 @@ function relevanssi_adjust_match_doc( $match ) {
  *
  * @return string The MySQL search query.
  */
-function relevanssi_generate_search_query( string $term, bool $search_again,
-bool $no_terms, string $query_join = '', string $query_restrictions = '' ) : string {
+function relevanssi_generate_search_query(
+	string $term,
+	bool $search_again,
+	bool $no_terms,
+	string $query_join = '',
+	string $query_restrictions = ''
+): string {
 	global $relevanssi_variables;
 	$relevanssi_table = $relevanssi_variables['relevanssi_table'];
 
@@ -1780,12 +1785,12 @@ function relevanssi_compile_common_args( $query ) {
  * even though the word appears in the post (because of throttling), the post
  * would be excluded. This functionality makes sure it is included.
  *
- * @param array $matches The found posts array.
- * @param array $include The posts to include.
- * @param array $params  Search parameters.
+ * @param array $matches        The found posts array.
+ * @param array $included_posts The posts to include.
+ * @param array $params         Search parameters.
  */
-function relevanssi_add_include_matches( array &$matches, array $include, array $params ) {
-	if ( count( $include['posts'] ) < 1 && count( $include['items'] ) < 1 ) {
+function relevanssi_add_include_matches( array &$matches, array $included_posts, array $params ) {
+	if ( count( $included_posts['posts'] ) < 1 && count( $included_posts['items'] ) < 1 ) {
 		return;
 	}
 
@@ -1807,13 +1812,13 @@ function relevanssi_add_include_matches( array &$matches, array $include, array 
 		$cat = $post_type_weights['post_tagged_with_category'];
 	}
 
-	if ( count( $include['posts'] ) > 0 ) {
+	if ( count( $included_posts['posts'] ) > 0 ) {
 		$existing_ids = array();
 		foreach ( $matches as $match ) {
 			$existing_ids[] = $match->doc;
 		}
 		$existing_ids   = array_keys( array_flip( $existing_ids ) );
-		$added_post_ids = array_diff( array_keys( $include['posts'] ), $existing_ids );
+		$added_post_ids = array_diff( array_keys( $included_posts['posts'] ), $existing_ids );
 		if ( count( $added_post_ids ) > 0 ) {
 			$offset       = 0;
 			$slice_length = 20;
@@ -1838,7 +1843,7 @@ function relevanssi_add_include_matches( array &$matches, array $include, array 
 			} while ( $offset <= $total_ids );
 		}
 	}
-	if ( count( $include['items'] ) > 0 ) {
+	if ( count( $included_posts['items'] ) > 0 ) {
 		$existing_items = array();
 		foreach ( $matches as $match ) {
 			if ( 0 !== intval( $match->item ) ) {
@@ -1846,7 +1851,7 @@ function relevanssi_add_include_matches( array &$matches, array $include, array 
 			}
 		}
 		$existing_items = array_keys( array_flip( $existing_items ) );
-		$items_to_add   = implode( ',', array_diff( array_keys( $include['items'] ), $existing_items ) );
+		$items_to_add   = implode( ',', array_diff( array_keys( $included_posts['items'] ), $existing_items ) );
 
 		if ( ! empty( $items_to_add ) ) {
 			$query = "SELECT relevanssi.*, relevanssi.title * $title_boost +
@@ -1881,7 +1886,7 @@ function relevanssi_add_include_matches( array &$matches, array $include, array 
  *
  * @return array An array with the low boundary first, the high boundary second.
  */
-function relevanssi_get_boundaries( $query ) : array {
+function relevanssi_get_boundaries( $query ): array {
 	$hits_count = $query->found_posts;
 
 	if ( isset( $query->query_vars['paged'] ) && $query->query_vars['paged'] > 0 ) {

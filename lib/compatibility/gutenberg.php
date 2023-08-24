@@ -34,7 +34,6 @@ function relevanssi_register_gutenberg_actions() {
 					'relevanssi_save_gutenberg_postdata'
 				);
 			}
-
 		}
 	);
 }

@@ -111,12 +111,12 @@ class StopwordTest extends WP_UnitTestCase {
 	 * Test stopword population.
 	 */
 	public function test_populate_stopwords() {
-		add_filter( 'locale', 'return_az' );
+		add_filter( 'locale', array( $this, 'return_az' ) );
 		ob_start();
 		$this->assertEquals( 'no_file', relevanssi_populate_stopwords( true ) );
 		$output = ob_get_clean();
 		$this->assertContains( 'The stopword file for the language &#039;az&#039; doesn&#039;t exist.', $output );
-		remove_filter( 'locale', 'return_az' );
+		remove_filter( 'locale', array( $this, 'return_az' ) );
 
 		ob_start();
 		$response = relevanssi_populate_stopwords( true );
@@ -157,17 +157,17 @@ class StopwordTest extends WP_UnitTestCase {
 	 * Uninstalls Relevanssi.
 	 */
 	public static function wpTearDownAfterClass() {
-		require_once dirname( dirname( __FILE__ ) ) . '/lib/uninstall.php';
-		RELEVANSSI_PREMIUM && require_once dirname( dirname( __FILE__ ) ) . '/premium/uninstall.php';
+		require_once dirname( __DIR__ ) . '/lib/uninstall.php';
+		RELEVANSSI_PREMIUM && require_once dirname( __DIR__ ) . '/premium/uninstall.php';
 
 		function_exists( 'relevanssi_uninstall' ) && relevanssi_uninstall();
 		function_exists( 'relevanssi_uninstall_free' ) && relevanssi_uninstall_free();
 	}
-}
 
-/**
- * Returns 'az'.
- */
-function return_az() {
-	return 'az';
+	/**
+	 * Returns 'az'.
+	 */
+	public static function return_az() {
+		return 'az';
+	}
 }
