@@ -716,6 +716,13 @@ function relevanssi_highlight_terms( $content, $query, $convert_entities = false
 			$replace = $start_emp_token . '\\1' . $end_emp_token;
 		}
 
+		/**
+		 * Filters the regular expression used for highlighting.
+		 *
+		 * @param array  $array   The regex and the replacement.
+		 */
+		$regex = apply_filters( 'relevanssi_highlight_regex', $regex, $pr_term );
+
 		// Add an extra space so that the regex that looks for a non-word
 		// character after the search term will find one, even if the word is
 		// at the end of the content (especially in titles).
@@ -1390,6 +1397,10 @@ function relevanssi_add_accent_variations( $word ) {
 		)
 	);
 
+	if ( ! $replacement_arrays ) {
+		return $word;
+	}
+
 	$len        = relevanssi_strlen( $word );
 	$word_array = array();
 	$escaped    = false;
@@ -1433,6 +1444,14 @@ function relevanssi_get_custom_field_content( $post_id ): array {
 		$child_pdf_content = relevanssi_get_child_pdf_content( $post_id );
 		$custom_fields[]   = '_relevanssi_child_pdf_content';
 	}
+
+	/**
+	 * Filters the list of custom fields used for the excerpt.
+	 *
+	 * @param array $custom_fields The list of custom fields.
+	 * @param int   $post_id       The post ID.
+	 */
+	$custom_fields = apply_filters( 'relevanssi_excerpt_custom_fields', $custom_fields, $post_id );
 
 	foreach ( $custom_fields as $field ) {
 		/* Documented in lib/indexing.php. */
@@ -1599,7 +1618,7 @@ function relevanssi_highlight_post_title( &$post, $query ) {
  * @uses relevanssi_do_excerpt
  */
 function relevanssi_add_excerpt( &$post, $query ) {
-	if ( isset( $post->blog_id ) ) {
+	if ( isset( $post->blog_id ) && function_exists( 'switch_to_blog' ) ) {
 		switch_to_blog( $post->blog_id );
 	}
 	$post->original_excerpt = $post->post_excerpt;
@@ -1624,7 +1643,7 @@ function relevanssi_add_excerpt( &$post, $query ) {
 			$excerpt_type
 		);
 	}
-	if ( isset( $post->blog_id ) ) {
+	if ( isset( $post->blog_id ) && function_exists( 'restore_current_blog' ) ) {
 		restore_current_blog();
 	}
 }
