@@ -129,6 +129,7 @@ Each document database is full of useless words. All the little words that appea
 
 == Changelog ==
 = 4.21.0 =
+* New feature: If RELEVANSSI_DEBUG, WP_DEBUG and WP_DEBUG_DISPLAY are all true, Relevanssi will print out indexing debugging messages to the error log (PHP error log or whatever is defined in WP_DEBUG_LOG).
 * Minor fix: Some ACF fields change the global $post, leading to indexing problems. Relevanssi tries to prevent that now.
 * Minor fix: Avoid fatal errors from `action` query variable being a non-string.
 * Minor fix: Term indexing with WPML only indexed the terms in the current admin language. Now the terms are indexed in all languages.

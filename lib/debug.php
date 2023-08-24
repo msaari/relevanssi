@@ -46,7 +46,7 @@ function relevanssi_debug_posts( $posts ) {
 		} else {
 			echo "<p>$post->ID: $post->post_title<br />";
 			echo "$post->post_type – $post->post_status – $post->relevance_score<br />";
-			echo "relevanssi_link: $post->relevanssi_link<br />";
+			property_exists( $post, 'relevanssi_link' ) && print( "relevanssi_link: $post->relevanssi_link<br />" );
 			echo 'the_permalink(): ';
 			the_permalink( $post->ID );
 			echo '<br />get_permalink(): ' . get_permalink( $post );
@@ -158,4 +158,15 @@ function relevanssi_debug_search_settings() {
 
 	echo '</p>';
 	// phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped
+}
+
+/**
+ * Returns true if RELEVANSSI_DEBUG, WP_DEBUG and WP_DEBUG_DISPLAY are true.
+ *
+ * @return bool True if debug mode is on.
+ */
+function relevanssi_log_debug(): bool {
+	return defined( 'RELEVANSSI_DEBUG' ) && RELEVANSSI_DEBUG
+		&& defined( 'WP_DEBUG' ) && WP_DEBUG
+		&& defined( 'WP_DEBUG_DISPLAY' ) && WP_DEBUG_DISPLAY;
 }
