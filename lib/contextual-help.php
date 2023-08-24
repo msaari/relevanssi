@@ -22,8 +22,6 @@ function relevanssi_admin_help() {
 
 	// Translators: %1$s is 'orderby', %2$s is the Codex page URL.
 	$orderby_parameters = sprintf( __( "To adjust the post order, you can use the %1\$s query parameter. With %1\$s, you can use multiple layers of different sorting methods. See <a href='%2\$s'>WordPress Codex</a> for more details on using arrays for orderby.", 'relevanssi' ), '<code>orderby</code>', 'https://codex.wordpress.org/Class_Reference/WP_Query#Order_.26_Orderby_Parameters' );
-	// Translators: %s is 'Uncheck this if you use non-ASCII characters' option name.
-	$inside_word_highlights = sprintf( __( 'To get inside-word highlights, uncheck the "%s" option. That has a side-effect of enabling the inside-word highlights.', 'relevanssi' ), __( 'Uncheck this if you use non-ASCII characters', 'relevanssi' ) );
 	// Translators: %s is 'relevanssi_throttle_limit'.
 	$throttle_limit = sprintf( __( 'In order to adjust the throttle limit, you can use the %s filter hook.', 'relevanssi' ), '<code>pre_option_relevanssi_throttle_limit</code>' );
 
@@ -38,7 +36,6 @@ function relevanssi_admin_help() {
 function rlv_partial_inside_words( $query ) {
 	return "(relevanssi.term LIKE \'%#term#%\')";
 }</pre></li>' .
-				"<li>$inside_word_highlights</li>" .
 				"<li>$throttle_limit" .
 				'<pre>add_filter( \'pre_option_relevanssi_throttle_limit\', function( $limit ) { return 200; } );</pre></li>' .
 				'<li>' . __( "It's not usually necessary to adjust the limit from 500, but in some cases performance gains can be achieved by setting a lower limit. We don't suggest going under 200, as low values will make the results worse.", 'relevanssi' ) . '</li>' .
