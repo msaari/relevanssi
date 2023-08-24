@@ -131,6 +131,7 @@ Each document database is full of useless words. All the little words that appea
 = 4.21.0 =
 * Minor fix: Some ACF fields change the global $post, leading to indexing problems. Relevanssi tries to prevent that now.
 * Minor fix: Avoid fatal errors from `action` query variable being a non-string.
+* Minor fix: Term indexing with WPML only indexed the terms in the current admin language. Now the terms are indexed in all languages.
 
 = 4.20.0 =
 * New feature: Relevanssi can now create custom field specific excerpts that come from one custom field only and know which field that is.

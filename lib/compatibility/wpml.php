@@ -12,6 +12,8 @@
 
 add_filter( 'relevanssi_hits_filter', 'relevanssi_wpml_filter', 9 );
 add_filter( 'relevanssi_tag_before_tokenize', 'relevanssi_wpml_term_fix', 10, 4 );
+add_action( 'relevanssi_pre_index_taxonomies', 'relevanssi_disable_wpml_terms' );
+add_action( 'relevanssi_post_index_taxonomies', 'relevanssi_enable_wpml_terms' );
 
 /**
  * Filters posts based on WPML language.
@@ -40,7 +42,7 @@ function relevanssi_wpml_filter( $data ) {
 			$object_array = relevanssi_get_an_object( $hit );
 			$hit          = $object_array['object'];
 
-			if ( isset( $hit->blog_id ) ) {
+			if ( isset( $hit->blog_id ) && function_exists( 'switch_to_blog' ) ) {
 				// This is a multisite search.
 				switch_to_blog( $hit->blog_id );
 				if ( function_exists( 'icl_object_id' ) ) {
@@ -90,7 +92,7 @@ function relevanssi_wpml_filter( $data ) {
 				$filtered_hits[] = $original_hit;
 			}
 
-			if ( isset( $hit->blog_id ) ) {
+			if ( isset( $hit->blog_id ) && function_exists( 'restore_current_blog' ) ) {
 				restore_current_blog();
 			}
 		}
@@ -146,4 +148,25 @@ function relevanssi_wpml_term_fix( string $term_content, array $terms, string $t
 	}
 
 	return $term_content;
+}
+
+/**
+ * Disables WPML term filtering.
+ *
+ * This function disables the WPML term filtering, so that Relevanssi can index
+ * the terms in the correct language.
+ */
+function relevanssi_disable_wpml_terms() {
+	global $sitepress;
+	remove_filter( 'get_term', array( $sitepress, 'get_term_adjust_id' ), 1 );
+}
+
+/**
+ * Enables WPML term filtering.
+ *
+ * This function enables the WPML term filtering.
+ */
+function relevanssi_enable_wpml_terms() {
+	global $sitepress;
+	add_filter( 'get_term', array( $sitepress, 'get_term_adjust_id' ), 1, 1 );
 }
