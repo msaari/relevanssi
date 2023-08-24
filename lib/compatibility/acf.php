@@ -26,7 +26,10 @@ add_filter( 'relevanssi_index_custom_fields', 'relevanssi_acf_exclude_fields', 1
  * parameter unchanged otherwise.
  */
 function relevanssi_acf_relationship_fields( $search_ok ) {
-	if ( isset( $_REQUEST['action'] ) && 'acf' === substr( $_REQUEST['action'], 0, 3 ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+	// phpcs:disable WordPress.Security.NonceVerification
+	if ( isset( $_REQUEST['action'] )
+		&& is_string( $_REQUEST['action'] )
+		&& 'acf' === substr( $_REQUEST['action'], 0, 3 ) ) {
 		$search_ok = false;
 	}
 	return $search_ok;
