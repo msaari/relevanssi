@@ -131,6 +131,8 @@ Each document database is full of useless words. All the little words that appea
 = 4.21.0 =
 * New feature: New filter hook `relevanssi_highlight_regex` makes it possible to adjust the regex used for highlighting.
 * New feature: New filter hook `relevanssi_excerpt_custom_fields` filters the list of custom fields used for creating the excerpt.
+* New feature: New filter hook `relevanssi_phrase_custom_fields` filters the list of custom fields used for phrase matching. Return an empty array to disable phrase matching in custom fields.
+* New feature: New filter hook `relevanssi_phrase_taxonomies` filters the list of taxonomies used for phrase matching. Return an empty array to disable phrase matching in taxonomies.
 * New feature: If RELEVANSSI_DEBUG, WP_DEBUG and WP_DEBUG_DISPLAY are all true, Relevanssi will print out indexing debugging messages to the error log (PHP error log or whatever is defined in WP_DEBUG_LOG).
 * Minor fix: Some ACF fields change the global $post, leading to indexing problems. Relevanssi tries to prevent that now.
 * Minor fix: Avoid fatal errors from `action` query variable being a non-string.
