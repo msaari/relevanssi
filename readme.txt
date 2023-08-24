@@ -128,6 +128,9 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.21.0 =
+* Minor fix: Some ACF fields change the global $post, leading to indexing problems. Relevanssi tries to prevent that now.
+
 = 4.20.0 =
 * New feature: Relevanssi can now create custom field specific excerpts that come from one custom field only and know which field that is.
 * New feature: You can see the list of indexed custom field names in the indexing and excerpt settings.

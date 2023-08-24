@@ -165,8 +165,11 @@ function relevanssi_acf_exclude_fields( $fields, $post_id ) {
 		array( 'repeater', 'flexible_content', 'group' )
 	);
 
+	global $post;
 	foreach ( $fields as $field ) {
+		$global_post  = $post; // ACF fields can change the global $post.
 		$field_object = get_field_object( $field );
+		$post         = $global_post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 
 		if ( ! $field_object || ! is_array( $field_object ) ) {
 			$field_id = relevanssi_acf_get_field_id( $field, $post_id );
