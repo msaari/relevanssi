@@ -128,6 +128,9 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.21.1 =
+* Minor fix: Relevanssi is now blocked in the reusable content block search.
+
 = 4.21.0 =
 * New feature: New filter hook `relevanssi_highlight_regex` makes it possible to adjust the regex used for highlighting.
 * New feature: New filter hook `relevanssi_excerpt_custom_fields` filters the list of custom fields used for creating the excerpt.
@@ -183,6 +186,12 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: Taxonomy query handling was improved. This should help in particular Polylang users who've had problems with Relevanssi ignoring Polylang language restrictions.
 
 == Upgrade notice ==
+= 4.21.1 =
+
+
+= 4.21.0 =
+* New filter hooks, debugging tools and bug fixes.
+
 = 4.20.0 =
 * Better method for handling custom fields in excerpts, bug fixes.
 

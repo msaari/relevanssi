@@ -1410,6 +1410,7 @@ function relevanssi_remove_page_builder_shortcodes( $content ) {
 function relevanssi_block_on_admin_searches( $allow, $query ) {
 	$blocked_post_types = array(
 		'rc_blocks', // Reusable Content Blocks.
+		'wp_block', // Reusable Content Blocks.
 	);
 	/**
 	 * Filters the post types that are blocked in the admin search.
