@@ -490,6 +490,9 @@ function relevanssi_prevent_default_request( $request, $query ) {
 			// ACF stuff, do not touch (eg. a relationship field search).
 			return $request;
 		}
+		if ( isset( $query->is_feed ) && $query->is_feed ) {
+			return $request;
+		}
 
 		$admin_search_ok = true;
 		/**

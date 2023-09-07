@@ -130,6 +130,7 @@ Each document database is full of useless words. All the little words that appea
 == Changelog ==
 = 4.21.1 =
 * Minor fix: Relevanssi is now blocked in the reusable content block search.
+* Minor fix: Stop Relevanssi from blocking the feed searches.
 
 = 4.21.0 =
 * New feature: New filter hook `relevanssi_highlight_regex` makes it possible to adjust the regex used for highlighting.

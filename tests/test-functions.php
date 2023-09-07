@@ -915,8 +915,6 @@ class FunctionTest extends WP_UnitTestCase {
 
 	/**
 	 * Test relevanssi_prevent_default_request().
-	 *
-	 * @group test
 	 */
 	public function test_relevanssi_prevent_default_request() {
 		$request = 'request';
