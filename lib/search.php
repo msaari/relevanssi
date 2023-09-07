@@ -1430,10 +1430,10 @@ function relevanssi_calculate_weight( $match_object, $idf, $post_type_weights, $
 
 		$post        = relevanssi_get_post( $match_object->doc );
 		$clean_query = str_replace( '"', '', $query );
-		if ( ! is_wp_error( $post ) && stristr( $post->post_title, $clean_query ) !== false ) {
+		if ( ! is_wp_error( $post ) && relevanssi_mb_stristr( $post->post_title, $clean_query ) !== false ) {
 			$weight *= $exact_match_boost['title'];
 		}
-		if ( ! is_wp_error( $post ) && stristr( $post->post_content, $clean_query ) !== false ) {
+		if ( ! is_wp_error( $post ) && relevanssi_mb_stristr( $post->post_content, $clean_query ) !== false ) {
 			$weight *= $exact_match_boost['content'];
 		}
 	}

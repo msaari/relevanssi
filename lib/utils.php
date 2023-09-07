@@ -932,6 +932,32 @@ function relevanssi_mb_strcasecmp( $str1, $str2, $encoding = '' ): int {
 }
 
 /**
+ * Multibyte friendly case-insensitive string search.
+ *
+ * If multibyte string functions are available, do mb_stristr(). Otherwise,
+ * do stristr().
+ *
+ * @see stristr()     Falls back to this if multibyte functions are not
+ * available.
+ *
+ * @param string $haystack The string to search in.
+ * @param string $needle   The string to search for.
+ * @param string $encoding The encoding to use, default mb_internal_encoding().
+ *
+ * @return bool True if the needle was found in the haystack, false otherwise.
+ */
+function relevanssi_mb_stristr( $haystack, $needle, $encoding = '' ): bool {
+	if ( ! function_exists( 'mb_internal_encoding' ) ) {
+		return stristr( $haystack, $needle );
+	} else {
+		if ( empty( $encoding ) ) {
+			$encoding = mb_internal_encoding();
+		}
+		return mb_stristr( $haystack, $needle, false, $encoding );
+	}
+}
+
+/**
  * Trims multibyte strings.
  *
  * Removes the 194+160 non-breakable spaces, removes null bytes and removes
