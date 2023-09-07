@@ -129,6 +129,7 @@ Each document database is full of useless words. All the little words that appea
 
 == Changelog ==
 = 4.21.1 =
+* Changed behaviour: The 'relevanssi_index_content' and 'relevanssi_index_titles' filter hooks now get the post object as a second parameter.
 * Minor fix: Relevanssi is now blocked in the reusable content block search.
 * Minor fix: Stop Relevanssi from blocking the feed searches.
 
