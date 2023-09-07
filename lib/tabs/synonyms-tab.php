@@ -15,7 +15,7 @@
  */
 function relevanssi_synonyms_tab() {
 	$current_language = relevanssi_get_current_language();
-	if ( class_exists( 'Polylang', false ) && ! $current_language ) {
+	if ( class_exists( 'Polylang', false ) && ! pll_current_language() ) {
 		relevanssi_polylang_all_languages_synonyms();
 		return;
 	}

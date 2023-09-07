@@ -133,6 +133,7 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: Relevanssi is now blocked in the reusable content block search.
 * Minor fix: Stop Relevanssi from blocking the feed searches.
 * Minor fix: Improve exact match boosts with accented letters.
+* Minor fix: Entering synonyms in Polylang all languages mode was possible; it shouldn't be.
 
 = 4.21.0 =
 * New feature: New filter hook `relevanssi_highlight_regex` makes it possible to adjust the regex used for highlighting.
