@@ -343,9 +343,9 @@ function relevanssi_build_index( $extend_offset = false, $verbose = null, $post_
 	do_action( 'relevanssi_pre_indexing_query' );
 
 	$content = $wpdb->get_results( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-	if ( defined( 'WP_CLI' ) && WP_CLI && function_exists( 'relevanssi_generate_progress_bar' ) ) {
+	if ( defined( 'WP_CLI' ) && WP_CLI ) {
 		// @codeCoverageIgnoreStart
-		$progress = relevanssi_generate_progress_bar( 'Indexing posts', count( $content ) );
+		$progress = WP_CLI\Utils\make_progress_bar( 'Indexing posts', count( $content ) );
 		// @codeCoverageIgnoreEnd
 	}
 

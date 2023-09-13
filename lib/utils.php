@@ -1095,6 +1095,15 @@ function relevanssi_return_off() {
 }
 
 /**
+ * Returns "OR".
+ *
+ * @return string A string with value "OR".
+ */
+function relevanssi_return_or() {
+	return 'OR';
+}
+
+/**
  * Gets a post object, returns ID, ID=>parent or the post object.
  *
  * @uses relevanssi_return_id_type()   Used to return ID=>type results.
