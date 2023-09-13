@@ -1223,7 +1223,7 @@ function relevanssi_wp_date_query_from_query_vars( $query ) {
  * parameters can be parsed.
  */
 function relevanssi_meta_query_from_query_vars( $query ) {
-	$meta_query = false;
+	$meta_query = array();
 	if ( ! empty( $query->query_vars['meta_query'] ) ) {
 		$meta_query = $query->query_vars['meta_query'];
 	}
@@ -1275,6 +1275,9 @@ function relevanssi_meta_query_from_query_vars( $query ) {
 		}
 
 		$meta_query[] = $build_meta_query;
+	}
+	if ( empty( $meta_query ) ) {
+		$meta_query = false;
 	}
 	return $meta_query;
 }

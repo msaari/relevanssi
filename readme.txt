@@ -128,6 +128,9 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.21.2 =
+* Minor fix: Meta query boolean to array conversion.
+
 = 4.21.1 =
 * Changed behaviour: The 'relevanssi_index_content' and 'relevanssi_index_titles' filter hooks now get the post object as a second parameter.
 * Minor fix: Relevanssi is now blocked in the reusable content block search.
@@ -190,6 +193,9 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: Taxonomy query handling was improved. This should help in particular Polylang users who've had problems with Relevanssi ignoring Polylang language restrictions.
 
 == Upgrade notice ==
+= 4.21.2 =
+* Bug fixes: meta query boolean to array conversion errors.
+
 = 4.21.1 =
 * Bug fixes: Polylang compatibility, feed searches, accented letters.
 
