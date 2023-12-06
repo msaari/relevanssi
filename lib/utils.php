@@ -1659,3 +1659,18 @@ function relevanssi_user_agent_is_bot(): bool {
 	}
 	return false;
 }
+
+/**
+ * Validates that the parameter is a valid taxonomy type.
+ *
+ * @parameter string $taxonomy The taxonomy to validate.
+ *
+ * @return string The validated taxonomy, empty string if invalid.
+ */
+function relevanssi_validate_taxonomy( $taxonomy ) {
+	$taxonomy = sanitize_text_field( $taxonomy );
+	if ( taxonomy_exists( $taxonomy ) ) {
+		return $taxonomy;
+	}
+	return '';
+}
