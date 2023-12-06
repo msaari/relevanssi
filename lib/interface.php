@@ -370,6 +370,8 @@ function relevanssi_add_admin_scripts( $hook ) {
 		'pdf_reset_confirm'    => __( 'Are you sure you want to delete all attachment content from the index?', 'relevanssi' ),
 		'pdf_reset_done'       => __( 'Relevanssi attachment data wiped clean.', 'relevanssi' ),
 		'pdf_reset_problems'   => __( 'There were problems wiping the Relevanssi attachment data clean.', 'relevanssi' ),
+		'error_reset_done'     => __( 'Relevanssi attachment server errors wiped.', 'relevanssi' ),
+		'error_reset_problems' => __( 'There were problems wiping the Relevanssi attachment server errors.', 'relevanssi' ),
 		'hour'                 => __( 'hour', 'relevanssi' ),
 		'hours'                => __( 'hours', 'relevanssi' ),
 		'about'                => __( 'about', 'relevanssi' ),
