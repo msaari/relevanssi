@@ -1058,27 +1058,27 @@ function relevanssi_compile_search_args( $query, $q ) {
 
 	$post_query = array();
 	if ( isset( $query->query_vars['p'] ) && $query->query_vars['p'] ) {
-		$post_query = array( 'in' => array( $query->query_vars['p'] ) );
+		$post_query['in'] = array( $query->query_vars['p'] );
 	}
 	if ( isset( $query->query_vars['page_id'] ) && $query->query_vars['page_id'] ) {
-		$post_query = array( 'in' => array( $query->query_vars['page_id'] ) );
+		$post_query['in'] = array( $query->query_vars['page_id'] );
 	}
 	if ( isset( $query->query_vars['post__in'] ) && is_array( $query->query_vars['post__in'] ) && ! empty( $query->query_vars['post__in'] ) ) {
-		$post_query = array( 'in' => $query->query_vars['post__in'] );
+		$post_query['in'] = $query->query_vars['post__in'];
 	}
 	if ( isset( $query->query_vars['post__not_in'] ) && is_array( $query->query_vars['post__not_in'] ) && ! empty( $query->query_vars['post__not_in'] ) ) {
-		$post_query = array( 'not in' => $query->query_vars['post__not_in'] );
+		$post_query['not in'] = $query->query_vars['post__not_in'];
 	}
 
 	$parent_query = array();
 	if ( isset( $query->query_vars['post_parent'] ) && '' !== $query->query_vars['post_parent'] ) {
-		$parent_query = array( 'parent in' => array( (int) $query->query_vars['post_parent'] ) );
+		$parent_query['parent in'] = array( (int) $query->query_vars['post_parent'] );
 	}
 	if ( isset( $query->query_vars['post_parent__in'] ) && is_array( $query->query_vars['post_parent__in'] ) && ! empty( $query->query_vars['post_parent__in'] ) ) {
-		$parent_query = array( 'parent in' => $query->query_vars['post_parent__in'] );
+		$parent_query['parent in'] = $query->query_vars['post_parent__in'];
 	}
 	if ( isset( $query->query_vars['post_parent__not_in'] ) && is_array( $query->query_vars['post_parent__not_in'] ) && ! empty( $query->query_vars['post_parent__not_in'] ) ) {
-		$parent_query = array( 'parent not in' => $query->query_vars['post_parent__not_in'] );
+		$parent_query['parent not in'] = $query->query_vars['post_parent__not_in'];
 	}
 
 	$expost = get_option( 'relevanssi_exclude_posts' );
