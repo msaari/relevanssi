@@ -1026,6 +1026,9 @@ function relevanssi_remove_nested_highlights( $str, $begin, $end ) {
 function relevanssi_extract_locations( $words, $fulltext ) {
 	$locations = array();
 	foreach ( $words as $word ) {
+		if ( ! $word ) {
+			continue;
+		}
 		$count_locations = 0;
 		$wordlen         = relevanssi_strlen( $word );
 		$loc             = relevanssi_stripos( $fulltext, $word, 0 );

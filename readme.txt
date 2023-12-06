@@ -130,7 +130,9 @@ Each document database is full of useless words. All the little words that appea
 == Changelog ==
 * New feature: New filter hook `relevanssi_searchform_dropdown_args` filters the arguments for `wp_dropdown_categories()` in search forms.
 * Changed behaviour: Search form shortcode taxonomy dropdowns are now sorted alphabetically and not by term ID.
+* Minor fix: Caught a bug in excerpt-building with empty words.
 * Minor fix: It's now possible to set both `post__in` and `post__not_in` and likewise for `parent__in` and `parent__not_in`.
+
 = 4.21.2 =
 * Minor fix: Meta query boolean to array conversion.
 
