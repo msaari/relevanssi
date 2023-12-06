@@ -1497,6 +1497,8 @@ function relevanssi_get_custom_field_content( $post_id ): array {
 			if ( ! isset( $custom_field_content[ $field ] ) ) {
 				$custom_field_content[ $field ] = '';
 			}
+			$value = relevanssi_strip_tags( $value );
+
 			$custom_field_content[ $field ] .= ' ' . $value;
 			$custom_field_string            .= ' ' . $value;
 		}
