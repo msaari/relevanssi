@@ -1432,7 +1432,7 @@ function relevanssi_calculate_weight( $match_object, $idf, $post_type_weights, $
 		);
 
 		$post        = relevanssi_get_post( $match_object->doc );
-		$clean_query = str_replace( '"', '', $query );
+		$clean_query = relevanssi_remove_quotes( $query );
 		if ( ! is_wp_error( $post ) && relevanssi_mb_stristr( $post->post_title, $clean_query ) !== false ) {
 			$weight *= $exact_match_boost['title'];
 		}
