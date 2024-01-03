@@ -134,6 +134,7 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: Caught a bug in excerpt-building with empty words.
 * Minor fix: It's now possible to set both `post__in` and `post__not_in` and likewise for `parent__in` and `parent__not_in`.
 * Minor fix: The `post_status` is no longer available as a query parameter.
+* Minor fix: It's now possible to sort posts in ascending order of relevance.
 
 = 4.21.2 =
 * Minor fix: Meta query boolean to array conversion.

@@ -1621,7 +1621,7 @@ function relevanssi_sort_results( &$hits, $orderby, $order, $meta_query ) {
 			 */
 			$order = apply_filters( 'relevanssi_order', $order );
 
-			if ( 'relevance' !== $orderby ) {
+			if ( 'relevance' !== $orderby || 'asc' === $order ) {
 				// Results are by default sorted by relevance, so no need to sort
 				// for that.
 				$orderby_array = array( $orderby => $order );
