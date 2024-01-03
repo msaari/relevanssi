@@ -5,7 +5,7 @@ Tags: search, relevance, better search, product search, woocommerce search
 Requires at least: 4.9
 Tested up to: 6.3
 Requires PHP: 7.0
-Stable tag: 4.21.2
+Stable tag: 4.22.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -128,10 +128,12 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.22.0 =
 * New feature: New filter hook `relevanssi_searchform_dropdown_args` filters the arguments for `wp_dropdown_categories()` in search forms.
 * Changed behaviour: Search form shortcode taxonomy dropdowns are now sorted alphabetically and not by term ID.
 * Minor fix: Caught a bug in excerpt-building with empty words.
 * Minor fix: It's now possible to set both `post__in` and `post__not_in` and likewise for `parent__in` and `parent__not_in`.
+* Minor fix: The `post_status` is no longer available as a query parameter.
 
 = 4.21.2 =
 * Minor fix: Meta query boolean to array conversion.

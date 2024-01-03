@@ -266,7 +266,6 @@ function relevanssi_query_vars( $qv ) {
 	$qv[] = 'highlight';
 	$qv[] = 'posts_per_page';
 	$qv[] = 'post_parent';
-	$qv[] = 'post_status';
 
 	return $qv;
 }
