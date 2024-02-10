@@ -5,7 +5,7 @@ Tags: search, relevance, better search, product search, woocommerce search
 Requires at least: 4.9
 Tested up to: 6.3
 Requires PHP: 7.0
-Stable tag: 4.22.0
+Stable tag: 4.22.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -207,6 +207,12 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: Taxonomy query handling was improved. This should help in particular Polylang users who've had problems with Relevanssi ignoring Polylang language restrictions.
 
 == Upgrade notice ==
+= 4.22.1 =
+* Security hardening, better Polylang support.
+
+= 4.22.0 =
+* Improvements to search form shortcode.
+
 = 4.21.2 =
 * Bug fixes: meta query boolean to array conversion errors.
 
