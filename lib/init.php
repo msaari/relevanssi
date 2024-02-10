@@ -399,8 +399,9 @@ function relevanssi_create_database_tables( $relevanssi_db_version ) {
 	$sql     = "SHOW INDEX FROM $relevanssi_log_table";
 	$indices = $wpdb->get_results( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.NoCaching
 
-	$query_exists = false;
-	$id_exists    = false;
+	$query_exists      = false;
+	$id_exists         = false;
+	$session_id_exists = false;
 	foreach ( $indices as $index ) {
 		if ( 'query' === $index->Key_name ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName
 			$query_exists = true;
@@ -408,10 +409,18 @@ function relevanssi_create_database_tables( $relevanssi_db_version ) {
 		if ( 'id' === $index->Key_name ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName
 			$id_exists = true;
 		}
+		if ( 'session_id' === $index->Key_name ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName
+			$session_id_exists = true;
+		}
 	}
 
 	if ( ! $query_exists ) {
 		$sql = "CREATE INDEX query ON $relevanssi_log_table (query(190))";
+		$wpdb->query( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.NoCaching
+	}
+
+	if ( ! $session_id_exists ) {
+		$sql = "CREATE INDEX session_id ON $relevanssi_log_table (session_id)";
 		$wpdb->query( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.NoCaching
 	}
 
