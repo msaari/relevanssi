@@ -429,9 +429,15 @@ function relevanssi_get_current_language( bool $locale = true ) {
 
 		if ( isset( $post ) ) {
 			if ( isset( $post->term_id ) && function_exists( 'pll_get_term_language' ) ) {
-				$current_language = pll_get_term_language( $post->term_id, $locale ? 'locale' : 'slug' );
+				$term_language = pll_get_term_language( $post->term_id, $locale ? 'locale' : 'slug' );
+				if ( $term_language ) {
+					$current_language = $term_language;
+				}
 			} elseif ( ! isset( $post->user_id ) && function_exists( 'pll_get_post_language' ) ) {
-				$current_language = pll_get_post_language( $post->ID, $locale ? 'locale' : 'slug' );
+				$post_language = pll_get_post_language( $post->ID, $locale ? 'locale' : 'slug' );
+				if ( $post_language ) {
+					$current_language = $post_language;
+				}
 			}
 		} elseif ( function_exists( 'pll_current_language' ) ) {
 			$pll_language     = pll_current_language( $locale ? 'locale' : 'slug' );
