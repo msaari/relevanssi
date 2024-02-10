@@ -1977,7 +1977,7 @@ function relevanssi_post_date_throttle_join( $query_join ) {
 	if ( 'post_date' === get_option( 'relevanssi_default_orderby' ) &&
 		'on' === get_option( 'relevanssi_throttle', 'on' ) ) {
 		global $wpdb;
-		$query_join = ', ' . $wpdb->posts . ' AS p';
+		$query_join .= ', ' . $wpdb->posts . ' AS p';
 	}
 	return $query_join;
 }
