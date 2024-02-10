@@ -486,9 +486,11 @@ function relevanssi_rest_api_disable() {
  */
 function relevanssi_export_log_check() {
 	if ( isset( $_REQUEST['relevanssi_export'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification, just checking the parameter exists.
+		check_admin_referer( 'relevanssi_export_logs', '_relevanssi_export_nonce' );
 		relevanssi_export_log();
 	}
 	if ( isset( $_REQUEST['relevanssi_export_clicks'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification, just checking the parameter exists.
+		check_admin_referer( 'relevanssi_export_logs', '_relevanssi_export_nonce' );
 		function_exists( 'relevanssi_export_click_log' ) && relevanssi_export_click_log();
 	}
 }

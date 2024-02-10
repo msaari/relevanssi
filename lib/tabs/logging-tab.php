@@ -25,6 +25,8 @@ function relevanssi_logging_tab() {
 	$omit_from_logs      = get_option( 'relevanssi_omit_from_logs' );
 	$trim_logs           = get_option( 'relevanssi_trim_logs' );
 
+	wp_nonce_field( 'relevanssi_export_logs', '_relevanssi_export_nonce', true, true );
+
 	?>
 	<table class="form-table" role="presentation">
 	<tr>
