@@ -270,7 +270,7 @@ function relevanssi_search( $args ) {
 
 			$total_hits += count( $matches );
 
-			$idf = log( $doc_count + 1 / ( 1 + $df ) );
+			$idf = log( ( $doc_count + 1 ) / ( 1 + $df ) );
 			$idf = $idf * $idf; // Adjustment to increase the value of IDF.
 			if ( $idf < 1 ) {
 				$idf = 1;
