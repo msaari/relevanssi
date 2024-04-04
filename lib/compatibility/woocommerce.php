@@ -13,6 +13,7 @@
 add_filter( 'relevanssi_indexing_restriction', 'relevanssi_woocommerce_restriction' );
 add_filter( 'relevanssi_admin_search_blocked_post_types', 'relevanssi_woocommerce_admin_search_blocked_post_types' );
 add_filter( 'relevanssi_modify_wp_query', 'relevanssi_woocommerce_filters' );
+add_filter( 'relevanssi_post_ok', 'relevanssi_variation_post_ok', 10, 2 );
 
 /**
  * This action solves the problems introduced by adjust_posts_count() in
@@ -279,4 +280,21 @@ function relevanssi_filtered_term_product_counts_query( $query ) {
 	}
 
 	return $query;
+}
+
+/**
+ * Checks the parent product status for product variations.
+ *
+ * @param bool $ok      Whether the post is OK to return in search.
+ * @param int  $post_id The post ID.
+ *
+ * @return bool
+ */
+function relevanssi_variation_post_ok( $ok, $post_id ) : bool {
+	$post_type = relevanssi_get_post_type( $post_id );
+	if ( 'product_variation' === $post_type ) {
+		$parent = get_post_parent( $post_id );
+		return apply_filters( 'relevanssi_post_ok', $ok, $parent->ID );
+	}
+	return $ok;
 }
