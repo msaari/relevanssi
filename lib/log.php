@@ -337,6 +337,16 @@ function relevanssi_output_exported_log( string $filename, array $data, string $
 	}
 	fputcsv( $df, array_keys( reset( $data ) ) );
 	foreach ( $data as $row ) {
+		if (
+			in_array(
+				substr( $row['query'], 0, 1 ),
+				array( '=', '-', '"', '@', '+' ),
+				true
+			)
+		) {
+			$row['query'] = ' ' . $row['query'];
+			$row['query'] = str_replace( "\t", '', $row['query'] );
+		}
 		fputcsv( $df, $row );
 	}
 	fclose( $df ); // phpcs:ignore WordPress.WP.AlternativeFunctions

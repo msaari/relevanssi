@@ -3,7 +3,7 @@ Contributors: msaari
 Donate link: https://www.relevanssi.com/buy-premium/
 Tags: search, relevance, better search, product search, woocommerce search
 Requires at least: 4.9
-Tested up to: 6.3
+Tested up to: 6.4
 Requires PHP: 7.0
 Stable tag: 4.22.1
 License: GPLv2 or later
@@ -128,6 +128,8 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+* Security fix: Prevent CSV injection attack in log export.
+
 = 4.22.1 =
 * Security fix: Relevanssi had a vulnerability where anyone could access the search logs and click logs. The log export is now protected.
 * Minor fix: Relevanssi had problems with Polylang when a post or term didn't have language specified. Now Relevanssi handles those situations better.
