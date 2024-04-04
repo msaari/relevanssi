@@ -206,11 +206,6 @@ function relevanssi_debug_echo( string $notice ) {
  */
 function relevanssi_do_shortcode( string $content ): string {
 	if ( 'on' === get_option( 'relevanssi_expand_shortcodes' ) ) {
-		// TablePress support.
-		if ( function_exists( 'relevanssi_enable_tablepress_shortcodes' ) ) {
-			$tablepress_controller = relevanssi_enable_tablepress_shortcodes();
-		}
-
 		relevanssi_disable_shortcodes();
 
 		/**
