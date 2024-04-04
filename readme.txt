@@ -130,6 +130,7 @@ Each document database is full of useless words. All the little words that appea
 == Changelog ==
 * Security fix: Prevent CSV injection attack in log export.
 * Security fix: Restrict access to doc count updates.
+* Minor fix: Added error handling to the Ninja Table compatibility code.
 
 = 4.22.1 =
 * Security fix: Relevanssi had a vulnerability where anyone could access the search logs and click logs. The log export is now protected.
