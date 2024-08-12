@@ -170,7 +170,7 @@ EOT;
 		delete_option( 'relevanssi_excerpts' );
 
 		$request = array(
-			'tab'                        => 'indexing',
+			'rlv_tab'                    => 'indexing',
 			'relevanssi_min_word_length' => '4',
 			'relevanssi_index_author'    => 'on',
 		);
@@ -182,7 +182,7 @@ EOT;
 		$this->assertEquals( null, get_option( 'relevanssi_throttle', null ) );
 
 		$request = array(
-			'tab'                      => 'searching',
+			'rlv_tab'                  => 'searching',
 			'relevanssi_content_boost' => '4',
 			'relevanssi_index_author'  => 'on',
 		);
@@ -193,7 +193,7 @@ EOT;
 		$this->assertEquals( '4', get_option( 'relevanssi_content_boost' ) );
 
 		$request = array(
-			'tab' => 'logging',
+			'rlv_tab' => 'logging',
 		);
 
 		update_relevanssi_options( $request );
@@ -201,7 +201,7 @@ EOT;
 		$this->assertEquals( 'off', get_option( 'relevanssi_log_queries' ) );
 
 		$request = array(
-			'tab'                          => 'excerpts',
+			'rlv_tab'                      => 'excerpts',
 			'relevanssi_show_matches_text' => 'Text with "quotes" to fix.',
 			'relevanssi_exclude_posts'     => '1,2,3, ',
 		);
@@ -218,7 +218,7 @@ EOT;
 	 */
 	public function test_relevanssi_process_weights_and_indexing() {
 		$request = array(
-			'tab'                                 => 'indexing',
+			'rlv_tab'                             => 'indexing',
 			'relevanssi_weight_post'              => -5,
 			'relevanssi_weight_page'              => 5,
 			'relevanssi_taxonomy_weight_post_tag' => 4,

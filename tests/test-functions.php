@@ -220,7 +220,8 @@ class FunctionTest extends WP_UnitTestCase {
 
 		update_option( 'relevanssi_throttle', 'off' );
 		update_option( 'relevanssi_throttle_limit', 42 );
-		$this->assertEmpty(
+		$this->assertEquals(
+			' ORDER BY tf DESC',
 			relevanssi_limit_filter( '' ),
 			'No limit when the throttle is off.'
 		);
