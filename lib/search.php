@@ -1765,6 +1765,11 @@ function relevanssi_compile_common_args( $query ) {
 		$post_status = $query->query_vars['post_status'];
 	}
 
+	$post_mime_type = false;
+	if ( isset( $query->query_vars['post_mime_type'] ) ) {
+		$post_mime_type = $query->query_vars['post_mime_type'];
+	}
+
 	return array(
 		'orderby'             => $orderby,
 		'order'               => $order,
@@ -1777,6 +1782,7 @@ function relevanssi_compile_common_args( $query ) {
 		'date_query'          => $date_query,
 		'post_type'           => $post_type,
 		'post_status'         => $post_status,
+		'post_mime_type'      => $post_mime_type,
 	);
 }
 

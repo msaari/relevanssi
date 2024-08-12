@@ -87,6 +87,16 @@ function relevanssi_process_query_args( $args ) {
 		$query_restrictions .= relevanssi_process_post_status( $args['post_status'] );
 	}
 
+	if ( $args['post_mime_type'] ) {
+		global $wpdb;
+		$mime_where = wp_post_mime_type_where( $args['post_mime_type'], $wpdb->posts );
+		if ( $mime_where ) {
+			$mime_where          = str_replace( 'AND (', '', $mime_where );
+			$query_restrictions .= " AND relevanssi.doc IN (
+				SELECT ID FROM $wpdb->posts WHERE $mime_where";
+		}
+	}
+
 	return array(
 		'query_restrictions' => $query_restrictions,
 		'query_join'         => $query_join,
