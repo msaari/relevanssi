@@ -754,6 +754,8 @@ function relevanssi_limit_filter( $query ) {
 		} else {
 			$query = $query . " ORDER BY tf DESC LIMIT $limit";
 		}
+	} else {
+		$query = $query . " ORDER BY tf DESC";
 	}
 	return $query;
 }

@@ -131,6 +131,7 @@ Each document database is full of useless words. All the little words that appea
 * New feature: New filter hook `relevanssi_forbidden_post_types` filters the list of post types excluded from Relevanssi indexing.
 * New feature: New filter hook `relevanssi_forbidden_taxonomies` filters the list of taxonomies excluded from Relevanssi indexing.
 * New feature: Support for `post_mime_type` query parameter.
+* Minor fix: In rare cases, the search results would not be in relevance order if the throttle wasn't used.
 
 = 4.22.2 =
 * Security fix: Prevent CSV injection attack in log export.
