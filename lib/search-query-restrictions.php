@@ -30,10 +30,8 @@ function relevanssi_process_query_args( $args ) {
 		'or'  => array(),
 	);
 
-	if ( function_exists( 'wp_encode_emoji' ) ) {
-		$query             = wp_encode_emoji( $args['q'] );
-		$query_no_synonyms = wp_encode_emoji( $args['q_no_synonyms'] );
-	}
+	$query             = wp_encode_emoji( $args['q'] );
+	$query_no_synonyms = wp_encode_emoji( $args['q_no_synonyms'] );
 
 	if ( $args['sentence'] ) {
 		$query = relevanssi_remove_quotes( $query );
