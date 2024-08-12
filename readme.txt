@@ -3,9 +3,9 @@ Contributors: msaari
 Donate link: https://www.relevanssi.com/buy-premium/
 Tags: search, relevance, better search, product search, woocommerce search
 Requires at least: 4.9
-Tested up to: 6.5
+Tested up to: 6.6
 Requires PHP: 7.0
-Stable tag: 4.22.2
+Stable tag: 4.2.30
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -128,6 +128,7 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.23.0 =
 * New feature: New filter hook `relevanssi_forbidden_post_types` filters the list of post types excluded from Relevanssi indexing.
 * New feature: New filter hook `relevanssi_forbidden_taxonomies` filters the list of taxonomies excluded from Relevanssi indexing.
 * New feature: Support for `post_mime_type` query parameter.
@@ -143,5 +144,5 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: Added error handling to the Ninja Table compatibility code.
 
 == Upgrade notice ==
-= 4.22.2 =
-* Security hardening, improved compatibility with WooCommerce, TablePress and Ninja Tables.
+= 4.23.0 =
+* New filter hooks, support for `post_mime_type` and bug fixes.
