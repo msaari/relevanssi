@@ -505,22 +505,29 @@ EOJSON;
 	}
 	?>
 <canvas id="search_chart" height="100"></canvas>
-<script>
-var ctx = document.getElementById('search_chart').getContext('2d');
-var myChart = new Chart(ctx, {
-	type: 'line',
-	data: {
-		labels: [<?php echo $labels; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>],
-		datasets: [<?php echo implode( ",\n", $datasets_array ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>],
-	},
-	options: {
-		scales: {
-			y: {
-				beginAtZero: true
+	<?php
+	$dataset = implode( ",\n", $datasets_array );
+	$script  = <<<EOJS
+	var ctx = document.getElementById('search_chart').getContext('2d');
+	var myChart = new Chart(ctx, {
+		type: 'line',
+		data: {
+			labels: [$labels],
+			datasets: [$dataset],
+		},
+		options: {
+			scales: {
+				y: {
+					beginAtZero: true
+				}
 			}
 		}
+	});
+EOJS;
+	if ( function_exists( 'wp_print_inline_script_tag' ) ) {
+		// Introduced in 5.7.0.
+		wp_print_inline_script_tag( $script );
+	} else {
+		echo '<script>' . $script . '</script>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
-});
-</script>
-	<?php
 }

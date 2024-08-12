@@ -133,6 +133,7 @@ Each document database is full of useless words. All the little words that appea
 * New feature: Support for `post_mime_type` query parameter.
 * Minor fix: In rare cases, the search results would not be in relevance order if the throttle wasn't used.
 * Minor fix: The settings tab query parameter was renamed to avoid collisions with other plugins.
+* Minor fix: User searches page now uses `wp_print_inline_script_tag()`.
 
 = 4.22.2 =
 * Security fix: Prevent CSV injection attack in log export.
