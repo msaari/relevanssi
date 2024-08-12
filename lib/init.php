@@ -225,7 +225,7 @@ function relevanssi_menu() {
 		 * @param string The capability required. Default 'edit_pages'.
 		 */
 		apply_filters( 'relevanssi_user_searches_capability', 'edit_pages' ),
-		$relevanssi_variables['file'],
+		'relevanssi_user_searches',
 		'relevanssi_search_stats'
 	);
 	add_dashboard_page(
