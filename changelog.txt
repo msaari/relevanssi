@@ -1,3 +1,81 @@
+= 4.22.1 =
+* Security fix: Relevanssi had a vulnerability where anyone could access the search logs and click logs. The log export is now protected.
+* Minor fix: Relevanssi had problems with Polylang when a post or term didn't have language specified. Now Relevanssi handles those situations better.
+* Minor fix: Post date throttling had a MySQL error that made it replace JOINs instead of concatenating.
+* Minor fix: The log database table now has an index on session_id, as not having that index can slow down the search a lot.
+
+= 4.22.0 =
+* New feature: New filter hook `relevanssi_searchform_dropdown_args` filters the arguments for `wp_dropdown_categories()` in search forms.
+* Changed behaviour: Search form shortcode taxonomy dropdowns are now sorted alphabetically and not by term ID.
+* Minor fix: Caught a bug in excerpt-building with empty words.
+* Minor fix: It's now possible to set both `post__in` and `post__not_in` and likewise for `parent__in` and `parent__not_in`.
+* Minor fix: The `post_status` is no longer available as a query parameter.
+* Minor fix: It's now possible to sort posts in ascending order of relevance.
+
+= 4.21.2 =
+* Minor fix: Meta query boolean to array conversion.
+
+= 4.21.1 =
+* Changed behaviour: The 'relevanssi_index_content' and 'relevanssi_index_titles' filter hooks now get the post object as a second parameter.
+* Minor fix: Relevanssi is now blocked in the reusable content block search.
+* Minor fix: Stop Relevanssi from blocking the feed searches.
+* Minor fix: Improve exact match boosts with accented letters.
+* Minor fix: Entering synonyms in Polylang all languages mode was possible; it shouldn't be.
+
+= 4.21.0 =
+* New feature: New filter hook `relevanssi_highlight_regex` makes it possible to adjust the regex used for highlighting.
+* New feature: New filter hook `relevanssi_excerpt_custom_fields` filters the list of custom fields used for creating the excerpt.
+* New feature: New filter hook `relevanssi_phrase_custom_fields` filters the list of custom fields used for phrase matching. Return an empty array to disable phrase matching in custom fields.
+* New feature: New filter hook `relevanssi_phrase_taxonomies` filters the list of taxonomies used for phrase matching. Return an empty array to disable phrase matching in taxonomies.
+* New feature: If RELEVANSSI_DEBUG, WP_DEBUG and WP_DEBUG_DISPLAY are all true, Relevanssi will print out indexing debugging messages to the error log (PHP error log or whatever is defined in WP_DEBUG_LOG).
+* Minor fix: Some ACF fields change the global $post, leading to indexing problems. Relevanssi tries to prevent that now.
+* Minor fix: Avoid fatal errors from `action` query variable being a non-string.
+* Minor fix: Term indexing with WPML only indexed the terms in the current admin language. Now the terms are indexed in all languages.
+
+= 4.20.0 =
+* New feature: Relevanssi can now create custom field specific excerpts that come from one custom field only and know which field that is.
+* New feature: You can see the list of indexed custom field names in the indexing and excerpt settings.
+* New feature: New filter hook `relevanssi_excerpt_specific_custom_field_content` filters the excerpt custom field content if `relevanssi_excerpt_specific_fields` is enabled.
+* Changed behaviour: The `relevanssi_get_custom_field_content()` function now returns an array instead of string. If `relevanssi_excerpt_specific_fields` is off, the previous string return value is returned as a single-item array with the string in index 0. If the setting is on, the array keys are the field names.
+* Minor fix: The stopword population during the multisite installation used the wrong database table, leading to failed population.
+* Minor fix: Multisite installation is moved from `wp_insert_site` (priority 10) to `wp_initialize_site` (priority 200) in order to avoid trouble.
+* Minor fix: The session ID is now included in the log export.
+* Minor fix: The "none" value in category dropdowns from the searchform shortcode is changed from -1 to 0.
+
+= 4.19.0 =
+* New feature: Logging now includes a session ID (based on user ID for logged-in users, HTTP user agent for others, and current time, stable for 10 minutes per user). This is used to remove duplicate searches from live searches, keeping only the final search query.
+
+= 4.18.4 =
+* New feature: New filter hook `relevanssi_highlight_query` lets you modify the search query for highlighting.
+* Changed behavior: Relevanssi no longer searches in feed searches by default.
+
+= 4.18.3 =
+* New feature: New filter hook `relevanssi_blocked_field_types` can be used to control which ACF field types are excluded from the index. By default, this includes 'repeater', 'flexible_content', and 'group'.
+* New feature: New filter hook `relevanssi_acf_field_object` can be used to filter the ACF field object before Relevanssi indexes it. Return false to have Relevanssi ignore the field type.
+* New feature: Relevanssi debug mode has more features now.
+* Minor fix: ACF field exclusion is now recursive. If a parent field is excluded, all sub fields will also be excluded.
+* Minor fix: Handling of data attributes in in-document highlighting had a bug that caused problems with third-party plugins.
+* Minor fix: The indexing settings tab now checks if the wp_relevanssi database table exists and will create the table if it doesn't.
+
+= 4.18.2 =
+* New feature: Relevanssi now has a debug mode that will help troubleshooting and support.
+* Minor fix: Using the_permalink() caused problems with search result links. That is now fixed. Relevanssi no longer hooks onto `the_permalink` hook and instead uses `post_link` and other similar hooks.
+
+= 4.18.1 =
+* New feature: New filter hook `relevanssi_add_highlight_and_tracking` can be used to force Relevanssi to add the `highlight` and tracking parameters to permalinks.
+* Changed behaviour: The 'relevanssi_wpml_filter' filter function now runs on priority 9 instead of 10 to avoid problems with custom filters on relevanssi_hits_filter.
+* Minor fix: Handle cases of missing posts better; relevanssi_get_post() now returns a WP_Error if no post is found.
+* Minor fix: Search queries that contain apostrophes and quotes can now be deleted from the log.
+* Minor fix: Avoid a slow query on the searching tab when the throttle is not enabled.
+
+= 4.18.0 =
+* New feature: Relevanssi now shows the MySQL `max_allowed_packet` size on the debug tab.
+* New feature: Relevanssi now shows the indexing query on the debug tab.
+* New feature: ACF field settings now include a 'Exclude from Relevanssi index' setting. You can use that to exclude ACF fields from the Relevanssi index.
+* Minor fix: Relevanssi was adding extra quotes around search terms in the `highlight` parameter.
+* Minor fix: Yet another update to data attributes in highlighting. Thanks to Faeddur.
+* Minor fix: Taxonomy query handling was improved. This should help in particular Polylang users who've had problems with Relevanssi ignoring Polylang language restrictions.
+
 = 4.17.1 =
 * Minor fix: WooCommerce layered navigation compatibility caused enough problems that I've disabled it by default. You can enable it with `add_filter( 'woocommerce_get_filtered_term_product_counts_query', 'relevanssi_filtered_term_product_counts_query' );`.
 * Minor fix: Data attribute handling for in-document highlighting is now better.
