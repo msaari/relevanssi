@@ -159,15 +159,15 @@ function relevanssi_options_form() {
 	$display_save_button = true;
 
 	$active_tab = 'overview';
-	if ( isset( $_REQUEST['tab'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-		$active_tab = $_REQUEST['tab']; // phpcs:ignore WordPress.Security.NonceVerification
+	if ( isset( $_REQUEST['rlv_tab'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		$active_tab = $_REQUEST['rlv_tab']; // phpcs:ignore WordPress.Security.NonceVerification
 	}
 
 	if ( 'stopwords' === $active_tab ) {
 		$display_save_button = false;
 	}
 
-	printf( "<input type='hidden' name='tab' value='%s' />", esc_attr( $active_tab ) );
+	printf( "<input type='hidden' name='rlv_tab' value='%s' />", esc_attr( $active_tab ) );
 
 	$this_page = '?page=' . plugin_basename( $relevanssi_variables['file'] );
 
@@ -259,7 +259,7 @@ function relevanssi_options_form() {
 		$tabs,
 		function ( $tab ) use ( $this_page, $active_tab ) {
 			?>
-			<a href="<?php echo esc_attr( $this_page ); ?>&amp;tab=<?php echo esc_attr( $tab['slug'] ); ?>"
+			<a href="<?php echo esc_attr( $this_page ); ?>&amp;rlv_tab=<?php echo esc_attr( $tab['slug'] ); ?>"
 			class="nav-tab <?php echo esc_attr( $tab['slug'] === $active_tab ? 'nav-tab-active' : '' ); ?>">
 			<?php echo esc_html( $tab['name'] ); ?></a>
 			<?php
