@@ -1177,105 +1177,118 @@ function relevanssi_common_words( $limit = 25, $wp_cli = false ) {
  * @return array An array of post type names.
  */
 function relevanssi_get_forbidden_post_types() {
-	return array(
-		'wp_template_part',     // WP template parts.
-		'wp_global_styles',     // WP global styles.
-		'wp_navigation',        // Navigation menus.
-		'nav_menu_item',        // Navigation menu items.
-		'revision',             // Never index revisions.
-		'acf',                  // Advanced Custom Fields.
-		'acf-field',            // Advanced Custom Fields.
-		'acf-field-group',      // Advanced Custom Fields.
-		'oembed_cache',         // Mysterious caches.
-		'customize_changeset',  // Customizer change sets.
-		'user_request',         // User data request.
-		'custom_css',           // Custom CSS data.
-		'cpt_staff_lst_item',   // Staff List.
-		'cpt_staff_lst',        // Staff List.
-		'wp_block',             // Gutenberg block.
-		'amp_validated_url',    // AMP.
-		'jp_pay_order',         // Jetpack.
-		'jp_pay_product',       // Jetpack.
-		'jp_mem_plan',          // Jetpack.
-		'tablepress_table',     // TablePress.
-		'ninja-table',          // Ninja Tables.
-		'shop_coupon',          // WooCommerce.
-		'shop_order',           // WooCommerce.
-		'shop_order_refund',    // WooCommerce.
-		'wc_order_status',      // WooCommerce.
-		'wc_order_email',       // WooCommerce.
-		'shop_webhook',         // WooCommerce.
-		'woo_product_tab',      // Woo Product Tab.
-		'et_theme_builder',     // Divi.
-		'et_template',          // Divi.
-		'et_header_layout',     // Divi.
-		'et_body_layout',       // Divi.
-		'et_footer_layout',     // Divi.
-		'wpforms',              // WP Forms.
-		'amn_wpforms',          // WP Forms.
-		'wpforms_log',          // WP Forms.
-		'dlm_download_version', // Download Monitor.
-		'wpcf7_contact_form',   // WP Contact Form 7.
-		'amn_exact-metrics',    // Google Analytics Dashboard.
-		'edd_commission',       // Easy Digital Downloads.
-		'edd_payment',          // Easy Digital Downloads.
-		'edd_discount',         // Easy Digital Downloads.
-		'eddpointslog',         // Easy Digital Downloads.
-		'edd_log',              // Easy Digital Downloads.
-		'edd-zapier-sub',       // Easy Digital Downloads.
-		'pys_event',            // Pixel Your Site.
-		'wp-types-group',       // WP Types.
-		'wp-types-term-group',  // WP Types.
-		'wp-types-user-group',  // WP Types.
-		'vc_grid_item',         // Visual Composer.
-		'bigcommerce_task',     // BigCommerce.
-		'slides',               // Qoda slides.
-		'carousels',            // Qoda carousels.
-		'pretty-link',          // Pretty Links.
-		'fusion_tb_layout',     // Fusion Builder.
-		'fusion_tb_section',    // Fusion Builder.
-		'fusion_form',          // Fusion Builder.
-		'fusion_icons',         // Fusion Builder.
-		'fusion_template',      // Fusion Builder.
-		'fusion_element',       // Fusion Builder.
-		'acfe-dbt',             // ACF Extended.
-		'acfe-form',            // ACF Extended.
-		'acfe-dop',             // ACF Extended.
-		'acfe-dpt',             // ACF Extended.
-		'acfe-dt',              // ACF Extended.
-		'um_form',              // Ultimate Member.
-		'um_directory',         // Ultimate Member.
-		'mailpoet_page',        // Mailpoet Page.
-		'mc4wp_form',           // MailChimp.
-		'elementor_font',       // Elementor.
-		'elementor_icons',      // Elementor.
-		'elementor_library',    // Elementor.
-		'elementor_snippet',    // Elementor.
-		'wffn_landing',         // WooFunnel.
-		'wffn_ty',              // WooFunnel.
-		'wffn_optin',           // WooFunnel.
-		'wffn_oty',             // WooFunnel.
-		'wp_template',          // Block templates.
-		'memberpressrule',      // Memberpress.
-		'memberpresscoupon',    // Memberpress.
-		'fl-builder-template',  // Beaver Builder.
-		'itsec-dashboard',      // iThemes Security.
-		'itsec-dash-card',      // iThemes Security.
-		'astra-advanced-hook',  // Astra.
-		'astra_adv_header',     // Astra.
-		'astra_adv_header',     // Astra.
-		'udb_widgets',          // Ultimate Dashboard.
-		'udb_admin_page',       // Ultimate Dashboard.
-		'oxy_user_library',     // Oxygen.
-		'aw_workflow',          // AutomateWoo.
-		'paypal_transaction',   // PayPal for WooCommerce.
-		'scheduled-action',
-		'divi_bars',            // Divi Bars.
-		'br_product_filter',    // BeRocket Product Filters.
-		'br_filters_group',     // BeRocket Product Filters.
-		'wfob_bump',            // WooFunnel.
-		'wfocu_funnel',         // WooFunnel.
-		'wfocu_offer',          // WooFunnel.
+	/**
+	 * Filters the list of post types Relevanssi does not want to use.
+	 *
+	 * @param array $forbidden_post_types An array of post type names.
+	 */
+	return apply_filters( 'relevanssi_forbidden_post_types',
+		array(
+			'wp_template_part',     // WP template parts.
+			'wp_global_styles',     // WP global styles.
+			'wp_navigation',        // Navigation menus.
+			'nav_menu_item',        // Navigation menu items.
+			'revision',             // Never index revisions.
+			'acf',                  // Advanced Custom Fields.
+			'acf-field',            // Advanced Custom Fields.
+			'acf-field-group',      // Advanced Custom Fields.
+			'acf-taxonomy',         // Advanced Custom Fields.
+			'acf-post-type',        // Advanced Custom Fields.
+			'acf-ui-options-page',  // Advanced Custom Fields.
+			'oembed_cache',         // Mysterious caches.
+			'customize_changeset',  // Customizer change sets.
+			'user_request',         // User data request.
+			'custom_css',           // Custom CSS data.
+			'cpt_staff_lst_item',   // Staff List.
+			'cpt_staff_lst',        // Staff List.
+			'wp_block',             // Gutenberg block.
+			'amp_validated_url',    // AMP.
+			'jp_pay_order',         // Jetpack.
+			'jp_pay_product',       // Jetpack.
+			'jp_mem_plan',          // Jetpack.
+			'tablepress_table',     // TablePress.
+			'ninja-table',          // Ninja Tables.
+			'shop_coupon',          // WooCommerce.
+			'shop_order',           // WooCommerce.
+			'shop_order_refund',    // WooCommerce.
+			'wc_order_status',      // WooCommerce.
+			'wc_order_email',       // WooCommerce.
+			'shop_webhook',         // WooCommerce.
+			'woo_product_tab',      // Woo Product Tab.
+			'et_theme_builder',     // Divi.
+			'et_template',          // Divi.
+			'et_header_layout',     // Divi.
+			'et_body_layout',       // Divi.
+			'et_footer_layout',     // Divi.
+			'wpforms',              // WP Forms.
+			'amn_wpforms',          // WP Forms.
+			'wpforms_log',          // WP Forms.
+			'dlm_download_version', // Download Monitor.
+			'wpcf7_contact_form',   // WP Contact Form 7.
+			'amn_exact-metrics',    // Google Analytics Dashboard.
+			'edd_commission',       // Easy Digital Downloads.
+			'edd_payment',          // Easy Digital Downloads.
+			'edd_discount',         // Easy Digital Downloads.
+			'eddpointslog',         // Easy Digital Downloads.
+			'edd_log',              // Easy Digital Downloads.
+			'edd-zapier-sub',       // Easy Digital Downloads.
+			'pys_event',            // Pixel Your Site.
+			'wp-types-group',       // WP Types.
+			'wp-types-term-group',  // WP Types.
+			'wp-types-user-group',  // WP Types.
+			'vc_grid_item',         // Visual Composer.
+			'bigcommerce_task',     // BigCommerce.
+			'slides',               // Qoda slides.
+			'carousels',            // Qoda carousels.
+			'pretty-link',          // Pretty Links.
+			'fusion_tb_layout',     // Fusion Builder.
+			'fusion_tb_section',    // Fusion Builder.
+			'fusion_form',          // Fusion Builder.
+			'fusion_icons',         // Fusion Builder.
+			'fusion_template',      // Fusion Builder.
+			'fusion_element',       // Fusion Builder.
+			'acfe-dbt',             // ACF Extended.
+			'acfe-form',            // ACF Extended.
+			'acfe-dop',             // ACF Extended.
+			'acfe-dpt',             // ACF Extended.
+			'acfe-dt',              // ACF Extended.
+			'um_form',              // Ultimate Member.
+			'um_directory',         // Ultimate Member.
+			'mailpoet_page',        // Mailpoet Page.
+			'mc4wp_form',           // MailChimp.
+			'elementor_font',       // Elementor.
+			'elementor_icons',      // Elementor.
+			'elementor_library',    // Elementor.
+			'elementor_snippet',    // Elementor.
+			'wffn_landing',         // WooFunnel.
+			'wffn_ty',              // WooFunnel.
+			'wffn_optin',           // WooFunnel.
+			'wffn_oty',             // WooFunnel.
+			'wp_template',          // Block templates.
+			'memberpressrule',      // Memberpress.
+			'memberpresscoupon',    // Memberpress.
+			'fl-builder-template',  // Beaver Builder.
+			'itsec-dashboard',      // iThemes Security.
+			'itsec-dash-card',      // iThemes Security.
+			'astra-advanced-hook',  // Astra.
+			'astra_adv_header',     // Astra.
+			'astra_adv_header',     // Astra.
+			'udb_widgets',          // Ultimate Dashboard.
+			'udb_admin_page',       // Ultimate Dashboard.
+			'oxy_user_library',     // Oxygen.
+			'aw_workflow',          // AutomateWoo.
+			'paypal_transaction',   // PayPal for WooCommerce.
+			'scheduled-action',
+			'divi_bars',            // Divi Bars.
+			'br_product_filter',    // BeRocket Product Filters.
+			'br_filters_group',     // BeRocket Product Filters.
+			'wfob_bump',            // WooFunnel.
+			'wfocu_funnel',         // WooFunnel.
+			'wfocu_offer',          // WooFunnel.
+			'wp_font_family',       // WordPress.
+			'wp_font_face',         // WordPress.
+			'wpforms-template',	    // WP Forms.
+		)
 	);
 }
 
@@ -1285,22 +1298,31 @@ function relevanssi_get_forbidden_post_types() {
  * @return array An array of taxonomy names.
  */
 function relevanssi_get_forbidden_taxonomies() {
-	return array(
-		'wp_template_part_area',        // WP templates.
-		'nav_menu',                     // Navigation menus.
-		'link_category',                // Link categories.
-		'amp_validation_error',         // AMP.
-		'product_visibility',           // WooCommerce.
-		'wpforms_log_type',             // WP Forms.
-		'amp_template',                 // AMP.
-		'edd_commission_status',        // Easy Digital Downloads.
-		'edd_log_type',                 // Easy Digital Downloads.
-		'elementor_library_type',       // Elementor.
-		'elementor_library_category',   // Elementor.
-		'elementor_font_type',          // Elementor.
-		'wp_theme',                     // WordPress themes.
-		'fl-builder-template-category', // Beaver Builder.
-		'fl-builder-template-type',     // Beaver Builder.
+	/**
+	 * Filters the list of taxonomies Relevanssi does not want to use.
+	 *
+	 * @param array $forbidden_taxonomies An array of taxonomy names.
+	 */
+	return apply_filters( 'relevanssi_forbidden_taxonomies',
+		array(
+			'wp_template_part_area',        // WP templates.
+			'nav_menu',                     // Navigation menus.
+			'link_category',                // Link categories.
+			'amp_validation_error',         // AMP.
+			'product_visibility',           // WooCommerce.
+			'wpforms_log_type',             // WP Forms.
+			'amp_template',                 // AMP.
+			'edd_commission_status',        // Easy Digital Downloads.
+			'edd_log_type',                 // Easy Digital Downloads.
+			'elementor_library_type',       // Elementor.
+			'elementor_library_category',   // Elementor.
+			'elementor_font_type',          // Elementor.
+			'wp_theme',                     // WordPress themes.
+			'fl-builder-template-category', // Beaver Builder.
+			'fl-builder-template-type',     // Beaver Builder.
+			'wp_pattern_category',          // WordPress patterns.
+			'wpforms_form_tag',             // WP Forms.
+		)
 	);
 }
 

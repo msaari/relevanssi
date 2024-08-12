@@ -128,6 +128,9 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+* New feature: New filter hook `relevanssi_forbidden_post_types` filters the list of post types excluded from Relevanssi indexing.
+* New feature: New filter hook `relevanssi_forbidden_taxonomies` filters the list of taxonomies excluded from Relevanssi indexing.
+
 = 4.22.2 =
 * Security fix: Prevent CSV injection attack in log export.
 * Security fix: Restrict access to doc count updates.
