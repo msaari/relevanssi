@@ -314,6 +314,7 @@ function relevanssi_add_admin_scripts( $hook ) {
 		'settings_page_relevanssi/relevanssi',
 		'dashboard_page_relevanssi/relevanssi',
 		'dashboard_page_relevanssi_admin_search',
+		'dashboard_page_relevanssi_user_searches',
 	);
 	/**
 	 * Filters the hooks where Relevanssi scripts are enqueued.
