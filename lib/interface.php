@@ -252,6 +252,9 @@ function relevanssi_options_form() {
 	 * @return array Filtered tab array.
 	 */
 	$tabs = apply_filters( 'relevanssi_tabs', $tabs );
+
+	$active_tab = relevanssi_check_active_tab( $active_tab, $tabs );
+
 	?>
 <h2 class="nav-tab-wrapper">
 	<?php
@@ -530,4 +533,33 @@ EOJS;
 	} else {
 		echo '<script>' . $script . '</script>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
+}
+
+/**
+ * Checks if the active tab exists in the tab list.
+ *
+ * If it doesn't, sets the active tab to the first tab in the list.
+ *
+ * @param string $active_tab The active tab.
+ * @param array  $tabs       The tab list.
+ *
+ * @return string The active tab.
+ */
+function relevanssi_check_active_tab( $active_tab, $tabs ) {
+	$active_tab_exists = false;
+	$first_tab_slug    = '';
+	foreach ( $tabs as $tab ) {
+		if ( ! $first_tab_slug ) {
+			$first_tab_slug = $tab['slug'];
+		}
+		if ( $tab['slug'] === $active_tab ) {
+			$active_tab_exists = true;
+			break;
+		}
+	}
+	if ( ! $active_tab_exists ) {
+		$active_tab = $first_tab_slug;
+	}
+
+	return $active_tab;
 }
