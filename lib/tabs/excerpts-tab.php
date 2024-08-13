@@ -83,10 +83,11 @@ function relevanssi_excerpts_tab() {
 
 	?>
 
+	<div id="custom_excerpts">
 	<h2 id="excerpts"><?php esc_html_e( 'Custom excerpts/snippets', 'relevanssi' ); ?></h2>
 
 	<table class="form-table" role="presentation">
-	<tr>
+	<tr id="row_custom_snippets">
 		<th scope="row">
 			<?php esc_html_e( 'Custom search result snippets', 'relevanssi' ); ?>
 		</th>
@@ -223,7 +224,7 @@ function relevanssi_excerpts_tab() {
 		</td>
 	</tr>
 	<?php if ( 'visible' === $index_fields || 'all' === $index_fields ) : ?>
-	<tr>
+	<tr id="row_custom_fields">
 		<th scope="row">
 			<?php esc_html_e( 'List custom fields', 'relevanssi' ); ?>
 		</th>
@@ -238,7 +239,9 @@ function relevanssi_excerpts_tab() {
 	</tr>
 	<?php endif; ?>
 	</table>
+	</div>
 
+	<div id="highlighting">
 	<h2><?php esc_html_e( 'Search hit highlighting', 'relevanssi' ); ?></h2>
 
 	<table id="relevanssi_highlighting" class="form-table
@@ -248,7 +251,7 @@ function relevanssi_excerpts_tab() {
 	}
 	?>
 	" role="presentation">
-	<tr>
+	<tr id="row_highlight_type">
 		<th scope="row">
 			<label for='relevanssi_highlight'><?php esc_html_e( 'Highlight type', 'relevanssi' ); ?></label>
 		</th>
@@ -332,7 +335,7 @@ function relevanssi_excerpts_tab() {
 			<p class="description"><?php printf( esc_html__( 'The highlights will be wrapped in a %s with this class.', 'relevanssi' ), '&lt;span&gt;' ); ?></p>
 		</td>
 	</tr>
-	<tr>
+	<tr id="row_highlight_titles">
 		<th scope="row">
 			<?php esc_html_e( 'Highlight in titles', 'relevanssi' ); ?>
 		</th>
@@ -351,7 +354,7 @@ function relevanssi_excerpts_tab() {
 		<p class="description"><?php printf( esc_html__( 'Highlights in titles require changes to the search results template. You need to replace %1$s in the search results template with %2$s. For more information, see the contextual help.', 'relevanssi' ), '<code>the_title()</code>', '<code>relevanssi_the_title()</code>' ); ?></p>
 		</td>
 	</tr>
-	<tr>
+	<tr id="row_highlight_docs">
 		<th scope="row">
 			<?php esc_html_e( 'Highlight in documents', 'relevanssi' ); ?>
 		</th>
@@ -370,7 +373,7 @@ function relevanssi_excerpts_tab() {
 		<p class="description"><?php printf( esc_html__( 'Highlights hits when user opens the post from search results. This requires an extra parameter (%s) to the links from the search results pages, which Relevanssi should add automatically.', 'relevanssi' ), '<code>highlight</code>' ); ?></p>
 		</td>
 	</tr>
-	<tr>
+	<tr id="row_highlight_comments">
 		<th scope="row">
 			<?php esc_html_e( 'Highlight in comments', 'relevanssi' ); ?>
 		</th>
@@ -388,7 +391,7 @@ function relevanssi_excerpts_tab() {
 		<p class="description"><?php esc_html_e( 'Highlights hits in comments when user opens the post from search results.', 'relevanssi' ); ?></p>
 		</td>
 	</tr>
-	<tr>
+	<tr id="row_expand_highlights">
 		<th scope="row">
 			<?php esc_html_e( 'Expand highlights', 'relevanssi' ); ?>
 		</th>
@@ -407,7 +410,9 @@ function relevanssi_excerpts_tab() {
 		</td>
 	</tr>
 	</table>
+	</div>
 
+	<div id="breakdown">
 	<h2><?php esc_html_e( 'Breakdown of search results', 'relevanssi' ); ?></h2>
 
 	<table id="relevanssi_breakdown" class="form-table
@@ -417,7 +422,7 @@ function relevanssi_excerpts_tab() {
 	}
 	?>
 	" role="presentation">
-	<tr>
+	<tr id="row_show_matches">
 		<th scope="row">
 			<?php esc_html_e( 'Breakdown of search hits in excerpts', 'relevanssi' ); ?>
 		</th>
@@ -435,7 +440,7 @@ function relevanssi_excerpts_tab() {
 		<p class="description"><?php esc_html_e( 'Requires custom snippets to work.', 'relevanssi' ); ?></p>
 		</td>
 	</tr>
-	<tr>
+	<tr id="row_show_matches_text">
 		<th scope="row">
 			<label for='relevanssi_show_matches_text'><?php esc_html_e( 'The breakdown format', 'relevanssi' ); ?></label>
 		</th>
@@ -451,7 +456,6 @@ function relevanssi_excerpts_tab() {
 		</td>
 	</tr>
 	</table>
-
-
+	</div>
 		<?php
 }

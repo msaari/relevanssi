@@ -51,6 +51,7 @@ function relevanssi_debugging_tab() {
 	}
 	wp_nonce_field( 'relevanssi_how_relevanssi_sees', '_relevanssi_nonce', true, true );
 	?>
+	<div id="how_relevanssi_sees">
 	<h2><?php esc_html_e( 'Debugging', 'relevanssi' ); ?></h2>
 
 	<p><?php esc_html_e( 'In order to figure out problems with indexing posts, you can test how Relevanssi sees the post by entering the post ID number in the field below.', 'relevanssi' ); ?></p>
@@ -102,7 +103,9 @@ function relevanssi_debugging_tab() {
 	</p>
 
 	<?php echo $how_relevanssi_sees; // phpcs:ignore WordPress.Security.EscapeOutput ?>
+	</div>
 
+	<div id="db_post_view">
 	<h2><?php esc_html_e( 'What does the post look like in the database?', 'relevanssi' ); ?></h2>
 
 	<p><?php esc_html_e( "This feature will show you how the post looks like in the database. It can sometimes be very helpful for debugging why a post isn't indexed the way you expect it to be.", 'relevanssi' ); ?></p>
@@ -124,7 +127,9 @@ function relevanssi_debugging_tab() {
 	</p>
 
 	<?php echo $db_post_view; // phpcs:ignore WordPress.Security.EscapeOutput ?>
+	</div>
 
+	<div id="debugging_info">
 	<h2><?php esc_html_e( 'Debugging information', 'relevanssi' ); ?></h2>
 
 	<?php
@@ -144,9 +149,11 @@ function relevanssi_debugging_tab() {
 	<?php
 	echo '<code>' . $indexing_query . '</code>'; // phpcs:ignore WordPress.Security.EscapeOutput
 	?>
+	</div>
 
 	<?php do_action( 'relevanssi_debugging_tab' ); ?>
 
+	<div id="debugging_mode">
 	<h2><?php esc_html_e( 'Debugging mode', 'relevanssi' ); ?></h2>
 
 	<?php
@@ -162,5 +169,6 @@ function relevanssi_debugging_tab() {
 		<p class="description"><?php esc_html_e( "Relevanssi support may ask you to enable the debugging mode. When you check this box, it's possible to see debugging information from the front-end.", 'relevanssi' ); ?></p>
 	</fieldset>
 
+	</div>
 	<?php
 }

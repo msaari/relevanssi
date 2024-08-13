@@ -133,6 +133,7 @@ Each document database is full of useless words. All the little words that appea
 * New feature: New filter hook `relevanssi_forbidden_taxonomies` filters the list of taxonomies excluded from Relevanssi indexing.
 * New feature: New filter hook `relevanssi_show_password_protected` controls whether password protected posts are shown in the search results.
 * New feature: Support for `post_mime_type` query parameter.
+* New feature: Relevanssi settings tabs have more CSS ids to help hide individual settings.
 * Changed behaviour: Password protected posts are excluded from the search results by default to protect their contents.
 * Minor fix: In rare cases, the search results would not be in relevance order if the throttle wasn't used.
 * Minor fix: The settings tab query parameter was renamed to avoid collisions with other plugins.

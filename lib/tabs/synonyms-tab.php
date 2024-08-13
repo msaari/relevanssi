@@ -40,8 +40,8 @@ function relevanssi_synonyms_tab() {
 	?>
 	<h3 id="synonyms"><?php esc_html_e( 'Synonyms', 'relevanssi' ); ?></h3>
 
-<table class="form-table" role="presentation">
-<tr
+<table class="form-table" role="presentation" id="synonyms_table">
+<tr id="row_synonyms"
 	<?php
 	if ( $synonyms_disabled ) {
 		echo "class='relevanssi_disabled'";

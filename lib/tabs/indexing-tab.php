@@ -109,7 +109,7 @@ function relevanssi_indexing_tab() {
 	?>
 	<div id="indexing_tab">
 
-	<table class="form-table" role="presentation">
+	<table class="form-table" role="presentation" id="indexing_controls">
 	<tr>
 		<td scope="row">
 			<input type='submit' name='submit' value='<?php esc_attr_e( 'Save the options', 'relevanssi' ); ?>' class='button button-primary' /><br /><br />
@@ -162,12 +162,13 @@ function relevanssi_indexing_tab() {
 	}
 	?>
 
+	<div id="indexing_options">
 	<h2 id="indexing"><?php esc_html_e( 'Indexing options', 'relevanssi' ); ?></h2>
 
 	<p><?php esc_html_e( 'Any changes to the settings on this page require reindexing before they take effect.', 'relevanssi' ); ?></p>
 
-	<table class="form-table" role="presentation">
-	<tr>
+	<table class="form-table" role="presentation" id="indexing_settings">
+	<tr id="row_index_post_types">
 		<th scope="row"><?php esc_html_e( 'Post types', 'relevanssi' ); ?></th>
 		<td>
 
@@ -259,7 +260,7 @@ function relevanssi_indexing_tab() {
 		</td>
 	</tr>
 
-	<tr>
+	<tr id="row_index_taxonomies">
 		<th scope="row">
 			<?php esc_html_e( 'Taxonomies', 'relevanssi' ); ?>
 		</th>
@@ -320,7 +321,7 @@ function relevanssi_indexing_tab() {
 		</td>
 	</tr>
 
-	<tr>
+	<tr id="row_index_comments">
 		<th scope="row">
 			<label for='relevanssi_index_comments'><?php esc_html_e( 'Comments', 'relevanssi' ); ?></label>
 		</th>
@@ -334,7 +335,7 @@ function relevanssi_indexing_tab() {
 		</td>
 	</tr>
 
-	<tr>
+	<tr id="row_index_custom_fields">
 		<th scope="row">
 			<label for='relevanssi_index_fields_select'><?php esc_html_e( 'Custom fields', 'relevanssi' ); ?></label>
 		</th>
@@ -381,7 +382,7 @@ function relevanssi_indexing_tab() {
 	</tr>
 
 	<?php if ( 'selected' === $fields_select_all || 'selected' === $fields_select_visible ) : ?>
-	<tr>
+	<tr id="row_list_custom_fields">
 		<th scope="row">
 			<?php esc_html_e( 'List custom fields', 'relevanssi' ); ?>
 		</th>
@@ -396,7 +397,7 @@ function relevanssi_indexing_tab() {
 	</tr>
 	<?php endif; ?>
 
-	<tr>
+	<tr id="row_index_author_name">
 		<th scope="row">
 			<?php esc_html_e( 'Author display names', 'relevanssi' ); ?>
 		</th>
@@ -409,7 +410,7 @@ function relevanssi_indexing_tab() {
 		</td>
 	</tr>
 
-	<tr>
+	<tr id="row_index_excerpts">
 		<th scope="row">
 			<?php esc_html_e( 'Excerpts', 'relevanssi' ); ?>
 		</th>
@@ -426,7 +427,9 @@ function relevanssi_indexing_tab() {
 	</tr>
 
 	</table>
+	</div>
 
+	<div id="indexing_shortcodes">
 	<h2><?php esc_html_e( 'Shortcodes', 'relevanssi' ); ?></h2>
 
 	<table class="form-table" role="presentation">
@@ -452,17 +455,19 @@ function relevanssi_indexing_tab() {
 	?>
 
 	</table>
+	</div>
 
 	<?php
 		do_action( 'relevanssi_indexing_tab' );
 	?>
 
+	<div id="advanced_indexing_settings">
 	<h2><?php esc_html_e( 'Advanced indexing settings', 'relevanssi' ); ?></h2>
 
 	<p><button type="button" id="show_advanced_indexing"><?php esc_html_e( 'Show advanced settings', 'relevanssi' ); ?></button></p>
 
 	<table class="form-table screen-reader-text" id="advanced_indexing" role="presentation">
-	<tr>
+	<tr id="row_min_word_length">
 		<th scope="row">
 			<label for='relevanssi_min_word_length'><?php esc_html_e( 'Minimum word length', 'relevanssi' ); ?></label>
 		</th>
@@ -473,11 +478,12 @@ function relevanssi_indexing_tab() {
 			<p class="description"><?php printf( esc_html__( 'To enable one-letter searches, you need to add a filter function on the filter hook %1$s that returns %2$s.', 'relevanssi' ), '<code>relevanssi_block_one_letter_searches</code>', '<code>false</code>' ); ?></p>
 		</td>
 	</tr>
-	<tr>
+	<tbody id="punctuation_control">
+	<tr id="row_punctuation_control_label">
 		<th scope="row"><?php esc_html_e( 'Punctuation control', 'relevanssi' ); ?></th>
 		<td><p class="description"><?php esc_html_e( 'Here you can adjust how the punctuation is controlled. For more information, see help. Remember that any changes here require reindexing, otherwise searches will fail to find posts they should.', 'relevanssi' ); ?></p></td>
 	</tr>
-	<tr>
+	<tr id="row_punctuation_hyphens">
 		<th scope="row">
 			<label for='relevanssi_punct_hyphens'><?php esc_html_e( 'Hyphens and dashes', 'relevanssi' ); ?></label>
 		</th>
@@ -491,7 +497,7 @@ function relevanssi_indexing_tab() {
 
 		</td>
 	</tr>
-	<tr>
+	<tr id="row_punctuation_quotes">
 		<th scope="row">
 			<label for='relevanssi_punct_quotes'><?php esc_html_e( 'Apostrophes and quotes', 'relevanssi' ); ?></label>
 		</th>
@@ -504,7 +510,7 @@ function relevanssi_indexing_tab() {
 
 		</td>
 	</tr>
-	<tr>
+	<tr id="row_punctuation_ampersands">
 		<th scope="row">
 			<label for='relevanssi_punct_ampersands'><?php esc_html_e( 'Ampersands', 'relevanssi' ); ?></label>
 		</th>
@@ -518,7 +524,7 @@ function relevanssi_indexing_tab() {
 
 		</td>
 	</tr>
-	<tr>
+	<tr id="row_punctuation_decimals">
 		<th scope="row">
 			<label for='relevanssi_punct_decimals'><?php esc_html_e( 'Decimal separators', 'relevanssi' ); ?></label>
 		</th>
@@ -532,6 +538,7 @@ function relevanssi_indexing_tab() {
 
 		</td>
 	</tr>
+	</tbody>
 	<?php
 	do_action( 'relevanssi_indexing_tab_advanced' );
 	?>
@@ -540,6 +547,7 @@ function relevanssi_indexing_tab() {
 
 	<p><button type="button" style="display: none" id="hide_advanced_indexing"><?php esc_html_e( 'Hide advanced settings', 'relevanssi' ); ?></button></p>
 
+	</div>
 	</div>
 	<?php
 }

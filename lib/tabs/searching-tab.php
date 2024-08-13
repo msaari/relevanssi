@@ -70,8 +70,8 @@ function relevanssi_searching_tab() {
 	}
 	?>
 
-	<table class="form-table" role="presentation">
-	<tr>
+	<table class="form-table" role="presentation" id="searching_settings">
+	<tr id="row_implicit_operator">
 		<th scope="row">
 			<label for='relevanssi_implicit_operator'><?php esc_html_e( 'Default operator', 'relevanssi' ); ?></label>
 		</th>
@@ -104,7 +104,7 @@ function relevanssi_searching_tab() {
 		<p class="description"><?php esc_html_e( 'By default, if AND search fails to find any results, Relevanssi will switch the operator to OR and run the search again. You can prevent that by checking this option.', 'relevanssi' ); ?></p>
 		</td>
 	</tr>
-	<tr>
+	<tr id="row_default_orderby">
 		<th scope="row">
 			<label for='relevanssi_default_orderby'><?php esc_html_e( 'Default order', 'relevanssi' ); ?></label>
 		</th>
@@ -120,7 +120,7 @@ function relevanssi_searching_tab() {
 			<?php } // End if ( RELEVANSSI_PREMIUM ). ?>
 		</td>
 	</tr>
-	<tr>
+	<tr id="row_keyword_matching">
 		<th scope="row">
 			<label for='relevanssi_fuzzy'><?php esc_html_e( 'Keyword matching', 'relevanssi' ); ?></label>
 		</th>
@@ -138,7 +138,7 @@ function relevanssi_searching_tab() {
 			<p class="description"><?php esc_html_e( "Partial words also includes cases where the word in the index begins or ends with the search term (searching for 'ana' will match 'anaconda' or 'banana', but not 'banal'). See Help, if you want to make Relevanssi match also inside words.", 'relevanssi' ); ?></p>
 		</td>
 	</tr>
-	<tr>
+	<tr id="row_weights">
 		<th scope="row">
 			<?php esc_html_e( 'Weights', 'relevanssi' ); ?>
 		</th>
@@ -201,7 +201,7 @@ function relevanssi_searching_tab() {
 		relevanssi_form_recency_cutoff();
 	}
 	?>
-	<tr>
+	<tr id="row_exact_match_boost">
 		<th scope="row">
 		<?php esc_html_e( 'Boost exact matches', 'relevanssi' ); ?>
 		</th>
@@ -220,7 +220,7 @@ function relevanssi_searching_tab() {
 	<?php
 	if ( function_exists( 'icl_object_id' ) && ! function_exists( 'pll_get_post' ) ) {
 		?>
-	<tr>
+	<tr id="row_wpml_only_current">
 		<th scope="row">
 		<?php esc_html_e( 'WPML', 'relevanssi' ); ?>
 		</th>
@@ -237,7 +237,7 @@ function relevanssi_searching_tab() {
 	</tr>
 	<?php } // WPML. ?>
 	<?php if ( function_exists( 'pll_get_post' ) ) { ?>
-	<tr>
+	<tr id="row_polylang_allow_all">
 		<th scope="row">
 		<?php esc_html_e( 'Polylang', 'relevanssi' ); ?>
 		</th>
@@ -253,7 +253,7 @@ function relevanssi_searching_tab() {
 		</td>
 	</tr>
 	<?php } // Polylang. ?>
-	<tr>
+	<tr id="row_admin_search">
 		<th scope="row">
 		<?php esc_html_e( 'Admin search', 'relevanssi' ); ?>
 		</th>
@@ -268,7 +268,7 @@ function relevanssi_searching_tab() {
 		<p class="description"><?php esc_html_e( "If checked, Relevanssi will be used for searches in the admin interface. The page search doesn't use Relevanssi, because WordPress works like that.", 'relevanssi' ); ?></p>
 		</td>
 	</tr>
-	<tr>
+	<tr id="row_respect_exclude">
 		<th scope="row">
 			<?php // Translators: %s is 'exclude_from_search'. ?>
 			<?php printf( esc_html__( 'Respect %s', 'relevanssi' ), 'exclude_from_search' ); ?>
@@ -304,7 +304,7 @@ function relevanssi_searching_tab() {
 		</fieldset>
 		</td>
 	</tr>
-	<tr>
+	<tr id="row_throttle_searches">
 		<th scope="row">
 			<?php esc_html_e( 'Throttle searches', 'relevanssi' ); ?>
 		</th>
@@ -327,7 +327,7 @@ function relevanssi_searching_tab() {
 		</div>
 		</td>
 	</tr>
-	<tr>
+	<tr id="row_category_restriction">
 		<th scope="row">
 			<?php esc_html_e( 'Category restriction', 'relevanssi' ); ?>
 		</th>
@@ -358,7 +358,7 @@ function relevanssi_searching_tab() {
 			<p class="description"><?php esc_html_e( 'You can restrict search results to a category for all searches. For restricting on a per-search basis and more options (eg. tag restrictions), see Help.', 'relevanssi' ); ?></p>
 		</td>
 	</tr>
-	<tr>
+	<tr id="row_category_exclusion">
 		<th scope="row">
 			<?php esc_html_e( 'Category exclusion', 'relevanssi' ); ?>
 		</th>
@@ -389,7 +389,7 @@ function relevanssi_searching_tab() {
 			<p class="description"><?php esc_html_e( 'Posts in these categories are not included in search results. To exclude the posts completely from the index, see Help.', 'relevanssi' ); ?></p>
 		</td>
 	</tr>
-	<tr>
+	<tr id="row_exclude_posts">
 		<th scope="row">
 			<label for='relevanssi_exclude_posts'><?php esc_html_e( 'Post exclusion', 'relevanssi' ); ?>
 		</th>

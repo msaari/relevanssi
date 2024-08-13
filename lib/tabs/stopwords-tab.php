@@ -19,13 +19,16 @@ function relevanssi_stopwords_tab() {
 		return;
 	}
 	?>
+	<div id="stopword_settings">
 	<h3 id="stopwords"><?php esc_html_e( 'Stopwords', 'relevanssi' ); ?></h3>
 	<?php
 
 	relevanssi_show_stopwords();
 
 	?>
+	</div>
 
+	<div id="body_stopword_settings">
 	<h3 id="bodystopwords"><?php esc_html_e( 'Content stopwords', 'relevanssi' ); ?></h3>
 
 	<?php
@@ -40,6 +43,8 @@ function relevanssi_stopwords_tab() {
 			)
 		);
 	}
+
+	echo '</div>';
 
 	/**
 	 * Filters whether the common words list is displayed or not.
@@ -70,8 +75,8 @@ function relevanssi_show_stopwords() {
 		)
 	);
 	?>
-<table class="form-table" role="presentation">
-<tr>
+<table class="form-table" role="presentation" id="add_stopwords">
+<tr id="row_add_stopwords">
 	<th scope="row">
 		<label for="addstopword"><p><?php esc_html_e( 'Stopword(s) to add', 'relevanssi' ); ?>
 	</th>
@@ -83,8 +88,8 @@ function relevanssi_show_stopwords() {
 </table>
 <p><?php esc_html_e( "Here's a list of stopwords in the database. Click a word to remove it from stopwords. Removing stopwords won't automatically return them to index, so you need to re-index all posts after removing stopwords to get those words back to index.", 'relevanssi' ); ?></p>
 
-<table class="form-table" role="presentation">
-<tr>
+<table class="form-table" role="presentation" id="show_stopwords">
+<tr id="row_show_stopwords">
 	<th scope="row">
 		<?php esc_html_e( 'Current stopwords', 'relevanssi' ); ?>
 	</th>
@@ -121,7 +126,7 @@ function relevanssi_show_stopwords() {
 	</p>
 	</td>
 </tr>
-<tr>
+<tr id="row_exportable_stopwords">
 	<th scope="row">
 		<?php esc_html_e( 'Exportable list of stopwords', 'relevanssi' ); ?>
 	</th>
