@@ -184,6 +184,17 @@ function relevanssi_default_post_ok( $post_ok, $post_id ) {
 		$post_ok = false;
 	}
 
+	if ( post_password_required( $post_id ) ) {
+		/**
+		 * Filters whether password protected posts are shown in the search
+		 * results.
+		 *
+		 * @param boolean $post_ok True if the post can be shown, false if not.
+		 * @param int     $post_id The post ID.
+		 */
+		$post_ok = apply_filters( 'relevanssi_show_password_protected', false, $post_id );
+	}
+
 	// Let's look a bit closer at private posts.
 	if ( 'private' === $status ) {
 		$post_ok = false;
