@@ -1966,5 +1966,5 @@ function relevanssi_list_all_indexed_custom_fields() {
 		$custom_fields = explode( ',', $custom_fields );
 	}
 
-	return implode( ', ', $custom_fields );
+	return htmlspecialchars( implode( ', ', $custom_fields ) );
 }

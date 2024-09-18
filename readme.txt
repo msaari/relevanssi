@@ -128,6 +128,9 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.23.1 =
+* Security fix: Prevent an XSS attack by a malicious contributor.
+
 = 4.23.0 =
 * New feature: New filter hook `relevanssi_forbidden_post_types` filters the list of post types excluded from Relevanssi indexing.
 * New feature: New filter hook `relevanssi_forbidden_taxonomies` filters the list of taxonomies excluded from Relevanssi indexing.
@@ -147,5 +150,8 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: Added error handling to the Ninja Table compatibility code.
 
 == Upgrade notice ==
+= 4.23.1 =
+* Security hardening.
+
 = 4.23.0 =
 * New filter hooks, support for `post_mime_type` and bug fixes.
