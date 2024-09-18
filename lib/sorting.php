@@ -191,7 +191,7 @@ function relevanssi_get_compare_values( $key, $item_1, $item_2 ) {
 			}
 			if ( empty( $key ) ) {
 				// The key is not set.
-				return array( '', '' );
+				return array( 'key1' => '', 'key2' => '' );
 			}
 		}
 		$key1 = get_post_meta( $item_1->ID, $key, true );
