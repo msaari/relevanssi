@@ -616,6 +616,8 @@ function relevanssi_index_doc( $index_post, $remove_first = false, $custom_field
 		$post = $previous_post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 	}
 
+	$n = apply_filters( 'relevanssi_after_index_doc_n', $n, $index_post, $remove_first, $custom_fields, $bypass_global_post, $debug );
+
 	return $n;
 }
 
@@ -1049,7 +1051,7 @@ function relevanssi_get_comments( $post_id ) {
 function relevanssi_truncate_index() {
 	global $wpdb, $relevanssi_variables;
 	$relevanssi_table = $relevanssi_variables['relevanssi_table'];
-	return $wpdb->query( "TRUNCATE TABLE $relevanssi_table" ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+	return apply_filters( 'relevanssi_truncate_index', $wpdb->query( "TRUNCATE TABLE $relevanssi_table" )); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 }
 
 /**
