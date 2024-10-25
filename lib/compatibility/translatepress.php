@@ -55,35 +55,15 @@ function relevanssi_translatepress_modify_relevanssi_variables() {
 /**
  * Creates tables in the database for indexing translatepress translated pages.
  * A separate table is used for each language as the translated pages have the same post IDs as the non-translated pages
- * Table creation is copied from relevanssi_create_database_tables v4.23.1. ToDo: Get rid of duplicate code if possible
  * Hooked to relevanssi_create_tables
  * Also fired when translatepress settings change
  */
 function relevanssi_translatepress_create_tables($charset_collate = null, $trp_settings = null) {
-	global $wpdb;
+	global $wpdb, $relevanssi_variables;
 
 	if(!$trp_settings) {
 		$trp_settings = \TRP_Translate_Press::get_trp_instance()->get_component( 'settings' )->get_settings();
 	}
-
-	if(!$charset_collate) {
-
-		$charset_collate_bin_column = '';
-		$charset_collate            = '';
-	
-		if ( ! empty( $wpdb->charset ) ) {
-			$charset_collate_bin_column = "CHARACTER SET $wpdb->charset";
-			$charset_collate            = "DEFAULT $charset_collate_bin_column";
-		}
-		if ( strpos( $wpdb->collate, '_' ) > 0 ) {
-			$charset_collate_bin_column .= ' COLLATE ' . substr( $wpdb->collate, 0, strpos( $wpdb->collate, '_' ) ) . '_bin';
-			$charset_collate            .= " COLLATE $wpdb->collate";
-		} elseif ( '' === $wpdb->collate && 'utf8' === $wpdb->charset ) {
-			$charset_collate_bin_column .= ' COLLATE utf8_bin';
-		}
-
-	}
-
 
 	$default_language = $trp_settings['default-language'];
 	$translation_languages = $trp_settings['translation-languages'];
@@ -91,86 +71,15 @@ function relevanssi_translatepress_create_tables($charset_collate = null, $trp_s
 	foreach ($translation_languages as $key => $language_slug) {
 		if($language_slug === $default_language) continue;
 
-		$relevanssi_table = relevanssi_translatepress_get_relevanssi_tablename_for_language($language_slug);
+		$translated_relevanssi_table_name = relevanssi_translatepress_get_relevanssi_tablename_for_language($language_slug);
+		
+		$sql = 'CREATE TABLE ' . $translated_relevanssi_table_name . " LIKE " . $relevanssi_variables['relevanssi_table'];
+
+		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 	
-		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-	
-		$sql = 'CREATE TABLE ' . $relevanssi_table . " (doc bigint(20) NOT NULL DEFAULT '0',
-		term varchar(50) NOT NULL DEFAULT '0',
-		term_reverse varchar(50) NOT NULL DEFAULT '0',
-		content mediumint(9) NOT NULL DEFAULT '0',
-		title mediumint(9) NOT NULL DEFAULT '0',
-		comment mediumint(9) NOT NULL DEFAULT '0',
-		tag mediumint(9) NOT NULL DEFAULT '0',
-		link mediumint(9) NOT NULL DEFAULT '0',
-		author mediumint(9) NOT NULL DEFAULT '0',
-		category mediumint(9) NOT NULL DEFAULT '0',
-		excerpt mediumint(9) NOT NULL DEFAULT '0',
-		taxonomy mediumint(9) NOT NULL DEFAULT '0',
-		customfield mediumint(9) NOT NULL DEFAULT '0',
-		mysqlcolumn mediumint(9) NOT NULL DEFAULT '0',
-		taxonomy_detail longtext NOT NULL,
-		customfield_detail longtext NOT NULL DEFAULT '',
-		mysqlcolumn_detail longtext NOT NULL DEFAULT '',
-		type varchar(210) NOT NULL DEFAULT 'post',
-		item bigint(20) NOT NULL DEFAULT '0',
-		PRIMARY KEY doctermitem (doc, term, item)) $charset_collate";
-	
-		dbDelta( $sql );
-	
-		$sql     = "SHOW INDEX FROM $relevanssi_table";
-		$indices = $wpdb->get_results( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery
-	
-		$terms_exists                       = false;
-		$relevanssi_term_reverse_idx_exists = false;
-		$docs_exists                        = false;
-		$typeitem_exists                    = false;
-		$doctermitem_exists                 = false;
-		foreach ( $indices as $index ) {
-			if ( 'terms' === $index->Key_name ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName
-				$terms_exists = true;
-			}
-			if ( 'relevanssi_term_reverse_idx' === $index->Key_name ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName
-				$relevanssi_term_reverse_idx_exists = true;
-			}
-			if ( 'docs' === $index->Key_name ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName
-				$docs_exists = true;
-			}
-			if ( 'typeitem' === $index->Key_name ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName
-				$typeitem_exists = true;
-			}
-			if ( 'doctermitem' === $index->Key_name ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName
-				$doctermitem_exists = true;
-			}
-		}
-	
-		if ( ! $terms_exists ) {
-			$sql = "CREATE INDEX terms ON $relevanssi_table (term(20))";
-			$wpdb->query( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery
-		}
-	
-		if ( ! $relevanssi_term_reverse_idx_exists ) {
-			$sql = "CREATE INDEX relevanssi_term_reverse_idx ON $relevanssi_table (term_reverse(10))";
-			$wpdb->query( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery
-		}
-	
-		if ( ! $typeitem_exists ) {
-			$sql = "CREATE INDEX typeitem ON $relevanssi_table (type(190), item)";
-			$wpdb->query( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery
-		}
-	
-		if ( $doctermitem_exists ) {
-			$sql = "DROP INDEX doctermitem ON $relevanssi_table";
-			$wpdb->query( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery
-		}
-	
-		if ( $docs_exists ) { // This index was removed in 4.9.2 / 2.11.2.
-			$sql = "DROP INDEX docs ON $relevanssi_table";
-			$wpdb->query( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery
-		}
+		\dbDelta( $sql );
 
 	}
-
 
 }
 
