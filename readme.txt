@@ -128,6 +128,8 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+* Minor fix: SEO Framework local search exclude option description now tells what the option actually does.
+
 = 4.23.1 =
 * Security fix: Prevent an XSS attack by a malicious contributor.
 

@@ -73,14 +73,14 @@ function relevanssi_seoframework_form() {
 	?>
 	<tr>
 		<th scope="row">
-			<label for='relevanssi_seo_noindex'><?php esc_html_e( 'Use SEO Framework noindex', 'relevanssi' ); ?></label>
+			<label for='relevanssi_seo_noindex'><?php esc_html_e( 'Use SEO Framework local search exclude', 'relevanssi' ); ?></label>
 		</th>
 		<td>
 			<label for='relevanssi_seo_noindex'>
 				<input type='checkbox' name='relevanssi_seo_noindex' id='relevanssi_seo_noindex' <?php echo esc_attr( $seo_noindex ); ?> />
-				<?php esc_html_e( 'Use SEO Framework noindex.', 'relevanssi' ); ?>
+				<?php esc_html_e( 'Use SEO Framework local search exclude.', 'relevanssi' ); ?>
 			</label>
-			<p class="description"><?php esc_html_e( 'If checked, Relevanssi will not index posts marked as "No index" in SEO Framework settings.', 'relevanssi' ); ?></p>
+			<p class="description"><?php esc_html_e( 'If checked, Relevanssi will not index posts marked as "Exclude this page from all search queries on this site" in SEO Framework settings.', 'relevanssi' ); ?></p>
 		</td>
 	</tr>
 	<?php
