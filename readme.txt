@@ -131,6 +131,7 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: SEO Framework local search exclude option description now tells what the option actually does.
 * Minor fix: Relevanssi cache population now creates WP_Post objects instead of stdClass objects.
 * Minor fix: SEOPress compatibility mode is enabled again.
+* Minor fix: Avoid fatal errors in installation process with Polylang enabled.
 
 = 4.23.1 =
 * Security fix: Prevent an XSS attack by a malicious contributor.

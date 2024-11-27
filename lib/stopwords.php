@@ -242,7 +242,10 @@ function relevanssi_update_stopwords( $stopwords ) {
 function relevanssi_delete_term_from_all_posts( $term ) {
 	global $wpdb, $relevanssi_variables;
 
-	if ( function_exists( 'pll_languages_list' ) ) {
+	if ( function_exists( 'pll_languages_list' )
+		&& function_exists( 'relevanssi_get_language_term_taxonomy_id' ) ) {
+		// The Relevanssi function does not exist when this function is run as
+		// part of the Relevanssi install process.
 		$term_id = relevanssi_get_language_term_taxonomy_id(
 			relevanssi_get_current_language()
 		);
