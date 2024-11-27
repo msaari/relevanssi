@@ -104,7 +104,7 @@ function relevanssi_indexing_tab() {
 	}
 
 	$this_page  = '?page=' . plugin_basename( $relevanssi_variables['file'] );
-	$update_url = wp_nonce_url( $this_page . '&tab=indexing&update_counts=1', 'update_counts' );
+	$update_url = wp_nonce_url( $this_page . '&rlv_tab=indexing&update_counts=1', 'update_counts' );
 
 	?>
 	<div id="indexing_tab">
