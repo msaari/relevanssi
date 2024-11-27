@@ -524,10 +524,11 @@ function relevanssi_load_compatibility_code() {
 	defined( 'GROUPS_CORE_VERSION' ) && require_once 'compatibility/groups.php';
 	defined( 'NINJA_TABLES_VERSION' ) && require_once 'compatibility/ninjatables.php';
 	defined( 'PRLI_PLUGIN_NAME' ) && require_once 'compatibility/pretty-links.php';
-	defined( 'WPM_PRODUCT_GTIN_WC_VERSION' ) && require_once 'compatibility/product-gtin-ean-upc-isbn-for-woocommerce.php';
+	defined( 'SEOPRESS_VERSION' ) && require_once 'compatibility/seopress.php';
 	defined( 'SIMPLE_WP_MEMBERSHIP_VER' ) && require_once 'compatibility/simplemembership.php';
 	defined( 'THE_SEO_FRAMEWORK_VERSION' ) && require_once 'compatibility/seoframework.php';
 	defined( 'WPFD_VERSION' ) && require_once 'compatibility/wp-file-download.php';
+	defined( 'WPM_PRODUCT_GTIN_WC_VERSION' ) && require_once 'compatibility/product-gtin-ean-upc-isbn-for-woocommerce.php';
 	defined( 'WPMEM_VERSION' ) && require_once 'compatibility/wp-members.php';
 	defined( 'WPSEO_FILE' ) && require_once 'compatibility/yoast-seo.php';
 	function_exists( 'do_blocks' ) && require_once 'compatibility/gutenberg.php';
@@ -535,7 +536,6 @@ function relevanssi_load_compatibility_code() {
 	function_exists( 'members_content_permissions_enabled' ) && require_once 'compatibility/members.php';
 	function_exists( 'pmpro_has_membership_access' ) && require_once 'compatibility/paidmembershippro.php';
 	function_exists( 'rcp_user_can_access' ) && require_once 'compatibility/restrictcontentpro.php';
-	function_exists( 'seopress_get_toggle_titles_option' ) && '1' === seopress_get_toggle_titles_option() && require_once 'compatibility/seopress.php';
 	function_exists( 'wp_jv_prg_user_can_see_a_post' ) && require_once 'compatibility/wpjvpostreadinggroups.php';
 
 	// phpcs:disable WordPress.NamingConventions.ValidVariableName
