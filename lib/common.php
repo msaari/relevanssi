@@ -284,7 +284,7 @@ function relevanssi_populate_array( $matches, $blog_id = -1 ) {
 			foreach ( $posts as $post ) {
 				$cache_id = $blog_id . '|' . $post->ID;
 
-				$relevanssi_post_array[ $cache_id ] = $post;
+				$relevanssi_post_array[ $cache_id ] = new WP_Post( $post );
 			}
 		}
 	} while ( $ids );
