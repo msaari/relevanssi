@@ -1477,6 +1477,8 @@ function relevanssi_index_content( &$insert_data, $post_object, $min_word_length
 	/**
 	 * If this filter returns false, post content is not indexed at all.
 	 *
+	 * Also used in /premium/pinning.php.
+	 *
 	 * @param boolean Return false to prevent post content from being indexed.
 	 * Default true.
 	 * @param object  $post_object The post object.
