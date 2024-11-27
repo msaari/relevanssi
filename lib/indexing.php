@@ -616,6 +616,39 @@ function relevanssi_index_doc( $index_post, $remove_first = false, $custom_field
 		$post = $previous_post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 	}
 
+	/**
+	 * Filters the number of queries returned.
+	 *
+	 * Added for potential TranslatePress support.
+	 *
+  	 * @param string|int $n                  Number of insert queries run, or
+	 * -1 if the indexing fails, or 'hide' in case the post is hidden or
+	 * 'donotindex' if a filter blocks this.
+ 	 * @param object|int $index_post         The post to index, either post
+	 * object or post ID.
+ 	 * @param boolean    $remove_first       If true, remove the post from the
+	 * index before indexing. Default false.
+ 	 * @param array      $custom_fields      The custom fields that are indexed
+	 * for the post. Default an empty string.
+ 	 * @param boolean    $bypass_global_post If true, do not use the global
+	 * $post object. Default false.
+ 	 * @param boolean    $debug              If true, echo out debugging
+	 * information. Default false.
+  	 *
+  	 * @return string|int Number of insert queries run, or -1 if the indexing
+	 * fails, or 'hide' in case the post is hidden or 'donotindex' if a filter
+	 * blocks this.
+	 */
+	$n = apply_filters(
+		'relevanssi_after_index_doc_n',
+		$n,
+		$index_post,
+		$remove_first,
+		$custom_fields,
+		$bypass_global_post,
+		$debug
+	);
+
 	return $n;
 }
 
@@ -1049,7 +1082,13 @@ function relevanssi_get_comments( $post_id ) {
 function relevanssi_truncate_index() {
 	global $wpdb, $relevanssi_variables;
 	$relevanssi_table = $relevanssi_variables['relevanssi_table'];
-	return $wpdb->query( "TRUNCATE TABLE $relevanssi_table" ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+
+	/**
+	 * Filters the TRUNCATE TABLE query for truncating the index.
+	 *
+	 * @param string The MySQL query.
+	 */
+	return $wpdb->query( apply_filters( 'relevanssi_truncate_index', "TRUNCATE TABLE $relevanssi_table" ) ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 }
 
 /**
