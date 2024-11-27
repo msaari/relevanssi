@@ -133,6 +133,7 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: SEOPress compatibility mode is enabled again.
 * Minor fix: Avoid fatal errors in installation process with Polylang enabled.
 * Minor fix: Update counts link had the wrong tab query parameter.
+* Minor fix: Adjust post type parameter handling so that it doesn't change the `post_type` query var.
 
 = 4.23.1 =
 * Security fix: Prevent an XSS attack by a malicious contributor.

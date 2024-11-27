@@ -1752,14 +1752,14 @@ function relevanssi_compile_common_args( $query ) {
 	$date_query = relevanssi_wp_date_query_from_query_vars( $query );
 
 	$post_type = false;
-	if ( isset( $query->query_vars['post_type'] ) && is_array( $query->query_vars['post_type'] ) ) {
-		$query->query_vars['post_type'] = implode( ',', $query->query_vars['post_type'] );
-	}
 	if ( isset( $query->query_vars['post_type'] ) && 'any' !== $query->query_vars['post_type'] ) {
 		$post_type = $query->query_vars['post_type'];
 	}
 	if ( isset( $query->query_vars['post_types'] ) && 'any' !== $query->query_vars['post_types'] ) {
 		$post_type = $query->query_vars['post_types'];
+	}
+	if ( is_array( $post_type ) ) {
+		$post_type = implode( ',', $post_type );
 	}
 
 	$post_status = false;
