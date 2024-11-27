@@ -793,7 +793,14 @@ function relevanssi_is_multiple_words( string $str ): bool {
 	if ( empty( $str ) ) {
 		return false;
 	}
-	$punctuation = get_option( 'relevanssi_punctuation' );
+	$punctuation = get_option(
+		'relevanssi_punctuation',
+		array(
+			'quotes'     => 'replace',
+			'hyphens'    => 'replace',
+			'ampersands' => 'replace',
+		)
+	);
 	if ( 'replace' === $punctuation['hyphens'] ) {
 		$str = str_replace(
 			array(
