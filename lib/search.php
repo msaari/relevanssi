@@ -661,7 +661,8 @@ function relevanssi_do_query( &$query ) {
 			$q,
 			$query
 		);
-		relevanssi_update_log( $query_string, $hits_count );
+		$source = $query->query_vars['rlv_source'] ?? '';
+		relevanssi_update_log( $query_string, $hits_count, $source );
 	}
 
 	$make_excerpts = 'on' === get_option( 'relevanssi_excerpts' ) ? true : false;

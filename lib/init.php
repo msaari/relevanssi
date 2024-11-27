@@ -392,6 +392,7 @@ function relevanssi_create_database_tables( $relevanssi_db_version ) {
 	user_id bigint(20) NOT NULL DEFAULT '0',
 	ip varchar(40) NOT NULL DEFAULT '',
 	session_id varchar(32) NOT NULL DEFAULT '',
+	source varchar(32) NOT NULL DEFAULT '',
 	PRIMARY KEY id (id)) $charset_collate;";
 
 	dbDelta( $sql );

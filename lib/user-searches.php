@@ -53,11 +53,19 @@ function relevanssi_search_stats() {
  */
 function relevanssi_query_log() {
 	global $wpdb, $relevanssi_variables;
-	$data = $wpdb->get_results(
-		'SELECT LEFT( `time`, 10 ) as `day`, count(*) as `count` ' .
-		"FROM {$relevanssi_variables['log_table']} " . // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
-		'GROUP BY LEFT( `time`, 10 )'
-	);
+
+	$source = '';
+	if ( function_exists( 'relevanssi_validate_source' ) ) {
+		$source = relevanssi_validate_source( $_REQUEST['source'] ?? '' );
+	}
+
+	$data_query = 'SELECT LEFT( `time`, 10 ) as `day`, count(*) as `count` ' .
+		"FROM {$relevanssi_variables['log_table']} ";
+	if ( $source ) {
+		$data_query .= "WHERE source = '$source' ";
+	}
+	$data_query .= 'GROUP BY LEFT( `time`, 10 )';
+	$data        = $wpdb->get_results( $data_query ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
 
 	$labels = array();
 	$values = array();
@@ -81,6 +89,10 @@ function relevanssi_query_log() {
 		}
 	}
 
+	$source_select = '';
+	if ( function_exists( 'relevanssi_generate_source_select' ) ) {
+		$source_select = relevanssi_generate_source_select( $source );
+	}
 	?>
 	<form method="post" style="background: white; padding: 10px; margin-top: 20px;">
 	<?php
@@ -91,6 +103,8 @@ function relevanssi_query_log() {
 			<?php echo esc_html__( 'From:', 'relevanssi' ); ?> <input type="date" name="from" value="<?php echo esc_attr( $from ); ?>" />
 			<?php echo esc_html__( 'To:', 'relevanssi' ); ?> <input type="date" name="to" value="<?php echo esc_attr( $to ); ?>" />
 			<input type="submit" value="<?php echo esc_attr( __( 'Filter', 'relevanssi' ) ); ?>" /></p>
+
+			<?php echo $source_select; ?>
 		</div>
 		<div>
 			<input type="submit" value="<?php echo esc_attr( __( 'Year so far', 'relevanssi' ) ); ?>" name="this_year" style="margin-bottom: 10px" />
@@ -113,7 +127,7 @@ function relevanssi_query_log() {
 		)
 	);
 
-	$total_queries = relevanssi_total_queries( $from, $to );
+	$total_queries = relevanssi_total_queries( $from, $to, $source );
 	?>
 	<div style="background: white; padding: 10px; display: grid; grid-template-columns: 1fr 2fr 2fr; grid-gap: 20px; margin-top: 20px">
 		<div>
@@ -124,12 +138,12 @@ function relevanssi_query_log() {
 			</div>
 			<div style="margin-bottom: 20px"><?php esc_html_e( 'Searches that found nothing', 'relevanssi' ); ?>
 				<span style="display: block; font-size: 42px; font-weight: bolder; line-height: 50px">
-					<?php echo intval( relevanssi_nothing_found_queries( $from, $to ) ); ?>
+					<?php echo intval( relevanssi_nothing_found_queries( $from, $to, $source ) ); ?>
 				</span>
 			</div>
 			<?php
 			if ( function_exists( 'relevanssi_user_searches_clicks' ) ) {
-				relevanssi_user_searches_clicks( $from, $to, $total_queries );
+				relevanssi_user_searches_clicks( $from, $to, $total_queries, $source );
 			}
 			?>
 		</div>
@@ -146,13 +160,13 @@ function relevanssi_query_log() {
 				<p><?php esc_html_e( 'In order to see the clicks, you need to enable click tracking. Click tracking is not currently enabled, and you\'re not collecting new clicks.', 'relevanssi' ); ?></p>
 				<?php
 			}
-			relevanssi_date_queries( $from, $to, 'good' );
+			relevanssi_date_queries( $from, $to, 'good', $source );
 			?>
 		</div>
 		<div>
 			<h3><?php esc_html_e( 'Unsuccessful searches', 'relevanssi' ); ?></h3>
 			<p><?php esc_html_e( 'These queries have found no results.', 'relevanssi' ); ?></p>
-			<?php relevanssi_date_queries( $from, $to, 'bad' ); ?>
+			<?php relevanssi_date_queries( $from, $to, 'bad', $source ); ?>
 		</div>
 	</div>
 	<?php
@@ -196,24 +210,37 @@ function relevanssi_query_log() {
  * @global object $wpdb                 The WP database interface.
  * @global array  $relevanssi_variables The global Relevanssi variables array.
  *
- * @param string $from The start date.
- * @param string $to   The end date.
+ * @param string $from   The start date.
+ * @param string $to     The end date.
+ * @param string $source The search source.
  *
  * @return int The number of searches.
  */
-function relevanssi_total_queries( string $from, string $to ) {
+function relevanssi_total_queries( string $from, string $to, string $source ) {
 	global $wpdb, $relevanssi_variables;
 	$log_table = $relevanssi_variables['log_table'];
 
-	$count = $wpdb->get_var(
-		$wpdb->prepare(
+	if ( ! $source ) {
+		$query = $wpdb->prepare(
 			"SELECT COUNT(id) FROM $log_table " // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			. 'WHERE time >= %s
 			AND time <= %s',
 			$from . ' 00:00:00',
 			$to . ' 23:59:59'
-		)
-	);
+		);
+	} else {
+		$query = $wpdb->prepare(
+			"SELECT COUNT(id) FROM $log_table " // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			. 'WHERE time >= %s
+			AND time <= %s
+			AND source = %s',
+			$from . ' 00:00:00',
+			$to . ' 23:59:59',
+			$source
+		);
+	}
+
+	$count = $wpdb->get_var( $query );
 
 	return $count;
 }
@@ -224,23 +251,37 @@ function relevanssi_total_queries( string $from, string $to ) {
  * @global object $wpdb                 The WP database interface.
  * @global array  $relevanssi_variables The global Relevanssi variables array.
  *
- * @param string $from The start date.
- * @param string $to   The end date.
+ * @param string $from   The start date.
+ * @param string $to     The end date.
+ * @param string $source The search source.
  */
-function relevanssi_nothing_found_queries( string $from, string $to ) {
+function relevanssi_nothing_found_queries( string $from, string $to, string $source ) {
 	global $wpdb, $relevanssi_variables;
 	$log_table = $relevanssi_variables['log_table'];
 
-	$count = $wpdb->get_var(
-		$wpdb->prepare(
+	if ( ! $source ) {
+		$query = $wpdb->prepare(
 			"SELECT COUNT(id) FROM $log_table " // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			. 'WHERE time >= %s
 			AND time <= %s
 			AND hits = 0',
 			$from . ' 00:00:00',
 			$to . ' 23:59:59'
-		)
-	);
+		);
+	} else {
+		$query = $wpdb->prepare(
+			"SELECT COUNT(id) FROM $log_table " // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			. 'WHERE time >= %s
+			AND time <= %s
+			AND hits = 0
+			AND source = %s',
+			$from . ' 00:00:00',
+			$to . ' 23:59:59',
+			$source
+		);
+	}
+
+	$count = $wpdb->get_var( $query );
 
 	return $count;
 }
@@ -255,8 +296,9 @@ function relevanssi_nothing_found_queries( string $from, string $to ) {
  * @param string $to      The ending date.
  * @param string $version If 'good', show the searches that found something; if
  * 'bad', show the searches that didn't find anything. Default 'good'.
+ * @param string $source  The source identifier, default ''.
  */
-function relevanssi_date_queries( string $from, string $to, string $version = 'good' ) {
+function relevanssi_date_queries( string $from, string $to, string $version = 'good', string $source = '' ) {
 	global $wpdb, $relevanssi_variables;
 	$log_table = $relevanssi_variables['log_table'];
 
@@ -268,8 +310,8 @@ function relevanssi_date_queries( string $from, string $to, string $version = 'g
 	$limit = apply_filters( 'relevanssi_user_searches_limit', 100 );
 
 	if ( 'good' === $version ) {
-		$queries = $wpdb->get_results(
-			$wpdb->prepare(
+		if ( ! $source ) {
+			$query = $wpdb->prepare(
 				'SELECT COUNT(DISTINCT(id)) as cnt, query, AVG(hits) AS hits ' .
 				"FROM $log_table " . // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 				'WHERE time >= %s
@@ -281,13 +323,30 @@ function relevanssi_date_queries( string $from, string $to, string $version = 'g
 				$from . ' 00:00:00',
 				$to . ' 23:59:59',
 				$limit
-			)
-		);
+			);
+		} else {
+			$query = $wpdb->prepare(
+				'SELECT COUNT(DISTINCT(id)) as cnt, query, AVG(hits) AS hits ' .
+				"FROM $log_table " . // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				'WHERE time >= %s
+				AND time <= %s
+				AND hits > 0
+				AND source = %s
+				GROUP BY query
+				ORDER BY cnt DESC
+				LIMIT %d',
+				$from . ' 00:00:00',
+				$to . ' 23:59:59',
+				$source,
+				$limit
+			);
+		}
+		$queries = $wpdb->get_results( $query );
 	}
 
 	if ( 'bad' === $version ) {
-		$queries = $wpdb->get_results(
-			$wpdb->prepare(
+		if ( ! $source ) {
+			$query = $wpdb->prepare(
 				'SELECT COUNT(DISTINCT(id)) as cnt, query, hits ' .
 				"FROM $log_table " . // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 				'WHERE time >= %s
@@ -299,8 +358,25 @@ function relevanssi_date_queries( string $from, string $to, string $version = 'g
 				$from . ' 00:00:00',
 				$to . ' 23:59:59',
 				$limit
-			)
-		);
+			);
+		} else {
+			$query = $wpdb->prepare(
+				'SELECT COUNT(DISTINCT(id)) as cnt, query, hits ' .
+				"FROM $log_table " . // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				'WHERE time >= %s
+				AND time <= %s
+				AND hits = 0
+				AND source = %s
+				GROUP BY query
+				ORDER BY cnt DESC
+				LIMIT %d',
+				$from . ' 00:00:00',
+				$to . ' 23:59:59',
+				$source,
+				$limit
+			);
+		}
+		$queries = $wpdb->get_results( $query );
 	}
 
 	if ( count( $queries ) > 0 ) {

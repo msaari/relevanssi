@@ -16,12 +16,13 @@
  * @global object $wpdb                 The WordPress database interface.
  * @global array  $relevanssi_variables The global Relevanssi variables, used for database table names.
  *
- * @param string $query The search query.
- * @param int    $hits  The number of hits found.
+ * @param string $query  The search query.
+ * @param int    $hits   The number of hits found.
+ * @param string $source The search source identifier, default ''.
  *
  * @return boolean True if logged, false if not logged.
  */
-function relevanssi_update_log( $query, $hits ) {
+function relevanssi_update_log( $query, $hits, $source = '' ) {
 	if ( empty( $query ) ) {
 		return false;
 	}
@@ -58,6 +59,10 @@ function relevanssi_update_log( $query, $hits ) {
 		$ip = apply_filters( 'relevanssi_remote_addr', $_SERVER['REMOTE_ADDR'] );
 	}
 
+	if ( $source && function_exists( 'relevanssi_validate_source' ) ) {
+		$source = relevanssi_validate_source( $source );
+	}
+
 	/**
 	 * Filters whether a query should be logged or not.
 	 *
@@ -68,8 +73,9 @@ function relevanssi_update_log( $query, $hits ) {
 	 * @param int     $hits       The number of hits found.
 	 * @param string  $user_agent The user agent that made the search.
 	 * @param string  $ip         The IP address the search came from (or empty).
+	 * @param string  $source     The search source identifier.
 	 */
-	$ok_to_log = apply_filters( 'relevanssi_ok_to_log', true, $query, $hits, $user_agent, $ip );
+	$ok_to_log = apply_filters( 'relevanssi_ok_to_log', true, $query, $hits, $user_agent, $ip, $source );
 	if ( $ok_to_log ) {
 		global $wpdb, $relevanssi_variables;
 
@@ -83,12 +89,13 @@ function relevanssi_update_log( $query, $hits ) {
 
 		$wpdb->query(
 			$wpdb->prepare(
-				'INSERT INTO ' . $relevanssi_variables['log_table'] . ' (query, hits, user_id, ip, time, session_id) VALUES (%s, %d, %d, %s, NOW(), %s)', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				'INSERT INTO ' . $relevanssi_variables['log_table'] . ' (query, hits, user_id, ip, time, session_id, source) VALUES (%s, %d, %d, %s, NOW(), %s, %s)', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 				$query,
 				intval( $hits ),
 				$user->ID,
 				$ip,
-				$session_id
+				$session_id,
+				$source
 			)
 		);
 
@@ -399,7 +406,7 @@ function relevanssi_delete_query_from_log( string $query ) {
 	$deleted = $wpdb->query(
 		$wpdb->prepare(
 			"DELETE FROM {$relevanssi_variables['log_table']} WHERE query = %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
-			stripslashes( $query )
+			stripslashes( wp_encode_emoji( $query ) )
 		)
 	);
 
