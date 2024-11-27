@@ -3,9 +3,9 @@ Contributors: msaari
 Donate link: https://www.relevanssi.com/buy-premium/
 Tags: search, relevance, better search, product search, woocommerce search
 Requires at least: 4.9
-Tested up to: 6.6
+Tested up to: 6.7
 Requires PHP: 7.0
-Stable tag: 4.23.1
+Stable tag: 4.24.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -128,6 +128,7 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.24.0 =
 * Minor fix: SEO Framework local search exclude option description now tells what the option actually does.
 * Minor fix: Relevanssi cache population now creates WP_Post objects instead of stdClass objects.
 * Minor fix: SEOPress compatibility mode is enabled again.
@@ -149,16 +150,6 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: The settings tab query parameter was renamed to avoid collisions with other plugins.
 * Minor fix: User searches page now uses `wp_print_inline_script_tag()`.
 
-= 4.22.2 =
-* Security fix: Prevent CSV injection attack in log export.
-* Security fix: Restrict access to doc count updates.
-* Minor fix: Product variations check the parent product for access restrictions, to avoid situations where variations of a draft product appear in the results.
-* Minor fix: Improved TablePress compatibility.
-* Minor fix: Added error handling to the Ninja Table compatibility code.
-
 == Upgrade notice ==
-= 4.23.1 =
-* Security hardening.
-
-= 4.23.0 =
-* New filter hooks, support for `post_mime_type` and bug fixes.
+= 4.24.0 =
+* Small bug fixes and compatibility updates.
