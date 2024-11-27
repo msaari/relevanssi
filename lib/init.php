@@ -538,6 +538,7 @@ function relevanssi_load_compatibility_code() {
 	function_exists( 'pmpro_has_membership_access' ) && require_once 'compatibility/paidmembershippro.php';
 	function_exists( 'rcp_user_can_access' ) && require_once 'compatibility/restrictcontentpro.php';
 	function_exists( 'wp_jv_prg_user_can_see_a_post' ) && require_once 'compatibility/wpjvpostreadinggroups.php';
+	function_exists( 'trp_custom_language_switcher' ) && require_once 'compatibility/translatepress.php';
 
 	// phpcs:disable WordPress.NamingConventions.ValidVariableName
 	global $userAccessManager;
