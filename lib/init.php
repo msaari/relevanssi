@@ -321,8 +321,8 @@ function relevanssi_create_database_tables( $relevanssi_db_version ) {
 	customfield mediumint(9) NOT NULL DEFAULT '0',
 	mysqlcolumn mediumint(9) NOT NULL DEFAULT '0',
 	taxonomy_detail longtext NOT NULL,
-	customfield_detail longtext NOT NULL DEFAULT '',
-	mysqlcolumn_detail longtext NOT NULL DEFAULT '',
+	customfield_detail longtext NOT NULL,
+	mysqlcolumn_detail longtext NOT NULL,
 	type varchar(210) NOT NULL DEFAULT 'post',
 	item bigint(20) NOT NULL DEFAULT '0',
 	PRIMARY KEY doctermitem (doc, term, item)) $charset_collate";

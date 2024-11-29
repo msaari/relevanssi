@@ -128,6 +128,9 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.24.1 =
+* Minor fix: Prevent database errors.
+
 = 4.24.0 =
 * Minor fix: SEO Framework local search exclude option description now tells what the option actually does.
 * Minor fix: Relevanssi cache population now creates WP_Post objects instead of stdClass objects.
@@ -151,5 +154,8 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: User searches page now uses `wp_print_inline_script_tag()`.
 
 == Upgrade notice ==
+= 4.24.1 =
+* Small fix to avoid possible database errors.
+
 = 4.24.0 =
 * Small bug fixes and compatibility updates.
