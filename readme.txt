@@ -5,7 +5,7 @@ Tags: search, relevance, better search, product search, woocommerce search
 Requires at least: 4.9
 Tested up to: 6.7
 Requires PHP: 7.0
-Stable tag: 4.24.1
+Stable tag: 4.24.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -128,6 +128,7 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.24.2 =
 * Minor fix: Fix broken excerpts.
 
 = 4.24.1 =
@@ -156,8 +157,5 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: User searches page now uses `wp_print_inline_script_tag()`.
 
 == Upgrade notice ==
-= 4.24.1 =
-* Small fix to avoid possible database errors.
-
-= 4.24.0 =
-* Small bug fixes and compatibility updates.
+= 4.24.2 =
+* Fix broken excerpts.
