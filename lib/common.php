@@ -284,6 +284,13 @@ function relevanssi_populate_array( $matches, $blog_id = -1 ) {
 			foreach ( $posts as $post ) {
 				$cache_id = $blog_id . '|' . $post->ID;
 
+				/**
+				 * This flag isn't set by new WP_Post(), and if it's not set,
+				 * filters on get_post() will force WP to reload the posts and
+				 * lose the Relevanssi excerpts.
+				 */
+				$post->filter = 'raw';
+
 				$relevanssi_post_array[ $cache_id ] = new WP_Post( $post );
 			}
 		}

@@ -128,6 +128,8 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+* Minor fix: Fix broken excerpts.
+
 = 4.24.1 =
 * Minor fix: Prevent database errors.
 
