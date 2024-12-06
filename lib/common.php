@@ -1022,7 +1022,7 @@ function relevanssi_add_highlight( $permalink, $link_post = null ) {
  * $post ID. Default null.
  * @return boolean True if the post ID or global $post matches the front page.
  */
-function relevanssi_is_front_page_id( int $post_id = null ): bool {
+function relevanssi_is_front_page_id( ?int $post_id = null ): bool {
 	$frontpage_id = intval( get_option( 'page_on_front' ) );
 	if ( $post_id === $frontpage_id ) {
 		return true;
@@ -1847,7 +1847,7 @@ function relevanssi_replace_synonyms_in_terms( array $terms ): array {
  * @return array An array of words with stemmed words replaced with their
  * originals.
  */
-function relevanssi_replace_stems_in_terms( array $terms, array $all_terms = null ): array {
+function relevanssi_replace_stems_in_terms( array $terms, ?array $all_terms = null ): array {
 	if ( ! $all_terms ) {
 		$all_terms = $terms;
 	}
