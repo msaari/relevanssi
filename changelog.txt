@@ -1,3 +1,6 @@
+= TDB =
+* Minor fix: Silence PHP 8.4 deprecations from implicitly nullable parameters
+
 = 4.22.2 =
 * Security fix: Prevent CSV injection attack in log export.
 * Security fix: Restrict access to doc count updates.

@@ -4,7 +4,7 @@ Donate link: https://www.relevanssi.com/buy-premium/
 Tags: search, relevance, better search, product search, woocommerce search
 Requires at least: 4.9
 Tested up to: 6.7
-Requires PHP: 7.0
+Requires PHP: 7.1
 Stable tag: 4.24.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
