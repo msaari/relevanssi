@@ -5,7 +5,7 @@ Tags: search, relevance, better search, product search, woocommerce search
 Requires at least: 4.9
 Tested up to: 6.7
 Requires PHP: 7.0
-Stable tag: 4.24.2
+Stable tag: 4.24.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -128,6 +128,7 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.24.3 =
 * New feature: New filter hook `relevanssi_cached_post_object` can be used to modify the cached post objects.
 * Minor fix: Relevanssi cache population now creates stdClass objects instead of WP_Post objects to avoid out of memory issues. If you need WP_Post objects, use the `relevanssi_cached_post_object` filter hook to create them.
 * Minor fix: Avoid problems with object custom field values.
@@ -161,5 +162,5 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: User searches page now uses `wp_print_inline_script_tag()`.
 
 == Upgrade notice ==
-= 4.24.2 =
-* Fix broken excerpts.
+= 4.24.3 =
+* Remove out of memory errors.
