@@ -285,13 +285,20 @@ function relevanssi_populate_array( $matches, $blog_id = -1 ) {
 				$cache_id = $blog_id . '|' . $post->ID;
 
 				/**
-				 * This flag isn't set by new WP_Post(), and if it's not set,
-				 * filters on get_post() will force WP to reload the posts and
-				 * lose the Relevanssi excerpts.
+				 * Filters each post object Relevanssi caches.
+				 *
+				 * The post objects are stdClass objects created from wp_posts
+				 * database rows. If you need them to be WP_Post objects, you
+				 * can use this filter hook to run new WP_Post( $post ) on them.
+				 * If you do that, set $post->filter to "raw" in the objects to
+				 * avoid problems.
+				 *
+				 * @param stdClass $post The post object.
 				 */
-				$post->filter = 'raw';
-
-				$relevanssi_post_array[ $cache_id ] = new WP_Post( $post );
+				$relevanssi_post_array[ $cache_id ] = apply_filters(
+					'relevanssi_cached_post_object',
+					$post
+				);
 			}
 		}
 	} while ( $ids );
