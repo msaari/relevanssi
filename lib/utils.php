@@ -1248,7 +1248,12 @@ function relevanssi_strip_invisibles( $text ) {
  */
 function relevanssi_strip_tags( $content ) {
 	if ( ! is_string( $content ) ) {
-		$content = strval( $content );
+		try {
+			$content = strval( $content );
+		} catch ( Exception $e ) {
+			// Likely an object without a toString method.
+			return $content;
+		}
 	}
 	$content = relevanssi_strip_invisibles( $content );
 
