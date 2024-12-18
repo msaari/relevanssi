@@ -1480,6 +1480,11 @@ function relevanssi_get_custom_field_content( $post_id ): array {
 				$value = $value['post_title'];
 			}
 
+			// Cast object values to arrays.
+			if ( is_object( $value ) ) {
+				$value = (array) $value;
+			}
+
 			// Flatten other array data.
 			if ( is_array( $value ) ) {
 				$value_as_string = '';

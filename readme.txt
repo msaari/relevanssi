@@ -130,6 +130,7 @@ Each document database is full of useless words. All the little words that appea
 == Changelog ==
 * New feature: New filter hook `relevanssi_cached_post_object` can be used to modify the cached post objects.
 * Minor fix: Relevanssi cache population now creates stdClass objects instead of WP_Post objects to avoid out of memory issues. If you need WP_Post objects, use the `relevanssi_cached_post_object` filter hook to create them.
+* Minor fix: Avoid problems with object custom field values.
 
 = 4.24.2 =
 * Minor fix: Fix broken excerpts.
