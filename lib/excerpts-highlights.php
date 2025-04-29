@@ -513,7 +513,7 @@ function relevanssi_highlight_in_docs( $content ) {
 			$highlighted_content = relevanssi_highlight_terms( $content, $query, $in_docs );
 			if ( ! empty( $highlighted_content ) ) {
 				// Sometimes the content comes back empty; until I figure out why, this tries to be a solution.
-				$content = $highlighted_content;
+				$content = wp_kses_post( $highlighted_content );
 			}
 		}
 	}

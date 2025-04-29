@@ -128,6 +128,9 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.24.4 =
+* Security: Stop XSS attacks in comments when highlighting post content.
+
 = 4.24.3 =
 * New feature: New filter hook `relevanssi_cached_post_object` can be used to modify the cached post objects.
 * Minor fix: Relevanssi cache population now creates stdClass objects instead of WP_Post objects to avoid out of memory issues. If you need WP_Post objects, use the `relevanssi_cached_post_object` filter hook to create them.
