@@ -1905,6 +1905,7 @@ function relevanssi_bot_block_list(): array {
 		'Exalead'              => 'Exabot',
 		'Majestic'             => 'MJ12Bot',
 		'Ahrefs'               => 'AhrefsBot',
+		'Apple'                => 'AppleBot',
 	);
 	return $bots;
 }
