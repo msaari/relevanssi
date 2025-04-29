@@ -108,7 +108,7 @@ function relevanssi_overview_tab() {
 		<td>
 			<p><a href="https://www.relevanssi.com/buy-premium"><?php esc_html_e( 'Buy Relevanssi Premium now', 'relevanssi' ); ?></a> –
 			<?php // Translators: %1$s is the coupon code, %2$s is the year it expires. ?>
-			<?php printf( esc_html__( 'use coupon code %1$s for 20%% discount (valid at least until the end of %2$s)', 'relevanssi' ), '<strong>FREE2024</strong>', '2024' ); ?></p>
+			<?php printf( esc_html__( 'use coupon code %1$s for 20%% discount (valid at least until the end of %2$s)', 'relevanssi' ), '<strong>FREE2025</strong>', '2025' ); ?></p>
 			<p><?php esc_html_e( 'Here are some improvements Relevanssi Premium offers:', 'relevanssi' ); ?></p>
 			<ul class="relevanssi_ul">
 				<li><?php esc_html_e( 'PDF content indexing', 'relevanssi' ); ?></li>
