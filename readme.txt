@@ -131,6 +131,7 @@ Each document database is full of useless words. All the little words that appea
 = 4.24.4 =
 * Security: Stop XSS attacks in comments when highlighting post content.
 * Minor fix: Add support for disabling the Restrict Content Pro 'Hide restricted posts' option.
+* Minor fix: Avoid errors from non-existing author_name values.
 
 = 4.24.3 =
 * New feature: New filter hook `relevanssi_cached_post_object` can be used to modify the cached post objects.

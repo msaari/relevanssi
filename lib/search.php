@@ -1056,7 +1056,9 @@ function relevanssi_compile_search_args( $query, $q ) {
 	}
 	if ( ! empty( $query->query_vars['author_name'] ) ) {
 		$author_object = get_user_by( 'slug', $query->query_vars['author_name'] );
-		$author[]      = $author_object->ID;
+		if ( $author_object instanceof WP_User ) {
+			$author[] = $author_object->ID;
+		}
 	}
 
 	$post_query = array();
