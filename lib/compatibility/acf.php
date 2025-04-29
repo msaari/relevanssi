@@ -153,7 +153,6 @@ function relevanssi_acf_exclude_setting( $field ) {
  */
 function relevanssi_acf_exclude_fields( $fields, $post_id ) {
 	$included_fields = array();
-	$excluded_fields = array();
 
 	/**
 	 * Filters the types of ACF fields to exclude from indexing.
