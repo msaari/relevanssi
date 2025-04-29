@@ -3,9 +3,9 @@ Contributors: msaari
 Donate link: https://www.relevanssi.com/buy-premium/
 Tags: search, relevance, better search, product search, woocommerce search
 Requires at least: 4.9
-Tested up to: 6.7
+Tested up to: 6.8
 Requires PHP: 7.0
-Stable tag: 4.24.3
+Stable tag: 4.24.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -167,5 +167,5 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: User searches page now uses `wp_print_inline_script_tag()`.
 
 == Upgrade notice ==
-= 4.24.3 =
-* Remove out of memory errors.
+= 4.24.4 =
+* Security fix to stop XSS attacks.
