@@ -5,7 +5,7 @@ Tags: search, relevance, better search, product search, woocommerce search
 Requires at least: 4.9
 Tested up to: 6.8
 Requires PHP: 7.0
-Stable tag: 4.24.4
+Stable tag: 4.24.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -128,6 +128,7 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.24.5 =
 * Security: Exporting logs now checks for user capability. The default setting is 'manage_options', but it can be adjusted with the `relevanssi_options_capability` filter hook.
 * Security: Certain query parameters allowed SQL injection attacks. Thanks to Jack Taylor.
 * Minor fix: Tag and category weights from settings page weren't applied correctly.
@@ -171,5 +172,5 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: User searches page now uses `wp_print_inline_script_tag()`.
 
 == Upgrade notice ==
-= 4.24.4 =
-* Security fix to stop XSS attacks.
+= 4.24.5 =
+* Security fix to stop SQL injections and log export.
