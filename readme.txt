@@ -128,6 +128,8 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+* Security: Exporting logs now checks for user capability. The default setting is 'manage_options', but it can be adjusted with the `relevanssi_options_capability` filter hook.
+
 = 4.24.4 =
 * Security: Stop XSS attacks in comments when highlighting post content.
 * Minor fix: Add support for disabling the Restrict Content Pro 'Hide restricted posts' option.

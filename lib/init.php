@@ -496,12 +496,26 @@ function relevanssi_rest_api_disable() {
  */
 function relevanssi_export_log_check() {
 	if ( isset( $_REQUEST['relevanssi_export'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification, just checking the parameter exists.
-		check_admin_referer( 'relevanssi_export_logs', '_relevanssi_export_nonce' );
-		relevanssi_export_log();
+		/**
+	 	* Filters the capability required to access Relevanssi options.
+		 *
+	 	* @param string The capability required. Default 'manage_options'.
+	 	*/
+		if ( current_user_can( apply_filters( 'relevanssi_options_capability', 'manage_options' ) ) ) {
+			check_admin_referer( 'relevanssi_export_logs', '_relevanssi_export_nonce' );
+			relevanssi_export_log();
+		}
 	}
 	if ( isset( $_REQUEST['relevanssi_export_clicks'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification, just checking the parameter exists.
-		check_admin_referer( 'relevanssi_export_logs', '_relevanssi_export_nonce' );
-		function_exists( 'relevanssi_export_click_log' ) && relevanssi_export_click_log();
+		/**
+	 	* Filters the capability required to access Relevanssi options.
+		 *
+	 	* @param string The capability required. Default 'manage_options'.
+	 	*/
+		 if ( current_user_can( apply_filters( 'relevanssi_options_capability', 'manage_options' ) ) ) {
+			check_admin_referer( 'relevanssi_export_logs', '_relevanssi_export_nonce' );
+			function_exists( 'relevanssi_export_click_log' ) && relevanssi_export_click_log();
+		}
 	}
 }
 
