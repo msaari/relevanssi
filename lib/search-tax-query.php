@@ -368,7 +368,7 @@ function relevanssi_get_term_in(
 		} elseif ( isset( $term->term_id ) && in_array( $field_name, array( 'slug', 'name' ), true ) ) {
 			$names[] = "'" . esc_sql( $name ) . "'";
 		} else {
-			$numeric_terms[] = $name;
+			$numeric_terms[] = absint( $name ); // Convert to integer to avoid SQL injections.
 		}
 	}
 
@@ -414,5 +414,5 @@ function relevanssi_term_tax_id_from_row( array $row ): array {
 		$term_tax_id = $wpdb->get_col( $tt_q ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 	}
 
-	return $term_tax_id;
+	return array_map( 'absint', $term_tax_id ); // Convert to integers to avoid SQL injections.
 }

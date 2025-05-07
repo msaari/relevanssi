@@ -988,7 +988,7 @@ function relevanssi_compile_search_args( $query, $q ) {
 			$cat = get_option( 'relevanssi_cat' );
 		}
 		if ( $cat ) {
-			$cat         = explode( ',', $cat );
+			$cat         = array_map( 'absint', explode( ',', $cat ) ); // Only integer values allowed.
 			$tax_query[] = array(
 				'taxonomy' => 'category',
 				'field'    => 'term_id',
@@ -1018,10 +1018,10 @@ function relevanssi_compile_search_args( $query, $q ) {
 				$tag = implode( ',', $tag );
 			}
 			if ( false !== strpos( $tag, '+' ) ) {
-				$tag      = explode( '+', $tag );
+				$tag      = array_map( 'absint', explode( '+', $tag ) ); // Only integer values allowed.
 				$operator = 'AND';
 			} else {
-				$tag      = explode( ',', $tag );
+				$tag      = array_map( 'absint', explode( ',', $tag ) ); // Only integer values allowed.
 				$operator = 'OR';
 			}
 			$tax_query[] = array(

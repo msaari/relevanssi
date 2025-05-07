@@ -129,6 +129,7 @@ Each document database is full of useless words. All the little words that appea
 
 == Changelog ==
 * Security: Exporting logs now checks for user capability. The default setting is 'manage_options', but it can be adjusted with the `relevanssi_options_capability` filter hook.
+* Security: Certain query parameters allowed SQL injection attacks. Thanks to Jack Taylor.
 
 = 4.24.4 =
 * Security: Stop XSS attacks in comments when highlighting post content.
