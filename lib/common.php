@@ -184,7 +184,7 @@ function relevanssi_default_post_ok( $post_ok, $post_id ) {
 		$post_ok = false;
 	}
 
-	if ( post_password_required( $post_id ) ) {
+	if (relevanssi_post_password_required( $post_id ) ) {
 		/**
 		 * Filters whether password protected posts are shown in the search
 		 * results.

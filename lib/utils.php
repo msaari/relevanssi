@@ -998,6 +998,57 @@ function relevanssi_off_or_on( array $request, string $option ) {
 }
 
 /**
+ * Post password checker.
+ * 
+ * Determines whether the post requires password and whether a correct password
+ * has been provided.
+ * 
+ * This is the same function as core post_password_required(), except this uses
+ * relevanssi_get_post() instead of get_post().
+ * 
+ * @param int|WP_Post|null $post The post to check.
+ *
+ * @return bool false if a password is not required or the correct password
+ * cookie is present, true otherwise.
+ */
+function relevanssi_post_password_required( $post ) : bool {
+	$post = relevanssi_get_post( $post );
+
+	if ( empty( $post->post_password ) ) {
+		/** This filter is documented in wp-includes/post-template.php */
+		return apply_filters( 'post_password_required', false, $post );
+	}
+
+	if ( ! isset( $_COOKIE[ 'wp-postpass_' . COOKIEHASH ] ) ) {
+		/** This filter is documented in wp-includes/post-template.php */
+		return apply_filters( 'post_password_required', true, $post );
+	}
+
+	require_once ABSPATH . WPINC . '/class-phpass.php';
+	$hasher = new PasswordHash( 8, true );
+
+	$hash = wp_unslash( $_COOKIE[ 'wp-postpass_' . COOKIEHASH ] );
+	if ( ! str_starts_with( $hash, '$P$B' ) ) {
+		$required = true;
+	} else {
+		$required = ! $hasher->CheckPassword( $post->post_password, $hash );
+	}
+
+	/**
+	 * Filters whether a post requires the user to supply a password.
+	 *
+	 * @since 4.7.0
+	 *
+	 * @param bool    $required Whether the user needs to supply a password.
+	 * 							True if password has not been provided or is
+	 * 							incorrect, false if password has been supplied
+	 * 							or is not required.
+	 * @param WP_Post $post     Post object.
+	 */
+	return apply_filters( 'post_password_required', $required, $post );
+}
+
+/**
  * Removes quotes (", ”, “) from a string.
  *
  * @param string $str The string to clean.
