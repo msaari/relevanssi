@@ -131,6 +131,7 @@ Each document database is full of useless words. All the little words that appea
 
 * Security: Relevanssi will now strip tags from excerpt text (keeping only the whitelisted tags) to avoid XSS attacks. An attack was possible if you used comments for excerpts or if you had a malicious contributor.
 * Minor fix: Improve performance by enabling caching for password protection check.
+* Minor fix: Relevanssi's removal of page builder shortcodes is less greedy and won't cause missed content anymore.
 
 = 4.24.5 =
 * Security: Exporting logs now checks for user capability. The default setting is 'manage_options', but it can be adjusted with the `relevanssi_options_capability` filter hook.
