@@ -1604,6 +1604,10 @@ function relevanssi_sort_results( &$hits, $orderby, $order, $meta_query ) {
 		if ( empty( $order ) ) {
 			$order = 'desc';
 		}
+		if ( is_array( $order ) ) {
+			// This is possible, usually by mistake.
+			$order = 'desc';
+		}
 
 		$order                 = strtolower( $order );
 		$order_accepted_values = array( 'asc', 'desc' );
