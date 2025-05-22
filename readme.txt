@@ -129,6 +129,7 @@ Each document database is full of useless words. All the little words that appea
 
 == Changelog ==
 
+* Security: Relevanssi will now strip tags from excerpt text (keeping only the whitelisted tags) to avoid XSS attacks. An attack was possible if you used comments for excerpts or if you had a malicious contributor.
 * Minor fix: Improve performance by enabling caching for password protection check.
 
 = 4.24.5 =

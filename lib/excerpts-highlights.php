@@ -304,10 +304,13 @@ function relevanssi_do_excerpt( $t_post, $query, $excerpt_length = null, $excerp
 		 */
 		$excerpt['text'] = apply_filters( 'relevanssi_excerpt', $excerpt['text'], $post->ID );
 
-		if ( 'none' !== $highlight ) {
+		if ( 'no' !== $highlight ) {
 			if ( ! is_admin() || ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
 				$excerpt['text'] = relevanssi_highlight_terms( $excerpt['text'], $query );
 			}
+		} else {
+			// Tags need to be stripped to avoid XSS attacks.
+			$excerpt['text'] = relevanssi_strip_tags( $excerpt['text'] );
 		}
 
 		if ( ! empty( $excerpt['text'] ) ) {
