@@ -179,18 +179,16 @@ END;
 		global $relevanssi_post_array;
 		$relevanssi_post_array = array();
 
-		$query = new WP_Query();
-
 		$args = array(
 			's'           => "o'connell",
 			'post_type'   => 'post',
 			'numberposts' => -1,
 			'post_status' => 'publish',
+			'relevanssi'  => true,
 		);
-
-		$query->parse_query( $args );
-		$posts = relevanssi_do_query( $query );
-		$post  = $posts[0];
+		
+		$query = new WP_Query( $args );
+		$post  = $query->posts[0];
 
 		$word_location = stripos( $post->post_excerpt, '<strong>o&rsquo;connell</strong>' );
 		$this->assertNotFalse( $word_location );
