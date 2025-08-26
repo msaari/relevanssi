@@ -176,17 +176,19 @@ function relevanssi_get_compare_values( $key, $item_1, $item_2 ) {
 		if ( empty( $key ) ) {
 			// If empty, try the Relevanssi meta_query.
 			global $relevanssi_meta_query;
-			foreach ( $relevanssi_meta_query as $meta_row ) {
-				// There may be many rows. Choose the one where there's just key
-				// and no value.
-				if ( ! is_array( $meta_row ) ) {
-					continue;
-				}
-				if ( isset( $meta_row['value'] ) ) {
-					continue;
-				}
-				if ( isset( $meta_row['key'] ) ) {
-					$key = $meta_row['key'];
+			if ( is_array( $relevanssi_meta_query ) ) {
+				foreach ( $relevanssi_meta_query as $meta_row ) {
+					// There may be many rows. Choose the one where there's just key
+					// and no value.
+					if ( ! is_array( $meta_row ) ) {
+						continue;
+					}
+					if ( isset( $meta_row['value'] ) ) {
+						continue;
+					}
+					if ( isset( $meta_row['key'] ) ) {
+						$key = $meta_row['key'];
+					}
 				}
 			}
 			if ( empty( $key ) ) {
