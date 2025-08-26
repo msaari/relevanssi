@@ -824,7 +824,7 @@ class IndexingTest extends WP_UnitTestCase {
 
 		ob_start();
 		$data   = array();
-		$n      = relevanssi_index_excerpt( $data, $post->post_excerpt, 3, true );
+		$n      = relevanssi_index_excerpt( $data, $post->post_excerpt, 3, true, $post );
 		$output = ob_get_clean();
 
 		$result_array = array(
