@@ -577,7 +577,7 @@ function relevanssi_index_doc( $index_post, $remove_first = false, $custom_field
 		&& ( 'on' === get_option( 'relevanssi_index_excerpt' ) || 'attachment' === $post->post_type )
 		) {
 		// Attachment caption is stored in the excerpt.
-		$n += relevanssi_index_excerpt( $insert_data, $post->post_excerpt, $min_word_length, $debug );
+		$n += relevanssi_index_excerpt( $insert_data, $post->post_excerpt, $min_word_length, $debug, $post );
 	}
 
 	// Premium can index arbitrary MySQL columns.
@@ -1397,11 +1397,23 @@ function relevanssi_index_custom_fields( &$insert_data, $post_id, $custom_fields
  * @param string  $excerpt         The post excerpt to index.
  * @param int     $min_word_length The minimum word length.
  * @param boolean $debug           If true, print out debug notices.
+ * @param object  $post_object     The post object.
  *
  * @return int The number of tokens added to the data.
  */
-function relevanssi_index_excerpt( &$insert_data, $excerpt, $min_word_length, $debug ) {
+function relevanssi_index_excerpt( &$insert_data, $excerpt, $min_word_length, $debug, $post_object ) {
 	$n = 0;
+
+	/**
+	 * If this filter returns false, post excerpt is not indexed at all.
+	 *
+	 * @param boolean Return false to prevent post excerpt from being indexed.
+	 * Default true.
+	 * @param object  $post_object The post object.
+	 */
+	if ( ! apply_filters( 'relevanssi_index_excerpt', true, $post_object ) ) {
+		return $n;
+	}
 
 	// Include excerpt for attachments which use post_excerpt for captions - modified by renaissancehack.
 	if ( $debug ) {
