@@ -131,6 +131,7 @@ Each document database is full of useless words. All the little words that appea
 
 = 4.25.0 =
 * New feature: New filter hook `relevanssi_index_excerpt` can be used to control which excerpts are indexed and which are not.
+* Minor fix: The `tribe_events` shortcode is now blocked in indexing, as it caused problems.
 = 4.24.6 =
 * Security: Relevanssi will now strip tags from excerpt text (keeping only the whitelisted tags) to avoid XSS attacks. An attack was possible if you used comments for excerpts or if you had a malicious contributor.
 * Minor fix: Improve performance by enabling caching for password protection check.
