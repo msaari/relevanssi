@@ -1831,6 +1831,9 @@ function relevanssi_replace_synonyms_in_terms( array $terms ): array {
 				if ( empty( $pair ) ) {
 					continue;
 				}
+				if ( strpos( $pair, '=' ) === false ) {
+					continue;
+				}
 				list( $key, $value ) = explode( '=', $pair );
 				if ( $value === $term ) {
 					$new_term[] = $key;
