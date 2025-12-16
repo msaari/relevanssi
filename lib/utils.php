@@ -598,6 +598,9 @@ function relevanssi_get_post_meta_for_all_posts( array $post_ids, string $field 
  */
 function relevanssi_get_post_object( $post_id ) {
 	$object = null;
+	if ( ! $post_id ) {
+		return new WP_Error( 'null_value', 'Null post ID' );
+	}
 	if ( '*' === substr( $post_id, 0, 1 ) ) {
 		// Convert from **type**id to a user or a term object.
 		$parts = explode( '**', $post_id );
