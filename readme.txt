@@ -3,9 +3,9 @@ Contributors: msaari
 Donate link: https://www.relevanssi.com/buy-premium/
 Tags: search, relevance, better search, product search, woocommerce search
 Requires at least: 4.9
-Tested up to: 6.8
+Tested up to: 6.9
 Requires PHP: 7.1
-Stable tag: 4.25.0
+Stable tag: 4.26.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -128,17 +128,13 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.26.0 =
 * Security: Fixes a vulnerability where a contributor-level user could make a SQL injection.
 * Minor fix: Relevanssi now ignores the contents of SVG tags.
 * Minor fix: The `relevanssi_missing_sort_key` hook did not fire for `menu_order`. It does now, if `menu_order` is 0.
 * Minor fix: Relevanssi no longer breaks image cloning in MultilingualPress.
 * Minor fix: Synced pattern contents are now indexed recursively so that, for example, the `relevanssi_noindex` class works.
 
-= 4.25.0 =
-* New feature: New filter hook `relevanssi_index_excerpt` can be used to control which excerpts are indexed and which are not.
-* Minor fix: The `tribe_events` shortcode is now blocked in indexing, as it caused problems.
-* Minor fix: Foolproofing the meta_query sorting to avoid errors from non-array values.
-
 == Upgrade notice ==
-= 4.25.0 =
-* New filter hook and minor fixes.
+= 4.26.0 =
+* SQL injection safety, many bug fixes.
