@@ -128,6 +128,7 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+* Minor fix: Relevanssi now ignores the contents of SVG tags.
 
 = 4.25.0 =
 * New feature: New filter hook `relevanssi_index_excerpt` can be used to control which excerpts are indexed and which are not.
