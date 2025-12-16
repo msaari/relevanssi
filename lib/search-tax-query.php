@@ -212,7 +212,7 @@ function relevanssi_process_tax_query_row(
 	}
 
 	if ( $exists_query ) {
-		$taxonomy = $row['taxonomy'];
+		$taxonomy = sanitize_key($row['taxonomy']);
 		$operator = 'IN';
 		if ( 'not exists' === strtolower( $row['operator'] ) ) {
 			$operator = 'NOT IN';
@@ -222,6 +222,7 @@ function relevanssi_process_tax_query_row(
 				FROM $wpdb->term_relationships AS tr, $wpdb->term_taxonomy AS tt
 				WHERE tr.term_taxonomy_id = tt.term_taxonomy_id
 				AND tt.taxonomy = '$taxonomy' )";
+		// Clean, $taxonomy is sanitized, $operator is Relevanssi-generated.
 		$exist_queries[] = $exist_query_sql;
 		if ( 'and' === $tax_query_relation ) {
 			$query_restrictions .= ' AND ' . $exist_query_sql;
