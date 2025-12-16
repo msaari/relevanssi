@@ -87,6 +87,14 @@ function relevanssi_gutenberg_block_rendering( $content, $post_object ) {
 			continue;
 		}
 
+		if (isset( $block['attrs']['ref'] ) ) {
+			// Synced pattern, process the pattern content.
+			$pattern_post    = get_post( $block['attrs']['ref'] );
+			$pattern_content = $pattern_post->post_content;
+			$output         .= relevanssi_gutenberg_block_rendering( $pattern_content, $post_object ); 
+			continue;
+		}
+
 		if (
 			isset( $block['attrs']['className'] )
 			&& false !== strstr( $block['attrs']['className'], 'relevanssi_noindex' )
