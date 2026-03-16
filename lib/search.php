@@ -407,9 +407,10 @@ function relevanssi_search( $args ) {
 		 * Often you'll find 'relevanssi_hits_filter' more useful than this, but
 		 * sometimes this is the right tool for filtering the results.
 		 *
-		 * @param array $doc_weight An array of (post ID, weight) pairs.
+		 * @param array  $doc_weight An array of (post ID, weight) pairs.
+		 * @param string $q          The query string.
 		 */
-		$doc_weight = apply_filters( 'relevanssi_results', $doc_weight );
+		$doc_weight = apply_filters( 'relevanssi_results', $doc_weight, $q );
 	}
 
 	$missing_terms = array();
