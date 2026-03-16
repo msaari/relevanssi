@@ -5,7 +5,7 @@ Tags: search, relevance, better search, product search, woocommerce search
 Requires at least: 4.9
 Tested up to: 6.9
 Requires PHP: 7.1
-Stable tag: 4.26.0
+Stable tag: 4.26.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -143,5 +143,5 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: Synced pattern contents are now indexed recursively so that, for example, the `relevanssi_noindex` class works.
 
 == Upgrade notice ==
-= 4.26.0 =
-* SQL injection safety, many bug fixes.
+= 4.26.1 =
+* Minor updates and improvements.
