@@ -184,7 +184,7 @@ function relevanssi_default_post_ok( $post_ok, $post_id ) {
 		$post_ok = false;
 	}
 
-	if (relevanssi_post_password_required( $post_id ) ) {
+	if ( relevanssi_post_password_required( $post_id ) ) {
 		/**
 		 * Filters whether password protected posts are shown in the search
 		 * results.
@@ -1029,7 +1029,7 @@ function relevanssi_add_highlight( $permalink, $link_post = null ) {
  * $post ID. Default null.
  * @return boolean True if the post ID or global $post matches the front page.
  */
-function relevanssi_is_front_page_id( ?int $post_id = null ): bool {
+function relevanssi_is_front_page_id( $post_id = null ): bool {
 	$frontpage_id = intval( get_option( 'page_on_front' ) );
 	if ( $post_id === $frontpage_id ) {
 		return true;
@@ -1207,7 +1207,8 @@ function relevanssi_get_forbidden_post_types() {
 	 *
 	 * @param array $forbidden_post_types An array of post type names.
 	 */
-	return apply_filters( 'relevanssi_forbidden_post_types',
+	return apply_filters(
+		'relevanssi_forbidden_post_types',
 		array(
 			'wp_template_part',     // WP template parts.
 			'wp_global_styles',     // WP global styles.
@@ -1312,7 +1313,7 @@ function relevanssi_get_forbidden_post_types() {
 			'wfocu_offer',          // WooFunnel.
 			'wp_font_family',       // WordPress.
 			'wp_font_face',         // WordPress.
-			'wpforms-template',	    // WP Forms.
+			'wpforms-template',     // WP Forms.
 		)
 	);
 }
@@ -1328,7 +1329,8 @@ function relevanssi_get_forbidden_taxonomies() {
 	 *
 	 * @param array $forbidden_taxonomies An array of taxonomy names.
 	 */
-	return apply_filters( 'relevanssi_forbidden_taxonomies',
+	return apply_filters(
+		'relevanssi_forbidden_taxonomies',
 		array(
 			'wp_template_part_area',        // WP templates.
 			'nav_menu',                     // Navigation menus.
@@ -1857,8 +1859,8 @@ function relevanssi_replace_synonyms_in_terms( array $terms ): array {
  * @return array An array of words with stemmed words replaced with their
  * originals.
  */
-function relevanssi_replace_stems_in_terms( array $terms, ?array $all_terms = null ): array {
-	if ( ! $all_terms ) {
+function relevanssi_replace_stems_in_terms( array $terms, array $all_terms = array() ): array {
+	if ( empty( $all_terms ) ) {
 		$all_terms = $terms;
 	}
 	$term_for_stem = array();
@@ -1922,7 +1924,7 @@ function relevanssi_bot_block_list(): array {
  *
  * @param array $custom_fields A list of custom field names.
  *
- * @return @array The custom fields with the excluded fields removed.
+ * @return array The custom fields with the excluded fields removed.
  */
 function relevanssi_remove_metadata_fields( array $custom_fields ): array {
 	$excluded_fields = array(

@@ -31,7 +31,7 @@ function relevanssi_restrictcontentpro_compatibility( $post_ok, $post_id ) {
 	if ( ! isset( $rcp_options['hide_content'] ) ) {
 		return $post_ok;
 	}
-	
+
 	$post_ok = rcp_user_can_access( get_current_user_id(), $post_id );
 
 	return $post_ok;

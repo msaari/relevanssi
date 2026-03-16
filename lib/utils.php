@@ -48,7 +48,7 @@ function relevanssi_add_quotes( $str ) {
  *
  * @since 2.1.4
  *
- * @see relevanssi_mb_trim.
+ * @see relevanssi_mb_trim
  *
  * @param string $str String to trim.
  */
@@ -1002,19 +1002,19 @@ function relevanssi_off_or_on( array $request, string $option ) {
 
 /**
  * Post password checker.
- * 
+ *
  * Determines whether the post requires password and whether a correct password
  * has been provided.
- * 
+ *
  * This is the same function as core post_password_required(), except this uses
  * relevanssi_get_post() instead of get_post().
- * 
+ *
  * @param int|WP_Post|null $post The post to check.
  *
  * @return bool false if a password is not required or the correct password
  * cookie is present, true otherwise.
  */
-function relevanssi_post_password_required( $post ) : bool {
+function relevanssi_post_password_required( $post ): bool {
 	$post = relevanssi_get_post( $post );
 
 	if ( empty( $post->post_password ) ) {
@@ -1043,9 +1043,9 @@ function relevanssi_post_password_required( $post ) : bool {
 	 * @since 4.7.0
 	 *
 	 * @param bool    $required Whether the user needs to supply a password.
-	 * 							True if password has not been provided or is
-	 * 							incorrect, false if password has been supplied
-	 * 							or is not required.
+	 *                          True if password has not been provided or is
+	 *                          incorrect, false if password has been supplied
+	 *                          or is not required.
 	 * @param WP_Post $post     Post object.
 	 */
 	return apply_filters( 'post_password_required', $required, $post );
@@ -1731,7 +1731,7 @@ function relevanssi_user_agent_is_bot(): bool {
 /**
  * Validates that the parameter is a valid taxonomy type.
  *
- * @parameter string $taxonomy The taxonomy to validate.
+ * @param string $taxonomy The taxonomy to validate.
  *
  * @return string The validated taxonomy, empty string if invalid.
  */

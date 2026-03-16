@@ -193,7 +193,10 @@ function relevanssi_get_compare_values( $key, $item_1, $item_2 ) {
 			}
 			if ( empty( $key ) ) {
 				// The key is not set.
-				return array( 'key1' => '', 'key2' => '' );
+				return array(
+					'key1' => '',
+					'key2' => '',
+				);
 			}
 		}
 		$key1 = get_post_meta( $item_1->ID, $key, true );
@@ -235,10 +238,10 @@ function relevanssi_get_compare_values( $key, $item_1, $item_2 ) {
 			 */
 			$key1 = apply_filters( 'relevanssi_missing_sort_key', $key1, $key );
 		}
-		if ('menu_order' === $key && ! $key1) {
+		if ( 'menu_order' === $key && ! $key1 ) {
 			/**
 			 * Documented in lib/sorting.php.
-			 * 
+			 *
 			 * Non-existing values of menu_order are 0, so pass them through the filter.
 			 */
 			$key1 = apply_filters( 'relevanssi_missing_sort_key', $key1, $key );
@@ -254,7 +257,7 @@ function relevanssi_get_compare_values( $key, $item_1, $item_2 ) {
 			 */
 			$key2 = apply_filters( 'relevanssi_missing_sort_key', $key2, $key );
 		}
-		if ('menu_order' === $key && ! $key2) {
+		if ( 'menu_order' === $key && ! $key2 ) {
 			/**
 			 * Documented in lib/sorting.php.
 			 */

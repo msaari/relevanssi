@@ -212,7 +212,7 @@ function relevanssi_process_tax_query_row(
 	}
 
 	if ( $exists_query ) {
-		$taxonomy = sanitize_key($row['taxonomy']);
+		$taxonomy = sanitize_key( $row['taxonomy'] );
 		$operator = 'IN';
 		if ( 'not exists' === strtolower( $row['operator'] ) ) {
 			$operator = 'NOT IN';

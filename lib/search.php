@@ -661,7 +661,7 @@ function relevanssi_do_query( &$query ) {
 			$q,
 			$query
 		);
-		$source = $query->query_vars['rlv_source'] ?? '';
+		$source       = $query->query_vars['rlv_source'] ?? '';
 		relevanssi_update_log( $query_string, $hits_count, $source );
 	}
 
@@ -756,7 +756,7 @@ function relevanssi_limit_filter( $query ) {
 			$query = $query . " ORDER BY tf DESC LIMIT $limit";
 		}
 	} else {
-		$query = $query . " ORDER BY tf DESC";
+		$query = $query . ' ORDER BY tf DESC';
 	}
 	return $query;
 }
