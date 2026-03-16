@@ -150,6 +150,7 @@ function relevanssi_uninstall_free() {
 	$wpdb->query( "DELETE FROM $wpdb->postmeta WHERE meta_key = '_relevanssi_noindex_reason'" );
 
 	wp_clear_scheduled_hook( 'relevanssi_update_counts' );
+	wp_clear_scheduled_hook( 'relevanssi_trim_logs' );
 
 	relevanssi_drop_database_tables();
 }
