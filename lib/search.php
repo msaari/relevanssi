@@ -279,7 +279,7 @@ function relevanssi_search( $args ) {
 			foreach ( $matches as $match ) {
 				$match->doc    = relevanssi_adjust_match_doc( $match );
 				$match->tf     = relevanssi_calculate_tf( $match, $post_type_weights );
-				$match->weight = relevanssi_calculate_weight( $match, $idf, $post_type_weights, $q );
+				$match->weight = relevanssi_calculate_weight( $match, $idf, $post_type_weights );
 
 				/**
 				 * Filters the Relevanssi post matches.
@@ -1390,11 +1390,10 @@ function relevanssi_calculate_tf( $match_object, $post_type_weights ) {
  * @param stdClass $match_object      The match object.
  * @param float    $idf               The inverse document frequency.
  * @param array    $post_type_weights The post type weights.
- * @param string   $query             The search query.
  *
  * @return float The weight.
  */
-function relevanssi_calculate_weight( $match_object, $idf, $post_type_weights, $query ) {
+function relevanssi_calculate_weight( $match_object, $idf, $post_type_weights ) {
 	if ( $idf < 1 ) {
 		$idf = 1;
 	}
@@ -1419,31 +1418,6 @@ function relevanssi_calculate_weight( $match_object, $idf, $post_type_weights, $
 			if ( ! is_wp_error( $post ) && strtotime( $post->post_date ) > $recency_cutoff_date ) {
 				$weight = $weight * $recency_bonus;
 			}
-		}
-	}
-
-	if ( $query && 'on' === get_option( 'relevanssi_exact_match_bonus' ) ) {
-		/**
-		 * Filters the exact match bonus.
-		 *
-		 * @param array The title bonus under 'title' (default 5) and the content
-		 * bonus under 'content' (default 2).
-		 */
-		$exact_match_boost = apply_filters(
-			'relevanssi_exact_match_bonus',
-			array(
-				'title'   => 5,
-				'content' => 2,
-			)
-		);
-
-		$post        = relevanssi_get_post( $match_object->doc );
-		$clean_query = relevanssi_remove_quotes( $query );
-		if ( ! is_wp_error( $post ) && relevanssi_mb_stristr( $post->post_title, $clean_query ) !== false ) {
-			$weight *= $exact_match_boost['title'];
-		}
-		if ( ! is_wp_error( $post ) && relevanssi_mb_stristr( $post->post_content, $clean_query ) !== false ) {
-			$weight *= $exact_match_boost['content'];
 		}
 	}
 
@@ -2016,4 +1990,52 @@ function relevanssi_post_date_throttle_where( $query_restrictions ) {
 		$query_restrictions .= ' AND p.ID = relevanssi.doc';
 	}
 	return $query_restrictions;
+}
+
+/**
+ * Does the exact match boost feature.
+ *
+ * This function hooks to the relevanssi_results hook and adds the exact
+ * match bonus weight to posts if they contain the exact search query in the
+ * title or the post content.
+ *
+ * @param array  $doc_weight The posts as [post ID => weight] pairs.
+ * @param string $query      The search query, trimmed and in lowercase.
+ *
+ * @return array The post weights, adjusted.
+ */
+function relevanssi_add_exact_match_boost( $doc_weight, $query ) {
+	if ( 'on' !== get_option( 'relevanssi_exact_match_bonus' ) ) {
+		return $doc_weight;
+	}
+	/**
+	 * Filters the exact match bonus.
+	 *
+	 * @param array The title bonus under 'title' (default 5) and the content
+	 * bonus under 'content' (default 2).
+	 */
+	$exact_match_boost = apply_filters(
+		'relevanssi_exact_match_bonus',
+		array(
+			'title'   => 5,
+			'content' => 2,
+		)
+	);
+
+	$clean_query = relevanssi_remove_quotes( $query );
+	if ( empty( $clean_query ) ) {
+		return $doc_weight;
+	}
+	foreach ( $doc_weight as $doc => $weight ) {
+		$post = relevanssi_get_post( $doc );
+		if ( ! is_wp_error( $post ) ) {
+			if ( $exact_match_boost['title'] > 0 && stristr( $post->post_title, $clean_query ) !== false ) {
+				$doc_weight[ $doc ] = $weight * $exact_match_boost['title'];
+			}
+			if ( $exact_match_boost['content'] > 0 && stristr( $post->post_content, $clean_query ) !== false ) {
+				$doc_weight[ $doc ] = $weight * $exact_match_boost['content'];
+			}
+		}
+	}
+	return $doc_weight;
 }

@@ -128,6 +128,12 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.26.1 =
+* Changed behaviour: The `relevanssi_results` filter hook gets the search query as a second parameter.
+* Changed behaviour: Exact match bonus was added to posts once per search term. Now it's applied once per post.
+* Minor fix: Exact match bonus is now significantly faster when processing large posts.
+
+
 = 4.26.0 =
 * Security: Fixes a vulnerability where a contributor-level user could make a SQL injection.
 * Minor fix: Relevanssi now ignores the contents of SVG tags.
