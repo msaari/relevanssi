@@ -641,26 +641,6 @@ function relevanssi_get_term_tax_id( int $term_id, string $taxonomy ) {
 }
 
 /**
- * Fetches the taxonomy based on term ID.
- *
- * Fetches the taxonomy from wp_term_taxonomy based on term_id.
- *
- * @global object $wpdb The WordPress database interface.
- *
- * @param int $term_id The term ID.
- *
- * @deprecated Will be removed in future versions.
- *
- * @return string $taxonomy The term taxonomy.
- */
-function relevanssi_get_term_taxonomy( int $term_id ) {
-	global $wpdb;
-
-	$taxonomy = $wpdb->get_var( $wpdb->prepare( "SELECT taxonomy FROM $wpdb->term_taxonomy WHERE term_id = %d", $term_id ) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-	return $taxonomy;
-}
-
-/**
  * Gets a list of tags for post.
  *
  * Replacement for get_the_tags() that does the same, but applies Relevanssi
