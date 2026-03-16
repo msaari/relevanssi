@@ -218,12 +218,10 @@ function relevanssi_generate_phrase_queries(
 			$excerpt = "OR post_excerpt LIKE '%$phrase%'";
 		}
 
-		$query = "(SELECT ID FROM $wpdb->posts
-			WHERE (post_content LIKE '%$phrase%'
-			OR post_title LIKE '%$title_phrase%' $excerpt)
-			AND post_status IN ($status))";
+		$query = "(SELECT ID FROM $wpdb->posts WHERE (post_content LIKE '%$phrase%' "
+			. "OR post_title LIKE '%$title_phrase%' $excerpt) AND post_status IN ($status))";
 
-		$queries[] = array(
+		$queries['content_title'] = array(
 			'query'  => $query,
 			'target' => 'doc',
 		);
@@ -241,7 +239,7 @@ function relevanssi_generate_phrase_queries(
 				$taxonomies_sql
 				AND t.name LIKE '%$phrase%' AND p.post_status IN ($status))";
 
-			$queries[] = array(
+			$queries['taxonomies'] = array(
 				'query'  => $query,
 				'target' => 'doc',
 			);
@@ -282,7 +280,7 @@ function relevanssi_generate_phrase_queries(
 				AND m.meta_value LIKE '%$phrase%'
 				AND p.post_status IN ($status))";
 
-			$queries[] = array(
+			$queries['custom_fields'] = array(
 				'query'  => $query,
 				'target' => 'doc',
 			);
