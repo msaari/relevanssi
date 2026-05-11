@@ -1097,6 +1097,29 @@ class SearchingTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Test query truncation with a relevanssi_truncate_search_queries filter.
+	 */
+	public function test_truncation_filter() {
+		$args = array(
+			's'           => 'buzzwordEXTRA',
+			'post_type'   => 'post',
+			'numberposts' => -1,
+		);
+
+		$truncate_to_eight = function () {
+			return 8;
+		};
+
+		add_filter( 'relevanssi_truncate_search_queries', $truncate_to_eight );
+
+		$query = self::results_from_args( $args )['query'];
+
+		$this->assertEquals( self::$visible, $query->found_posts, 'Should truncate the query and find "buzzword" posts.' );
+
+		remove_filter( 'relevanssi_truncate_search_queries', $truncate_to_eight );
+	}
+
+	/**
 	 * Test doing a fallback search.
 	 */
 	public function test_fallback_search() {
