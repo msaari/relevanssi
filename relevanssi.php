@@ -43,6 +43,8 @@ define( 'RELEVANSSI_PREMIUM', false );
 
 add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'relevanssi_action_links' );
 
+register_deactivation_hook( __FILE__, 'relevanssi_deactivate' );
+
 global $wp_version;
 if ( version_compare( $wp_version, '5.1', '>=' ) ) {
 	add_action( 'wp_insert_site', 'relevanssi_new_blog', 10, 1 );
@@ -71,6 +73,7 @@ $relevanssi_variables['plugin_version']                        = '4.26.1';
 
 require_once 'lib/admin-ajax.php';
 require_once 'lib/common.php';
+require_once 'lib/deactivate.php';
 require_once 'lib/debug.php';
 require_once 'lib/didyoumean.php';
 require_once 'lib/excerpts-highlights.php';

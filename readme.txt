@@ -131,6 +131,7 @@ Each document database is full of useless words. All the little words that appea
 = 4.27.0 =
 * New feature: Setting to disable all 'post_type' parameters to let Relevanssi control the post types in the search.
 * Minor fix: You can now assign anonymous functions to the `relevanssi_indexing_restriction` filter hook.
+* Minor fix: Relevanssi now clears the scheduled actions on deactivation, not on uninstall.
 
 = 4.26.1 =
 * Changed behaviour: The `relevanssi_results` filter hook gets the search query as a second parameter.
