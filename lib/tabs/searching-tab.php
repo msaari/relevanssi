@@ -19,42 +19,42 @@
 function relevanssi_searching_tab() {
 	global $wpdb, $relevanssi_variables;
 
-	$implicit            = get_option( 'relevanssi_implicit_operator' );
-	$orderby             = get_option( 'relevanssi_default_orderby' );
-	$fuzzy               = get_option( 'relevanssi_fuzzy' );
-	$content_boost       = get_option( 'relevanssi_content_boost' );
-	$title_boost         = get_option( 'relevanssi_title_boost' );
-	$comment_boost       = get_option( 'relevanssi_comment_boost' );
-	$exact_match_bonus   = get_option( 'relevanssi_exact_match_bonus' );
-	$wpml_only_current   = get_option( 'relevanssi_wpml_only_current' );
-	$polylang_allow_all  = get_option( 'relevanssi_polylang_all_languages' );
-	$admin_search        = get_option( 'relevanssi_admin_search' );
-	$disable_or_fallback = get_option( 'relevanssi_disable_or_fallback' );
-	$throttle            = get_option( 'relevanssi_throttle' );
-	$respect_exclude     = get_option( 'relevanssi_respect_exclude' );
-	$cat                 = get_option( 'relevanssi_cat' );
-	$excat               = get_option( 'relevanssi_excat' );
-	$exclude_posts       = get_option( 'relevanssi_exclude_posts' );
-	$index_post_types    = get_option( 'relevanssi_index_post_types', array() );
-	$index_users         = get_option( 'relevanssi_index_users' );
-	$index_terms         = get_option( 'relevanssi_index_taxonomies' );
-	$ignore_theme_post_type  = get_option( 'relevanssi_ignore_theme_post_type' );
+	$implicit               = get_option( 'relevanssi_implicit_operator' );
+	$orderby                = get_option( 'relevanssi_default_orderby' );
+	$fuzzy                  = get_option( 'relevanssi_fuzzy' );
+	$throttle               = get_option( 'relevanssi_throttle' );
+	$content_boost          = get_option( 'relevanssi_content_boost' );
+	$title_boost            = get_option( 'relevanssi_title_boost' );
+	$comment_boost          = get_option( 'relevanssi_comment_boost' );
+	$exact_match_bonus      = get_option( 'relevanssi_exact_match_bonus' );
+	$wpml_only_current      = get_option( 'relevanssi_wpml_only_current' );
+	$polylang_allow_all     = get_option( 'relevanssi_polylang_all_languages' );
+	$admin_search           = get_option( 'relevanssi_admin_search' );
+	$disable_or_fallback    = get_option( 'relevanssi_disable_or_fallback' );
+	$respect_exclude        = get_option( 'relevanssi_respect_exclude' );
+	$cat                    = get_option( 'relevanssi_cat' );
+	$excat                  = get_option( 'relevanssi_excat' );
+	$exclude_posts          = get_option( 'relevanssi_exclude_posts' );
+	$ignore_theme_post_type = get_option( 'relevanssi_ignore_theme_post_type' );
+	$index_post_types       = get_option( 'relevanssi_index_post_types', array() );
+	$index_users            = get_option( 'relevanssi_index_users' );
+	$index_terms            = get_option( 'relevanssi_index_taxonomies' );
 
-	$throttle            = relevanssi_check( $throttle );
-	$respect_exclude     = relevanssi_check( $respect_exclude );
-	$admin_search        = relevanssi_check( $admin_search );
-	$wpml_only_current   = relevanssi_check( $wpml_only_current );
-	$polylang_allow_all  = relevanssi_check( $polylang_allow_all );
-	$exact_match_bonus   = relevanssi_check( $exact_match_bonus );
-	$disable_or_fallback = relevanssi_check( $disable_or_fallback );
-	$implicit_and        = relevanssi_select( $implicit, 'AND' );
-	$implicit_or         = relevanssi_select( $implicit, 'OR' );
-	$orderby_relevance   = relevanssi_select( $orderby, 'relevance' );
-	$orderby_date        = relevanssi_select( $orderby, 'post_date' );
-	$fuzzy_sometimes     = relevanssi_select( $fuzzy, 'sometimes' );
-	$fuzzy_always        = relevanssi_select( $fuzzy, 'always' );
-	$fuzzy_never         = relevanssi_select( $fuzzy, 'never' );
-	$ignore_theme_post_type  = relevanssi_check( $ignore_theme_post_type );
+	$throttle               = relevanssi_check( $throttle );
+	$respect_exclude        = relevanssi_check( $respect_exclude );
+	$admin_search           = relevanssi_check( $admin_search );
+	$wpml_only_current      = relevanssi_check( $wpml_only_current );
+	$polylang_allow_all     = relevanssi_check( $polylang_allow_all );
+	$exact_match_bonus      = relevanssi_check( $exact_match_bonus );
+	$disable_or_fallback    = relevanssi_check( $disable_or_fallback );
+	$ignore_theme_post_type = relevanssi_check( $ignore_theme_post_type );
+	$implicit_and           = relevanssi_select( $implicit, 'AND' );
+	$implicit_or            = relevanssi_select( $implicit, 'OR' );
+	$orderby_relevance      = relevanssi_select( $orderby, 'relevance' );
+	$orderby_date           = relevanssi_select( $orderby, 'post_date' );
+	$fuzzy_sometimes        = relevanssi_select( $fuzzy, 'sometimes' );
+	$fuzzy_always           = relevanssi_select( $fuzzy, 'always' );
+	$fuzzy_never            = relevanssi_select( $fuzzy, 'never' );
 
 	$orfallback_visibility = 'screen-reader-text';
 	if ( 'AND' === $implicit ) {
@@ -140,6 +140,15 @@ function relevanssi_searching_tab() {
 			<p class="description"><?php esc_html_e( "Partial words also includes cases where the word in the index begins or ends with the search term (searching for 'ana' will match 'anaconda' or 'banana', but not 'banal'). See Help, if you want to make Relevanssi match also inside words.", 'relevanssi' ); ?></p>
 		</td>
 	</tr>
+
+	<?php
+	if ( function_exists( 'relevanssi_form_enable_didyoumean' ) ) {
+		relevanssi_form_enable_didyoumean();
+	}
+	if ( function_exists( 'relevanssi_form_voice_search' ) ) {
+		relevanssi_form_voice_search();
+	}
+	?>
 	<tr id="row_weights">
 		<th scope="row">
 			<?php esc_html_e( 'Weights', 'relevanssi' ); ?>
