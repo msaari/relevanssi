@@ -126,7 +126,7 @@ function relevanssi_sku_boost( $match_object ) {
 		/**
 		 * Filters the SKU boost value.
 		 *
-		 * @param float The boost multiplier, default 2.
+		 * @param float $boost The boost multiplier, default 2.
 		 */
 		$match_object->weight *= apply_filters( 'relevanssi_sku_boost', 2 );
 	}

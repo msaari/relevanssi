@@ -33,7 +33,7 @@ function relevanssi_update_log( $query, $hits, $source = '' ) {
 	 * The current user is checked before logging a query to omit particular users.
 	 * You can use this filter to filter out the user.
 	 *
-	 * @param WP_User The current user object.
+	 * @param WP_User $user The current user object.
 	 */
 	$user       = apply_filters( 'relevanssi_log_get_user', wp_get_current_user() );
 	$user_agent = $_SERVER['HTTP_USER_AGENT'] ?? '';

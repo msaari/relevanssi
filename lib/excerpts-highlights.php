@@ -63,7 +63,7 @@ function relevanssi_do_excerpt( $t_post, $query, $excerpt_length = null, $excerp
 	/**
 	 * Allows creating one-letter highlights.
 	 *
-	 * @param boolean Set to true to enable one-letter highlights.
+	 * @param boolean $highlights Set to true to enable one-letter highlights.
 	 */
 	if ( apply_filters( 'relevanssi_allow_one_letter_highlights', false ) ) {
 		$min_word_length = 1;
@@ -297,8 +297,8 @@ function relevanssi_do_excerpt( $t_post, $query, $excerpt_length = null, $excerp
 		 * Filters the individual excerpt part text (full excerpt in the free
 		 * version) before highlighting and ellipsis addition.
 		 *
-		 * @param string The excerpt text.
-		 * @param int    The post ID.
+		 * @param string $text    The excerpt text.
+		 * @param int    $post_id The post ID.
 		 *
 		 * @return string
 		 */
@@ -334,10 +334,10 @@ function relevanssi_do_excerpt( $t_post, $query, $excerpt_length = null, $excerp
 		 * version) after highlighting, ellipsis and the wrapping span tag have
 		 * been added.
 		 *
-		 * @param string The excerpt text.
-		 * @param array  The excerpt array (keys 'text', 'start', 'source',
-		 * 'hits').
-		 * @param int    The post ID.
+		 * @param string $text    The excerpt text.
+		 * @param array  $array   The excerpt array (keys 'text', 'start',
+		 * 'source', 'hits').
+		 * @param int    $post_id The post ID.
 		 *
 		 * @return string
 		 */
@@ -622,7 +622,7 @@ function relevanssi_highlight_terms( $content, $query, $convert_entities = false
 	/**
 	 * Allows creating one-letter highlights.
 	 *
-	 * @param boolean Set to true to enable one-letter highlights.
+	 * @param boolean $allow Set to true to enable one-letter highlights.
 	 */
 	if ( apply_filters( 'relevanssi_allow_one_letter_highlights', false ) ) {
 		$min_word_length = 1;
@@ -919,8 +919,8 @@ function relevanssi_fix_entities( $excerpt, $in_docs ) {
 		 * Choose whether htmlentities() is run inside <pre> tags or not. If
 		 * your pages have HTML code inside <pre> tags, set this to false.
 		 *
-		 * @param boolean If true, htmlentities() will be used inside <pre>
-		 * tags.
+		 * @param boolean $pre If true, htmlentities() will be used inside
+		 * <pre> tags.
 		 */
 		if ( apply_filters( 'relevanssi_entities_inside_pre', true ) ) {
 			$excerpt = relevanssi_entities_inside( $excerpt, 'pre' );
@@ -929,8 +929,8 @@ function relevanssi_fix_entities( $excerpt, $in_docs ) {
 		 * Choose whether htmlentities() is run inside <code> tags or not. If
 		 * your pages have HTML code inside <code> tags, set this to false.
 		 *
-		 * @param boolean If true, htmlentities() will be used inside <code>
-		 * tags.
+		 * @param boolean $code If true, htmlentities() will be used inside
+		 * <code> tags.
 		 */
 		if ( apply_filters( 'relevanssi_entities_inside_code', true ) ) {
 			$excerpt = relevanssi_entities_inside( $excerpt, 'code' );
@@ -961,6 +961,7 @@ function relevanssi_entities_inside( $content, $tag ) {
 		}
 		if ( ! empty( $replacements ) ) {
 			$count_replacements = count( $replacements );
+			$patterns           = array();
 			for ( $i = 0; $i < $count_replacements; $i++ ) {
 				$patterns[] = '/<' . $tag . '(.*?)>(.*?)<\/' . $tag . '>/ims';
 			}
@@ -1042,7 +1043,8 @@ function relevanssi_extract_locations( $words, $fulltext ) {
 			/**
 			 * Optimizes the excerpt creation.
 			 *
-			 * @param boolean If true, stop looking after ten locations are found.
+			 * @param boolean $optimize If true, stop looking after ten
+			 * locations are found.
 			 */
 			if ( apply_filters( 'relevanssi_optimize_excerpts', false ) ) {
 				// If more than ten locations are found, quit: there's probably a
@@ -1073,7 +1075,7 @@ function relevanssi_count_matches( $words, $complete_text ) {
 	$text  = '';
 
 	// Add the space in case the match is the last word in the text.
-	$lowercase_text = relevanssi_strtolower( $complete_text, 'UTF-8' ) . ' ';
+	$lowercase_text = relevanssi_strtolower( $complete_text ) . ' ';
 
 	$count_words = count( $words );
 	for ( $t = 0; $t < $count_words; $t++ ) {
@@ -1083,8 +1085,7 @@ function relevanssi_count_matches( $words, $complete_text ) {
 					$words[ $t ],
 					'/'
 				)
-			),
-			'UTF-8'
+			)
 		);
 		// Support for wildcard matching (a Premium feature).
 		$word_slice = str_replace(
@@ -1258,7 +1259,7 @@ function relevanssi_extract_relevant_words( $terms, $content, $excerpt_length = 
 		 * The default value for the gap is number of words / 200 minus the
 		 * excerpt length, which means Relevanssi tries to create 200 excerpts.
 		 *
-		 * @param int The gap between excerpt candidates.
+		 * @param int $gap            The gap between excerpt candidates.
 		 * @param int $count_words    The number of words in the content.
 		 * @param int $excerpt_length The length of the excerpt.
 		 */
@@ -1298,7 +1299,8 @@ function relevanssi_extract_relevant_words( $terms, $content, $excerpt_length = 
 		 * To speed up the process, you can enable optimization, which means
 		 * Relevanssi only creates 50 excerpt candidates.
 		 *
-		 * @param boolean Return true to enable optimization, default false.
+		 * @param boolean $optimize Return true to enable optimization,
+		 * default false.
 		 */
 		if ( apply_filters( 'relevanssi_optimize_excerpts', false ) ) {
 			if ( $tries > 50 ) {
@@ -1391,7 +1393,8 @@ function relevanssi_add_accent_variations( $word ) {
 	/**
 	 * Filters the accent replacement array.
 	 *
-	 * @param array Array of replacements. 'from' has the source characters, 'to' the replacements.
+	 * @param array $replacements Array of replacements. 'from' has the source
+	 * characters, 'to' the replacements.
 	 */
 	$replacement_arrays = apply_filters(
 		'relevanssi_accents_replacement_arrays',
@@ -1642,9 +1645,9 @@ function relevanssi_add_excerpt( &$post, $query ) {
 	 * for the post. The original excerpt is still copied to
 	 * $post->original_excerpt.
 	 *
-	 * @param boolean If true, create an excerpt. Default true.
-	 * @param WP_Post $post  The post object.
-	 * @param string  $query The search query.
+	 * @param boolean $create If true, create an excerpt. Default true.
+	 * @param WP_Post $post   The post object.
+	 * @param string  $query  The search query.
 	 */
 	if ( apply_filters( 'relevanssi_excerpt_post', true, $post, $query ) ) {
 		$excerpt_length     = get_option( 'relevanssi_excerpt_length' );

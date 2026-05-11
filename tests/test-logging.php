@@ -43,8 +43,6 @@ class LoggingTest extends WP_UnitTestCase {
 
 	/**
 	 * Tests partial query string removal.
-	 *
-	 * @group new
 	 */
 	public function test_session_id() {
 		relevanssi_update_log( 'tes', 1 );

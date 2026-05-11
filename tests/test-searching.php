@@ -2091,8 +2091,6 @@ class SearchingTest extends WP_UnitTestCase {
 
 	/**
 	 * Tests relevanssi_generate_missing_terms_list().
-	 *
-	 * @group fail
 	 */
 	public function test_generate_missing_terms_list() {
 		update_option( 'relevanssi_implicit_operator', 'OR' );

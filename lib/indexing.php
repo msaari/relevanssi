@@ -131,7 +131,7 @@ function relevanssi_generate_indexing_query( $valid_status, $extend = false, $re
 	 *
 	 * @since 4.0.9 / 2.1.5
 	 *
-	 * @param string The WHERE restriction.
+	 * @param string $where The WHERE restriction.
 	 *
 	 * @param array $restriction An array with two values: 'mysql' for the MySQL
 	 * query restriction to modify, 'reason' for the reason of restriction.
@@ -504,11 +504,11 @@ function relevanssi_index_doc( $index_post, $remove_first = false, $custom_field
 	 *
 	 * Allows you to filter whether a post is indexed or not.
 	 *
-	 * @param boolean|string If not false, the post is not indexed. The value
-	 * can be a boolean, or a string containing an explanation for the
-	 * exclusion. Default false.
-	 * @param int            The post ID.
-	 * @param WP_Post        The post object.
+	 * @param boolean|string $donotindex If not false, the post is not
+	 * indexed. The value can be a boolean, or a string containing an
+	 * explanation for the exclusion. Default false.
+	 * @param int            $post_id    The post ID.
+	 * @param WP_Post        $post       The post object.
 	 */
 	$do_not_index = apply_filters( 'relevanssi_do_not_index', false, $post->ID, $post );
 	if ( $do_not_index ) {
@@ -695,11 +695,11 @@ function relevanssi_index_taxonomy_terms( &$insert_data, $post_id, $taxonomy, $d
 	 * reconstruct it from the taxonomy term objects contained in the second
 	 * parameter.
 	 *
-	 * @param string The taxonomy term content as a string.
-	 * @param array  An array containing the taxonomy term objects for this
-	 * taxonomy.
-	 * @param string The taxonomy name.
-	 * @param int    The post ID for the current post.
+	 * @param string $term_string The taxonomy term content as a string.
+	 * @param array  $terms       An array containing the taxonomy term objects
+	 * for this taxonomy.
+	 * @param string $taxonomy    The taxonomy name.
+	 * @param int    $post_id     The post ID for the current post.
 	 */
 	$term_string = apply_filters(
 		'relevanssi_tag_before_tokenize',
@@ -784,7 +784,8 @@ function relevanssi_update_child_posts( $new_status, $old_status, $post ) {
 	 * not checked. You may extend this behaviour to other post types with this
 	 * hook.
 	 *
-	 * @param array Array of post types, default 'attachment' and 'revision'.
+	 * @param array $post_types Array of post types, default 'attachment' and
+	 * revision'.
 	 */
 	$attachment_revision_types = apply_filters(
 		'relevanssi_index_attachment_revision_types',
@@ -826,13 +827,13 @@ function relevanssi_update_child_posts( $new_status, $old_status, $post ) {
 
 	if ( ! empty( $child_posts ) ) {
 		if ( ! in_array( $new_status, $index_statuses, true ) ) {
-			foreach ( $child_posts as $post ) {
-				relevanssi_remove_doc( $post->ID );
+			foreach ( $child_posts as $child_post ) {
+				relevanssi_remove_doc( $child_post->ID );
 				++$removed;
 			}
 		} else {
-			foreach ( $child_posts as $post ) {
-				relevanssi_publish( $post->ID );
+			foreach ( $child_posts as $child_post ) {
+				relevanssi_publish( $child_post->ID );
 				++$indexed;
 			}
 		}
@@ -1002,7 +1003,8 @@ function relevanssi_get_comments( $post_id ) {
 	/**
 	 * If this filter returns true, the comments for the post are not indexed.
 	 *
-	 * @param boolean Return true to block the comment indexing. Default false.
+	 * @param boolean $exclude Return true to block the comment indexing.
+	 * Default false.
 	 * @param int     $post_id The post ID.
 	 */
 	if ( apply_filters( 'relevanssi_index_comments_exclude', false, $post_id ) ) {
@@ -1052,15 +1054,15 @@ function relevanssi_get_comments( $post_id ) {
 			/**
 			 * Filters the comment author before indexing.
 			 *
-			 * @param string Comment author display name.
-			 * @param int    The comment ID.
+			 * @param string $name Comment author display name.
+			 * @param int    $id   The comment ID.
 			 */
 			$comment_string .= ' ' . apply_filters( 'relevanssi_comment_author_to_index', $comment->comment_author, $comment->comment_ID );
 			/**
 			 * Filters the comment content before indexing.
 			 *
-			 * @param string Comment content.
-			 * @param int    The comment ID.
+			 * @param string $content Comment content.
+			 * @param int    $id      The comment ID.
 			 */
 			$comment_string .= ' ' . apply_filters( 'relevanssi_comment_content_to_index', $comment->comment_content, $comment->comment_ID );
 		}
@@ -1086,7 +1088,7 @@ function relevanssi_truncate_index() {
 	/**
 	 * Filters the TRUNCATE TABLE query for truncating the index.
 	 *
-	 * @param string The MySQL query.
+	 * @param string $query The MySQL query.
 	 */
 	return $wpdb->query( apply_filters( 'relevanssi_truncate_index', "TRUNCATE TABLE $relevanssi_table" ) ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 }
@@ -1222,8 +1224,8 @@ function relevanssi_index_comments( &$insert_data, $post_id, $min_word_length, $
 		/**
 		 * Filters the indexing tokens before they are added to the $insert_data.
 		 *
-		 * @param array  An array of token-frequency pairs.
-		 * @param string The context of the tokens (eg. 'content', 'title').
+		 * @param array  $tokens  An array of token-frequency pairs.
+		 * @param string $context The context of the tokens (eg. 'content', 'title').
 		 *
 		 * @return array The filtered tokens.
 		 */
@@ -1314,9 +1316,9 @@ function relevanssi_index_custom_fields( &$insert_data, $post_id, $custom_fields
 		/**
 		 * Filters the custom field value before indexing.
 		 *
-		 * @param array            Custom field values.
+		 * @param array  $values   Custom field values.
 		 * @param string $field    The custom field name.
-		 * @param int    $post_id The post ID.
+		 * @param int    $post_id  The post ID.
 		 */
 		$values = apply_filters( 'relevanssi_custom_field_value', get_post_meta( $post_id, $field, false ), $field, $post_id );
 		if ( empty( $values ) || ! is_array( $values ) ) {
@@ -1407,8 +1409,8 @@ function relevanssi_index_excerpt( &$insert_data, $excerpt, $min_word_length, $d
 	/**
 	 * If this filter returns false, post excerpt is not indexed at all.
 	 *
-	 * @param boolean Return false to prevent post excerpt from being indexed.
-	 * Default true.
+	 * @param boolean $index       Return false to prevent post excerpt from
+	 * being indexed. Default true.
 	 * @param object  $post_object The post object.
 	 */
 	if ( ! apply_filters( 'relevanssi_index_excerpt', true, $post_object ) ) {
@@ -1455,8 +1457,8 @@ function relevanssi_index_title( &$insert_data, $post_object, $min_word_length, 
 	/**
 	 * If this filter returns false, titles are not indexed at all.
 	 *
-	 * @param boolean Return false to prevent titles from being indexed. Default
-	 * true.
+	 * @param boolean $index       Return false to prevent titles from being
+	 * indexed. Default true.
 	 * @param object  $post_object The post object.
 	 */
 	if ( ! apply_filters( 'relevanssi_index_titles', true, $post_object ) ) {
@@ -1530,8 +1532,8 @@ function relevanssi_index_content( &$insert_data, $post_object, $min_word_length
 	 *
 	 * Also used in /premium/pinning.php.
 	 *
-	 * @param boolean Return false to prevent post content from being indexed.
-	 * Default true.
+	 * @param boolean $index       Return false to prevent post content from
+	 * being indexed. Default true.
 	 * @param object  $post_object The post object.
 	 */
 	if ( ! apply_filters( 'relevanssi_index_content', true, $post_object ) ) {
@@ -1565,7 +1567,7 @@ function relevanssi_index_content( &$insert_data, $post_object, $min_word_length
 	 *
 	 * @author Alexander Gieg
 	 *
-	 * @param string               The additional content.
+	 * @param string  $content     The additional content.
 	 * @param WP_Post $post_object The post object.
 	 */
 	$additional_content = trim( apply_filters( 'relevanssi_content_to_index', '', $post_object ) );
@@ -1698,7 +1700,7 @@ function relevanssi_disable_shortcodes() {
 	/**
 	 * Filters the shortcodes Relevanssi disables while indexing posts.
 	 *
-	 * @param array An array of shortcodes disabled.
+	 * @param array $shortcodes An array of shortcodes disabled.
 	 *
 	 * @return array An array of shortcodes disabled.
 	 */
@@ -1746,8 +1748,8 @@ function relevanssi_convert_data_to_values( $insert_data, $post ) {
 	 * Default value is 'post', but other common values include 'attachment',
 	 * 'user' and taxonomy name.
 	 *
-	 * @param string Type value.
-	 * @param object The post object for the current post.
+	 * @param string $type Type value.
+	 * @param object $post The post object for the current post.
 	 */
 	$type = apply_filters( 'relevanssi_index_get_post_type', 'post', $post );
 

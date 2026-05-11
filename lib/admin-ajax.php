@@ -30,7 +30,7 @@ function relevanssi_current_user_can_access_options() {
 	/**
 	 * Filters the capability required to access Relevanssi options.
 	 *
-	 * @param string The capability required. Default 'manage_options'.
+	 * @param string $capability The capability required. Default 'manage_options'.
 	 */
 	if ( ! current_user_can( apply_filters( 'relevanssi_options_capability', 'manage_options' ) ) ) {
 		wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'relevanssi' ) );
@@ -184,7 +184,7 @@ function relevanssi_admin_search() {
 	/**
 	 * Filters the capability required to access Relevanssi admin search page.
 	 *
-	 * @param string The capability required. Default 'edit_posts'.
+	 * @param string $capability The capability required. Default 'edit_posts'.
 	 */
 	if ( ! current_user_can( apply_filters( 'relevanssi_admin_search_capability', 'edit_posts' ) ) ) {
 		wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'relevanssi' ) );

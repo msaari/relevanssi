@@ -500,7 +500,7 @@ function relevanssi_export_log_check() {
 		/**
 		 * Filters the capability required to access Relevanssi options.
 		 *
-		 * @param string The capability required. Default 'manage_options'.
+		 * @param string $capability The capability required. Default 'manage_options'.
 		 */
 		if ( current_user_can( apply_filters( 'relevanssi_options_capability', 'manage_options' ) ) ) {
 			check_admin_referer( 'relevanssi_export_logs', '_relevanssi_export_nonce' );
@@ -511,7 +511,7 @@ function relevanssi_export_log_check() {
 		/**
 		 * Filters the capability required to access Relevanssi options.
 		 *
-		 * @param string The capability required. Default 'manage_options'.
+		 * @param string $capability The capability required. Default 'manage_options'.
 		 */
 		if ( current_user_can( apply_filters( 'relevanssi_options_capability', 'manage_options' ) ) ) {
 			check_admin_referer( 'relevanssi_export_logs', '_relevanssi_export_nonce' );

@@ -53,7 +53,7 @@ function relevanssi_stopwords_tab() {
 	 * index is big, displaying the list can take a long time. This filter can
 	 * be used to turn the list off.
 	 *
-	 * @param boolean If true, show the list; if false, don't show it.
+	 * @param boolean $display If true, show the list; if false, don't show it.
 	 */
 	if ( apply_filters( 'relevanssi_display_common_words', true ) ) {
 		relevanssi_common_words( 25 );

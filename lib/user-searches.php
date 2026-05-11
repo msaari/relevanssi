@@ -144,7 +144,7 @@ function relevanssi_query_log() {
 			</div>
 			<?php
 			if ( function_exists( 'relevanssi_user_searches_clicks' ) ) {
-				relevanssi_user_searches_clicks( $from, $to, $total_queries, $source );
+				relevanssi_user_searches_clicks( $from, $to, $total_queries );
 			}
 			?>
 		</div>
@@ -306,7 +306,7 @@ function relevanssi_date_queries( string $from, string $to, string $version = 'g
 	/**
 	 * Filters the number of most common queries to show.
 	 *
-	 * @param int The number of most common queries to show, default 100.
+	 * @param int $limit The number of most common queries to show, default 100.
 	 */
 	$limit = apply_filters( 'relevanssi_user_searches_limit', 100 );
 
@@ -421,7 +421,7 @@ function relevanssi_date_queries( string $from, string $to, string $version = 'g
 			/**
 			 * Filters the query URL for the user searches page.
 			 *
-			 * @param string Query URL.
+			 * @param string $url Query URL.
 			 */
 			$query_url = apply_filters( 'relevanssi_user_searches_query_url', $url . '/?s=' . $search_parameter );
 

@@ -85,7 +85,7 @@ function relevanssi_oxygen_compatibility( $value, $field, $post_id ) {
 			 * sections that have "nicename":"Hero BG" in their settings and
 			 * will remove those.
 			 *
-			 * @param array An array of filtering rules, defaults empty.
+			 * @param array $rules An array of filtering rules, defaults empty.
 			 *
 			 * @return array
 			 */

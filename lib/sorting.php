@@ -346,7 +346,7 @@ function relevanssi_filter_compare( $key1, $key2 ) {
 	 * This would sort posts first, pages second, books third. Values that do
 	 * not appear in the array are sorted last.
 	 *
-	 * @param array Sorting guidance array.
+	 * @param array $array Sorting guidance array.
 	 */
 	$order = apply_filters( 'relevanssi_comparison_order', array() );
 

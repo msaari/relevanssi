@@ -327,8 +327,8 @@ function relevanssi_add_admin_scripts( $hook ) {
 	 * move things around, this means the javascript bits won't work. You can
 	 * introduce new hooks with this filter hook.
 	 *
-	 * @param array An array of page hook strings where Relevanssi scripts are
-	 * added.
+	 * @param array $hooks An array of page hook strings where Relevanssi
+	 * scripts are added to.
 	 */
 	if ( ! in_array( $hook, apply_filters( 'relevanssi_acceptable_hooks', $acceptable_hooks ), true ) ) {
 		return;
@@ -407,7 +407,7 @@ function relevanssi_add_admin_scripts( $hook ) {
 	 * use the relevanssi_indexing_adjust filter hook to disable that
 	 * adjustment.
 	 *
-	 * @param int The indexing limit, default 10.
+	 * @param int $limit The indexing limit, default 10.
 	 */
 	$indexing_limit = apply_filters( 'relevanssi_indexing_limit', 10 );
 
@@ -420,7 +420,7 @@ function relevanssi_add_admin_scripts( $hook ) {
 	 * Relevanssi index posts at constant pace. That's generally slower, but
 	 * more reliable.
 	 *
-	 * @param boolean Should the limit be adjusted, default true.
+	 * @param boolean $adjust_limit Should the limit be adjusted, default true.
 	 */
 	$indexing_adjust = apply_filters( 'relevanssi_indexing_adjust', true );
 
@@ -490,7 +490,7 @@ function relevanssi_create_line_chart( array $labels, array $datasets ) {
 		$values           = implode( ', ', $values );
 		$bg_color         = array_shift( $bg_colors );
 		$border_color     = array_shift( $border_colors );
-		$datasets_array[] = <<< EOJSON
+		$datasets_array[] = <<<EOJSON
 	{
 		label: "$label",
 		data: [ $values ],

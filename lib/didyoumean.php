@@ -97,7 +97,7 @@ function relevanssi_simple_didyoumean( $query, $pre, $post, $n = 5 ) {
 		/**
 		 * Filters the complete 'Did you mean' suggestion.
 		 *
-		 * @param string The suggestion HTML code.
+		 * @param string $html The suggestion HTML code.
 		 */
 		$result = apply_filters(
 			'relevanssi_didyoumean_suggestion',

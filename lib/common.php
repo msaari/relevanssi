@@ -126,7 +126,7 @@ function relevanssi_generate_missing_terms_list( $post ) {
 					/**
 					 * Determines the tag used for missing terms, default <s>.
 					 *
-					 * @param string The tag, without angle brackets. Default 's'.
+					 * @param string $term The tag, without angle brackets. Default 's'.
 					 */
 					$tag = apply_filters( 'relevanssi_missing_terms_tag', 's' );
 					return $tag ? "<$tag>$term</$tag>" : $term;
@@ -634,7 +634,7 @@ function relevanssi_tokenize( $str, $remove_stops = true, int $min_word_length =
 	/**
 	 * Disables stopwords completely.
 	 *
-	 * @param boolean If true, stopwords are not used. Default false.
+	 * @param boolean $disable If true, stopwords are not used. Default false.
 	 */
 	if ( apply_filters( 'relevanssi_disable_stopwords', false ) ) {
 		$stopword_list = array();
@@ -872,7 +872,7 @@ function relevanssi_add_synonyms( $query ) {
 			 * Controls how synonyms are handled when they appear inside
 			 * phrases.
 			 *
-			 * @param bool If true, synonyms inside phrases create new phrases.
+			 * @param bool $phrase If true, synonyms inside phrases create new phrases.
 			 * If false, synonyms inside phrases are ignored.
 			 */
 			if ( apply_filters( 'relevanssi_phrase_synonyms', true ) ) {

@@ -127,7 +127,7 @@ function relevanssi_wpml_term_fix( string $term_content, array $terms, string $t
 		$term_content = '';
 
 		global $sitepress;
-		remove_filter( 'get_term', array( $sitepress, 'get_term_adjust_id' ), 1, 1 );
+		remove_filter( 'get_term', array( $sitepress, 'get_term_adjust_id' ), 1 );
 
 		foreach ( $terms as $term ) {
 			$term = get_term(
