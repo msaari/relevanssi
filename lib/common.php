@@ -1487,69 +1487,6 @@ function relevanssi_block_on_admin_searches( $allow, $query ) {
 }
 
 /**
- * Checks if user has relevanssi_indexing_restriction filter functions in use.
- *
- * Temporary check for the changes in the relevanssi_indexing_restriction filter
- * in 2.8/4.7. Remove eventually. The function runs all non-Relevanssi filters
- * on relevanssi_indexing_restriction and reports all that return a string.
- *
- * @see relevanssi_init()
- *
- * @return string The notice, if there's something to complain about, empty
- * string otherwise.
- */
-function relevanssi_check_indexing_restriction() {
-	$notice = '';
-	if ( has_filter( 'relevanssi_indexing_restriction' ) ) {
-		global $wp_filter;
-		$callbacks = array_flip(
-			array_keys(
-				array_merge(
-					array(),
-					...$wp_filter['relevanssi_indexing_restriction']->callbacks
-				)
-			)
-		);
-		if ( isset( $callbacks['relevanssi_yoast_exclude'] ) ) {
-			unset( $callbacks['relevanssi_yoast_exclude'] );
-		}
-		if ( isset( $callbacks['relevanssi_seopress_exclude'] ) ) {
-			unset( $callbacks['relevanssi_seopress_exclude'] );
-		}
-		if ( isset( $callbacks['relevanssi_woocommerce_restriction'] ) ) {
-			unset( $callbacks['relevanssi_woocommerce_restriction'] );
-		}
-		if ( ! empty( $callbacks ) ) {
-			$returns_string = array();
-			foreach ( array_keys( $callbacks ) as $callback ) {
-				$return = call_user_func(
-					$callback,
-					array(
-						'mysql'  => '',
-						'reason' => '',
-					)
-				);
-				if ( is_string( $return ) ) {
-					$returns_string[] = '<code>' . $callback . '</code>';
-				}
-			}
-			if ( $returns_string ) {
-				$list_of_callbacks = implode( ', ', $returns_string );
-				$notice            = <<<EOH
-<div id="relevanssi-indexing_restriction-warning" class="notice notice-warn">
-<p>The filter hook <code>relevanssi_indexing_restriction</code> was changed
-recently. <a href="https://www.relevanssi.com/knowledge-base/controlling-attachment-types-index/">More
-information can be found here</a>. You're using the filter, so make sure your
-filter functions have been updated. Check these functions that return wrong
-format: $list_of_callbacks.</p></div>
-EOH;
-			}
-		}
-	}
-	return $notice;
-}
-
-/**
  * Fetches the data and generates the HTML for the "How Relevanssi sees this
  * post".
  *

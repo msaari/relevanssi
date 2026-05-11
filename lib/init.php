@@ -102,20 +102,6 @@ function relevanssi_init() {
 		}
 	}
 
-	$restriction_notice = relevanssi_check_indexing_restriction();
-	if ( $restriction_notice ) {
-		if ( 'options-general.php' === $pagenow && $on_relevanssi_page ) {
-			if ( 'indexing' === $_GET['tab'] ) { // phpcs:ignore WordPress.Security.NonceVerification
-				add_action(
-					'admin_notices',
-					function () use ( $restriction_notice ) {
-						echo $restriction_notice; // phpcs:ignore WordPress.Security.EscapeOutput
-					}
-				);
-			}
-		}
-	}
-
 	if ( 'done' !== get_option( 'relevanssi_indexed' ) ) {
 		if ( 'options-general.php' === $pagenow && $on_relevanssi_page ) {
 			add_action(

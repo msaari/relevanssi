@@ -91,6 +91,7 @@ function relevanssi_uninstall_free() {
 	delete_option( 'relevanssi_highlight_comments' );
 	delete_option( 'relevanssi_highlight_docs' );
 	delete_option( 'relevanssi_hilite_title' );
+	delete_option( 'relevanssi_ignore_theme_post_type' );
 	delete_option( 'relevanssi_implicit_operator' );
 	delete_option( 'relevanssi_index' );
 	delete_option( 'relevanssi_index_author' );
