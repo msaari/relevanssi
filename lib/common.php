@@ -1408,10 +1408,10 @@ function relevanssi_remove_page_builder_shortcodes( $content ) {
 	/**
 	 * Filters the page builder shortcode.
 	 *
-	 * @param array  An array of page builder shortcode regexes.
-	 * @param string Context, ie. the current filter hook, if you want your
-	 * changes to only count for indexing or for excerpts. In indexing, this
-	 * is 'relevanssi_post_content', for excerpts it's
+	 * @param array  $shortcodes An array of page builder shortcode regexes.
+	 * @param string $context    Context, ie. the current filter hook, if you
+	 * want your changes to only count for indexing or for excerpts. In
+	 * indexing, this is 'relevanssi_post_content', for excerpts it's
 	 * 'relevanssi_pre_excerpt_content'.
 	 */
 	$search_array = apply_filters(
@@ -1583,21 +1583,19 @@ function relevanssi_generate_how_relevanssi_sees( $post_id, $display = true, $ty
 function relevanssi_fetch_sees_data( $post_id, $type = 'post' ) {
 	global $wpdb, $relevanssi_variables;
 
-	if ( 'post' === $type ) {
-		$query = $wpdb->prepare(
-			'SELECT * FROM ' . $relevanssi_variables['relevanssi_table'] . ' WHERE doc = %d', // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
-			$post_id
-		);
-	}
 	if ( 'term' === $type ) {
 		$query = $wpdb->prepare(
 			'SELECT * FROM ' . $relevanssi_variables['relevanssi_table'] . ' WHERE type NOT IN ("post", "user") AND item = %d', // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
 			$post_id
 		);
-	}
-	if ( 'user' === $type ) {
+	} elseif ( 'user' === $type ) {
 		$query = $wpdb->prepare(
 			'SELECT * FROM ' . $relevanssi_variables['relevanssi_table'] . ' WHERE type = "user" AND item = %d', // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
+			$post_id
+		);
+	} else { // 'post'
+		$query = $wpdb->prepare(
+			'SELECT * FROM ' . $relevanssi_variables['relevanssi_table'] . ' WHERE doc = %d', // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
 			$post_id
 		);
 	}
@@ -1908,16 +1906,19 @@ function relevanssi_list_all_indexed_custom_fields() {
 	if ( 'visible' === $custom_fields ) {
 		$custom_fields = $wpdb->get_col(
 			'SELECT DISTINCT(meta_key) ' .
-			"FROM $wpdb->postmeta AS pm, {$relevanssi_variables['relevanssi_table']} AS r " . // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			"WHERE pm.post_id = r.doc AND meta_key NOT LIKE '\_%'
-			ORDER BY meta_key ASC"
+			"FROM $wpdb->postmeta " . // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			"WHERE meta_key NOT LIKE '\_%'
+			AND post_id IN ( " .
+			"SELECT DISTINCT(doc) FROM {$relevanssi_variables['relevanssi_table']}" . // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			') ORDER BY meta_key ASC'
 		);
 	} elseif ( 'all' === $custom_fields ) {
 		$custom_fields = $wpdb->get_col(
 			'SELECT DISTINCT(meta_key) ' .
-			"FROM $wpdb->postmeta AS pm, {$relevanssi_variables['relevanssi_table']} AS r " . // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			'WHERE pm.post_id = r.doc
-			ORDER BY meta_key ASC'
+			"FROM $wpdb->postmeta " . // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			'WHERE post_id IN ( ' .
+			"SELECT DISTINCT(doc) FROM {$relevanssi_variables['relevanssi_table']}" . // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			') ORDER BY meta_key ASC'
 		);
 	} else {
 		$custom_fields = explode( ',', $custom_fields );
