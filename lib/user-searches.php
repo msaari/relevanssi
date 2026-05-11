@@ -310,6 +310,7 @@ function relevanssi_date_queries( string $from, string $to, string $version = 'g
 	 */
 	$limit = apply_filters( 'relevanssi_user_searches_limit', 100 );
 
+	$queries = array();
 	if ( 'good' === $version ) {
 		if ( ! $source ) {
 			$query = $wpdb->prepare(
