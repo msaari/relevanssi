@@ -1240,6 +1240,18 @@ function relevanssi_meta_query_from_query_vars( $query ) {
 	$meta_query = array();
 	if ( ! empty( $query->query_vars['meta_query'] ) ) {
 		$meta_query = $query->query_vars['meta_query'];
+		if ( in_array( strtolower( $meta_query[0]['compare'] ), array( 'regexp', 'not regexp' ), true ) &&
+			/**
+			 * Filters whether meta query can use REGEXP or NOT REGEXP
+			 * comparison. This is a potential blind oracle attack, so it's
+			 * behind bars by default.
+			 *
+			 * @param bool Whether REGEXP or NOT REGEXP is allowed, default
+			 * false.
+			 */
+			apply_filters( 'relevanssi_allow_meta_query_regexp', false ) ) {
+			$meta_query[0]['compare'] = '=';
+		}
 	}
 
 	if ( isset( $query->query_vars['customfield_key'] ) ) {
@@ -1285,7 +1297,20 @@ function relevanssi_meta_query_from_query_vars( $query ) {
 		// Set meta compare.
 		$build_meta_query['compare'] = '=';
 		if ( ! empty( $query->query_vars['meta_compare'] ) ) {
-			$build_meta_query['compare'] = $query->query_vars['meta_compare'];
+			if ( ! in_array( strtolower( $query->query_vars['meta_compare'] ), array( 'regexp', 'not regexp' ), true ) ) {
+				$build_meta_query['compare'] = $query->query_vars['meta_compare'];
+			} elseif ( in_array( strtolower( $query->query_vars['meta_compare'] ), array( 'regexp', 'not regexp' ), true )
+			/**
+			 * Filters whether meta query can use REGEXP or NOT REGEXP
+			 * comparison. This is a potential blind oracle attack, so it's
+			 * behind bars by default.
+			 *
+			 * @param bool Whether REGEXP or NOT REGEXP is allowed, default
+			 * false.
+			 */
+				&& apply_filters( 'relevanssi_allow_meta_query_regexp', false ) ) {
+				$build_meta_query['compare'] = $query->query_vars['meta_compare'];
+			}
 		}
 
 		$meta_query[] = $build_meta_query;
