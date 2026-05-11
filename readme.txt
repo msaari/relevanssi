@@ -128,6 +128,9 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.27.0 =
+* New feature: Setting to disable all 'post_type' parameters to let Relevanssi control the post types in the search.
+
 = 4.26.1 =
 * Changed behaviour: The `relevanssi_results` filter hook gets the search query as a second parameter.
 * Changed behaviour: Exact match bonus was added to posts once per search term. Now it's applied once per post.

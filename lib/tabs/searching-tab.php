@@ -38,6 +38,7 @@ function relevanssi_searching_tab() {
 	$index_post_types    = get_option( 'relevanssi_index_post_types', array() );
 	$index_users         = get_option( 'relevanssi_index_users' );
 	$index_terms         = get_option( 'relevanssi_index_taxonomies' );
+	$ignore_theme_post_type  = get_option( 'relevanssi_ignore_theme_post_type' );
 
 	$throttle            = relevanssi_check( $throttle );
 	$respect_exclude     = relevanssi_check( $respect_exclude );
@@ -53,6 +54,7 @@ function relevanssi_searching_tab() {
 	$fuzzy_sometimes     = relevanssi_select( $fuzzy, 'sometimes' );
 	$fuzzy_always        = relevanssi_select( $fuzzy, 'always' );
 	$fuzzy_never         = relevanssi_select( $fuzzy, 'never' );
+	$ignore_theme_post_type  = relevanssi_check( $ignore_theme_post_type );
 
 	$orfallback_visibility = 'screen-reader-text';
 	if ( 'AND' === $implicit ) {
@@ -302,6 +304,22 @@ function relevanssi_searching_tab() {
 			}
 			?>
 		</fieldset>
+		</td>
+	</tr>
+	<tr id="row_ignore_theme_post_type">
+		<th scope="row">
+		<?php esc_html_e( 'Ignore theme post type settings', 'relevanssi' ); ?>
+		</th>
+		<td>
+		<fieldset>
+			<legend class="screen-reader-text"><?php esc_html_e( 'Ignore theme post type settings', 'relevanssi' ); ?></legend>
+			<label for='relevanssi_ignore_theme_post_type'>
+				<input type='checkbox' name='relevanssi_ignore_theme_post_type' id='relevanssi_ignore_theme_post_type' <?php echo esc_html( $ignore_theme_post_type ); ?> />
+				<?php esc_html_e( 'Ignore third-party post type settings.', 'relevanssi' ); ?>
+			</label>
+		</fieldset>
+		<?php // Translators: %1$s is the code string "post_type", %2$s is the code string "post_types". ?>
+		<p class="description"><?php printf( esc_html__( 'If checked, Relevanssi ignores all existing %1$s restrictions. All indexed post types are included in the search. If you want to control the post type in individual searches, you can use the %2$s parameter.', 'relevanssi' ), '<code>post_type</code>', '<code>post_types</code>' ); ?></p>
 		</td>
 	</tr>
 	<tr id="row_throttle_searches">

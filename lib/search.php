@@ -1735,6 +1735,13 @@ function relevanssi_compile_common_args( $query ) {
 	$meta_query = relevanssi_meta_query_from_query_vars( $query );
 	$date_query = relevanssi_wp_date_query_from_query_vars( $query );
 
+	$ignore_theme_post_types = get_option( 'relevanssi_ignore_theme_post_type' );
+	if ( 'on' === $ignore_theme_post_types ) {
+		if ( isset( $query->query_vars['post_type'] ) ) {
+			unset( $query->query_vars['post_type'] );
+		}
+	}
+
 	$post_type = false;
 	if ( isset( $query->query_vars['post_type'] ) && 'any' !== $query->query_vars['post_type'] ) {
 		$post_type = $query->query_vars['post_type'];
