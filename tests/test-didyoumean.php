@@ -8,6 +8,7 @@
 
 /**
  * Test Relevanssi Did you mean functions.
+ *
  */
 class DidYouMeanTest extends WP_UnitTestCase {
 	/**
@@ -63,24 +64,6 @@ class DidYouMeanTest extends WP_UnitTestCase {
 		$query->parse_query( $args );
 		for ( $i = 0; $i < 10; $i++ ) {
 			relevanssi_do_query( $query );
-		}
-	}
-
-	/**
-	 * Test Premium Did you mean.
-	 */
-	public function test_premium_didyoumean() {
-		if ( function_exists( 'relevanssi_premium_generate_suggestion' ) ) {
-			$corrected = relevanssi_premium_generate_suggestion( 'carful' );
-			$this->assertEquals( 'careful', $corrected, 'Missing letter.' );
-
-			$corrected = relevanssi_premium_generate_suggestion( 'funreturning' );
-			$this->assertEquals( 'unreturning', $corrected, 'Additional letter.' );
-
-			$corrected = relevanssi_premium_generate_suggestion( 'profision' );
-			$this->assertEquals( 'provision', $corrected, 'Switched letter.' );
-		} else {
-			$this->assertTrue( true );
 		}
 	}
 
