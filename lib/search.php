@@ -1465,9 +1465,12 @@ function relevanssi_calculate_weight( $match_object, $idf, $post_type_weights ) 
  * @param array    $match_arrays The matches array (passed as reference).
  * @param stdClass $match_object The match object.
  * @param string   $term         The search term.
+ * @param int      $blog_id      The blog ID, if this is a multisite search.
  */
-function relevanssi_update_term_hits( &$term_hits, &$match_arrays, $match_object, $term ) {
-	$term_hits[ $match_object->doc ][ $term ] =
+function relevanssi_update_term_hits( &$term_hits, &$match_arrays, $match_object, $term, $blog_id = 0 ) {
+	$object_id = $blog_id ? $blog_id . '|' . $match_object->doc : $match_object->doc;
+
+	$term_hits[ $object_id ][ $term ] =
 		$match_object->title +
 		$match_object->content +
 		$match_object->comment +
@@ -1479,16 +1482,16 @@ function relevanssi_update_term_hits( &$term_hits, &$match_arrays, $match_object
 		$match_object->taxonomy +
 		$match_object->customfield;
 
-	relevanssi_increase_value( $match_arrays['body'][ $match_object->doc ], $match_object->content );
-	relevanssi_increase_value( $match_arrays['title'][ $match_object->doc ], $match_object->title );
-	relevanssi_increase_value( $match_arrays['link'][ $match_object->doc ], $match_object->link );
-	relevanssi_increase_value( $match_arrays['tag'][ $match_object->doc ], $match_object->tag );
-	relevanssi_increase_value( $match_arrays['category'][ $match_object->doc ], $match_object->category );
-	relevanssi_increase_value( $match_arrays['taxonomy'][ $match_object->doc ], $match_object->taxonomy );
-	relevanssi_increase_value( $match_arrays['comment'][ $match_object->doc ], $match_object->comment );
-	relevanssi_increase_value( $match_arrays['customfield'][ $match_object->doc ], $match_object->customfield );
-	relevanssi_increase_value( $match_arrays['author'][ $match_object->doc ], $match_object->author );
-	relevanssi_increase_value( $match_arrays['excerpt'][ $match_object->doc ], $match_object->excerpt );
+	relevanssi_increase_value( $match_arrays['body'][ $object_id ], $match_object->content );
+	relevanssi_increase_value( $match_arrays['title'][ $object_id ], $match_object->title );
+	relevanssi_increase_value( $match_arrays['link'][ $object_id ], $match_object->link );
+	relevanssi_increase_value( $match_arrays['tag'][ $object_id ], $match_object->tag );
+	relevanssi_increase_value( $match_arrays['category'][ $object_id ], $match_object->category );
+	relevanssi_increase_value( $match_arrays['taxonomy'][ $object_id ], $match_object->taxonomy );
+	relevanssi_increase_value( $match_arrays['comment'][ $object_id ], $match_object->comment );
+	relevanssi_increase_value( $match_arrays['customfield'][ $object_id ], $match_object->customfield );
+	relevanssi_increase_value( $match_arrays['author'][ $object_id ], $match_object->author );
+	relevanssi_increase_value( $match_arrays['excerpt'][ $object_id ], $match_object->excerpt );
 
 	if ( function_exists( 'relevanssi_premium_update_term_hits' ) ) {
 		relevanssi_premium_update_term_hits( $term_hits, $match_arrays, $match_object, $term );

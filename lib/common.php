@@ -19,19 +19,21 @@
  * @param array  $data The source data.
  */
 function relevanssi_add_matches( &$post, $data ) {
-	$hits['body']                 = $data['body_matches'][ $post->ID ] ?? 0;
-	$hits['title']                = $data['title_matches'][ $post->ID ] ?? 0;
-	$hits['taxonomy']['tag']      = $data['tag_matches'][ $post->ID ] ?? 0;
-	$hits['taxonomy']['category'] = $data['category_matches'][ $post->ID ] ?? 0;
-	$hits['taxonomy']['taxonomy'] = $data['taxonomy_matches'][ $post->ID ] ?? 0;
-	$hits['comment']              = $data['comment_matches'][ $post->ID ] ?? 0;
-	$hits['author']               = $data['author_matches'][ $post->ID ] ?? 0;
-	$hits['excerpt']              = $data['excerpt_matches'][ $post->ID ] ?? 0;
-	$hits['customfield']          = $data['customfield_matches'][ $post->ID ] ?? 0;
+	$object_id = isset( $post->blog_id ) ? $post->blog_id . '|' . $post->ID : $post->ID;
+
+	$hits['body']                 = $data['body_matches'][ $object_id ] ?? 0;
+	$hits['title']                = $data['title_matches'][ $object_id ] ?? 0;
+	$hits['taxonomy']['tag']      = $data['tag_matches'][ $object_id ] ?? 0;
+	$hits['taxonomy']['category'] = $data['category_matches'][ $object_id ] ?? 0;
+	$hits['taxonomy']['taxonomy'] = $data['taxonomy_matches'][ $object_id ] ?? 0;
+	$hits['comment']              = $data['comment_matches'][ $object_id ] ?? 0;
+	$hits['author']               = $data['author_matches'][ $object_id ] ?? 0;
+	$hits['excerpt']              = $data['excerpt_matches'][ $object_id ] ?? 0;
+	$hits['customfield']          = $data['customfield_matches'][ $object_id ] ?? 0;
 	$hits['mysqlcolumn']          = 0;
-	$hits['score']                = isset( $data['doc_weights'][ $post->ID ] ) ? round( $data['doc_weights'][ $post->ID ], 2 ) : 0;
-	$hits['terms']                = $data['term_hits'][ $post->ID ] ?? array();
-	$hits['missing_terms']        = $data['missing_terms'][ $post->ID ] ?? array();
+	$hits['score']                = isset( $data['doc_weights'][ $object_id ] ) ? round( $data['doc_weights'][ $object_id ], 2 ) : 0;
+	$hits['terms']                = $data['term_hits'][ $object_id ] ?? array();
+	$hits['missing_terms']        = $data['missing_terms'][ $object_id ] ?? array();
 
 	if ( function_exists( 'relevanssi_premium_add_matches' ) ) {
 		relevanssi_premium_add_matches( $hits, $data, $post->ID );
