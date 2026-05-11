@@ -132,6 +132,7 @@ Each document database is full of useless words. All the little words that appea
 * New feature: Setting to disable all 'post_type' parameters to let Relevanssi control the post types in the search.
 * New feature: New filter hook `relevanssi_truncate_search_queries` can be used to truncate search queries to a certain length to eliminate too long queries.
 * New feature: New filter hook `relevanssi_allow_meta_query_regexp` allows REGEXP or NOT REGEXP meta queries. They are blocked by default for security reasons.
+* New feature: New shortcode `[relevanssi_didyoumean]` makes it easier to add a "Did you mean" suggestion on a search results page without modifying the template code.
 * Minor fix: You can now assign anonymous functions to the `relevanssi_indexing_restriction` filter hook.
 * Minor fix: Relevanssi now clears the scheduled actions on deactivation, not on uninstall.
 

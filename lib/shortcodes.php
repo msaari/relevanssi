@@ -11,6 +11,7 @@
 add_shortcode( 'search', 'relevanssi_shortcode' );
 add_shortcode( 'noindex', 'relevanssi_noindex_shortcode' );
 add_shortcode( 'searchform', 'relevanssi_search_form' );
+add_shortcode( 'relevanssi_didyoumean', 'relevanssi_didyoumean_shortcode' );
 
 /**
  * Creates a link to search results.
@@ -214,4 +215,52 @@ function relevanssi_search_form( $atts ) {
 	 * @param array  $atts The shortcode attributes.
 	 */
 	return apply_filters( 'relevanssi_search_form', $form, $atts );
+}
+
+/**
+ * Returns a "did you mean?" block.
+ *
+ * This shortcode allows the Relevanssi "Did you mean?" functionality to be
+ * placed anywhere in a post or page, which is essential for Block Themes
+ * where the search template cannot be easily edited.
+ *
+ * Usage: [rlv_didyoumean n="5" pre="<strong>Did you mean: </strong>"]
+ *
+ * @param array $atts {
+ *     Optional. Associative array of shortcode attributes.
+ *
+ *     @type string $query The search term to check. Defaults to the current search query.
+ *     @type string $pre   Text or HTML to display before the suggestion.
+ *     @type string $post  Text or HTML to display after the suggestion.
+ *     @type int    $n     The maximum number of results to trigger the suggestion.
+ * }
+ *
+ * @return string The "Did you mean?" HTML or an empty string if no suggestion.
+ */
+function relevanssi_didyoumean_shortcode( $atts ) {
+	$didyoumean = '';
+	$atts       = shortcode_atts(
+		array(
+			'query' => '',
+			'pre'   => '<p>Did you mean: ',
+			'post'  => '</p>',
+			'n'     => 5,
+		),
+		$atts
+	);
+
+	$search_term = $atts['query'];
+	if ( empty( $search_term ) ) {
+		$search_term = get_search_query( false );
+	}
+
+	$didyoumean = relevanssi_didyoumean(
+		$search_term,
+		$atts['pre'],
+		$atts['post'],
+		(int) $atts['n'],
+		false
+	);
+
+	return wp_kses_post( $didyoumean );
 }
