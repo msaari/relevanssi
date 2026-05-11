@@ -587,6 +587,12 @@ function relevanssi_do_query( &$query ) {
 
 	$q = trim( stripslashes( relevanssi_strtolower( $query->query_vars['s'] ) ) );
 
+	$limit = (int) apply_filters( 'relevanssi_truncate_search_queries', 0 );
+
+	if ( $limit > 0 ) {
+		$q = substr( $q, 0, $limit );
+	}
+
 	$did_multisite_search = false;
 	if ( is_multisite() ) {
 		if ( function_exists( 'relevanssi_is_multisite_search' ) ) {
