@@ -147,6 +147,9 @@ function relevanssi_debug_search_settings() {
 	$value = get_option( 'relevanssi_disable_or_fallback' );
 	echo "relevanssi_disable_or_fallback: $value<br />";
 
+	$value = get_option( 'relevanssi_enable_didyoumean', 'n/a' );
+	echo "relevanssi_enable_didyoumean: $value<br />";
+
 	$value = get_option( 'relevanssi_throttle' );
 	echo "relevanssi_throttle: $value<br />";
 
