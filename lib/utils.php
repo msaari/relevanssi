@@ -1460,6 +1460,27 @@ function relevanssi_substr( $str, int $start, $length = null ) {
 }
 
 /**
+ * Multibyte-safe version of substr_replace.
+ *
+ * Replaces a part of a string with another string based on character offsets
+ * rather than byte offsets. This ensures that accented characters (UTF-8)
+ * do not cause the string to be cut in the wrong place.
+ *
+ * @param string   $str         The source string.
+ * @param string   $replacement The string to insert.
+ * @param int      $start       The character offset where the replacement begins.
+ * @param int|null $length      The number of characters to remove from the original string.
+ *
+ * @return string The modified string with the replacement inserted.
+ */
+function relevanssi_substr_replace( $str, $replacement, int $start, $length ) {
+	$before = relevanssi_substr( $str, 0, $start );
+	$after  = relevanssi_substr( $str, $start + $length );
+
+	return $before . $replacement . $after;
+}
+
+/**
  * Prints out the post excerpt.
  *
  * Prints out the post excerpt from $post->post_excerpt, unless the post is
