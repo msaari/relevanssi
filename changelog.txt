@@ -1,3 +1,16 @@
+= 4.26.1 =
+* Changed behaviour: The `relevanssi_results` filter hook gets the search query as a second parameter.
+* Changed behaviour: Exact match bonus was added to posts once per search term. Now it's applied once per post.
+* Minor fix: Exact match bonus is now significantly faster when processing large posts.
+* Minor fix: Post part targeting with phrases is now more precise and doesn't include false matches. New post part tag 'media' is available to target attachment content.
+
+= 4.26.0 =
+* Security: Fixes a vulnerability where a contributor-level user could make a SQL injection.
+* Minor fix: Relevanssi now ignores the contents of SVG tags.
+* Minor fix: The `relevanssi_missing_sort_key` hook did not fire for `menu_order`. It does now, if `menu_order` is 0.
+* Minor fix: Relevanssi no longer breaks image cloning in MultilingualPress.
+* Minor fix: Synced pattern contents are now indexed recursively so that, for example, the `relevanssi_noindex` class works.
+
 = 4.25.0 =
 * New feature: New filter hook `relevanssi_index_excerpt` can be used to control which excerpts are indexed and which are not.
 * Minor fix: The `tribe_events` shortcode is now blocked in indexing, as it caused problems.

@@ -3,9 +3,9 @@ Contributors: msaari
 Donate link: https://www.relevanssi.com/buy-premium/
 Tags: search, relevance, better search, product search, woocommerce search
 Requires at least: 4.9
-Tested up to: 6.9
+Tested up to: 7.0
 Requires PHP: 7.1
-Stable tag: 4.26.1
+Stable tag: 4.27.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -136,20 +136,6 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: You can now assign anonymous functions to the `relevanssi_indexing_restriction` filter hook.
 * Minor fix: Relevanssi now clears the scheduled actions on deactivation, not on uninstall.
 
-= 4.26.1 =
-* Changed behaviour: The `relevanssi_results` filter hook gets the search query as a second parameter.
-* Changed behaviour: Exact match bonus was added to posts once per search term. Now it's applied once per post.
-* Minor fix: Exact match bonus is now significantly faster when processing large posts.
-* Minor fix: Post part targeting with phrases is now more precise and doesn't include false matches. New post part tag 'media' is available to target attachment content.
-
-
-= 4.26.0 =
-* Security: Fixes a vulnerability where a contributor-level user could make a SQL injection.
-* Minor fix: Relevanssi now ignores the contents of SVG tags.
-* Minor fix: The `relevanssi_missing_sort_key` hook did not fire for `menu_order`. It does now, if `menu_order` is 0.
-* Minor fix: Relevanssi no longer breaks image cloning in MultilingualPress.
-* Minor fix: Synced pattern contents are now indexed recursively so that, for example, the `relevanssi_noindex` class works.
-
 == Upgrade notice ==
-= 4.26.1 =
-* Minor updates and improvements.
+= 4.27.0 =
+* Small security fix, new features.
