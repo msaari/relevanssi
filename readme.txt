@@ -128,6 +128,8 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+* Minor fix: Remove complaints from meta_queries.
+
 = 4.27.0 =
 * New feature: Setting to disable all 'post_type' parameters to let Relevanssi control the post types in the search.
 * New feature: New filter hook `relevanssi_truncate_search_queries` can be used to truncate search queries to a certain length to eliminate too long queries.
