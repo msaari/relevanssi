@@ -5,7 +5,7 @@ Tags: search, relevance, better search, product search, woocommerce search
 Requires at least: 4.9
 Tested up to: 7.0
 Requires PHP: 7.1
-Stable tag: 4.27.0
+Stable tag: 4.27.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -128,6 +128,7 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.27.1 =
 * Minor fix: Remove complaints from meta_queries.
 
 = 4.27.0 =
@@ -139,5 +140,5 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: Relevanssi now clears the scheduled actions on deactivation, not on uninstall.
 
 == Upgrade notice ==
-= 4.27.0 =
-* Small security fix, new features.
+= 4.27.1 =
+* Fix meta_query problems.
