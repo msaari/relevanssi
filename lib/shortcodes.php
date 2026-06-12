@@ -262,5 +262,5 @@ function relevanssi_didyoumean_shortcode( $atts ) {
 		false
 	);
 
-	return wp_kses_post( $didyoumean );
+	return wp_kses_post( $didyoumean ?? '' );
 }
