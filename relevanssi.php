@@ -14,7 +14,7 @@
  * Plugin URI: https://www.relevanssi.com/
  * Description: This plugin replaces WordPress search with a relevance-sorting search.
  * Version: 4.27.1
- * Author: comesio Eurodata GmbH
+ * Author: eurodata comesio solutions GmbH
  * Author URI: https://www.relevanssi.com/
  * Text Domain: relevanssi
  * License: GPLv2 or later
@@ -22,7 +22,7 @@
  */
 
 /**
- * Copyright 2026 comesio Eurodata GmbH  (email: hello@relevanssi.com)
+ * Copyright 2026 eurodata comesio solutions GmbH  (email: hello@relevanssi.com)
  * This file is part of Relevanssi, a search plugin for WordPress.
  *
  * Relevanssi is free software: you can redistribute it and/or modify
