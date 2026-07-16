@@ -5,7 +5,7 @@ Tags: search, relevance, better search, product search, woocommerce search
 Requires at least: 4.9
 Tested up to: 7.0
 Requires PHP: 7.1
-Stable tag: 4.27.1
+Stable tag: 4.27.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -128,6 +128,9 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.27.2 =
+* Minor fix: Remove warnings caused by removed synced patterns.
+
 = 4.27.1 =
 * Minor fix: Remove complaints from meta_queries.
 
