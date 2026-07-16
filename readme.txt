@@ -129,6 +129,7 @@ Each document database is full of useless words. All the little words that appea
 
 == Changelog ==
 = 4.27.2 =
+* Security: Fixes a vulnerability where a contributor-level user could make a SQL injection.
 * Minor fix: Remove warnings caused by removed synced patterns.
 
 = 4.27.1 =

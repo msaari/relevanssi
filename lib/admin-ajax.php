@@ -193,6 +193,7 @@ function relevanssi_admin_search() {
 	$args = array();
 	if ( isset( $_POST['args'] ) ) {
 		parse_str( $_POST['args'], $args );
+		$args = wp_slash( $args );
 	}
 	if ( isset( $_POST['posts_per_page'] ) ) {
 		$posts_per_page = intval( $_POST['posts_per_page'] );
