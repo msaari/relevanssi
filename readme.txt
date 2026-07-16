@@ -144,5 +144,5 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: Relevanssi now clears the scheduled actions on deactivation, not on uninstall.
 
 == Upgrade notice ==
-= 4.27.1 =
-* Fix meta_query problems.
+= 4.27.2 =
+* Fixes a security vulnerability where a contributor could do SQL injection.
