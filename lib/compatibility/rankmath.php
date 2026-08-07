@@ -11,7 +11,8 @@
 
 add_filter( 'relevanssi_do_not_index', 'relevanssi_rankmath_noindex', 10, 2 );
 add_filter( 'relevanssi_indexing_restriction', 'relevanssi_rankmath_exclude' );
-add_action( 'relevanssi_indexing_tab_advanced', 'relevanssi_rankmath_form', 20 );
+add_action( 'relevanssi_advanced_indexing_config', 'relevanssi_rankmath_form', 20 );
+add_action( 'relevanssi_advanced_indexing_sidebar_list', 'relevanssi_rankmath_sidebar', 20 );
 add_action( 'relevanssi_indexing_options', 'relevanssi_rankmath_options' );
 
 /**
@@ -68,25 +69,34 @@ function relevanssi_rankmath_exclude( $restriction ) {
 }
 
 /**
- * Prints out the form fields for disabling the feature.
+ * Adds the config element for the Rankmath SEO setting.
+ *
+ * @param array $config The configuration array.
+ *
+ * @return array
  */
-function relevanssi_rankmath_form() {
-	$seo_noindex = get_option( 'relevanssi_seo_noindex' );
-	$seo_noindex = relevanssi_check( $seo_noindex );
+function relevanssi_rankmath_form( array $config ) {
+	$config['relevanssi_rankmath'] = array(
+		'type'         => 'checkbox',
+		'label'        => __( 'Rank Math SEO', 'relevanssi' ),
+		'description'  => __( 'Use Rank Math SEO noindex', 'relevanssi' ),
+		'hover_target' => 'sb-rankmath',
+		'value'        => get_option( 'relevanssi_seo_noindex' ),
+		'advanced'     => true,
+	);
 
+	return $config;
+}
+
+/**
+ * Adds the sidebar note for the SEO Framework setting.
+ */
+function relevanssi_rankmath_sidebar() {
 	?>
-	<tr>
-		<th scope="row">
-			<label for='relevanssi_seo_noindex'><?php esc_html_e( 'Use Rank Math SEO noindex', 'relevanssi' ); ?></label>
-		</th>
-		<td>
-			<label for='relevanssi_seo_noindex'>
-				<input type='checkbox' name='relevanssi_seo_noindex' id='relevanssi_seo_noindex' <?php echo esc_attr( $seo_noindex ); ?> />
-				<?php esc_html_e( 'Use Rank Math SEO noindex.', 'relevanssi' ); ?>
-			</label>
-			<p class="description"><?php esc_html_e( 'If checked, Relevanssi will not index posts marked as "No index" in Rank Math SEO settings.', 'relevanssi' ); ?></p>
-		</td>
-	</tr>
+	<li id="sb-seo-framework">
+		<strong><?php esc_html_e( 'Rank Math SEO:', 'relevanssi' ); ?></strong>
+		<?php esc_html_e( 'If checked, Relevanssi will not index posts marked as "No index" in Rank Math SEO settings.', 'relevanssi' ); ?>
+	</li>
 	<?php
 }
 

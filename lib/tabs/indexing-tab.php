@@ -3,6 +3,7 @@
  * /lib/tabs/indexing-tab.php
  *
  * Prints out the Indexing tab in Relevanssi settings.
+ * Handles content settings, index rebuilding, and stopword exclusions.
  *
  * @package Relevanssi
  * @author  Mikko Saari
@@ -13,541 +14,690 @@
 /**
  * Prints out the indexing tab in Relevanssi settings.
  *
- * @global $wpdb                 The WordPress database interface.
- * @global $relevanssi_variables The global Relevanssi variables array.
+ * @global wpdb   $wpdb                 The WordPress database interface instance.
+ * @global array  $relevanssi_variables Global Relevanssi variables.
+ *
+ * @return void Outputs the settings tab HTML rows directly.
  */
 function relevanssi_indexing_tab() {
 	global $wpdb, $relevanssi_variables;
 
-	$index_post_types      = get_option( 'relevanssi_index_post_types', array() );
-	$index_taxonomies_list = get_option( 'relevanssi_index_taxonomies_list' );
-	$index_comments        = get_option( 'relevanssi_index_comments' );
-	$index_fields          = get_option( 'relevanssi_index_fields' );
-	$index_author          = get_option( 'relevanssi_index_author' );
-	$index_excerpt         = get_option( 'relevanssi_index_excerpt' );
-	$index_image_files     = get_option( 'relevanssi_index_image_files' );
-	$expand_shortcodes     = get_option( 'relevanssi_expand_shortcodes' );
-	$punctuation           = get_option( 'relevanssi_punctuation' );
-	$min_word_length       = get_option( 'relevanssi_min_word_length' );
-
-	if ( empty( $index_post_types ) ) {
-		$index_post_types = array();
-	}
-	if ( empty( $index_taxonomies_list ) ) {
-		$index_taxonomies_list = array();
-	}
-
-	$expand_shortcodes     = relevanssi_check( $expand_shortcodes );
-	$index_author          = relevanssi_check( $index_author );
-	$index_excerpt         = relevanssi_check( $index_excerpt );
-	$index_image_files     = relevanssi_check( $index_image_files );
-	$index_comments_all    = relevanssi_select( $index_comments, 'all' );
-	$index_comments_normal = relevanssi_select( $index_comments, 'normal' );
-	$index_comments_none   = relevanssi_select( $index_comments, 'none' );
-
-	$fields_select_all     = '';
-	$fields_select_none    = '';
-	$fields_select_some    = 'selected';
-	$fields_select_visible = '';
-
-	if ( empty( $index_fields ) ) {
-		$fields_select_none = 'selected';
-		$fields_select_some = '';
-	}
-	if ( 'all' === $index_fields ) {
-		$fields_select_all  = 'selected';
-		$fields_select_some = '';
-		$index_fields       = '';
-	}
-	if ( 'visible' === $index_fields ) {
-		$fields_select_visible = 'selected';
-		$fields_select_some    = '';
-		$index_fields          = '';
-	}
-
-	if ( ! isset( $punctuation['quotes'] ) ) {
-		$punctuation['quotes'] = 'replace';
-	}
-	if ( ! isset( $punctuation['decimals'] ) ) {
-		$punctuation['decimals'] = 'remove';
-	}
-	if ( ! isset( $punctuation['ampersands'] ) ) {
-		$punctuation['ampersands'] = 'replace';
-	}
-	if ( ! isset( $punctuation['hyphens'] ) ) {
-		$punctuation['hyphens'] = 'replace';
-	}
-	$punct_quotes_replace     = relevanssi_select( $punctuation['quotes'], 'replace' );
-	$punct_quotes_remove      = relevanssi_select( $punctuation['quotes'], 'remove' );
-	$punct_decimals_replace   = relevanssi_select( $punctuation['decimals'], 'replace' );
-	$punct_decimals_remove    = relevanssi_select( $punctuation['decimals'], 'remove' );
-	$punct_decimals_keep      = relevanssi_select( $punctuation['decimals'], 'keep' );
-	$punct_ampersands_replace = relevanssi_select( $punctuation['ampersands'], 'replace' );
-	$punct_ampersands_remove  = relevanssi_select( $punctuation['ampersands'], 'remove' );
-	$punct_ampersands_keep    = relevanssi_select( $punctuation['ampersands'], 'keep' );
-	$punct_hyphens_replace    = relevanssi_select( $punctuation['hyphens'], 'replace' );
-	$punct_hyphens_remove     = relevanssi_select( $punctuation['hyphens'], 'remove' );
-	$punct_hyphens_keep       = relevanssi_select( $punctuation['hyphens'], 'keep' );
-
+	// --- Index Statistics & Counts ---
+	$is_premium  = defined( 'RELEVANSSI_PREMIUM' ) && RELEVANSSI_PREMIUM;
 	$docs_count  = get_option( 'relevanssi_doc_count', 0 );
 	$terms_count = get_option( 'relevanssi_terms_count', 0 );
-	$lowest_doc  = $wpdb->get_var( 'SELECT doc FROM ' . $relevanssi_variables['relevanssi_table'] . ' WHERE doc > 0 ORDER BY doc ASC LIMIT 1' );  // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
+
+	$lowest_doc = $wpdb->get_var( 'SELECT doc FROM ' . $relevanssi_variables['relevanssi_table'] . ' WHERE doc > 0 ORDER BY doc ASC LIMIT 1' ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
+
 	if ( null === $lowest_doc ) {
-		// The database table is empty or doesn't exist.
 		$lowest_doc = 0;
 		relevanssi_create_database_tables( 0 );
-	}
-
-	if ( RELEVANSSI_PREMIUM ) {
-		$user_count    = get_option( 'relevanssi_user_count', 0 );
-		$taxterm_count = get_option( 'relevanssi_taxterm_count', 0 );
 	}
 
 	$this_page  = '?page=' . plugin_basename( $relevanssi_variables['file'] );
 	$update_url = wp_nonce_url( $this_page . '&rlv_tab=indexing&update_counts=1', 'update_counts' );
 
-	?>
-	<div id="indexing_tab">
+	$user_count    = get_option( 'relevanssi_user_count', 0 );
+	$taxterm_count = get_option( 'relevanssi_taxterm_count', 0 );
 
-	<table class="form-table" role="presentation" id="indexing_controls">
-	<tr>
-		<td scope="row">
-			<input type='submit' name='submit' value='<?php esc_attr_e( 'Save the options', 'relevanssi' ); ?>' class='button button-primary' /><br /><br />
-			<input type="button" id="build_index" name="index" value="<?php esc_attr_e( 'Build the index', 'relevanssi' ); ?>" class='button-primary' /><br /><br />
-			<input type="button" id="continue_indexing" name="continue" value="<?php esc_attr_e( 'Index unindexed posts', 'relevanssi' ); ?>" class='button-primary' />
-		</td>
-		<td>
-			<div id='indexing_button_instructions'>
-				<?php // Translators: %s is "Build the index". ?>
-				<p class="description"><?php printf( esc_html__( '%s empties the existing index and rebuilds it from scratch.', 'relevanssi' ), '<strong>' . esc_html__( 'Build the index', 'relevanssi' ) . '</strong>' ); ?></p>
-				<?php // Translators: %s is "Build the index". ?>
-				<p class="description"><?php printf( esc_html__( "%s doesn't empty the index and only indexes those posts that are not indexed. You can use it if you have to interrupt building the index.", 'relevanssi' ), '<strong>' . esc_html__( 'Index unindexed posts', 'relevanssi' ) . '</strong>' ); ?>
-				<?php
-				if ( RELEVANSSI_PREMIUM ) {
-					esc_html_e( "This doesn't index any taxonomy terms or users.", 'relevanssi' );
-				}
-				?>
-				</p>
-			</div>
-			<div id='relevanssi-note' style='display: none'></div>
-			<div id='relevanssi-progress' class='rpi-progress'><div class="rpi-indicator"></div></div>
-			<div id='relevanssi-timer'><?php esc_html_e( 'Time elapsed', 'relevanssi' ); ?>: <span id="relevanssi_elapsed">0:00:00</span> | <?php esc_html_e( 'Time remaining', 'relevanssi' ); ?>: <span id="relevanssi_estimated"><?php esc_html_e( 'some time', 'relevanssi' ); ?></span></div>
-			<label for="results" class="screen-reader-text"><?php esc_html_e( 'Results', 'relevanssi' ); ?></label><textarea id='results' rows='10' cols='80'></textarea>
-			<div id='relevanssi-indexing-instructions' style='display: none'><?php esc_html_e( "Indexing should respond quickly. If nothing happens in couple of minutes, it's probably stuck. The most common reasons for indexing issues are incompatible shortcodes, so try disabling the shortcode expansion setting and try again. Also, if you've just updated Relevanssi, doing a hard refresh in your browser will make sure your browser is not trying to use an outdated version of the Relevanssi scripts.", 'relevanssi' ); ?></div>
-		</td>
-	</tr>
-	<tr>
-		<th scope="row"><?php esc_html_e( 'State of the index', 'relevanssi' ); ?></th>
-		<td id="stateoftheindex"><p><?php echo esc_html( $docs_count ); ?> <?php echo esc_html( _n( 'document in the index.', 'documents in the index.', $docs_count, 'relevanssi' ) ); ?>
-	<?php if ( RELEVANSSI_PREMIUM ) : ?>
-		<br /><?php echo esc_html( $user_count ); ?> <?php echo esc_html( _n( 'user in the index.', 'users in the index.', $user_count, 'relevanssi' ) ); ?><br />
-		<?php echo esc_html( $taxterm_count ); ?> <?php echo esc_html( _n( 'taxonomy term in the index.', 'taxonomy terms in the index.', $taxterm_count, 'relevanssi' ) ); ?>
-	<?php endif; ?>
-		</p>
-		<p><?php echo esc_html( $terms_count ); ?> <?php echo esc_html( _n( 'term in the index.', 'terms in the index.', $terms_count, 'relevanssi' ) ); ?><br />
-		<?php echo esc_html( $lowest_doc ); ?> <?php esc_html_e( 'is the lowest post ID indexed.', 'relevanssi' ); ?></p>
-		<?php /* Translators: %1$s opens the a tag, %2$s closes it. */ ?>
-		<p class="description">(<?php printf( esc_html__( 'These values may be inaccurate. If you need exact values, %1$supdate the counts%2$s', 'relevanssi' ), '<a href="' . esc_attr( $update_url ) . '">', '</a>' ); ?>.)</p>
-		</td>
-	</tr>
-	</table>
+	// --- Core Content Settings ---
+	$index_post_types = get_option( 'relevanssi_index_post_types', array() );
+	if ( empty( $index_post_types ) ) {
+		$index_post_types = array();
+	}
 
-	<?php
-	if ( count( $index_post_types ) < 2 ) {
-		$index_users      = get_option( 'relevanssi_index_users', 'off' );
-		$index_taxonomies = get_option( 'relevanssi_index_taxonomies', 'off' );
-		if ( 'off' === $index_users && 'off' === $index_taxonomies ) {
-			printf( '<p><strong>%s</strong></p>', esc_html__( "WARNING: You've chosen no post types to index. Nothing will be indexed. Choose some post types to index.", 'relevanssi' ) );
+	$index_taxonomies_list = get_option( 'relevanssi_index_taxonomies_list', array() );
+	if ( empty( $index_taxonomies_list ) ) {
+		$index_taxonomies_list = array();
+	}
+
+	$core_content_config = array(
+		'relevanssi_index_post_types'  => array(
+			'type'          => 'post_types_table',
+			'label'         => __( 'Post types', 'relevanssi' ),
+			'hover_target'  => 'sb-post-types',
+			'value'         => $index_post_types,
+			'visible'       => true,
+			'tooltip'       => __( 'Private or hidden post types can be indexed safely; they simply will not appear in standard public search results.', 'relevanssi' ),
+			'sidebar_title' => __( 'Post Types:', 'relevanssi' ),
+			'sidebar_desc'  => __( 'Select the content types you want to include in search results. Choosing only the necessary post types keeps your database compact and fast.', 'relevanssi' ),
+		),
+		'relevanssi_index_image_files' => array(
+			'type'          => 'checkbox',
+			'label'         => __( 'Index image files', 'relevanssi' ),
+			'description'   => __( 'Include image attachments in search results.', 'relevanssi' ),
+			'hover_target'  => 'sb-image-files',
+			'value'         => get_option( 'relevanssi_index_image_files', 'off' ),
+			'visible'       => in_array( 'attachment', $index_post_types, true ),
+			'sidebar_title' => __( 'Image Files:', 'relevanssi' ),
+			'sidebar_desc'  => __( 'When enabled, Relevanssi indexes image metadata (like titles and alt text). If turned off, only text documents are searched.', 'relevanssi' ),
+		),
+		'relevanssi_index_taxonomies'  => array(
+			'type'          => 'taxonomies_table',
+			'label'         => __( 'Taxonomy terms (Index inside posts)', 'relevanssi' ),
+			'hover_target'  => 'sb-taxonomies',
+			'value'         => $index_taxonomies_list,
+			'tooltip'       => $is_premium
+				? __( 'Note: This lets visitors find posts by searching for their category or tag names. If you want the actual category landing pages to show up as separate search results, use the Specialized Indexing section below.', 'relevanssi' )
+				: __( 'This lets visitors find posts by searching for their category or tag names. If you want the actual category landing pages to show up as separate search results, you will need Relevanssi Premium.', 'relevanssi' ),
+			'sidebar_title' => __( 'Taxonomy Matching:', 'relevanssi' ),
+			'sidebar_desc'  => __( 'Checking boxes here adds category and tag terms directly to your posts\' search data. For example, searching for "Recipes" will display posts filed under Recipes, but it won\'t list the actual Recipes category page.', 'relevanssi' ),
+		),
+		'relevanssi_index_comments'    => array(
+			'type'          => 'select',
+			'label'         => __( 'Comments', 'relevanssi' ),
+			'hover_target'  => 'sb-comments',
+			'value'         => get_option( 'relevanssi_index_comments', 'none' ),
+			'options'       => array(
+				'none'   => __( 'Do not index comments', 'relevanssi' ),
+				'normal' => __( 'Index regular comments', 'relevanssi' ),
+				'all'    => __( 'Index comments, trackbacks, and pingbacks', 'relevanssi' ),
+			),
+			'sidebar_title' => __( 'User Comments:', 'relevanssi' ),
+			'sidebar_desc'  => __( 'Choose whether text inside user comments should help visitors discover matching posts.', 'relevanssi' ),
+		),
+		'relevanssi_index_author'      => array(
+			'type'          => 'checkbox',
+			'label'         => __( 'Author display names', 'relevanssi' ),
+			'description'   => __( 'Allow visitors to find posts by searching for the author\'s name.', 'relevanssi' ),
+			'hover_target'  => 'sb-authors',
+			'value'         => get_option( 'relevanssi_index_author', 'off' ),
+			'sidebar_title' => __( 'Author Search:', 'relevanssi' ),
+			'sidebar_desc'  => __( 'Matches search queries against author display names so visitors can find posts by specific writers.', 'relevanssi' ),
+		),
+		'relevanssi_index_excerpt'     => array(
+			'type'          => 'checkbox',
+			'label'         => __( 'Excerpts', 'relevanssi' ),
+			'description'   => __( 'Index text from manual excerpts.', 'relevanssi' ),
+			'hover_target'  => 'sb-excerpts',
+			'value'         => get_option( 'relevanssi_index_excerpt', 'off' ),
+			'sidebar_title' => __( 'Custom Excerpts:', 'relevanssi' ),
+			'sidebar_desc'  => __( 'When enabled, Relevanssi searches manual post excerpts in addition to the main post content.', 'relevanssi' ),
+		),
+	);
+
+	// --- Custom Fields Settings ---
+	$raw_index_fields = get_option( 'relevanssi_index_fields', '' );
+	$resolved_select  = 'some';
+	$display_fields   = $raw_index_fields;
+
+	if ( empty( $raw_index_fields ) ) {
+		$resolved_select = 'none';
+		$display_fields  = '';
+	} elseif ( 'all' === $raw_index_fields ) {
+		$resolved_select = 'all';
+		$display_fields  = '';
+	} elseif ( 'visible' === $raw_index_fields ) {
+		$resolved_select = 'visible';
+		$display_fields  = '';
+	}
+
+	$custom_field_options = array(
+		'none'    => __( 'Do not index custom fields', 'relevanssi' ),
+		'all'     => __( 'Index all custom fields', 'relevanssi' ),
+		'visible' => __( 'Index visible custom fields only', 'relevanssi' ),
+		'some'    => __( 'Index specific custom fields below', 'relevanssi' ),
+	);
+
+	$woo_notice = false;
+	if ( is_plugin_active( 'woocommerce/woocommerce.php' ) ) {
+		$fields_array = array_map( 'trim', explode( ',', $raw_index_fields ) );
+		$has_sku      = in_array( '_sku', $fields_array, true );
+
+		if ( 'some' === $resolved_select && $has_sku ) {
+			$woo_notice = array(
+				'type' => 'info',
+				'text' => __( '✓ WooCommerce SKUs are successfully registered in your custom fields list.', 'relevanssi' ),
+			);
+		} else {
+			$woo_notice = array(
+				'type' => 'info',
+				'text' => sprintf(
+					/* translators: %1$s is the dropdown option label, %2$s is the '_sku' key. */
+					__( 'To make WooCommerce SKUs searchable, set the dropdown below to "%1$s" and add %2$s to the text list.', 'relevanssi' ),
+					esc_html( $custom_field_options['some'] ),
+					'<strong>_sku</strong>'
+				),
+			);
 		}
 	}
-	?>
 
-	<div id="indexing_options">
-	<h2 id="indexing"><?php esc_html_e( 'Indexing options', 'relevanssi' ); ?></h2>
+	$custom_fields_config = array(
+		'relevanssi_index_fields_select' => array(
+			'type'          => 'select',
+			'label'         => __( 'Custom fields', 'relevanssi' ),
+			'hover_target'  => 'sb-custom-fields',
+			'value'         => $resolved_select,
+			'options'       => $custom_field_options,
+			'tooltip'       => __( 'Warning: Choosing "Index all" when using Advanced Custom Fields (ACF) can accidentally include internal technical data in your search result snippets.', 'relevanssi' ),
+			'sidebar_title' => __( 'Custom Fields:', 'relevanssi' ),
+			'sidebar_desc'  => sprintf(
+				/* translators: %1$s, %2$s, and %3$s are the option names. */
+				__( '"%1$s" searches everything. "%2$s" skips hidden system data. "%3$s" lets you manually type keys.', 'relevanssi' ),
+				esc_html( $custom_field_options['all'] ),
+				esc_html( $custom_field_options['visible'] ),
+				esc_html( $custom_field_options['some'] )
+			),
+		),
+		'relevanssi_index_fields'        => array(
+			'type'        => 'text',
+			'label'       => __( 'Custom fields to index', 'relevanssi' ),
+			'placeholder' => '_sku, book_author, custom_field_key',
+			'value'       => $display_fields,
+			'tooltip'     => __( 'Separate multiple keys with commas. For nested fields like ACF repeaters, use the fieldname_%_subfieldname format.', 'relevanssi' ),
+			'notice'      => $woo_notice,
+		),
+	);
 
-	<p><?php esc_html_e( 'Any changes to the settings on this page require reindexing before they take effect.', 'relevanssi' ); ?></p>
-
-	<table class="form-table" role="presentation" id="indexing_settings">
-	<tr id="row_index_post_types">
-		<th scope="row"><?php esc_html_e( 'Post types', 'relevanssi' ); ?></th>
-		<td>
-
-		<fieldset>
-			<legend class="screen-reader-text"><?php esc_html_e( 'Post types to index', 'relevanssi' ); ?></legend>
-			<table class="widefat" id="index_post_types_table">
-				<thead>
-					<tr>
-						<th><?php esc_html_e( 'Type', 'relevanssi' ); ?></th>
-						<th><?php esc_html_e( 'Index', 'relevanssi' ); ?></th>
-						<th><?php esc_html_e( 'Excluded from search?', 'relevanssi' ); ?></th>
-					</tr>
-				</thead>
-	<?php
-	$pt_1         = get_post_types( array( 'exclude_from_search' => '0' ) );
-	$pt_2         = get_post_types( array( 'exclude_from_search' => false ) );
-	$public_types = array_merge( $pt_1, $pt_2 );
-	$post_types   = get_post_types();
-	foreach ( $post_types as $type ) {
-		if ( in_array( $type, relevanssi_get_forbidden_post_types(), true ) ) {
-			continue;
-		}
-		$checked = '';
-		if ( in_array( $type, $index_post_types, true ) ) {
-			$checked = 'checked="checked"';
-		}
-		// Translators: %s is the post type name.
-		$screen_reader_label  = sprintf( __( 'Index post type %s', 'relevanssi' ), $type );
-		$label                = $type;
-		$excluded_from_search = __( 'yes', 'relevanssi' );
-		// Translators: %s is the post type name.
-		$screen_reader_exclude = sprintf( __( 'Post type %s is excluded from search', 'relevanssi' ), $type );
-		if ( in_array( $type, $public_types, true ) ) {
-			$excluded_from_search = __( 'no', 'relevanssi' );
-			// Translators: %s is the post type name.
-			$screen_reader_exclude = sprintf( __( 'Post type %s can be searched', 'relevanssi' ), $type );
-		}
-		$name_id = 'relevanssi_index_type_' . $type;
-		printf(
-			'<tr>
-				<th scope="row"><label class="screen-reader-text" for="%3$s">%1$s</label> %2$s</th>
-				<td><input type="checkbox" name="%3$s" id="%3$s" %4$s /></td>
-				<td><span aria-hidden="true">%5$s</span><span class="screen-reader-text">%6$s</span></td>
-			</tr>',
-			esc_html( $screen_reader_label ),
-			esc_html( $label ),
-			esc_attr( $name_id ),
-			esc_html( $checked ),
-			esc_html( $excluded_from_search ),
-			esc_html( $screen_reader_exclude )
+	if ( 'none' !== $resolved_select ) {
+		$custom_fields_config['list_custom_fields'] = array(
+			'type'          => 'custom_fields_list',
+			'label'         => __( 'Detected custom fields', 'relevanssi' ),
+			'hover_target'  => 'sb-list-custom-fields',
+			'sidebar_title' => __( 'Custom Fields List:', 'relevanssi' ),
+			'sidebar_desc'  => __( 'Displays a list of custom field keys found in your database content.', 'relevanssi' ),
 		);
 	}
-	?>
-			<tr style="display:none">
-				<td>
-					<label for="relevanssi_index_type_bogus">Helper control field to make sure settings are saved if no post types are selected.</label>
-				</td>
-				<td>
-					<input type='checkbox' name='relevanssi_index_type_bogus' id='relevanssi_index_type_bogus' checked="checked" />
-				</td>
-				<td>
-					This is our little secret, just for you and me
-				</td>
-			</tr>
-			</table>
-		</fieldset>
-		<p class="description"><?php esc_html_e( "If you want to index a post type that's marked 'Excluded from search', you can do that without worrying about it – but you need to uncheck the 'Respect exclude_from_search' setting from the Searching tab.", 'relevanssi' ); ?></p>
-	</td>
-	</tr>
 
-	<tr id="row_index_image_files"
-	<?php
-	if ( ! in_array( 'attachment', $index_post_types, true ) ) {
-		echo 'style="display: none"';
+	$rlv_validation_l10n = array(
+		'errorText' => '<strong>' . __( 'Configuration Error:', 'relevanssi' ) . '</strong> ' . __( 'You selected "Index specific custom fields below" but left the custom fields text box empty. Please enter at least one field key before saving.', 'relevanssi' ),
+	);
+
+	?>
+	<script>
+	document.addEventListener('DOMContentLoaded', function() {
+	const selectField = document.getElementById('relevanssi_index_fields_select');
+	const textField = document.getElementById('relevanssi_index_fields');
+
+	if (!selectField || !textField) {
+		return;
 	}
-	?>
-	>
-		<th scope="row">
-			<?php esc_html_e( 'Index image files', 'relevanssi' ); ?>
-		</th>
-		<td>
-			<label for='relevanssi_index_image_files'>
-				<input type='checkbox' name='relevanssi_index_image_files' id='relevanssi_index_image_files' <?php echo esc_attr( $index_image_files ); ?> />
-				<?php esc_html_e( 'Index image attachments', 'relevanssi' ); ?>
-			</label>
-			<p class="description"><?php esc_html_e( 'If this option is enabled, Relevanssi will include image attachments in the index. If the option is disabled, only other attachment types are included.', 'relevanssi' ); ?></p>
-			<?php // Translators: %1$s opens the link, %2$s closes it. ?>
-			<p class="description"><?php printf( esc_html__( 'For more detailed control over the attachment type indexing, see %1$sControlling attachment types in the Knowledge base%2$s.', 'relevanssi' ), '<a href="https://www.relevanssi.com/knowledge-base/controlling-attachment-types-index/">', '</a>' ); ?></p>
-		</td>
-	</tr>
 
-	<tr id="row_index_taxonomies">
-		<th scope="row">
-			<?php esc_html_e( 'Taxonomies', 'relevanssi' ); ?>
-		</th>
-		<td>
+	const form = selectField.closest('form');
+	const errorHtml = <?php echo wp_json_encode( $rlv_validation_l10n['errorText'] ); ?>;
 
-			<table class="widefat" id="custom_taxonomies_table">
-			<thead>
-				<tr>
-					<th><?php esc_html_e( 'Taxonomy', 'relevanssi' ); ?></th>
-					<th><?php esc_html_e( 'Index', 'relevanssi' ); ?></th>
-					<th><?php esc_html_e( 'Public?', 'relevanssi' ); ?></th>
-				</tr>
-			</thead>
+	function validateCustomFields() {
+		let existingNotice = textField.parentNode.querySelector('.relevanssi-validation-error');
 
+		if (selectField.value === 'some' && textField.value.trim() === '') {
+			if (!existingNotice) {
+				existingNotice = document.createElement('div');
+				existingNotice.className = 'relevanssi-notice relevanssi-notice-error relevanssi-validation-error';
+
+				existingNotice.setAttribute('role', 'alert');
+				existingNotice.setAttribute('id', 'relevanssi-field-error-msg');
+				textField.setAttribute('aria-invalid', 'true');
+				textField.setAttribute('aria-describedby', 'relevanssi-field-error-msg');
+
+				existingNotice.innerHTML = '<p>' + errorHtml + '</p>';
+				textField.parentNode.appendChild(existingNotice);
+			}
+			return false;
+		} else {
+			if (existingNotice) {
+				existingNotice.remove();
+				textField.removeAttribute('aria-invalid');
+				textField.removeAttribute('aria-describedby');
+			}
+			return true;
+		}
+	}
+
+	selectField.addEventListener('change', validateCustomFields);
+	textField.addEventListener('input', validateCustomFields);
+
+	if (form) {
+		form.addEventListener('submit', function(event) {
+			if (!validateCustomFields()) {
+				event.preventDefault();
+				textField.focus();
+			}
+		});
+	}
+});
+	</script>
 	<?php
-	$taxos = get_taxonomies( '', 'objects' );
-	foreach ( $taxos as $taxonomy ) {
-		if ( in_array( $taxonomy->name, relevanssi_get_forbidden_taxonomies(), true ) ) {
-			continue;
-		}
-		$checked = '';
-		if ( in_array( $taxonomy->name, $index_taxonomies_list, true ) ) {
-			$checked = 'checked="checked"';
-		}
 
-		// Translators: %s is the taxonomy name.
-		$screen_reader_label = sprintf( __( 'Index taxonomy %s', 'relevanssi' ), $taxonomy->name );
-		$public              = __( 'no', 'relevanssi' );
-		// Translators: %s is the taxonomy name.
-		$screen_reader_public = sprintf( __( 'Taxonomy %s is not public', 'relevanssi' ), $taxonomy->name );
-		if ( $taxonomy->public ) {
-			$public = __( 'yes', 'relevanssi' );
-			// Translators: %s is the taxonomy name.
-			$screen_reader_public = sprintf( __( 'Taxonomy %s is public', 'relevanssi' ), $taxonomy->name );
-		}
-
-		$name_id = 'relevanssi_index_taxonomy_' . $taxonomy->name;
-		printf(
-			'<tr>
-				<th scope="row"><label class="screen-reader-text" for="%3$s">%1$s</label> %2$s</th>
-				<td><input type="checkbox" name="%3$s" id="%3$s" %4$s /></td>
-				<td><span aria-hidden="true">%5$s</span><span class="screen-reader-text">%6$s</span></td>
-			</tr>',
-			esc_html( $screen_reader_label ),
-			esc_html( $taxonomy->name ),
-			esc_attr( $name_id ),
-			esc_html( $checked ),
-			esc_html( $public ),
-			esc_html( $screen_reader_public )
+	// --- Premium Content Options (Upsells) ---
+	if ( $is_premium ) {
+		$premium_indexing_config = array(
+			'premium_indexing_header' => array(
+				'type'        => 'subheader',
+				'title'       => __( 'Additional Profiles & Objects', 'relevanssi' ),
+				'description' => __( 'Configure indexing rules for users, synonyms, and specialized file attachments.', 'relevanssi' ),
+				'visible'     => true,
+			),
 		);
-
+		$premium_indexing_config = apply_filters( 'relevanssi_premium_indexing_config', $premium_indexing_config );
+	} else {
+		$premium_indexing_config = array(
+			'premium_indexing_upsell' => array(
+				'type'          => 'upsell',
+				'label'         => __( 'Specialized Indexing', 'relevanssi' ),
+				'feature_name'  => __( 'Advanced User, Category, and File Search', 'relevanssi' ),
+				'features_list' => array(
+					__( 'PDF & Document Text Scanning: Extract and search text content directly inside attached PDFs, Word documents, and text uploads.', 'relevanssi' ),
+					__( 'Taxonomy terms (Index inside posts): Let visitors find the actual category, tag, or portfolio landing pages in their search results, rather than just the individual posts inside them.', 'relevanssi' ),
+					__( 'User Profile Search: Include biographical descriptions, custom metadata, and user details in your search index.', 'relevanssi' ),
+					__( 'Multisite Network Support: Search across multiple sub-sites within a WordPress multisite network at the same time.', 'relevanssi' ),
+				),
+				'hover_target'  => 'sb-premium-indexing',
+				'sidebar_title' => __( 'Premium Features:', 'relevanssi' ),
+				'sidebar_desc'  => __( 'Unlock file scanning and user searches to let visitors find content beyond standard posts and pages.', 'relevanssi' ),
+			),
+		);
 	}
+
+	// --- Stopwords Settings ---
+	$stopwords_config = array(
+		'relevanssi_manage_stopwords' => array(
+			'type'          => 'stopwords_manager',
+			'label'         => __( 'Core Stopwords List', 'relevanssi' ),
+			'hover_target'  => 'sb-stopwords-ctrl',
+			'sidebar_title' => __( 'Stopword Exclusions:', 'relevanssi' ),
+			'sidebar_desc'  => __( 'Stopwords are extremely common words (like "the", "a", "of") that add no unique value to searches. Filtering them out saves database space and increases search speed.', 'relevanssi' ),
+		),
+	);
+
+	if ( $is_premium ) {
+		$stopwords_config['relevanssi_body_stopwords'] = array(
+			'type'          => 'body_stopwords_manager',
+			'label'         => __( 'Content-Only Stopwords', 'relevanssi' ),
+			'hover_target'  => 'sb-body-stopwords-ctrl',
+			'sidebar_title' => __( 'Content-Only Rules:', 'relevanssi' ),
+			'sidebar_desc'  => __( 'Allows you to exclude words from the post body while still indexing them if they appear in post titles, tags, or categories.', 'relevanssi' ),
+		);
+		$stopwords_config                              = apply_filters( 'relevanssi_premium_stopwords_config', $stopwords_config );
+	} else {
+		$stopwords_config['relevanssi_body_stopwords_upsell'] = array(
+			'type'          => 'upsell',
+			'label'         => __( 'Content-Only Stopwords', 'relevanssi' ),
+			'feature_name'  => __( 'Advanced Post Body Stopword Filtering', 'relevanssi' ),
+			'features_list' => array(
+				__( 'Targeted Exclusions: Ignore common words in the post body but keep them searchable if they appear in titles, tags, or custom fields.', 'relevanssi' ),
+			),
+			'hover_target'  => 'sb-body-stopwords-ctrl',
+			'sidebar_title' => __( 'Content-Only Rules:', 'relevanssi' ),
+			'sidebar_desc'  => __( 'Unlock content filters to remove common words from the post body while keeping them searchable in titles and tags.', 'relevanssi' ),
+		);
+	}
+
+	// --- Advanced Index Settings ---
+	$cat_restriction       = get_option( 'relevanssi_cat_restriction', '' );
+	$cat_exclusion         = get_option( 'relevanssi_cat_exclusion', '' );
+	$post_exclusion        = get_option( 'relevanssi_post_exclusion', '' );
+	$has_legacy_exclusions = ( ! empty( $cat_restriction ) || ! empty( $cat_exclusion ) || ! empty( $post_exclusion ) );
+
+	$supported_locales = array( 'cs_CZ', 'de_DE', 'es_ES', 'fi', 'fr_CA', 'fr_FR', 'it_IT', 'ja', 'nl_NL', 'pl_PL', 'pt_BR', 'ru_RU', 'sv_SE' );
+	$current_lang      = determine_locale();
+	$lang_base         = substr( $current_lang, 0, 2 );
+	$show_translations = ( in_array( $current_lang, $supported_locales, true ) || in_array( $lang_base, $supported_locales, true ) );
+
+	$punctuation_options = get_option( 'relevanssi_punctuation', array() );
+
+	$advanced_config = array(
+		'relevanssi_expand_shortcodes'          => array(
+			'type'          => 'checkbox',
+			'label'         => __( 'Expand shortcodes', 'relevanssi' ),
+			'description'   => __( 'Execute shortcodes during indexing to capture their text outputs.', 'relevanssi' ),
+			'hover_target'  => 'sb-adv-shortcodes',
+			'value'         => get_option( 'relevanssi_expand_shortcodes', 'off' ),
+			'tooltip'       => __( 'Turn this off immediately if the index build process freezes, times out, or runs out of server memory.', 'relevanssi' ),
+			'sidebar_title' => __( 'Shortcode Execution:', 'relevanssi' ),
+			'sidebar_desc'  => __( 'Choose whether Relevanssi runs shortcodes and page builders to index the text content they generate inside your pages.', 'relevanssi' ),
+		),
+		'relevanssi_disable_shortcodes'         => array(
+			'type'          => 'text',
+			'label'         => __( 'Disable these shortcodes', 'relevanssi' ),
+			'description'   => __( 'Enter a comma-separated list of shortcode tags (without brackets). These will be ignored during indexing.', 'relevanssi' ),
+			'value'         => get_option( 'relevanssi_disable_shortcodes', '' ),
+			'hover_target'  => 'sb-disable-shortcodes',
+			'sidebar_title' => __( 'Shortcode Exclusion:', 'relevanssi' ),
+			'sidebar_desc'  => __( 'Enter a comma-separated list of shortcodes to skip. This is useful if a specific shortcode breaks your indexing process.', 'relevanssi' ),
+			'visible'       => $is_premium,
+		),
+		'relevanssi_min_word_length'            => array(
+			'type'          => 'number',
+			'label'         => __( 'Minimum word length', 'relevanssi' ),
+			'hover_target'  => 'sb-adv-wordlen',
+			'value'         => get_option( 'relevanssi_min_word_length', 3 ),
+			'min'           => 1,
+			'max'           => 9,
+			'step'          => 1,
+			'tooltip'       => __( 'Caution: Setting this higher than 3 will completely drop short, important terms from your search index.', 'relevanssi' ),
+			'sidebar_title' => __( 'Minimum Length:', 'relevanssi' ),
+			'sidebar_desc'  => __( 'Words shorter than this are ignored to keep the search tables compact and fast.', 'relevanssi' ),
+		),
+		'legacy_exclusion_header'               => array(
+			'type'        => 'subheader',
+			'title'       => __( 'Legacy Exclusions (Deprecated)', 'relevanssi' ),
+			'description' => __( 'These options are outdated and will be removed entirely in a future version.', 'relevanssi' ),
+			'visible'     => $has_legacy_exclusions,
+		),
+		'relevanssi_cat_restriction'            => array(
+			'type'    => 'text',
+			'label'   => __( 'Category restriction', 'relevanssi' ),
+			'value'   => $cat_restriction,
+			'visible' => ! empty( $cat_restriction ),
+			'notice'  => array(
+				'type' => 'warning',
+				'text' => __( 'Deprecated: Please use standard theme query parameters or tax_query filters instead.', 'relevanssi' ),
+			),
+		),
+		'relevanssi_cat_exclusion'              => array(
+			'type'    => 'text',
+			'label'   => __( 'Category exclusion', 'relevanssi' ),
+			'value'   => $cat_exclusion,
+			'visible' => ! empty( $cat_exclusion ),
+			'notice'  => array(
+				'type' => 'warning',
+				'text' => __( 'Deprecated: Use theme search parameters to exclude specific category IDs dynamically.', 'relevanssi' ),
+			),
+		),
+		'relevanssi_post_exclusion'             => array(
+			'type'    => 'text',
+			'label'   => __( 'Post exclusion', 'relevanssi' ),
+			'value'   => $post_exclusion,
+			'visible' => ! empty( $post_exclusion ),
+			'notice'  => array(
+				'type' => 'warning',
+				'text' => __( 'Deprecated: Target individual item exclusion rules during your search parsing loops.', 'relevanssi' ),
+			),
+		),
+		'translation_updates_header'            => array(
+			'type'        => 'subheader',
+			'title'       => __( 'Translation updates', 'relevanssi' ),
+			'description' => __( 'Configure translation updates and language options.', 'relevanssi' ),
+			'visible'     => $show_translations,
+		),
+		'relevanssi_update_translations_toggle' => array(
+			'type'        => 'checkbox',
+			'label'       => __( 'Automatic dictionary sync', 'relevanssi' ),
+			'description' => __( 'Download language translation dictionaries automatically.', 'relevanssi' ),
+			'value'       => get_option( 'relevanssi_update_translations_toggle', 'off' ),
+			'visible'     => $show_translations,
+		),
+		'punct_header'                          => array(
+			'type'        => 'subheader',
+			'title'       => __( 'Punctuation control', 'relevanssi' ),
+			'description' => __( 'Define how punctuation marks are parsed. Any changes here require rebuilding the index before results show up accurately.', 'relevanssi' ),
+		),
+		'relevanssi_punct_hyphens'              => array(
+			'type'          => 'select',
+			'label'         => __( 'Hyphens and dashes', 'relevanssi' ),
+			'hover_target'  => 'sb-punct-hyphens',
+			'value'         => $punctuation_options['hyphens'] ?? 'replace',
+			'options'       => array(
+				'keep'    => __( 'Keep hyphens intact', 'relevanssi' ),
+				'replace' => __( 'Replace hyphens with spaces', 'relevanssi' ),
+				'remove'  => __( 'Remove hyphens entirely', 'relevanssi' ),
+			),
+			'sidebar_title' => __( 'Hyphen Rules:', 'relevanssi' ),
+			'sidebar_desc'  => __( 'Replacing hyphens with spaces splits compound words (like "e-commerce" into "e" and "commerce"), which generally reflects user search styles best.', 'relevanssi' ),
+		),
+		'relevanssi_punct_quotes'               => array(
+			'type'          => 'select',
+			'label'         => __( 'Apostrophes and quotes', 'relevanssi' ),
+			'hover_target'  => 'sb-punct-quotes',
+			'value'         => $punctuation_options['quotes'] ?? 'replace',
+			'options'       => array(
+				'replace' => __( 'Replace quotes with spaces', 'relevanssi' ),
+				'remove'  => __( 'Remove quotes entirely', 'relevanssi' ),
+			),
+			'sidebar_title' => __( 'Quote Settings:', 'relevanssi' ),
+			'sidebar_desc'  => __( 'Controls whether quotes break words into separate terms or are removed entirely.', 'relevanssi' ),
+		),
+		'relevanssi_punct_ampersands'           => array(
+			'type'          => 'select',
+			'label'         => __( 'Ampersands', 'relevanssi' ),
+			'hover_target'  => 'sb-punct-ampersands',
+			'value'         => $punctuation_options['ampersands'] ?? 'replace',
+			'options'       => array(
+				'keep'    => __( 'Keep symbols intact', 'relevanssi' ),
+				'replace' => __( 'Replace with spaces', 'relevanssi' ),
+				'remove'  => __( 'Remove symbols entirely', 'relevanssi' ),
+			),
+			'sidebar_title' => __( 'Ampersand Symbols:', 'relevanssi' ),
+			'sidebar_desc'  => __( 'Keep the symbol if your content contains names that rely on them, like "AT&T" or "R&B".', 'relevanssi' ),
+		),
+		'relevanssi_punct_decimals'             => array(
+			'type'          => 'select',
+			'label'         => __( 'Decimal separators', 'relevanssi' ),
+			'hover_target'  => 'sb-punct-decimals',
+			'value'         => $punctuation_options['decimals'] ?? 'remove',
+			'options'       => array(
+				'keep'    => __( 'Keep decimal separators intact', 'relevanssi' ),
+				'replace' => __( 'Replace with spaces', 'relevanssi' ),
+				'remove'  => __( 'Remove decimal separators entirely', 'relevanssi' ),
+			),
+			'sidebar_title' => __( 'Decimal Points:', 'relevanssi' ),
+			'sidebar_desc'  => __( 'Keep decimals if your visitors search for specific numbers, like prices ($9.99) or version tags (v2.4).', 'relevanssi' ),
+		),
+	);
+
+	$advanced_config = apply_filters( 'relevanssi_advanced_indexing_config', $advanced_config );
 	?>
-			</table>
+	<div id="indexing_tab_consolidated" class="wrap">
+		<h1 class="wp-heading-inline"><?php esc_html_e( 'Indexing Settings', 'relevanssi' ); ?></h1>
 
-			<p class="description"><?php esc_html_e( 'If you check a taxonomy here, the terms for that taxonomy are indexed with the posts. If you for example choose "post_tag", searching for a tag will find all posts that have the tag.', 'relevanssi' ); ?>
-
-		</td>
-	</tr>
-
-	<tr id="row_index_comments">
-		<th scope="row">
-			<label for='relevanssi_index_comments'><?php esc_html_e( 'Comments', 'relevanssi' ); ?></label>
-		</th>
-		<td>
-			<select name='relevanssi_index_comments' id='relevanssi_index_comments'>
-				<option value='none' <?php echo esc_html( $index_comments_none ); ?>><?php esc_html_e( 'none', 'relevanssi' ); ?></option>
-				<option value='normal' <?php echo esc_html( $index_comments_normal ); ?>><?php esc_html_e( 'comments', 'relevanssi' ); ?></option>
-				<option value='all' <?php echo esc_html( $index_comments_all ); ?>><?php esc_html_e( 'comments and pingbacks', 'relevanssi' ); ?></option>
-			</select>
-			<p class="description"><?php esc_html_e( 'If you choose to index comments, you can choose if you want to index just comments, or everything including comments and track- and pingbacks.', 'relevanssi' ); ?></p>
-		</td>
-	</tr>
-
-	<tr id="row_index_custom_fields">
-		<th scope="row">
-			<label for='relevanssi_index_fields_select'><?php esc_html_e( 'Custom fields', 'relevanssi' ); ?></label>
-		</th>
-		<td>
-			<select name='relevanssi_index_fields_select' id='relevanssi_index_fields_select'>
-				<option value='none' <?php echo esc_html( $fields_select_none ); ?>><?php esc_html_e( 'none', 'relevanssi' ); ?></option>
-				<option value='all' <?php echo esc_html( $fields_select_all ); ?>><?php esc_html_e( 'all', 'relevanssi' ); ?></option>
-				<option value='visible' <?php echo esc_html( $fields_select_visible ); ?>><?php esc_html_e( 'visible', 'relevanssi' ); ?></option>
-				<option value='some' <?php echo esc_html( $fields_select_some ); ?>><?php esc_html_e( 'some', 'relevanssi' ); ?></option>
-			</select>
-			<p class="description">
-			<?php
-			esc_html_e( "'All' indexes all custom fields for posts.", 'relevanssi' );
-			echo '<br/>';
-			esc_html_e( "'Visible' only includes the custom fields that are visible in the user interface (with names that don't start with an underscore).", 'relevanssi' );
-			echo '<br/>';
-			esc_html_e( "'Some' lets you choose individual custom fields to index.", 'relevanssi' );
-			?>
-			</p>
-			<?php
-			if ( class_exists( 'acf' ) && $fields_select_all ) {
-				echo "<p class='description important'>";
-				esc_html_e( 'Advanced Custom Fields has lots of invisible custom fields with meta data. Selecting "all" will include lots of garbage in the index and excerpts. "Visible" is usually a better option with ACF.' );
-				echo '</p>';
+		<?php
+		if ( count( $index_post_types ) < 2 ) {
+			$index_users      = get_option( 'relevanssi_index_users', 'off' );
+			$index_taxonomies = get_option( 'relevanssi_index_taxonomies', 'off' );
+			if ( 'off' === $index_users && 'off' === $index_taxonomies ) {
+				printf( '<div class="notice notice-warning"><p><strong>%s</strong></p></div>', esc_html__( 'Warning: No content types have been chosen for indexing. Please select at least one post type below.', 'relevanssi' ) );
 			}
-			?>
-			<div id="index_field_input"
-			<?php
-			if ( empty( $fields_select_some ) ) {
-				echo 'style="display: none"';
-			}
-			?>
-			>
-				<label for="relevanssi_index_fields" class="screen-reader-text"><?php esc_html_e( 'Custom fields to index', 'relevanssi' ); ?></label>
-				<input type='text' name='relevanssi_index_fields' id='relevanssi_index_fields' size='60' value='<?php echo esc_attr( $index_fields ); ?>' />
-				<p class="description"><?php esc_html_e( "Enter a comma-separated list of custom fields to include in the index. With Relevanssi Premium, you can also use 'fieldname_%_subfieldname' notation for ACF repeater fields.", 'relevanssi' ); ?></p>
-				<p class="description"><?php esc_html_e( "You can use 'relevanssi_index_custom_fields' filter hook to adjust which custom fields are indexed.", 'relevanssi' ); ?></p>
+		}
+		?>
+
+		<div class="relevanssi-dashboard-layout">
+			<div class="relevanssi-main">
+
+				<div class="relevanssi-settings-row" style="margin-bottom: 24px;">
+					<div class="relevanssi-settings-content">
+						<div class="relevanssi-index-grid">
+
+							<div class="relevanssi-card" id="card-index-control">
+								<h2><?php esc_html_e( 'Index Actions', 'relevanssi' ); ?></h2>
+								<div class="relevanssi-action-group">
+									<input type="button" id="build_index" name="index" value="<?php esc_attr_e( 'Build the index', 'relevanssi' ); ?>" class='button-primary' data-hover-target="sb-build-index" />
+									<input type="button" id="continue_indexing" name="continue" value="<?php esc_attr_e( 'Index unindexed posts', 'relevanssi' ); ?>" class='button-primary' data-hover-target="sb-continue-index" />
+								</div>
+
+								<div id='relevanssi-note' style='display: none'></div>
+								<div id='relevanssi-progress' class='rpi-progress'><div class="rpi-indicator"></div></div>
+								<div id='relevanssi-timer'><?php esc_html_e( 'Time elapsed', 'relevanssi' ); ?>: <span id="relevanssi_elapsed">0:00:00</span> | <?php esc_html_e( 'Time remaining', 'relevanssi' ); ?>: <span id="relevanssi_estimated"><?php esc_html_e( 'calculating...', 'relevanssi' ); ?></span></div>
+								<label for="results" class="screen-reader-text"><?php esc_html_e( 'Results', 'relevanssi' ); ?></label><textarea id='results' rows='10' cols='80' style="display:none;"></textarea>
+								<div id='relevanssi-indexing-instructions' style='display: none'><?php esc_html_e( 'Indexing usually responds immediately. If progress stalls for more than a couple of minutes, it may be stuck. Check your advanced server options or decrease word limits.', 'relevanssi' ); ?></div>
+							</div>
+
+							<div class="relevanssi-card relevanssi-metric-card" id="card-index-state">
+								<h2><?php esc_html_e( 'Index Status', 'relevanssi' ); ?></h2>
+								<div id="stateoftheindex" class="relevanssi-metrics">
+									<div class="metric">
+										<span class="metric-number"><?php echo esc_html( $docs_count ); ?></span>
+										<span class="metric-label"><?php echo esc_html( _n( 'Document', 'Documents', $docs_count, 'relevanssi' ) ); ?></span>
+									</div>
+
+									<div class="metric <?php echo ! $is_premium ? 'metric-locked-placeholder' : ''; ?>" style="<?php echo ! $is_premium ? 'opacity: 0.55; position: relative;' : ''; ?>">
+										<span class="metric-number"><?php echo esc_html( $user_count ); ?></span>
+										<span class="metric-label">
+											<?php echo esc_html( _n( 'User Profile', 'User Profiles', $user_count, 'relevanssi' ) ); ?>
+											<?php
+											if ( ! $is_premium ) :
+												?>
+												<span class="dashicons dashicons-lock" style="font-size: 14px; width: 14px; height: 14px; vertical-align: text-top;"></span><?php endif; ?>
+										</span>
+									</div>
+
+									<div class="metric <?php echo ! $is_premium ? 'metric-locked-placeholder' : ''; ?>" style="<?php echo ! $is_premium ? 'opacity: 0.55; position: relative;' : ''; ?>">
+										<span class="metric-number"><?php echo esc_html( $taxterm_count ); ?></span>
+										<span class="metric-label">
+											<?php echo esc_html( _n( 'Taxonomy Archive', 'Taxonomy Archives', $taxterm_count, 'relevanssi' ) ); ?>
+											<?php
+											if ( ! $is_premium ) :
+												?>
+												<span class="dashicons dashicons-lock" style="font-size: 14px; width: 14px; height: 14px; vertical-align: text-top;"></span><?php endif; ?>
+										</span>
+									</div>
+
+									<div class="metric">
+										<span class="metric-number"><?php echo esc_html( $terms_count ); ?></span>
+										<span class="metric-label">
+											<?php echo esc_html( _n( 'Indexed Word', 'Indexed Words', $terms_count, 'relevanssi' ) ); ?>
+										</span>
+									</div>
+
+									<p class="lowest-doc"><?php echo esc_html( $lowest_doc ); ?> <?php esc_html_e( 'is the lowest post ID indexed.', 'relevanssi' ); ?></p>
+
+									<?php // Translators: %1$s opens an anchor link navigation tag context, %2$s terminates it. ?>
+									<p class="description update-counts">(<?php printf( esc_html__( 'Need updated database statistics? %1$sUpdate counts%2$s', 'relevanssi' ), '<a href="' . esc_url( $update_url ) . '">', '</a>' ); ?>)</p>
+								</div>
+							</div>
+
+						</div>
+					</div>
+					<aside class="relevanssi-settings-sidebar">
+						<div class="relevanssi-info-box">
+							<h3><?php esc_html_e( 'Index Management', 'relevanssi' ); ?></h3>
+							<?php // Translators: %s is a bold tag string container for the "Build the index" button text label. ?>
+							<p id="sb-build-index"><?php printf( esc_html__( '%s safely wipes out your existing index and runs a clean search database build based on your saved rules below.', 'relevanssi' ), '<strong>' . esc_html__( 'Build the index', 'relevanssi' ) . '</strong>' ); ?></p>
+							<?php // Translators: %s is a bold tag string wrapper targeting the "Index unindexed posts" action label. ?>
+							<p id="sb-continue-index"><?php printf( esc_html__( 'If an indexing task gets interrupted or drops out, use %s to resume indexing content missing from the index.', 'relevanssi' ), '<strong>' . esc_html__( 'Index unindexed posts', 'relevanssi' ) . '</strong>' ); ?>
+							<?php
+							if ( $is_premium ) {
+								echo '<br/>';
+								esc_html_e( 'Note: Continuing an index build does not scan taxonomy archive terms or user entries.', 'relevanssi' );
+							}
+							?>
+							</p>
+						</div>
+					</aside>
+				</div>
+
+				<div class="relevanssi-settings-row" style="margin-bottom: 24px;">
+					<div class="relevanssi-settings-content">
+						<div class="relevanssi-card" id="card-core-content">
+							<h2 id="indexing"><?php esc_html_e( 'Core Content', 'relevanssi' ); ?></h2>
+							<p class="description" style="margin-bottom: 20px;"><?php esc_html_e( 'Any structural changes made here will apply only after you rebuild the index.', 'relevanssi' ); ?></p>
+							<?php Relevanssi_Settings_Renderer::render_table( $core_content_config ); ?>
+						</div>
+					</div>
+					<aside class="relevanssi-settings-sidebar">
+						<div class="relevanssi-info-box">
+							<h3><?php esc_html_e( 'Core Fields Guide', 'relevanssi' ); ?></h3>
+							<p><?php esc_html_e( 'Specify exactly which basic fields Relevanssi should read when scanning your WordPress data.', 'relevanssi' ); ?></p>
+							<ul style="list-style: disc; margin-left: 20px; margin-bottom: 12px; font-size: 13px;">
+								<?php Relevanssi_Settings_Renderer::render_sidebar_list( $core_content_config ); ?>
+							</ul>
+						</div>
+					</aside>
+				</div>
+
+				<div class="relevanssi-settings-row" style="margin-bottom: 24px;">
+					<div class="relevanssi-settings-content">
+						<div class="relevanssi-card" id="card-custom-fields">
+							<h2><?php esc_html_e( 'Custom Fields', 'relevanssi' ); ?></h2>
+							<?php Relevanssi_Settings_Renderer::render_table( $custom_fields_config ); ?>
+						</div>
+					</div>
+					<aside class="relevanssi-settings-sidebar">
+						<div class="relevanssi-info-box">
+							<h3><?php esc_html_e( 'Custom Fields Support', 'relevanssi' ); ?></h3>
+							<p><?php esc_html_e( 'Custom fields store additional item metadata. If you use page builders, Advanced Custom Fields (ACF), or WooCommerce store data setups, register your specific custom field keys here to make them searchable.', 'relevanssi' ); ?></p>
+							<ul style="list-style: disc; margin-left: 20px; margin-bottom: 12px; font-size: 13px;">
+								<?php Relevanssi_Settings_Renderer::render_sidebar_list( $custom_fields_config ); ?>
+							</ul>
+						</div>
+					</aside>
+				</div>
+
+				<div class="relevanssi-settings-row" style="margin-bottom: 24px;">
+					<div class="relevanssi-settings-content" style="<?php echo ! $is_premium ? 'width: 100%; max-width: 100%;' : ''; ?>">
+						<div class="relevanssi-card" id="card-premium-indexing">
+							<h2><?php esc_html_e( 'Special Indexing', 'relevanssi' ); ?></h2>
+							<?php Relevanssi_Settings_Renderer::render_table( $premium_indexing_config ); ?>
+						</div>
+					</div>
+					<?php if ( $is_premium ) : ?>
+						<aside class="relevanssi-settings-sidebar">
+							<div class="relevanssi-info-box">
+								<h3><?php esc_html_e( 'Special Indexing', 'relevanssi' ); ?></h3>
+								<p><?php esc_html_e( 'Expand your search beyond typical posts and pages.', 'relevanssi' ); ?></p>
+								<ul style="list-style: disc; margin-left: 20px; margin-bottom: 12px; font-size: 13px;">
+									<?php Relevanssi_Settings_Renderer::render_sidebar_list( $premium_indexing_config ); ?>
+								</ul>
+							</div>
+						</aside>
+					<?php endif; ?>
+				</div>
+
+				<div class="relevanssi-settings-row" style="margin-bottom: 24px;">
+					<div class="relevanssi-settings-content">
+						<details class="relevanssi-card" id="card-stopwords-indexing">
+							<summary style="cursor: pointer; outline: none;"><h2 style="display: inline-block; margin: 0;"><?php esc_html_e( 'Stopwords Exclusions', 'relevanssi' ); ?></h2></summary>
+							<div style="margin-top: 16px;">
+								<?php
+								if ( class_exists( 'Polylang', false ) && ! relevanssi_get_current_language() ) {
+									?>
+
+									<h3 id="stopwords"><?php esc_html_e( 'Stopwords', 'relevanssi' ); ?></h3>
+									<p class="description"><?php esc_html_e( 'You are using Polylang and are in "Show all languages" mode. Please select a language before adjusting the stopword settings.', 'relevanssi' ); ?></p>
+
+									<?php
+								} else {
+									Relevanssi_Settings_Renderer::render_table( $stopwords_config );
+
+									if ( apply_filters( 'relevanssi_display_common_words', true ) ) {
+										relevanssi_common_words( 25 );
+
+									}
+								}
+								?>
+							</div>
+						</details>
+					</div>
+					<aside class="relevanssi-settings-sidebar">
+						<div class="relevanssi-info-box">
+							<h3><?php esc_html_e( 'Stopwords Guide', 'relevanssi' ); ?></h3>
+							<p><?php esc_html_e( 'Manage phrases and words that should be ignored by the engine to keep your searches focused and quick.', 'relevanssi' ); ?></p>
+							<ul style="list-style: disc; margin-left: 20px; margin-bottom: 12px; font-size: 13px;">
+								<li id="sb-stopwords-ctrl"><strong><?php esc_html_e( 'Core Stopwords:', 'relevanssi' ); ?></strong> <?php esc_html_e( 'Wipes general terms entirely across all parts of your indexed post entries.', 'relevanssi' ); ?></li>
+								<li id="sb-body-stopwords-ctrl"><strong><?php esc_html_e( 'Content-Only:', 'relevanssi' ); ?></strong> <?php esc_html_e( 'Only ignores words if they occur strictly within the post content.', 'relevanssi' ); ?></li>
+							</ul>
+						</div>
+					</aside>
+				</div>
+
+				<div class="relevanssi-settings-row">
+					<div class="relevanssi-settings-content">
+						<details class="relevanssi-card" id="card-advanced-indexing">
+							<summary style="cursor: pointer; outline: none;"><h2 style="display: inline-block; margin: 0;"><?php esc_html_e( 'Advanced Indexing Options', 'relevanssi' ); ?></h2></summary>
+							<div style="margin-top: 16px;">
+								<?php
+								Relevanssi_Settings_Renderer::render_table( $advanced_config );
+								do_action( 'relevanssi_indexing_tab_advanced' );
+								?>
+							</div>
+						</details>
+					</div>
+					<aside class="relevanssi-settings-sidebar">
+						<div class="relevanssi-info-box">
+							<h3><?php esc_html_e( 'Advanced Tuning', 'relevanssi' ); ?></h3>
+							<p><?php esc_html_e( 'Configure complex character set configurations, punctuation filters, and custom string rules.', 'relevanssi' ); ?></p>
+							<ul style="list-style: disc; margin-left: 20px; margin-bottom: 12px; font-size: 13px;">
+								<?php
+								Relevanssi_Settings_Renderer::render_sidebar_list( $advanced_config );
+								do_action( 'relevanssi_advanced_indexing_sidebar_list' );
+								?>
+
+							</ul>
+						</div>
+					</aside>
+				</div>
+
 			</div>
-			<?php if ( is_plugin_active( 'woocommerce/woocommerce.php' ) ) : ?>
-				<?php // Translators: %1$s is the 'some' option and %2$s is '_sku'. ?>
-			<p class="description"><?php printf( esc_html__( 'If you want the SKU included, choose %1$s and enter %2$s. Also see the contextual help for more details.', 'relevanssi' ), esc_html( "'" . __( 'some', 'relevanssi' ) . "'" ), '<code>_sku</code>' ); ?></p>
-			<?php endif; ?>
-		</td>
-	</tr>
-
-	<?php if ( 'selected' === $fields_select_all || 'selected' === $fields_select_visible ) : ?>
-	<tr id="row_list_custom_fields">
-		<th scope="row">
-			<?php esc_html_e( 'List custom fields', 'relevanssi' ); ?>
-		</th>
-		<td>
-			<button type="button" class="button button-primary" id="list_custom_fields"><?php esc_html_e( 'List custom fields', 'relevanssi' ); ?></button>
-			<p class="description"><?php esc_html_e( 'Click the button above to see the list of indexed custom fields.', 'relevanssi' ); ?></p>
-			<div id="relevanssi_custom_field_list"></div>
-			<?php if ( class_exists( 'acf', false ) ) : ?>
-				<p class="description"><?php esc_html_e( 'Fields excluded from ACF settings and with filter functions are included here.', 'relevanssi' ); ?></p>
-			<?php endif; ?>
-		</td>
-	</tr>
-	<?php endif; ?>
-
-	<tr id="row_index_author_name">
-		<th scope="row">
-			<?php esc_html_e( 'Author display names', 'relevanssi' ); ?>
-		</th>
-		<td>
-			<label for='relevanssi_index_author'>
-				<input type='checkbox' name='relevanssi_index_author' id='relevanssi_index_author' <?php echo esc_html( $index_author ); ?> />
-				<?php esc_html_e( 'Index the post author display name', 'relevanssi' ); ?>
-			</label>
-			<p class="description"><?php esc_html_e( 'Searching for the post author display name will return posts by that author.', 'relevanssi' ); ?></p>
-		</td>
-	</tr>
-
-	<tr id="row_index_excerpts">
-		<th scope="row">
-			<?php esc_html_e( 'Excerpts', 'relevanssi' ); ?>
-		</th>
-		<td>
-			<label for='relevanssi_index_excerpt'>
-				<input type='checkbox' name='relevanssi_index_excerpt' id='relevanssi_index_excerpt' <?php echo esc_html( $index_excerpt ); ?> />
-				<?php esc_html_e( 'Index the post excerpt', 'relevanssi' ); ?>
-			</label>
-			<p class="description"><?php esc_html_e( 'Relevanssi will find posts by the content in the excerpt.', 'relevanssi' ); ?></p>
-			<?php if ( is_plugin_active( 'woocommerce/woocommerce.php' ) ) : ?>
-			<p class="description"><?php esc_html_e( "WooCommerce stores the product short description in the excerpt, so it's a good idea to index excerpts.", 'relevanssi' ); ?></p>
-			<?php endif; ?>
-		</td>
-	</tr>
-
-	</table>
-	</div>
-
-	<div id="indexing_shortcodes">
-	<h2><?php esc_html_e( 'Shortcodes', 'relevanssi' ); ?></h2>
-
-	<table class="form-table" role="presentation">
-	<tr>
-		<th scope="row">
-			<?php esc_html_e( 'Expand shortcodes', 'relevanssi' ); ?>
-		</th>
-		<td>
-			<label for='relevanssi_expand_shortcodes'>
-				<input type='checkbox' name='relevanssi_expand_shortcodes' id='relevanssi_expand_shortcodes' <?php echo esc_html( $expand_shortcodes ); ?> />
-				<?php esc_html_e( 'Expand shortcodes when indexing', 'relevanssi' ); ?>
-			</label>
-			<?php if ( is_plugin_active( 'woocommerce/woocommerce.php' ) ) : ?>
-			<p class="description important"><?php esc_html_e( "WooCommerce has shortcodes that don't work well with Relevanssi. With WooCommerce, make sure the option is disabled.", 'relevanssi' ); ?></p>
-			<?php endif; ?>
-			<p class="description"><?php esc_html_e( 'If checked, Relevanssi will expand shortcodes in post content before indexing. Otherwise shortcodes will be stripped.', 'relevanssi' ); ?></p>
-			<p class="description"><?php esc_html_e( 'If you use shortcodes to include dynamic content, Relevanssi will not keep the index updated, the index will reflect the status of the shortcode content at the moment of indexing.', 'relevanssi' ); ?></p>
-		</td>
-	</tr>
-
-	<?php
-		do_action( 'relevanssi_indexing_tab_shortcodes' );
-	?>
-
-	</table>
-	</div>
-
-	<?php
-		do_action( 'relevanssi_indexing_tab' );
-	?>
-
-	<div id="advanced_indexing_settings">
-	<h2><?php esc_html_e( 'Advanced indexing settings', 'relevanssi' ); ?></h2>
-
-	<p><button type="button" id="show_advanced_indexing"><?php esc_html_e( 'Show advanced settings', 'relevanssi' ); ?></button></p>
-
-	<table class="form-table screen-reader-text" id="advanced_indexing" role="presentation">
-	<tr id="row_min_word_length">
-		<th scope="row">
-			<label for='relevanssi_min_word_length'><?php esc_html_e( 'Minimum word length', 'relevanssi' ); ?></label>
-		</th>
-		<td>
-			<input type='number' name='relevanssi_min_word_length' id='relevanssi_min_word_length' value='<?php echo esc_attr( $min_word_length ); ?>' />
-			<p class="description"><?php esc_html_e( 'Words shorter than this many letters will not be indexed.', 'relevanssi' ); ?></p>
-			<?php // Translators: %1$s is 'relevanssi_block_one_letter_searches' and %2$s is 'false'. ?>
-			<p class="description"><?php printf( esc_html__( 'To enable one-letter searches, you need to add a filter function on the filter hook %1$s that returns %2$s.', 'relevanssi' ), '<code>relevanssi_block_one_letter_searches</code>', '<code>false</code>' ); ?></p>
-		</td>
-	</tr>
-	<tbody id="punctuation_control">
-	<tr id="row_punctuation_control_label">
-		<th scope="row"><?php esc_html_e( 'Punctuation control', 'relevanssi' ); ?></th>
-		<td><p class="description"><?php esc_html_e( 'Here you can adjust how the punctuation is controlled. For more information, see help. Remember that any changes here require reindexing, otherwise searches will fail to find posts they should.', 'relevanssi' ); ?></p></td>
-	</tr>
-	<tr id="row_punctuation_hyphens">
-		<th scope="row">
-			<label for='relevanssi_punct_hyphens'><?php esc_html_e( 'Hyphens and dashes', 'relevanssi' ); ?></label>
-		</th>
-		<td>
-			<select name='relevanssi_punct_hyphens' id='relevanssi_punct_hyphens'>
-				<option value='keep' <?php echo esc_html( $punct_hyphens_keep ); ?>><?php esc_html_e( 'Keep', 'relevanssi' ); ?></option>
-				<option value='replace' <?php echo esc_html( $punct_hyphens_replace ); ?>><?php esc_html_e( 'Replace with spaces', 'relevanssi' ); ?></option>
-				<option value='remove' <?php echo esc_html( $punct_hyphens_remove ); ?>><?php esc_html_e( 'Remove', 'relevanssi' ); ?></option>
-			</select>
-			<p class="description"><?php esc_html_e( 'How Relevanssi should handle hyphens and dashes (en and em dashes)? Replacing with spaces is generally the best option, but in some cases removing completely is the best option. Keeping them is rarely the best option.', 'relevanssi' ); ?></p>
-
-		</td>
-	</tr>
-	<tr id="row_punctuation_quotes">
-		<th scope="row">
-			<label for='relevanssi_punct_quotes'><?php esc_html_e( 'Apostrophes and quotes', 'relevanssi' ); ?></label>
-		</th>
-		<td>
-			<select name='relevanssi_punct_quotes' id='relevanssi_punct_quotes'>
-				<option value='replace' <?php echo esc_html( $punct_quotes_replace ); ?>><?php esc_html_e( 'Replace with spaces', 'relevanssi' ); ?></option>
-				<option value='remove' <?php echo esc_html( $punct_quotes_remove ); ?>><?php esc_html_e( 'Remove', 'relevanssi' ); ?></option>
-			</select>
-			<p class="description"><?php esc_html_e( "How Relevanssi should handle apostrophes and quotes? It's not possible to keep them; that would lead to problems. Default behaviour is to replace with spaces, but sometimes removing makes sense.", 'relevanssi' ); ?></p>
-
-		</td>
-	</tr>
-	<tr id="row_punctuation_ampersands">
-		<th scope="row">
-			<label for='relevanssi_punct_ampersands'><?php esc_html_e( 'Ampersands', 'relevanssi' ); ?></label>
-		</th>
-		<td>
-			<select name='relevanssi_punct_ampersands' id='relevanssi_punct_ampersands'>
-				<option value='keep' <?php echo esc_html( $punct_ampersands_keep ); ?>><?php esc_html_e( 'Keep', 'relevanssi' ); ?></option>
-				<option value='replace' <?php echo esc_html( $punct_ampersands_replace ); ?>><?php esc_html_e( 'Replace with spaces', 'relevanssi' ); ?></option>
-				<option value='remove' <?php echo esc_html( $punct_ampersands_remove ); ?>><?php esc_html_e( 'Remove', 'relevanssi' ); ?></option>
-			</select>
-			<p class="description"><?php esc_html_e( 'How Relevanssi should handle ampersands? Replacing with spaces is generally the best option, but if you talk a lot about D&amp;D, for example, keeping the ampersands is useful.', 'relevanssi' ); ?></p>
-
-		</td>
-	</tr>
-	<tr id="row_punctuation_decimals">
-		<th scope="row">
-			<label for='relevanssi_punct_decimals'><?php esc_html_e( 'Decimal separators', 'relevanssi' ); ?></label>
-		</th>
-		<td>
-			<select name='relevanssi_punct_decimals' id='relevanssi_punct_decimals'>
-				<option value='keep' <?php echo esc_html( $punct_decimals_keep ); ?>><?php esc_html_e( 'Keep', 'relevanssi' ); ?></option>
-				<option value='replace' <?php echo esc_html( $punct_decimals_replace ); ?>><?php esc_html_e( 'Replace with spaces', 'relevanssi' ); ?></option>
-				<option value='remove' <?php echo esc_html( $punct_decimals_remove ); ?>><?php esc_html_e( 'Remove', 'relevanssi' ); ?></option>
-			</select>
-			<p class="description"><?php esc_html_e( 'How Relevanssi should handle periods between decimals? Replacing with spaces is the default option, but that often leads to the numbers being removed completely. If you need to search decimal numbers a lot, keep the periods.', 'relevanssi' ); ?></p>
-
-		</td>
-	</tr>
-	</tbody>
-	<?php
-	do_action( 'relevanssi_indexing_tab_advanced' );
-	?>
-
-	</table>
-
-	<p><button type="button" style="display: none" id="hide_advanced_indexing"><?php esc_html_e( 'Hide advanced settings', 'relevanssi' ); ?></button></p>
-
-	</div>
+		</div>
 	</div>
 	<?php
 }

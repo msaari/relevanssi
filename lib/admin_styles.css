@@ -1,3 +1,20 @@
+/* Relevanssi green: #176E34 (on hover #6cde86) */
+.relevanssi-text {
+    color: #176E34;
+}
+
+.relevanssi-text-success {
+    color: #176E34;
+}
+
+.relevanssi-text-warning {
+    color: #dba617;
+}
+
+.relevanssi-text-error {
+    color: #d63638;
+}
+
 p.important {
     color: #992000;
 }
@@ -10,7 +27,8 @@ table.form-table table.widefat th {
     width: 3em;
 }
 
-#relevanssi_trim_logs, #relevanssi_trim_click_logs {
+#relevanssi_trim_logs,
+#relevanssi_trim_click_logs {
     width: 4em;
 }
 
@@ -23,18 +41,22 @@ table.form-table table.widefat th {
     width: 100%;
 }
 
-#relevanssi-progress {
+/* Old progress bar containers */
+#relevanssi-progress,
+.rpi-progress {
     display: none;
-    margin-bottom: 2em;
+    margin: 0.5em 0 2em 0;
     width: 100%;
     height: 20px;
     background-color: white;
 }
 
-.rpi-indicator {
+/* Unified old progress bar indicators to use modern green instead of #afe240 */
+.rpi-indicator,
+.rpi-progress div {
     width: 0;
     height: 20px;
-    background-color: #afe240;
+    background-color: #176E34;
 }
 
 .relevanssi-weights-table {
@@ -45,22 +67,9 @@ table.form-table table.widefat th {
     padding: 0;
 }
 
-.relevanssi-weights-table td.col-2, .relevanssi-weights-table th.col-2 {
+.relevanssi-weights-table td.col-2,
+.relevanssi-weights-table th.col-2 {
     width: 25%;
-}
-
-.rpi-progress {
-    display: none;
-    margin: 0.5em 0 2em 0;
-    width: 100%;
-    height: 20px;
-    background-color: white;
-}
-
-.rpi-progress div {
-    width: 0;
-    height: 20px;
-    background-color: #afe240;
 }
 
 #relevanssi_results {
@@ -71,7 +80,12 @@ table.form-table table.widefat th {
 #relevanssi_show_pdf_errors {
     text-decoration: underline;
     cursor: pointer;
-    color: #0073aa;
+    color: #176E34;
+    transition: color 0.2s ease;
+}
+
+#relevanssi_show_pdf_errors:hover {
+    color: #6cde86;
 }
 
 #relevanssi_pdf_errors {
@@ -85,11 +99,13 @@ table.form-table table.widefat th {
     height: 1px;
     overflow: hidden;
     clip: rect(0 0 0 0);
-    clip: rect(0,0,0,0);
     position: absolute;
 }
 
-.relevanssi_disabled, .relevanssi_disabled td, .relevanssi_disabled th, .relevanssi_disabled p {
+.relevanssi_disabled,
+.relevanssi_disabled td,
+.relevanssi_disabled th,
+.relevanssi_disabled p {
     color: #999;
 }
 
@@ -97,22 +113,1655 @@ table.form-table table.widefat th {
     display: none;
 }
 
-#category_inclusion_checklist ul.children, #category_exclusion_checklist ul.children {
-	margin-left: 1.5em;
+#category_inclusion_checklist ul.children,
+#category_exclusion_checklist ul.children {
+    margin-left: 1.5em;
 }
 
 #relevanssi_filter_list {
-	display: none;
+    display: none;
 }
 
 #redirect_table td {
-	vertical-align: top;
+    vertical-align: top;
 }
 
-#relevanssi_sees_container, #relevanssi_db_view_container {
+#relevanssi_sees_container,
+#relevanssi_db_view_container {
     width: 80%;
     background: white;
     padding: 5px 20px;
     border: thin solid black;
     overflow: scroll;
+}
+
+/* --- Global Links --- */
+a {
+    color: #176E34;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: #6cde86;
+}
+
+/* --- Relevanssi 2026 Modern UI --- */
+
+/* --- 2026 UI: Sidebar Debugger Card --- */
+#debugging.relevanssi-card {
+    margin-top: 24px;
+    border-top: 3px solid #dba617;
+    background: #ffffff;
+    font-size: 13px;
+}
+
+#debugging code,
+#debugging pre {
+    background: #f0f2f5;
+    color: #2c3338;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-weight: 600;
+    word-break: break-all;
+    display: inline-block;
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+/* Compact rules for the nested filter lists */
+#relevanssi_filter_list {
+    background: #f8f9fa;
+    border: 1px solid #e2e4e7;
+    border-radius: 6px;
+    padding: 12px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+/* Nav tabs */
+h2.nav-tab-wrapper {
+    border-bottom: 2px solid #e2e4e7;
+    padding-bottom: 0;
+    margin-bottom: 32px;
+}
+
+.nav-tab-wrapper .nav-tab {
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    font-size: 15px;
+    font-weight: 500;
+    padding: 12px 16px;
+    margin: 0 8px 0 0;
+    color: #646970;
+    transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.nav-tab-wrapper .nav-tab:hover {
+    color: #6cde86;
+    background: rgba(27, 133, 61, 0.05);
+    border-bottom: 3px solid #c3c4c7;
+}
+
+.nav-tab-wrapper .nav-tab-active,
+.nav-tab-wrapper .nav-tab-active:hover {
+    color: #176E34;
+    border-bottom: 3px solid #176E34;
+    background: transparent;
+}
+
+/* Main Container */
+#indexing_tab_consolidated {
+    max-width: 95%;
+    /* Widened slightly to accommodate the sidebar */
+    margin-top: 24px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+}
+
+/* Fix for overlapping cards & layout boundaries */
+.relevanssi-dashboard-layout,
+.relevanssi-dashboard-layout * {
+    box-sizing: border-box;
+}
+
+/* Ensure the grid columns never blow past their container */
+.relevanssi-settings-row {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    gap: 24px;
+    margin-bottom: 32px;
+    align-items: start;
+}
+
+.relevanssi-index-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+    align-items: stretch;
+    margin-bottom: 0;
+}
+
+/* --- Settings Grid (2/3 & 1/3 Layout) --- */
+.relevanssi-settings-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+    margin-bottom: 32px;
+    align-items: start;
+}
+
+.relevanssi-settings-content {
+    min-width: 0;
+}
+
+/* Sidebar Info Boxes  */
+.relevanssi-sidebar-list {
+    list-style: disc;
+    margin-left: 20px;
+    margin-bottom: 12px;
+    font-size: 13px;
+}
+
+.relevanssi-settings-sidebar {
+    position: sticky;
+    top: 50px;
+    /* Optional: Makes the sidebars stick when scrolling large cards */
+}
+
+/* Sidebar Highlight Transitions */
+.relevanssi-settings-sidebar [id^="sb-"] {
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+    padding: 6px 12px;
+    border-radius: 4px;
+    border-left: 3px solid transparent;
+    margin-left: -15px;
+    /* Adjusted to balance the extra padding cleanly */
+    color: #646970;
+    /* Keeps text default charcoal gray */
+}
+
+.relevanssi-settings-sidebar [id^="sb-"].active-highlight {
+    background-color: rgba(27, 133, 61, 0.06);
+    /* Soft, professional background tint */
+    border-left: 3px solid #176E34;
+}
+
+.relevanssi-settings-sidebar [id^="sb-"].active-highlight strong {
+    color: #176E34;
+}
+
+.relevanssi-info-box {
+    background: #f8f9fa;
+    border-left: 4px solid #176E34;
+    padding: 20px 24px;
+    border-radius: 0 8px 8px 0;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    color: #50575e;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.relevanssi-info-box h3 {
+    margin-top: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: #1d2327;
+    margin-bottom: 12px;
+}
+
+.relevanssi-info-box p {
+    margin-bottom: 12px;
+}
+
+.relevanssi-info-box p:last-child {
+    margin-bottom: 0;
+}
+
+/* ==========================================================================
+   1. Card Structural Canvas & Hover Physics
+   ========================================================================== */
+.relevanssi-card {
+    background: #ffffff;
+    border: 1px solid #c3c4c7;
+    border-top: 3px solid transparent;
+    border-radius: 6px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    padding: 24px;
+    margin-bottom: 0;
+    min-width: 0;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.relevanssi-card:hover {
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+    border-top-color: #176E34;
+}
+
+/* Card Section Titles */
+.relevanssi-card h2 {
+    margin-top: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1d2327;
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid #f0f0f1;
+    transition: color 0.2s ease;
+}
+
+/* ==========================================================================
+   2. Unified Table Row Systems (Borders & Interaction Blends)
+   ========================================================================== */
+/* Core table settings layout parameters */
+.relevanssi-card .form-table {
+    border-collapse: collapse !important;
+}
+
+.relevanssi-card .form-table tr {
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+    border-left: 3px solid rgba(27, 133, 61, 0) !important;
+    /* Premium branding default left accent */
+}
+
+/* Standard Settings Row Hover Matrix */
+.relevanssi-card .form-table tr:hover {
+    background-color: rgba(27, 133, 61, 0.02) !important;
+}
+
+.relevanssi-card .form-table tr.rlv-row-advanced:hover {
+    background-color: rgba(219, 166, 23, 0.02) !important;
+}
+
+/* ==========================================================================
+   3. Symmetrical Table Headers (Flex Layout Engine)
+   ========================================================================== */
+.relevanssi-card>.form-table>tbody>tr>th {
+    display: inline-flex !important;
+    align-items: center !important;
+    width: 200px;
+    padding: 16px 10px 16px 0;
+    font-weight: 600;
+}
+
+.relevanssi-card>.form-table>tbody>tr>td {
+    padding: 12px 0;
+}
+
+/* Flex Order Hierarchy Assignments */
+.relevanssi-card .form-table th label {
+    order: 1 !important;
+    color: #3c434a;
+    font-size: 13.5px;
+    line-height: 1.6;
+    vertical-align: middle;
+    transition: color 0.2s ease;
+}
+
+.relevanssi-card label:hover,
+.relevanssi-card label:focus-within {
+    color: #1d2327;
+}
+
+.relevanssi-card .relevanssi-tooltip {
+    order: 2 !important;
+    /* Locks tooltips directly flush against text strings */
+    margin-left: 6px;
+}
+
+/* Advanced Component Tag Positioning Anchor */
+.relevanssi-card .rlv-advanced-badge {
+    position: absolute !important;
+    right: 12px !important;
+    /* Pins pixel-perfect against the far right division line */
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    /* Keeps it perfectly vertically centered with your text elements */
+
+    /* Presentation Styling Styles */
+    background-color: rgba(219, 166, 23, 0.12) !important;
+    color: #dba617 !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 2px 8px !important;
+    border-radius: 4px !important;
+    border: 1px solid rgba(219, 166, 23, 0.25) !important;
+    cursor: help;
+    user-select: none;
+    z-index: 2;
+}
+
+.relevanssi-card .rlv-advanced-badge {
+    order: unset !important;
+    margin-left: 0 !important;
+}
+
+/* Typography Descriptions */
+.relevanssi-card .description {
+    color: #646970;
+    font-size: 13px;
+    line-height: 1.6;
+    margin-top: 8px;
+}
+
+/* ==========================================================================
+   4. 2026 Modern Context-Capable Help Tooltip Framework
+   ========================================================================== */
+.relevanssi-tooltip {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
+    height: 1em;
+    color: #646970;
+    cursor: help;
+}
+
+.relevanssi-tooltip .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+}
+
+.relevanssi-tooltip:hover,
+.relevanssi-tooltip:focus-within {
+    color: #176E34;
+    outline: none;
+}
+
+.relevanssi-tooltip .relevanssi-tooltip-bubble {
+    position: absolute;
+    bottom: 135%;
+    left: 0;
+    transform: translateY(8px);
+    width: max-content;
+    max-width: 280px;
+    white-space: normal;
+    background: #1d2327;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.5;
+    padding: 10px 14px;
+    border-radius: 6px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.2s;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.relevanssi-tooltip .relevanssi-tooltip-bubble a {
+    color: #72bbf7;
+    text-decoration: underline;
+    font-weight: 500;
+}
+
+.relevanssi-tooltip .relevanssi-tooltip-bubble a:hover {
+    color: #9ecfff;
+}
+
+.relevanssi-tooltip .relevanssi-tooltip-bubble code {
+    background: #2c3338;
+    color: #f0f6fc;
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-family: monospace;
+}
+
+.relevanssi-tooltip::before {
+    content: '';
+    position: absolute;
+    bottom: 135%;
+    left: 8px;
+    transform: translateX(-50%) translateY(14px);
+    border: 6px solid transparent;
+    border-top-color: #1d2327;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.2s;
+    z-index: 1000;
+}
+
+.relevanssi-tooltip:hover .relevanssi-tooltip-bubble,
+.relevanssi-tooltip:focus-within .relevanssi-tooltip-bubble {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.relevanssi-tooltip:hover::before,
+.relevanssi-tooltip:focus-within::before {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(6px);
+}
+
+/* ==========================================================================
+   1. Card Workspace Full-Bleed Normalization
+   ========================================================================== */
+/* Erase core table borders and spacing rules safely on this specific outer row cell */
+.relevanssi-card .form-table tr.rlv-full-bleed-row:hover {
+    background: transparent !important;
+}
+
+.relevanssi-card .form-table td.rlv-full-bleed-cell {
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+/* ==========================================================================
+   2. Fallback Cards Workspace Framework
+   ========================================================================== */
+.rlv-redirects-subtable-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+    width: 100%;
+}
+
+.rlv-redirect-fallback-card {
+    display: flex;
+    flex-direction: column;
+    background: #f8f9fa;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 20px;
+    gap: 12px;
+}
+
+.rlv-fallback-label-block p.description {
+    margin: 4px 0 0 0 !important;
+}
+
+.rlv-fallback-input-block {
+    width: 100%;
+}
+
+/* Master Form Inputs Interface Real-Estate Styling */
+.relevanssi-card .rlv-redirect-base-input {
+    width: 100% !important;
+    height: 40px !important;
+    box-sizing: border-box !important;
+    border: 1px solid #cbd5e1 !important;
+    background-color: #ffffff !important;
+    border-radius: 6px !important;
+    padding: 0 14px !important;
+    color: #2c3338 !important;
+    font-size: 13.5px !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.relevanssi-card .rlv-redirect-base-input:focus {
+    border-color: #176E34 !important;
+    box-shadow: 0 0 0 3px rgba(27, 133, 61, 0.15) !important;
+    outline: none !important;
+}
+
+/* ==========================================================================
+   3. Master Keyword Matrix Flex/Grid Container (Replaces Legacy Tables)
+   ========================================================================== */
+.rlv-redirects-matrix-container {
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    background: #ffffff;
+    box-shadow: none;
+    overflow: hidden;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+/* Fixed blueprint layout columns for desktop rendering alignment */
+.rlv-redirects-matrix-header,
+.rlv-redirect-matrix-row {
+    display: grid;
+    grid-template-columns: minmax(180px, 2.5fr) 130px minmax(180px, 2.5fr) 90px;
+    gap: 16px;
+    align-items: center;
+    padding: 14px 16px;
+}
+
+.rlv-redirects-matrix-header {
+    background: #f8f9fa;
+    border-bottom: 1px solid #cbd5e1;
+    font-weight: 600;
+    color: #1d2327;
+}
+
+.rlv-redirect-matrix-row {
+    border-bottom: 1px solid #cbd5e1;
+    transition: background-color 0.2s ease;
+}
+
+.rlv-redirect-matrix-row:last-child {
+    border-bottom: none;
+}
+
+.rlv-redirect-matrix-row:hover {
+    background-color: rgba(27, 133, 61, 0.02);
+}
+
+.rlv-matrix-cell {
+    min-width: 0;
+}
+
+.rlv-col-partial,
+.rlv-col-hits {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+}
+
+.rlv-matrix-cell .rlv-redirect-base-input {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+/* Inline Row Actions & Badges Utilities */
+.rlv-input-with-actions {
+    position: relative;
+    width: 100%;
+}
+
+.rlv-redirect-row-utilities {
+    font-size: 11px !important;
+    margin-top: 6px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.redirect_table_row:hover .rlv-redirect-row-utilities {
+    opacity: 1;
+}
+
+.rlv-redirect-row-utilities a {
+    text-decoration: none !important;
+    font-weight: 500;
+}
+
+.rlv-redirect-hits-badge {
+    background: #e2e8f0;
+    color: #475569;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 12px;
+    display: inline-block;
+}
+
+.rlv-redirects-actions-bar {
+    margin-bottom: 24px;
+}
+
+/* Dynamic Bulk Insertion Accordion Module */
+details.rlv-redirects-bulk-card {
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 0 !important;
+    overflow: hidden;
+    transition: border-color 0.2s ease;
+}
+
+details.rlv-redirects-bulk-card[open] {
+    border-color: #176E34;
+}
+
+details.rlv-redirects-bulk-card summary {
+    padding: 14px 16px !important;
+    background: #f8f9fa;
+    font-weight: 600;
+    cursor: pointer;
+    color: #1d2327;
+    user-select: none;
+}
+
+.rlv-bulk-card-content {
+    padding: 20px;
+    border-top: 1px solid #cbd5e1;
+}
+
+.rlv-bulk-card-content textarea {
+    width: 100% !important;
+    max-width: 100% !important;
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 6px !important;
+    padding: 12px !important;
+    font-family: monospace !important;
+    margin-top: 10px;
+}
+
+/* ==========================================================================
+   4. Laptop & Mobile Deflector Layer (Responsive Grid Transformation)
+   ========================================================================== */
+@media screen and (max-width: 1240px) {
+
+    /* Stack the top fallback split cards */
+    .rlv-redirects-subtable-wrapper {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Hide the flat horizontal matrix layout headers */
+    .rlv-redirects-matrix-header {
+        display: none !important;
+    }
+
+    /* Transform the background space to make individual entry cards visually pop */
+    .rlv-redirects-matrix-body {
+        padding: 16px 16px 1px 16px;
+        background: #f0f2f5;
+    }
+
+    /* Re-shape rows into freestanding responsive interface workspace cards */
+    .rlv-redirect-matrix-row {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        background: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 8px !important;
+        padding: 16px !important;
+        margin-bottom: 16px !important;
+        gap: 12px !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02) !important;
+    }
+
+    .rlv-matrix-cell {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        width: 100% !important;
+    }
+
+    /* Inject descriptive typography directly above inputs based on code properties attributes */
+    .rlv-matrix-cell::before {
+        content: attr(data-label);
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: #64748b;
+        margin-bottom: 6px;
+        letter-spacing: 0.5px;
+    }
+
+    /* Keep the toggle row clean and neat across card boundaries */
+    .rlv-matrix-cell.rlv-col-partial {
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+    }
+
+    .rlv-matrix-cell.rlv-col-partial::before {
+        margin-bottom: 0 !important;
+    }
+
+    /* Format historical metrics data counts split dividers */
+    .rlv-matrix-cell.rlv-col-hits {
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        border-top: 1px dashed #cbd5e1 !important;
+        padding-top: 12px !important;
+        margin-top: 4px;
+    }
+
+    .rlv-matrix-cell.rlv-col-hits::before {
+        margin-bottom: 0 !important;
+    }
+
+    .rlv-redirect-row-utilities {
+        opacity: 1 !important;
+        margin-top: 6px;
+    }
+}
+
+/* --- Relevanssi Documentation Accordions (2026 UI) --- */
+
+.relevanssi-accordion-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.relevanssi-help-accordion {
+    background: #ffffff;
+    border: 1px solid #dcdcde;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.relevanssi-help-accordion[open] {
+    border-color: #176E34;
+    box-shadow: 0 8px 24px rgba(27, 133, 61, 0.08);
+}
+
+.relevanssi-help-accordion summary {
+    padding: 16px 20px;
+    background: #f8f9fa;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #1d2327;
+    margin: 0;
+    list-style: none;
+    /* Removes default HTML triangle */
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.relevanssi-help-accordion summary::-webkit-details-marker {
+    display: none;
+    /* Removes Safari default triangle */
+}
+
+.relevanssi-help-accordion summary h3 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.relevanssi-help-accordion summary .dashicons {
+    color: #787c82;
+    transition: transform 0.3s ease, color 0.2s ease;
+}
+
+.relevanssi-help-accordion:hover summary {
+    background: #f0f2f5;
+}
+
+/* Open State Header */
+.relevanssi-help-accordion[open] summary {
+    background: #ffffff;
+    border-bottom: 1px solid #f0f0f1;
+    color: #176E34;
+}
+
+.relevanssi-help-accordion[open] summary .dashicons {
+    transform: rotate(180deg);
+    color: #176E34;
+}
+
+/* Accordion Content Styling */
+.relevanssi-help-accordion .accordion-content {
+    padding: 24px 20px;
+    background: #ffffff;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #3c434a;
+}
+
+.relevanssi-help-accordion .accordion-content h4 {
+    margin-top: 24px;
+    margin-bottom: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #1d2327;
+    border-bottom: 1px solid #f0f0f1;
+    padding-bottom: 8px;
+}
+
+.relevanssi-help-accordion .accordion-content h4:first-child {
+    margin-top: 0;
+}
+
+.relevanssi-help-accordion .accordion-content p:last-child {
+    margin-bottom: 0;
+}
+
+/* Accordion Content List System */
+.relevanssi-help-accordion .accordion-content ol,
+.relevanssi-help-accordion .accordion-content ul {
+    margin-left: 20px;
+    margin-bottom: 16px;
+}
+
+.relevanssi-help-accordion .accordion-content ul {
+    list-style-type: disc;
+}
+
+.relevanssi-help-accordion .accordion-content ol {
+    list-style-type: decimal;
+}
+
+.relevanssi-help-accordion .accordion-content ol li,
+.relevanssi-help-accordion .accordion-content ul li {
+    margin-bottom: 6px;
+}
+
+/* Form Inputs & Selects Global Layer */
+.relevanssi-card input[type="text"],
+.relevanssi-card input[type="email"],
+.relevanssi-card input[type="number"],
+.relevanssi-card select,
+.relevanssi-card textarea {
+    border: 1px solid transparent;
+    background: #f0f2f5;
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: #2c3338;
+    transition: all 0.2s ease;
+    box-shadow: none;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/* Width control for text-heavy fields */
+.relevanssi-card input[type="text"],
+.relevanssi-card textarea {
+    width: 100%;
+    max-width: 400px;
+}
+
+/* Width control for dropdowns */
+.relevanssi-card select {
+    width: auto;
+    min-width: 160px;
+    max-width: 350px;
+    padding-right: 32px;
+}
+
+/* Focus states */
+.relevanssi-card input[type="text"]:focus,
+.relevanssi-card input[type="number"]:focus,
+.relevanssi-card select:focus,
+.relevanssi-card textarea:focus {
+    background: #ffffff;
+    border-color: #176E34;
+    box-shadow: 0 0 0 3px rgba(27, 133, 61, 0.15);
+    outline: none;
+}
+
+/* --- 5. Toggles (Restyled Checkboxes) --- */
+.relevanssi-card input[type="checkbox"].relevanssi-toggle {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    width: 40px !important;
+    height: 20px !important;
+    background-color: #dcdcde !important;
+    border: 1px solid #c3c4c7 !important;
+    border-radius: 20px !important;
+    position: relative !important;
+    cursor: pointer;
+    vertical-align: middle;
+    background-image: none !important;
+    margin: 0 8px 0 0 !important;
+    transition: all 0.2s ease !important;
+}
+
+.relevanssi-card input[type="checkbox"].relevanssi-toggle:hover {
+    background-color: #c3c4c7 !important;
+}
+
+.relevanssi-card input[type="checkbox"].relevanssi-toggle:checked {
+    background-color: #176E34 !important;
+    border-color: #176E34 !important;
+}
+
+.relevanssi-card input[type="checkbox"].relevanssi-toggle:checked:hover {
+    background-color: #6cde86 !important;
+    border-color: #6cde86 !important;
+}
+
+.relevanssi-card input[type="checkbox"].relevanssi-toggle::before {
+    content: "" !important;
+    position: absolute !important;
+    top: 2px !important;
+    left: 2px !important;
+    width: 14px !important;
+    height: 14px !important;
+    background: #ffffff !important;
+    border-radius: 50% !important;
+    transition: transform 0.2s ease !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    display: block !important;
+    margin: 0 !important;
+}
+
+.relevanssi-card input[type="checkbox"].relevanssi-toggle:checked::before {
+    transform: translateX(20px) !important;
+    margin: 0 !important;
+}
+
+.relevanssi-card input[type="checkbox"].relevanssi-toggle:focus {
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(27, 133, 61, 0.3) !important;
+    border-color: #176E34 !important;
+}
+
+/* --- Relevanssi Buttons System --- */
+
+/* Primary Button */
+.relevanssi-card .button-primary,
+.relevanssi-info-box .button-primary {
+    background: #176E34;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 20px;
+    font-weight: 500;
+    box-shadow: 0 4px 12px rgba(27, 133, 61, 0.25);
+    text-shadow: none;
+    transition: all 0.2s ease;
+}
+
+.relevanssi-card .button-thin {
+    background: #176E34;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    box-sizing: border-box;
+    padding: 0 16px;
+}
+
+.relevanssi-card .button-primary:hover,
+.relevanssi-card .button-primary:focus,
+.relevanssi-info-box .button-primary:hover,
+.relevanssi-info-box .button-primary:focus {
+    background: #6cde86;
+    box-shadow: 0 6px 16px rgba(27, 133, 61, 0.4);
+    transform: translateY(-1px);
+    color: #fff;
+}
+
+/* Standard Secondary Button */
+.relevanssi-card .button {
+    border-radius: 8px;
+    border: 1px solid #dcdcde;
+    background: #fff;
+    color: #2c3338;
+    padding: 5px 16px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.relevanssi-card .button:hover,
+.relevanssi-card .button:focus {
+    background: #f6f7f7;
+    border-color: #176E34;
+    color: #176E34;
+    box-shadow: 0 0 0 1px #176E34;
+    /* Replaces WP blue focus outline */
+}
+
+/* Outline Button Variant */
+.relevanssi-card .button-outline {
+    background: transparent;
+    border: 1px solid #176E34;
+    border-radius: 8px;
+    color: #176E34;
+    padding: 5px 16px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.relevanssi-card .button-outline:hover,
+.relevanssi-card .button-outline:focus {
+    background: #176E34;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(27, 133, 61, 0.25);
+    border-color: #176E34;
+    outline: none;
+}
+
+/* Ghost Button Variant */
+.relevanssi-card .button-ghost {
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    color: #176E34;
+    padding: 5px 16px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.relevanssi-card .button-ghost:hover,
+.relevanssi-card .button-ghost:focus {
+    background: rgba(27, 133, 61, 0.08);
+    color: #176E34;
+    outline: none;
+}
+
+/* --- Button Loading States --- */
+
+/* Targets the button if the JS disables it, OR if a loading class is added */
+.relevanssi-card .button-primary:disabled,
+.relevanssi-card .button-primary.relevanssi-is-loading {
+    background-color: #6cde86;
+    color: #ffffff;
+    cursor: wait !important;
+    box-shadow: none;
+    transform: none;
+    opacity: 0.9;
+
+    /* Animated striped background */
+    background-image: linear-gradient(45deg,
+            rgba(255, 255, 255, 0.25) 25%,
+            transparent 25%,
+            transparent 50%,
+            rgba(255, 255, 255, 0.25) 50%,
+            rgba(255, 255, 255, 0.25) 75%,
+            transparent 75%,
+            transparent);
+    background-size: 1rem 1rem;
+    animation: relevanssiButtonLoading 1s linear infinite;
+    pointer-events: none;
+    /* Prevents double-clicking */
+}
+
+@keyframes relevanssiButtonLoading {
+    0% {
+        background-position: 1rem 0;
+    }
+
+    100% {
+        background-position: 0 0;
+    }
+}
+
+
+/* Advanced Settings Accordion (<details>) */
+details.relevanssi-card {
+    transition: background 0.3s ease;
+}
+
+details.relevanssi-card summary {
+    cursor: pointer;
+    list-style: none;
+    margin: -24px;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+details.relevanssi-card summary::-webkit-details-marker {
+    display: none;
+}
+
+details.relevanssi-card summary h2 {
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+
+details.relevanssi-card summary::after {
+    content: '\f347';
+    font-family: dashicons;
+    font-size: 20px;
+    color: #787c82;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+/* Accordion Hover Green Vibe */
+details.relevanssi-card summary:hover h2,
+details.relevanssi-card summary:focus h2 {
+    color: #176E34;
+}
+
+details.relevanssi-card summary:hover::after,
+details.relevanssi-card summary:focus::after {
+    color: #176E34;
+}
+
+details[open].relevanssi-card summary::after {
+    transform: rotate(180deg);
+}
+
+details[open].relevanssi-card summary {
+    border-bottom: 1px solid #f0f0f1;
+    margin-bottom: 24px;
+}
+
+/* Floating Save Button */
+.relevanssi-floating-save {
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    z-index: 99999;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 16px;
+    border-radius: 50px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(220, 220, 222, 0.6);
+    animation: relevanssiFloatIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.relevanssi-floating-save .button-hero {
+    border-radius: 30px;
+    background-color: #176E34;
+    padding: 10px 30px;
+    font-size: 15px;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(27, 133, 61, 0.3);
+    transition: all 0.2s ease;
+}
+
+.relevanssi-floating-save .button-hero:hover,
+.relevanssi-floating-save .button-hero:focus {
+    background-color: #6cde86;
+    color: #000000;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(27, 133, 61, 0.4);
+    outline: none;
+}
+
+@keyframes relevanssiFloatIn {
+    0% {
+        transform: translateY(100px);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .relevanssi-floating-save {
+        position: static;
+        background: transparent;
+        backdrop-filter: none;
+        box-shadow: none;
+        border: none;
+        padding: 0;
+        margin-top: 32px;
+        animation: none;
+    }
+}
+
+/* --- Relevanssi Dashboard Grid System --- */
+
+.relevanssi-dashboard-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    margin-top: 16px;
+}
+
+.relevanssi-sticky-sidebar {
+    position: sticky;
+    top: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Action Button Grouping */
+.relevanssi-action-group {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+}
+
+/* Metric Card Styling */
+.relevanssi-metrics {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.relevanssi-metrics .metric {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.relevanssi-metrics .metric:last-of-type {
+    border-bottom: none;
+}
+
+.metric-number {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #176E34;
+}
+
+.metric-label {
+    font-size: 13px;
+    color: #3c434a;
+}
+
+.lowest-doc {
+    background: #ffffff;
+    border: 1px solid #dcdcde;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    margin-top: 12px;
+}
+
+/* Subtle Row Hover Effect inside settings tables */
+.relevanssi-card .form-table tr {
+    transition: background 0.2s ease;
+}
+
+.relevanssi-card .form-table tr:hover {
+    background: rgba(27, 133, 61, 0.02);
+}
+
+.relevanssi-card .form-table th {
+    width: 35%;
+}
+
+.relevanssi-index-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    align-items: stretch;
+    margin-bottom: 0;
+}
+
+.relevanssi-index-grid .relevanssi-card {
+    margin-bottom: 0;
+    height: 100%;
+}
+
+/* --- Relevanssi Subsection Headers --- */
+.relevanssi-card .relevanssi-subsection-header td {
+    padding-top: 32px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f0f0f1;
+}
+
+.relevanssi-card .relevanssi-subsection-header h3 {
+    margin: 0 0 4px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1d2327;
+}
+
+.relevanssi-card .relevanssi-subsection-header .description {
+    margin-top: 0;
+}
+
+/* --- Progress Bar Additions --- */
+.rpi-progress {
+    background: #f0f2f5;
+    border-radius: 8px;
+    height: 12px;
+    overflow: hidden;
+    margin: 16px 0;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.rpi-progress .rpi-indicator {
+    background: #176E34;
+    height: 100%;
+    width: 0%;
+    border-radius: 8px;
+    transition: width 0.3s ease;
+    background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+    background-size: 1rem 1rem;
+}
+
+/* --- Inline Alerts / Warnings --- */
+.relevanssi-notice {
+    background: #fff;
+    border-left: 4px solid #c3c4c7;
+    padding: 12px 16px;
+    margin: 12px 0;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    border-radius: 0 4px 4px 0;
+}
+
+.relevanssi-notice p {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #1d2327;
+}
+
+/* Success State (Green) */
+.relevanssi-notice-success {
+    border-left-color: #00a32a;
+    background: #f0fbf4;
+}
+
+/* Warning State (Yellow/Orange) */
+.relevanssi-notice-warning {
+    border-left-color: #dba617;
+    background: #fcf9e8;
+}
+
+/* Info State (Blue) */
+.relevanssi-notice-info {
+    border-left-color: #72aee6;
+    background: #f0f6fc;
+}
+
+/* Error State (Red) */
+.relevanssi-notice-error {
+    border-left-color: #d63638;
+    background: #fcf0f1;
+}
+
+/* CSS rules to enable clean visual transitions during blends */
+.relevanssi-dashboard-layout tr {
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.relevanssi-dashboard-layout tr.rlv-js-hidden {
+    display: none !important;
+}
+
+.relevanssi-dashboard-layout tr.rlv-js-blended {
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+/* --- Relevanssi Sized Input Overrides --- */
+.relevanssi-card input[type="number"].relevanssi-input-small {
+    width: 70px;
+    min-width: 60px;
+    height: 36px;
+    padding: 0 8px;
+    text-align: left;
+    display: inline-block;
+}
+
+#relevanssi-card input[type="number"].relevanssi-input-medium {
+    width: 100px;
+    min-width: 100px;
+    height: 36px;
+    padding: 0 12px;
+    text-align: left;
+    display: inline-block;
+}
+
+/* Core Structural Layout Row */
+.rlv-form-field-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Master Form Field Base Rules */
+.relevanssi-card .rlv-uniform-field,
+.relevanssi-card select.rlv-split-field {
+    width: 100% !important;
+    max-width: 420px !important;
+    height: 40px !important;
+    /* Perfect height matching your button requirement */
+    box-sizing: border-box !important;
+    border: 1px solid #e2e8f0 !important;
+    background-color: #f0f2f5 !important;
+    border-radius: 8px !important;
+    padding: 0 14px !important;
+    color: #2c3338 !important;
+    font-size: 14px !important;
+    box-shadow: none !important;
+    transition: all 0.2s ease-in-out !important;
+}
+
+/* Textarea overrides inherited base rules safely */
+.relevanssi-card textarea.rlv-uniform-field {
+    height: auto !important;
+    padding: 12px 14px !important;
+}
+
+/* Focus Structural Transitions */
+.relevanssi-card .rlv-uniform-field:focus,
+.relevanssi-card select.rlv-split-field:focus {
+    background-color: #ffffff !important;
+    border-color: #176E34 !important;
+    box-shadow: 0 0 0 3px rgba(27, 133, 61, 0.15) !important;
+    outline: none !important;
+}
+
+/* The Side-by-Side Math Engine Rules */
+.rlv-split-row {
+    max-width: 420px;
+}
+
+.relevanssi-card select.rlv-split-field {
+    flex: 1;
+    min-width: 0 !important;
+    max-width: calc(50% - 6px) !important;
+}
+
+/* Fixed Modern Dropdown Chevron Arrow Fix */
+.relevanssi-card select {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%234a5568' viewBox='0 0 16 16'><path d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/></svg>") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 14px center !important;
+    background-size: 11px !important;
+    padding-right: 36px !important;
+}
+
+/* Clean Admin Adjustments to Form Tables */
+.relevanssi-card .form-table th {
+    width: 200px;
+    padding: 16px 10px 16px 0;
+    font-weight: 600;
+}
+
+.relevanssi-card .form-table td {
+    padding: 12px 0;
+}
+
+/* Required Field Indicator */
+.relevanssi-card .rlv-required {
+    color: #dc3232;
+    margin-left: 3px;
+    font-weight: 700;
+}
+
+/* Settings Fields Styles */
+
+/* --- Relevanssi Unified Stopwords Manager Layouts --- */
+.rlv-manager-wrapper {
+    max-width: 650px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+}
+
+.rlv-input-group {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.rlv-input-group textarea {
+    flex-grow: 1;
+    resize: vertical;
+    min-height: 40px;
+}
+
+.rlv-input-group .button {
+    height: auto;
+}
+
+.rlv-cloud-container {
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    background: #fff;
+    max-height: 160px;
+    overflow-y: auto;
+    padding: 8px;
+    margin: 8px 0 16px 0;
+}
+
+.rlv-word-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.rlv-word-item {
+    margin: 0;
+}
+
+.rlv-word-item .button-small,
+.rlv-word-item input[type="submit"] {
+    background: #f6f7f7;
+    border-color: #dcdcde;
+    color: #1d2327;
+    font-size: 12px;
+    font-family: monospace;
+}
+
+.rlv-word-item .button-small:hover,
+.rlv-word-item input[type="submit"]:hover {
+    background: #f0f0f1;
+    border-color: #b0b3b8;
+    color: #b32d2e;
+}
+
+.rlv-control-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid #f0f0f1;
+}
+
+.rlv-actions-left {
+    display: flex;
+    gap: 8px;
+}
+
+.rlv-actions-right {
+    display: flex;
+}
+
+.rlv-actions-right .button-link-delete {
+    text-decoration: none;
+    box-shadow: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.rlv-copy-trigger .dashicons {
+    vertical-align: text-bottom;
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    margin-right: 4px;
+}
+
+.relevanssi-options-grid {
+    display: grid;
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.grid-row {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    align-items: start;
+}
+
+@media (max-width: 782px) {
+    .grid-row {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+}
+
+/* Responsive Overrides */
+/* ==========================================================================
+   Responsive Grid & Overlap Deflector Engine Layer (Up to 1240px viewports)
+   ========================================================================== */
+@media screen and (max-width: 1240px) {
+
+    /* 1. Dissolve the 2-column grid tracks into a flat vertical stack */
+    .relevanssi-settings-row {
+        grid-template-columns: 1fr !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 24px !important;
+    }
+
+    /* 2. Release width limitations on the main form content cards */
+    .relevanssi-settings-content {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        flex: 1 1 auto !important;
+    }
+
+    /* 3. Strip sticky parameters to safely drop the sidebar beneath the main form */
+    .relevanssi-settings-sidebar {
+        position: static !important;
+        /* Kills the floating behavior causing the overlap */
+        width: 100% !important;
+        /* Expands sidebar to full width of the screen */
+        max-width: 100% !important;
+        margin-top: 16px !important;
+        /* Clean spacing directly below the form card */
+        margin-left: 0 !important;
+        /* Clears old layout alignment corrections */
+        transform: none !important;
+    }
+
+    /* 4. Convert the sidebar info boxes into a flat layout format */
+    .relevanssi-info-box {
+        width: 100% !important;
+        box-sizing: border-box !important;
+        border-radius: 8px !important;
+        border-left: none !important;
+        border-top: 4px solid #176E34 !important;
+        /* Changes vertical accent bar into a top border header */
+    }
+
+    /* 5. Handle the consolidated index grid columns if present */
+    .relevanssi-index-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .relevanssi-index-grid .relevanssi-card {
+        margin-bottom: 24px !important;
+    }
+}
+
+@media screen and (max-width: 850px) {
+    .relevanssi-index-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .relevanssi-index-grid .relevanssi-card {
+        margin-bottom: 24px;
+    }
 }

@@ -13,7 +13,8 @@
 
 add_filter( 'relevanssi_do_not_index', 'relevanssi_seopress_noindex', 10, 2 );
 add_filter( 'relevanssi_indexing_restriction', 'relevanssi_seopress_exclude' );
-add_action( 'relevanssi_indexing_tab_advanced', 'relevanssi_seopress_form', 20 );
+add_action( 'relevanssi_advanced_indexing_config', 'relevanssi_seopress_form', 20 );
+add_action( 'relevanssi_advanced_indexing_sidebar_list', 'relevanssi_seopress_sidebar', 20 );
 add_action( 'relevanssi_indexing_options', 'relevanssi_seopress_options' );
 
 /**
@@ -71,26 +72,37 @@ function relevanssi_seopress_exclude( $restriction ) {
 
 /**
  * Prints out the form fields for disabling the feature.
+ *
+ * @param array $config The configuration array.
+ *
+ * @return array
  */
-function relevanssi_seopress_form() {
-	$seo_noindex = get_option( 'relevanssi_seo_noindex' );
-	$seo_noindex = relevanssi_check( $seo_noindex );
+function relevanssi_seopress_form( array $config ) {
+	$config['relevanssi_seopress'] = array(
+		'type'         => 'checkbox',
+		'label'        => __( 'SEOPress', 'relevanssi' ),
+		'description'  => __( 'Use SEOPress noindex', 'relevanssi' ),
+		'hover_target' => 'sb-seopress',
+		'value'        => get_option( 'relevanssi_seo_noindex' ),
+		'advanced'     => true,
+	);
 
+	return $config;
+}
+
+
+/**
+ * Adds the sidebar note for the SEOPress setting.
+ */
+function relevanssi_seopress_sidebar() {
 	?>
-	<tr>
-		<th scope="row">
-			<label for='relevanssi_seo_noindex'><?php esc_html_e( 'Use SEOPress noindex', 'relevanssi' ); ?></label>
-		</th>
-		<td>
-			<label for='relevanssi_seo_noindex'>
-				<input type='checkbox' name='relevanssi_seo_noindex' id='relevanssi_seo_noindex' <?php echo esc_attr( $seo_noindex ); ?> />
-				<?php esc_html_e( 'Use SEOPress noindex.', 'relevanssi' ); ?>
-			</label>
-			<p class="description"><?php esc_html_e( 'If checked, Relevanssi will not index posts marked as "No index" in SEOPress settings.', 'relevanssi' ); ?></p>
-		</td>
-	</tr>
+	<li id="sb-seo-press">
+		<strong><?php esc_html_e( 'SEOPress:', 'relevanssi' ); ?></strong>
+		<?php esc_html_e( 'If checked, Relevanssi will not index posts marked as "No index" in SEOPress settings.', 'relevanssi' ); ?>
+	</li>
 	<?php
 }
+
 
 /**
  * Saves the SEO No index option.
@@ -98,5 +110,6 @@ function relevanssi_seopress_form() {
  * @param array $request An array of option values from the request.
  */
 function relevanssi_seopress_options( array $request ) {
+	$request['relevanssi_seo_noindex'] = $request['relevanssi_seopress'] ?? false;
 	relevanssi_update_off_or_on( $request, 'relevanssi_seo_noindex', true );
 }

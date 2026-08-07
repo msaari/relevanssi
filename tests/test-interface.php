@@ -25,47 +25,30 @@ class InterfaceTest extends WP_UnitTestCase {
 	}
 
 	/**
-	 * Test loading the options page. This doesn't include any assertions, but should
-	 * pass without an error.
+	 * Test loading the options page tabs layout rendering engine.
+	 *
+	 * This verifies that our custom Factory instantiation and Template-Method rendering loops
+	 * run from start to finish without triggering syntax exceptions or runtime crashes.
 	 */
 	public function test_options() {
 		ob_start();
 
-		$_REQUEST['tab'] = 'overview';
-		relevanssi_options_form();
+		$tabs = array(
+			'overview',
+			'indexing',
+			'attachments',
+			'searching',
+			'logging',
+			'excerpts',
+			'synonyms',
+			'stopwords',
+			'redirects',
+		);
 
-		$_REQUEST['tab'] = 'indexing';
-		relevanssi_options_form();
-
-		$_REQUEST['tab'] = 'attachments';
-		relevanssi_options_form();
-
-		$_REQUEST['tab'] = 'searching';
-		relevanssi_options_form();
-
-		$_REQUEST['tab'] = 'logging';
-		relevanssi_options_form();
-
-		$_REQUEST['tab'] = 'excerpts';
-		relevanssi_options_form();
-
-		$_REQUEST['tab'] = 'overview';
-		relevanssi_options_form();
-
-		$_REQUEST['tab'] = 'synonyms';
-		relevanssi_options_form();
-
-		$_REQUEST['tab'] = 'stopwords';
-		relevanssi_options_form();
-
-		$_REQUEST['tab'] = 'importexport';
-		relevanssi_options_form();
-
-		$_REQUEST['tab'] = 'redirects';
-		relevanssi_options_form();
-
-		$_REQUEST['tab'] = 'related';
-		relevanssi_options_form();
+		foreach ( $tabs as $tab ) {
+			$_REQUEST['rlv_tab'] = $tab;
+			relevanssi_options_form();
+		}
 
 		relevanssi_query_log();
 

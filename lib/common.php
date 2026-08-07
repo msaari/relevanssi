@@ -1152,8 +1152,7 @@ function relevanssi_wpmu_drop( $tables ) {
  * @global array  $relevanssi_variables The global Relevanssi variables.
  *
  * @param int     $limit  How many words to display, default 25.
- * @param boolean $wp_cli If true, return just a list of words. If false, print out
- * HTML code.
+ * @param boolean $wp_cli If true, return just a list of words. If false, print out HTML.
  *
  * @return array A list of words, if $wp_cli is true.
  */
@@ -1167,31 +1166,66 @@ function relevanssi_common_words( $limit = 25, $wp_cli = false ) {
 	$words = $wpdb->get_results( 'SELECT COUNT(*) as cnt, term FROM ' . $relevanssi_variables['relevanssi_table'] . " GROUP BY term ORDER BY cnt DESC LIMIT $limit" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared
 
 	if ( ! $wp_cli ) {
-		printf( '<h2>%s</h2>', esc_html__( '25 most common words in the index', 'relevanssi' ) );
-		printf( '<p>%s</p>', esc_html__( "These words are excellent stopword material. A word that appears in most of the posts in the database is quite pointless when searching. This is also an easy way to create a completely new stopword list, if one isn't available in your language. Click the word to add the word to the stopword list. The word will also be removed from the index, so rebuilding the index is not necessary.", 'relevanssi' ) );
+		?>
+		<div class="relevanssi-common-words-section" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #f0f0f1;">
+			<h3>
+				<?php
+				/* translators: %d is the total number of common words evaluated. */
+				echo esc_html( sprintf( __( '%d Most Common Words in the Index', 'relevanssi' ), $limit ) );
+				?>
+			</h3>
+			<p class="description" style="margin-bottom: 16px; max-width: 800px;">
+				<?php esc_html_e( 'These words appear most frequently across your current database index. When a word appears in almost every post, it does not help filter search results effectively. Review these top candidates and add them as exclusions to optimize performance. Words added here are instantly dropped from the index without requiring a full reindexing.', 'relevanssi' ); ?>
+			</p>
 
-		?>
-<input type="hidden" name="dowhat" value="add_stopword" />
-<table class="form-table">
-<tr>
-	<th scope="row"><?php esc_html_e( 'Stopword Candidates', 'relevanssi' ); ?></th>
-	<td>
-<ul>
-		<?php
-		foreach ( $words as $word ) {
-			$stop = __( 'Add to stopwords', 'relevanssi' );
-			printf( '<li>%1$s (%2$d) <button name="term" value="%1$s" />%3$s</button>', esc_attr( $word->term ), esc_html( $word->cnt ), esc_html( $stop ) );
-			if ( RELEVANSSI_PREMIUM ) {
-				$body = __( 'Add to content stopwords', 'relevanssi' );
-				printf( ' <button name="body_term" value="%1$s" />%3$s</button>', esc_attr( $word->term ), esc_html( $word->cnt ), esc_html( $body ) );
-			}
-			echo '</li>';
-		}
-		?>
-	</ul>
-	</td>
-</tr>
-</table>
+			<input type="hidden" name="dowhat" value="add_stopword" />
+
+			<div class="relevanssi-common-words-container" style="background: #fff; border: 1px solid #c3c4c7; border-radius: 4px; padding: 16px; max-width: 800px; margin-left: auto; margin-right: auto;">
+				<?php if ( ! empty( $words ) ) : ?>
+					<ul class="relevanssi-word-candidates-list" style="margin: 0; padding: 0; list-style: none;">
+						<?php foreach ( $words as $word ) : ?>
+							<li style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; margin-bottom: 6px; background: #f6f7f7; border-radius: 4px; border: 1px solid #dcdcde;">
+								<span class="relevanssi-word-info" style="font-size: 13px; color: #1d2327;">
+									<strong style="font-family: monospace; font-size: 14px; color: #176E34;"><?php echo esc_html( $word->term ); ?></strong>
+									<span style="color: #646970; margin-left: 6px;">
+										<?php
+										/* translators: %d is the total instances a specific keyword appears in the index database. */
+										echo '(' . esc_html( sprintf( _n( 'appears %d time', 'appears %d times', $word->cnt, 'relevanssi' ), $word->cnt ) ) . ')';
+										?>
+									</span>
+								</span>
+
+								<div class="relevanssi-word-actions" style="display: flex; gap: 6px;">
+									<button type="submit" name="term" value="<?php echo esc_attr( $word->term ); ?>" class="button button-small" aria-label="
+									<?php
+										/* translators: %s is the literal keyword string token. */
+										echo esc_attr( sprintf( __( 'Add "%s" to global stopwords', 'relevanssi' ), $word->term ) );
+									?>
+									">
+										<?php esc_html_e( 'Add to Stopwords', 'relevanssi' ); ?>
+									</button>
+
+									<?php if ( RELEVANSSI_PREMIUM ) : ?>
+										<button type="submit" name="body_term" value="<?php echo esc_attr( $word->term ); ?>" class="button button-small button-secondary" aria-label="
+										<?php
+											/* translators: %s is the literal keyword string token. */
+											echo esc_attr( sprintf( __( 'Add "%s" to content body stopwords only', 'relevanssi' ), $word->term ) );
+										?>
+										">
+											<?php esc_html_e( 'Add to Content-Only', 'relevanssi' ); ?>
+										</button>
+									<?php endif; ?>
+								</div>
+							</li>
+						<?php endforeach; ?>
+					</ul>
+				<?php else : ?>
+					<p style="margin: 0; font-style: italic; color: #646970; text-align: center; padding: 12px;">
+						<?php esc_html_e( 'The index is currently empty or contains no words.', 'relevanssi' ); ?>
+					</p>
+				<?php endif; ?>
+			</div>
+		</div>
 		<?php
 	}
 

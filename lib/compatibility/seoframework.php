@@ -12,7 +12,8 @@
 
 add_filter( 'relevanssi_do_not_index', 'relevanssi_seoframework_noindex', 10, 2 );
 add_filter( 'relevanssi_indexing_restriction', 'relevanssi_seoframework_exclude' );
-add_action( 'relevanssi_indexing_tab_advanced', 'relevanssi_seoframework_form', 20 );
+add_action( 'relevanssi_advanced_indexing_config', 'relevanssi_seoframework_form', 20 );
+add_action( 'relevanssi_advanced_indexing_sidebar_list', 'relevanssi_seoframework_sidebar', 20 );
 add_action( 'relevanssi_indexing_options', 'relevanssi_seoframework_options' );
 
 /**
@@ -64,25 +65,34 @@ function relevanssi_seoframework_exclude( $restriction ) {
 }
 
 /**
- * Prints out the form fields for disabling the feature.
+ * Adds the config element for the SEO Framework setting.
+ *
+ * @param array $config The configuration array.
+ *
+ * @return array
  */
-function relevanssi_seoframework_form() {
-	$seo_noindex = get_option( 'relevanssi_seo_noindex' );
-	$seo_noindex = relevanssi_check( $seo_noindex );
+function relevanssi_seoframework_form( array $config ) {
+	$config['relevanssi_seo_framework'] = array(
+		'type'         => 'checkbox',
+		'label'        => __( 'SEO Framework', 'relevanssi' ),
+		'description'  => __( 'Use SEO Framework local search exclude', 'relevanssi' ),
+		'hover_target' => 'sb-seo-framework',
+		'value'        => get_option( 'relevanssi_seo_noindex' ),
+		'advanced'     => true,
+	);
 
+	return $config;
+}
+
+/**
+ * Adds the sidebar note for the SEO Framework setting.
+ */
+function relevanssi_seoframework_sidebar() {
 	?>
-	<tr>
-		<th scope="row">
-			<label for='relevanssi_seo_noindex'><?php esc_html_e( 'Use SEO Framework local search exclude', 'relevanssi' ); ?></label>
-		</th>
-		<td>
-			<label for='relevanssi_seo_noindex'>
-				<input type='checkbox' name='relevanssi_seo_noindex' id='relevanssi_seo_noindex' <?php echo esc_attr( $seo_noindex ); ?> />
-				<?php esc_html_e( 'Use SEO Framework local search exclude.', 'relevanssi' ); ?>
-			</label>
-			<p class="description"><?php esc_html_e( 'If checked, Relevanssi will not index posts marked as "Exclude this page from all search queries on this site" in SEO Framework settings.', 'relevanssi' ); ?></p>
-		</td>
-	</tr>
+	<li id="sb-seo-framework">
+		<strong><?php esc_html_e( 'SEO Framework:', 'relevanssi' ); ?></strong>
+		<?php esc_html_e( 'If checked, Relevanssi will not index posts marked as "Exclude this page from all search queries on this site" in SEO Framework settings.', 'relevanssi' ); ?>
+	</li>
 	<?php
 }
 
@@ -92,5 +102,6 @@ function relevanssi_seoframework_form() {
  * @param array $request An array of option values from the request.
  */
 function relevanssi_seoframework_options( array $request ) {
+	$request['relevanssi_seo_noindex'] = $request['relevanssi_seo_framework'] ?? false;
 	relevanssi_update_off_or_on( $request, 'relevanssi_seo_noindex', true );
 }

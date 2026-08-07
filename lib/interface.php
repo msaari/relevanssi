@@ -191,7 +191,7 @@ function relevanssi_options_form() {
 			'name'     => __( 'Attachments', 'relevanssi' ),
 			'require'  => 'tabs/attachments-tab.php',
 			'callback' => 'relevanssi_attachments_tab',
-			'save'     => false,
+			'save'     => 'premium',
 		),
 		array(
 			'slug'     => 'searching',
@@ -201,39 +201,18 @@ function relevanssi_options_form() {
 			'save'     => true,
 		),
 		array(
-			'slug'     => 'logging',
-			'name'     => __( 'Logging', 'relevanssi' ),
-			'require'  => 'tabs/logging-tab.php',
-			'callback' => 'relevanssi_logging_tab',
+			'slug'     => 'display-ui',
+			'name'     => __( 'Display & UI', 'relevanssi' ),
+			'require'  => 'tabs/display-ui-tab.php',
+			'callback' => 'relevanssi_display_ui_tab',
 			'save'     => true,
 		),
 		array(
-			'slug'     => 'excerpts',
-			'name'     => __( 'Excerpts and highlights', 'relevanssi' ),
-			'require'  => 'tabs/excerpts-tab.php',
-			'callback' => 'relevanssi_excerpts_tab',
+			'slug'     => 'admin-dev',
+			'name'     => __( 'Admin & Dev', 'relevanssi' ),
+			'require'  => 'tabs/admin-dev-tab.php',
+			'callback' => 'relevanssi_admin_dev_tab',
 			'save'     => true,
-		),
-		array(
-			'slug'     => 'synonyms',
-			'name'     => __( 'Synonyms', 'relevanssi' ),
-			'require'  => 'tabs/synonyms-tab.php',
-			'callback' => 'relevanssi_synonyms_tab',
-			'save'     => true,
-		),
-		array(
-			'slug'     => 'stopwords',
-			'name'     => __( 'Stopwords', 'relevanssi' ),
-			'require'  => 'tabs/stopwords-tab.php',
-			'callback' => 'relevanssi_stopwords_tab',
-			'save'     => true,
-		),
-		array(
-			'slug'     => 'redirects',
-			'name'     => __( 'Redirects', 'relevanssi' ),
-			'require'  => 'tabs/redirects-tab.php',
-			'callback' => 'relevanssi_redirects_tab',
-			'save'     => false,
 		),
 		array(
 			'slug'     => 'debugging',
@@ -241,6 +220,13 @@ function relevanssi_options_form() {
 			'require'  => 'tabs/debugging-tab.php',
 			'callback' => 'relevanssi_debugging_tab',
 			'save'     => true,
+		),
+		array(
+			'slug'     => 'help',
+			'name'     => __( 'Help', 'relevanssi' ),
+			'require'  => 'tabs/help-tab.php',
+			'callback' => 'relevanssi_help_tab',
+			'save'     => false,
 		),
 	);
 
@@ -284,8 +270,10 @@ function relevanssi_options_form() {
 	if ( $display_save_button ) :
 		?>
 
-	<input type='submit' name='submit' value='<?php esc_attr_e( 'Save the options', 'relevanssi' ); ?>' class='button button-primary' />
-
+	<div class="relevanssi-floating-save">
+		<input type='submit' name='submit' value='<?php esc_attr_e( 'Save the options', 'relevanssi' ); ?>' class='button button-primary button-hero' />
+	</div>
+	
 	<?php endif; ?>
 
 	</form>
@@ -310,11 +298,14 @@ function relevanssi_add_admin_scripts( $hook ) {
 
 	// Only enqueue on Relevanssi pages.
 	$acceptable_hooks = array(
+		'toplevel_page_relevanssi',
 		'toplevel_page_relevanssi-premium/relevanssi',
+		'relevanssi_page_relevanssi_admin_search',
+		'relevanssi_page_relevanssi_user_searches',
+		// Legacy hooks preserved for backward compatibility.
 		'settings_page_relevanssi-premium/relevanssi',
-		'dashboard_page_relevanssi-premium/relevanssi',
-		'toplevel_page_relevanssi/relevanssi',
 		'settings_page_relevanssi/relevanssi',
+		'dashboard_page_relevanssi-premium/relevanssi',
 		'dashboard_page_relevanssi/relevanssi',
 		'dashboard_page_relevanssi_admin_search',
 		'dashboard_page_relevanssi_user_searches',
@@ -344,7 +335,10 @@ function relevanssi_add_admin_scripts( $hook ) {
 	}
 	wp_enqueue_style( 'relevanssi_admin_css', $plugin_dir_url . 'lib/admin_styles.css', array(), $relevanssi_variables['plugin_version'] );
 
-	if ( 'dashboard_page_relevanssi' === substr( $hook, 0, strlen( 'dashboard_page_relevanssi' ) ) ) {
+	if (
+		strpos( $hook, 'relevanssi_user_searches' ) !== false ||
+		strpos( $hook, 'dashboard_page_relevanssi' ) === 0
+	) {
 		wp_enqueue_script( 'chartjs', 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.3.2/chart.min.js', array(), '3.3.2', false );
 	}
 
@@ -438,33 +432,31 @@ function relevanssi_add_admin_scripts( $hook ) {
  * Prints out the form fields for tag and category weights.
  */
 function relevanssi_form_tag_weight() {
-	$taxonomy_weights = get_option( 'relevanssi_post_type_weights' );
+	$taxonomy_weights = get_option( 'relevanssi_post_type_weights', array() );
 
-	$tag_value = 1;
-	if ( isset( $taxonomy_weights['post_tag'] ) ) {
-		$tag_value = $taxonomy_weights['post_tag'];
-	}
-	$category_value = 1;
-	if ( isset( $taxonomy_weights['category'] ) ) {
-		$category_value = $taxonomy_weights['category'];
-	}
+	$tag_value      = isset( $taxonomy_weights['post_tag'] ) ? $taxonomy_weights['post_tag'] : 1;
+	$category_value = isset( $taxonomy_weights['category'] ) ? $taxonomy_weights['category'] : 1;
 	?>
-<tr>
-	<td>
-		<?php esc_html_e( 'Tag weight', 'relevanssi' ); ?>
-	</td>
-	<td class="col-2">
-		<input type='text' id='relevanssi_weight_post_tag' name='relevanssi_weight_post_tag' size='4' value='<?php echo esc_attr( $tag_value ); ?>' />
-	</td>
-</tr>
-<tr>
-	<td>
-		<?php esc_html_e( 'Category weight', 'relevanssi' ); ?>
-	</td>
-	<td class="col-2">
-		<input type='text' id='relevanssi_weight_category' name='relevanssi_weight_category' size='4' value='<?php echo esc_attr( $category_value ); ?>' />
-	</td>
-</tr>
+	<tr>
+		<td style="padding: 8px 12px; vertical-align: middle; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+			<label for="relevanssi_weight_post_tag">
+				<strong><?php esc_html_e( 'Post Tags', 'relevanssi' ); ?></strong>
+			</label>
+		</td>
+		<td style="text-align: center; vertical-align: middle; padding: 8px 12px;">
+			<input type='text' name='relevanssi_weight_post_tag' id='relevanssi_weight_post_tag' size='4' value='<?php echo esc_attr( $tag_value ); ?>' style="text-align: center;" />
+		</td>
+	</tr>
+	<tr>
+		<td style="padding: 8px 12px; vertical-align: middle; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+			<label for="relevanssi_weight_category">
+				<strong><?php esc_html_e( 'Post Categories', 'relevanssi' ); ?></strong>
+			</label>
+		</td>
+		<td style="text-align: center; vertical-align: middle; padding: 8px 12px;">
+			<input type='text' name='relevanssi_weight_category' id='relevanssi_weight_category' size='4' value='<?php echo esc_attr( $category_value ); ?>' style="text-align: center;" />
+		</td>
+	</tr>
 	<?php
 }
 

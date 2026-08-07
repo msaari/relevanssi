@@ -250,18 +250,27 @@ function relevanssi_admin_search() {
  * @since 2.2.0
  */
 function relevanssi_admin_search_format_posts( $posts, $total, $offset, $query ) {
-	$result = '<h3>' . __( 'Results', 'relevanssi' ) . '</h3>';
-	$start  = $offset + 1;
-	$end    = $offset + count( $posts );
+	$result  = '<div class="relevanssi-results-header" style="margin-top: 32px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">';
+	$result .= '<h3 style="margin: 0; font-size: 18px; font-weight: 600; color: #1d2327;">' . __( 'Results', 'relevanssi' ) . '</h3>';
+
+	$start = $offset + 1;
+	$end   = $offset + count( $posts );
 	// Translators: %1$d is the total number of posts found, %2$d is the current search result count, %3$d is the offset.
-	$result .= '<p>' . sprintf( __( 'Found a total of %1$d posts, showing posts %2$d–%3$s.', 'relevanssi' ), $total, $start, '<span id="offset">' . $end . '</span>' ) . '</p>';
-	if ( $offset > 0 ) {
-		$result .= sprintf( '<button type="button" id="prev_page">%s</button>', __( 'Previous page', 'relevanssi' ) );
+	$result .= '<p class="description" style="margin: 0; font-size: 14px;">' . sprintf( __( 'Found a total of %1$d posts, showing posts %2$d–%3$s.', 'relevanssi' ), $total, $start, '<span id="offset" style="font-weight: 600; color: #1d2327;">' . $end . '</span>' ) . '</p>';
+	$result .= '</div>';
+
+	if ( $offset > 0 || count( $posts ) + $offset < $total ) {
+		$result .= '<div class="relevanssi-action-group" style="margin-bottom: 24px;">';
+		if ( $offset > 0 ) {
+			$result .= sprintf( '<button type="button" id="prev_page" class="button">%s</button>', __( 'Previous page', 'relevanssi' ) );
+		}
+		if ( count( $posts ) + $offset < $total ) {
+			$result .= sprintf( '<button type="button" id="next_page" class="button">%s</button>', __( 'Next page', 'relevanssi' ) );
+		}
+		$result .= '</div>';
 	}
-	if ( count( $posts ) + $offset < $total ) {
-		$result .= sprintf( '<button type="button" id="next_page">%s</button>', __( 'Next page', 'relevanssi' ) );
-	}
-	$result .= '<ol start="' . $start . '">';
+
+	$result .= '<ol class="relevanssi-results-list" start="' . esc_attr( $start ) . '" style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 16px;">';
 
 	$score_label = __( 'Score:', 'relevanssi' );
 
@@ -285,10 +294,11 @@ function relevanssi_admin_search_format_posts( $posts, $total, $offset, $query )
 				$edit_url = get_edit_term_link( $post->term_id, $post->post_type );
 			}
 		}
-		$title     = sprintf( '<a href="%1$s">%2$s %3$s</a>', $permalink, $post->post_title, $post_type );
+
+		$title     = sprintf( '<a href="%1$s" style="color: #1d2327; text-decoration: none; transition: color 0.2s ease;">%2$s</a>', esc_url( $permalink ), esc_html( $post->post_title ) );
 		$edit_link = '';
-		if ( current_user_can( 'edit_post', $post->ID ) ) {
-			$edit_link = sprintf( '(<a href="%1$s">%2$s %3$s</a>)', $edit_url, __( 'Edit', 'relevanssi' ), $post_type );
+		if ( current_user_can( 'edit_post', $post->ID ) && ! empty( $edit_url ) ) {
+			$edit_link = sprintf( '<a href="%1$s" class="button-ghost" style="padding: 2px 8px; font-size: 11px; height: auto; min-height: auto; margin-left: 8px;">%2$s</a>', esc_url( $edit_url ), __( 'Edit', 'relevanssi' ) );
 		}
 
 		$pinning_buttons = '';
@@ -299,11 +309,24 @@ function relevanssi_admin_search_format_posts( $posts, $total, $offset, $query )
 			list( $pinning_buttons, $pinned ) = relevanssi_admin_search_pinning( $post, $query );
 		}
 
-		$post_element = <<<EOH
-<li>$blog_name <strong>$title</strong> $edit_link $pinning_buttons <br />
-$post->post_excerpt<br />
-$score_label $post->relevance_score $pinned</li>
-EOH;
+		$post_element  = '<li class="relevanssi-result-item" style="background: #ffffff; border: 1px solid #c3c4c7; border-radius: 8px; padding: 20px; transition: all 0.2s ease; display: flex; flex-direction: column; gap: 12px;">';
+		$post_element .= '<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap;">';
+		$post_element .= '<div style="flex: 1; min-width: 0;">';
+		$post_element .= '<h4 style="margin: 0 0 4px 0; font-size: 15px; font-weight: 600; line-height: 1.4;">' . esc_html( $blog_name ) . $title . $edit_link . '</h4>';
+		$post_element .= '</div>';
+		$post_element .= '<div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">';
+		$post_element .= '<span class="relevanssi-badge" style="font-size: 11px; font-weight: 600; background: #f0f2f5; color: #646970; border: 1px solid #dcdcde; padding: 4px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.05em;">' . esc_html( $post_type ) . '</span>';
+		$post_element .= '<span class="relevanssi-badge" style="font-size: 11px; font-weight: 600; background: rgba(27, 133, 61, 0.08); color: #1b853d; border: 1px solid rgba(27, 133, 61, 0.15); padding: 4px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.05em;">' . esc_html( $score_label ) . ' ' . esc_html( $post->relevance_score ) . '</span>';
+		$post_element .= $pinned;
+		$post_element .= $pinning_buttons;
+		$post_element .= '</div>';
+		$post_element .= '</div>';
+
+		if ( ! empty( $post->post_excerpt ) ) {
+			$post_element .= '<div class="relevanssi-result-excerpt" style="font-size: 13.5px; line-height: 1.6; color: #4f565d; border-top: 1px solid #f0f0f1; padding-top: 10px; margin: 0;">' . $post->post_excerpt . '</div>';
+		}
+		$post_element .= '</li>';
+
 		/**
 		 * Filters the admin search results element.
 		 *
@@ -335,23 +358,28 @@ EOH;
  * @since 2.2.0
  */
 function relevanssi_admin_search_debugging_info( $query ) {
-	$result  = '<div id="debugging">';
-	$result .= '<h3>' . __( 'Query variables', 'relevanssi' ) . '</h3>';
-	$result .= '<ul style="list-style: disc; margin-left: 1.5em">';
+	// Style adjustments: Removed border-top accent and updated margins to cleanly sit inside the sidebar container.
+	$result  = '<details class="relevanssi-card" id="debugging" style="margin-top: 16px; background: #ffffff; border: 1px solid #c3c4c7; border-radius: 4px; width: 100%; box-sizing: border-box;">';
+	$result .= '<summary style="cursor: pointer; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; user-select: none;"><h3 style="margin: 0; font-size: 13px; font-weight: 600; color: #1d2327;">' . __( 'Advanced Query Details', 'relevanssi' ) . '</h3></summary>';
+	$result .= '<div class="accordion-content" style="padding: 0 16px 16px 16px;">';
+	$result .= '<h3 style="margin-top: 12px; font-size: 13px; font-weight: 600; color: #1d2327; margin-bottom: 12px; border-bottom: 1px solid #f0f0f1; padding-bottom: 8px;">' . __( 'Query variables', 'relevanssi' ) . '</h3>';
+	$result .= '<ul class="relevanssi-sidebar-list" style="margin-left: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; padding-left: 0;">';
+
 	foreach ( $query->query_vars as $key => $value ) {
 		if ( 'tax_query' === $key ) {
-			$result .= '<li>tax_query:<ul style="list-style: disc; margin-left: 1.5em">';
+			$result .= '<li style="padding: 4px 0;"><code style="background: #f0f2f5; color: #2c3338; padding: 2px 6px; border-radius: 4px; font-family: monospace;">tax_query</code>';
+			$result .= '<ul style="list-style: disc; margin-left: 20px; margin-top: 6px; color: #646970; font-size: 12px;">';
 			$result .= implode(
 				'',
 				array_map(
 					function ( $row ) {
-						$result = '';
+						$sub_result = '';
 						if ( is_array( $row ) ) {
 							foreach ( $row as $row_key => $row_value ) {
-								$result .= "<li>$row_key: $row_value</li>";
+								$sub_result .= sprintf( '<li style="margin-bottom: 4px; word-break: break-all;"><strong>%s:</strong> %s</li>', esc_html( $row_key ), esc_html( $row_value ) );
 							}
 						}
-						return $result;
+						return $sub_result;
 					},
 					$value
 				)
@@ -364,11 +392,13 @@ function relevanssi_admin_search_debugging_info( $query ) {
 			if ( empty( $value ) ) {
 				continue;
 			}
-			$result .= "<li>$key: $value</li>";
+			$result .= sprintf( '<li style="padding: 4px 0; font-size: 12px; color: #3c434a; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; word-break: break-all;"><code style="background: #f0f2f5; color: #2c3338; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-weight: 600;">%s</code> <span>%s</span></li>', esc_html( $key ), esc_html( $value ) );
 		}
 	}
+
 	if ( ! empty( $query->tax_query ) ) {
-		$result .= '<li>tax_query:<ul style="list-style: disc; margin-left: 1.5em">';
+		$result .= '<li style="padding: 4px 0;"><code style="background: #f0f2f5; color: #2c3338; padding: 2px 6px; border-radius: 4px; font-family: monospace;">tax_query</code>';
+		$result .= '<ul style="list-style: disc; margin-left: 20px; margin-top: 6px; color: #646970; font-size: 12px;">';
 		foreach ( $query->tax_query as $tax_query ) {
 			if ( ! is_array( $tax_query ) ) {
 				continue;
@@ -377,7 +407,7 @@ function relevanssi_admin_search_debugging_info( $query ) {
 				if ( is_array( $value ) ) {
 					$value = relevanssi_flatten_array( $value );
 				}
-				$result .= "<li>$key: $value</li>";
+				$result .= sprintf( '<li style="margin-bottom: 4px; word-break: break-all;"><strong>%s:</strong> %s</li>', esc_html( $key ), esc_html( $value ) );
 			}
 		}
 		$result .= '</ul></li>';
@@ -406,20 +436,23 @@ function relevanssi_admin_search_debugging_info( $query ) {
 		'relevanssi_ignore_theme_post_type',
 	);
 
-	$result .= '<h3>' . __( 'Filters', 'relevanssi' ) . '</h3>';
-	$result .= '<button type="button" id="show_filters">' . __( 'show', 'relevanssi' ) . '</button>';
-	$result .= '<button type="button" id="hide_filters" style="display: none">' . __( 'hide', 'relevanssi' ) . '</button>';
-	$result .= '<div id="relevanssi_filter_list">';
+	$result .= '<h3 style="margin-top: 16px; font-size: 13px; font-weight: 600; color: #1d2327; margin-bottom: 12px; border-bottom: 1px solid #f0f0f1; padding-bottom: 8px;">' . __( 'Filters', 'relevanssi' ) . '</h3>';
+	$result .= '<div class="relevanssi-action-group" style="margin-bottom: 12px;">';
+	$result .= '<button type="button" id="show_filters" class="button button-outline" style="padding: 4px 12px; font-size: 11px; height: auto; min-height: auto;">' . __( 'show', 'relevanssi' ) . '</button>';
+	$result .= '<button type="button" id="hide_filters" class="button button-outline" style="display: none; padding: 4px 12px; font-size: 11px; height: auto; min-height: auto;">' . __( 'hide', 'relevanssi' ) . '</button>';
+	$result .= '</div>';
+
+	$result .= '<div id="relevanssi_filter_list" style="background: #f8f9fa; border: 1px solid #e2e4e7; border-radius: 6px; padding: 12px; display: none; max-height: 350px; overflow-y: auto;">';
 	foreach ( $filters as $filter ) {
 		if ( isset( $wp_filter[ $filter ] ) ) {
-			$result .= '<h4>' . $filter . '</h4>';
-			$result .= '<ul style="list-style: disc; margin-left: 1.5em">';
+			$result .= '<h4 style="margin: 8px 0 4px 0; font-size: 11px; color: #1b853d; font-family: monospace; word-break: break-all;">' . esc_html( $filter ) . '</h4>';
+			$result .= '<ul style="list-style: none; padding-left: 8px; margin: 0 0 8px 0; border-left: 2px solid #dcdcde;">';
 			foreach ( $wp_filter[ $filter ] as $priority => $functions ) {
 				foreach ( $functions as $function ) {
 					if ( $function['function'] instanceof Closure ) {
 						$function['function'] = 'Anonymous function';
 					}
-					$result .= "<li>$priority: " . $function['function'] . '</li>';
+					$result .= sprintf( '<li style="font-size: 11px; margin-bottom: 2px; color: #4f565d; word-break: break-all;"><span style="color: #dba617; font-weight: 600; margin-right: 4px;">[%s]</span> %s</li>', esc_html( $priority ), esc_html( $function['function'] ) );
 				}
 			}
 			$result .= '</ul>';
@@ -427,6 +460,7 @@ function relevanssi_admin_search_debugging_info( $query ) {
 	}
 	$result .= '</div>';
 	$result .= '</div>';
+	$result .= '</details>';
 
 	return $result;
 }

@@ -71,28 +71,42 @@ EOT;
 	}
 
 	/**
-	 * Test relevanssi_process_index_fields_option.
+	 * Test Relevanssi_Setting_Field_Custom_Fields_Group save lifecycle.
+	 *
+	 * Verifies that the object-oriented factory processor successfully translates compound
+	 * dropdown UI selection states into strict legacy database option strings.
 	 */
-	public function test_relevanssi_process_index_fields_option() {
-		$request = array(
-			'relevanssi_index_fields_select' => 'all',
+	public function test_custom_fields_group_field_save() {
+		$field_instance = Relevanssi_Setting_Field_Factory::create(
+			'relevanssi_index_fields',
+			array( 'type' => 'custom_fields_group' )
 		);
-		$this->assertTrue( relevanssi_process_index_fields_option( $request ) );
-		$this->assertFalse( relevanssi_process_index_fields_option( array() ) );
+
+		// Assert that the instance is bound to the correct contract.
+		$this->assertInstanceOf( 'Relevanssi_Setting_Field_Interface', $field_instance );
+
+		// Test option mapping to 'all'.
+		$request = array( 'relevanssi_index_fields_select' => 'all' );
+		$field_instance->save( $request );
 		$this->assertEquals( 'all', get_option( 'relevanssi_index_fields' ) );
 
-		$request = array(
-			'relevanssi_index_fields_select' => 'visible',
-		);
-		relevanssi_process_index_fields_option( $request );
+		// Test option mapping to 'visible'.
+		$request = array( 'relevanssi_index_fields_select' => 'visible' );
+		$field_instance->save( $request );
 		$this->assertEquals( 'visible', get_option( 'relevanssi_index_fields' ) );
 
+		// Test option mapping to 'none' saves an empty string state.
+		$request = array( 'relevanssi_index_fields_select' => 'none' );
+		$field_instance->save( $request );
+		$this->assertEquals( '', get_option( 'relevanssi_index_fields' ) );
+
+		// Test option mapping to 'some' extracts raw trimmed input variables.
 		$request = array(
 			'relevanssi_index_fields_select' => 'some',
-			'relevanssi_index_fields'        => 'field_a,field_b	,',
+			'relevanssi_index_fields'        => 'field_a, field_b, field_c, ',
 		);
-		relevanssi_process_index_fields_option( $request );
-		$this->assertEquals( 'field_a,field_b', get_option( 'relevanssi_index_fields' ) );
+		$field_instance->save( $request );
+		$this->assertEquals( 'field_a, field_b, field_c', get_option( 'relevanssi_index_fields' ) );
 	}
 
 	/**
@@ -193,7 +207,7 @@ EOT;
 		$this->assertEquals( '4', get_option( 'relevanssi_content_boost' ) );
 
 		$request = array(
-			'rlv_tab' => 'logging',
+			'rlv_tab' => 'admin-dev',
 		);
 
 		update_relevanssi_options( $request );
@@ -201,7 +215,7 @@ EOT;
 		$this->assertEquals( 'off', get_option( 'relevanssi_log_queries' ) );
 
 		$request = array(
-			'rlv_tab'                      => 'excerpts',
+			'rlv_tab'                      => 'display-ui',
 			'relevanssi_show_matches_text' => 'Text with "quotes" to fix.',
 			'relevanssi_exclude_posts'     => '1,2,3, ',
 		);
@@ -251,6 +265,89 @@ EOT;
 			array( 0 => 'category' ),
 			get_option( 'relevanssi_index_taxonomies_list' )
 		);
+	}
+
+	/**
+	 * Test factory field type variations and data sanitization boundaries.
+	 */
+	public function test_factory_field_type_sanitization() {
+		global $relevanssi_variables;
+		$_REQUEST['relevanssi_options'] = wp_create_nonce( plugin_basename( $relevanssi_variables['file'] ) );
+
+		$request = array(
+			'rlv_tab'                   => 'display-ui',
+			'relevanssi_excerpt_length' => '123-not-a-number',
+		);
+
+		$_REQUEST = array_merge( $_REQUEST, $request );
+
+		update_relevanssi_options( $request );
+		$this->assertEquals( 123, intval( get_option( 'relevanssi_excerpt_length' ) ) );
+
+		// Test Checkbox Missing State (Should turn option 'off').
+		$clear_request = array( 'rlv_tab' => 'display-ui' );
+		$_REQUEST      = array_intersect_key( $_REQUEST, array( 'relevanssi_options' => 1 ) );
+		$_REQUEST      = array_merge( $_REQUEST, $clear_request );
+
+		update_relevanssi_options( $clear_request );
+		$this->assertEquals( 'off', get_option( 'relevanssi_excerpts' ) );
+	}
+
+	/**
+	 * Test complex serialized premium structures inside relevanssi_update_premium_options.
+	 */
+	public function test_premium_serialized_settings_save() {
+		global $relevanssi_variables;
+		$_REQUEST['relevanssi_options'] = wp_create_nonce( plugin_basename( $relevanssi_variables['file'] ) );
+
+		$request = array(
+			'rlv_tab'                    => 'display-ui',
+			'relevanssi_related_enabled' => 'on',
+			'relevanssi_related_number'  => '8',
+			'relevanssi_related_nothing' => 'custom_string',
+		);
+
+		$_REQUEST = array_merge( $_REQUEST, $request );
+
+		update_relevanssi_options( $request );
+
+		$related_settings = get_option( 'relevanssi_related_settings' );
+		$this->assertIsArray( $related_settings );
+		$this->assertEquals( 'on', $related_settings['enabled'] );
+		$this->assertEquals( 8, $related_settings['number'] );
+		$this->assertEquals( 'custom_string', $related_settings['nothing'] );
+
+		if ( defined( 'RELEVANSSI_PREMIUM' ) && RELEVANSSI_PREMIUM ) {
+			$premium_request = array(
+				'rlv_tab'                      => 'admin-dev',
+				'relevanssi_spamblock_limit'   => '5',
+				'relevanssi_spamblock_chinese' => 'on',
+			);
+			$_REQUEST        = array_merge( $_REQUEST, $premium_request );
+
+			update_relevanssi_options( $premium_request );
+
+			$spamblock = get_option( 'relevanssi_spamblock' );
+			$this->assertIsArray( $spamblock );
+			$this->assertEquals( 5, $spamblock['limit'] );
+			$this->assertEquals( 'on', $spamblock['chinese'] );
+		}
+	}
+
+	/**
+	 * Verify that a factory crash on one field type does not break subsequent options on the tab.
+	 */
+	public function test_factory_exception_resilience() {
+		global $relevanssi_variables;
+		$_REQUEST['relevanssi_options'] = wp_create_nonce( plugin_basename( $relevanssi_variables['file'] ) );
+
+		$request = array(
+			'rlv_tab'            => 'display-ui',
+			'relevanssi_txt_col' => '#00ff00',
+		);
+
+		update_relevanssi_options( $request );
+		$this->assertEquals( '#00ff00', get_option( 'relevanssi_txt_col' ) );
 	}
 
 	/**

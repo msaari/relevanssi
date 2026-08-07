@@ -15,6 +15,8 @@ add_filter( 'rest_api_init', 'relevanssi_rest_api_disable' );
 add_action( 'switch_blog', 'relevanssi_switch_blog', 1, 2 );
 add_action( 'admin_init', 'relevanssi_admin_init' );
 add_action( 'admin_menu', 'relevanssi_menu' );
+add_action( 'admin_head', 'relevanssi_admin_icon_styles' );
+
 
 // Taking over the search.
 add_filter( 'posts_pre_query', 'relevanssi_query', 99, 2 );
@@ -187,23 +189,37 @@ function relevanssi_admin_init() {
  */
 function relevanssi_menu() {
 	global $relevanssi_variables;
-	$name = 'Relevanssi';
-	if ( RELEVANSSI_PREMIUM ) {
-		$name = 'Relevanssi Premium';
-	}
-	$plugin_page = add_options_page(
-		$name,
-		$name,
-		/**
-		 * Filters the capability required to access Relevanssi options.
-		 *
-		 * @param string The capability required. Default 'manage_options'.
-		 */
-		apply_filters( 'relevanssi_options_capability', 'manage_options' ),
-		$relevanssi_variables['file'],
+
+	$menu_title  = 'Relevanssi';
+	$page_title  = RELEVANSSI_PREMIUM ? __( 'Relevanssi Premium Settings', 'relevanssi' ) : __( 'Relevanssi Settings', 'relevanssi' );
+	$icon_url    = plugin_dir_url( $relevanssi_variables['file'] ) . 'images/relevanssi-icon.svg';
+	$parent_slug = $relevanssi_variables['file'];
+	$capability  = apply_filters( 'relevanssi_options_capability', 'manage_options' );
+
+	// Top level menu page.
+	$plugin_page = add_menu_page(
+		$page_title,
+		$menu_title,
+		$capability,
+		$parent_slug,
+		'relevanssi_options',
+		$icon_url,
+		98
+	);
+
+	// Submenu item: Settings.
+	add_submenu_page(
+		$parent_slug,
+		$page_title,
+		__( 'Settings', 'relevanssi' ),
+		$capability,
+		$parent_slug,
 		'relevanssi_options'
 	);
-	add_dashboard_page(
+
+	// Submenu item: User searches.
+	add_submenu_page(
+		$parent_slug,
 		__( 'User searches', 'relevanssi' ),
 		__( 'User searches', 'relevanssi' ),
 		/**
@@ -215,7 +231,10 @@ function relevanssi_menu() {
 		'relevanssi_user_searches',
 		'relevanssi_search_stats'
 	);
-	add_dashboard_page(
+
+	// Submenu item: Admin search.
+	add_submenu_page(
+		$parent_slug,
 		__( 'Admin search', 'relevanssi' ),
 		__( 'Admin search', 'relevanssi' ),
 		/**
@@ -227,12 +246,30 @@ function relevanssi_menu() {
 		'relevanssi_admin_search',
 		'relevanssi_admin_search_page'
 	);
+
 	require_once 'contextual-help.php';
 	add_action( 'load-' . $plugin_page, 'relevanssi_admin_help' );
 	if ( function_exists( 'relevanssi_premium_plugin_page_actions' ) ) {
 		// Loads contextual help and JS for Premium version.
 		relevanssi_premium_plugin_page_actions( $plugin_page );
 	}
+}
+
+/**
+ * Ensures the Relevanssi sidebar icon is styled correctly.
+ */
+function relevanssi_admin_icon_styles() {
+	echo '<style>
+        #adminmenu li[class*="relevanssi"] .wp-menu-image img {
+            width: 21px !important;
+            height: 21px !important;
+            max-width: 21px !important;
+            max-height: 21px !important;
+            padding: 6.5px 0 0 0 !important;
+            opacity: 1 !important;
+            filter: none !important;
+        }
+    </style>';
 }
 
 /**
