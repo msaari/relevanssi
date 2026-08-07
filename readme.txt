@@ -5,7 +5,7 @@ Tags: search, relevance, better search, product search, woocommerce search
 Requires at least: 4.9
 Tested up to: 7.0
 Requires PHP: 7.1
-Stable tag: 4.28.0
+Stable tag: 4.28.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -128,6 +128,9 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.28.1 =
+* Minor fix: Some setting values were not displayed correctly on the searching settings page.
+
 = 4.28.0 =
 * Completely new settings pages! All Relevanssi features are also consolidated under one sidebar menu item.
 * Compatibility: Added built-in support for Document Library Pro above-documents search box.
@@ -149,5 +152,5 @@ Each document database is full of useless words. All the little words that appea
 * Minor fix: Relevanssi now clears the scheduled actions on deactivation, not on uninstall.
 
 == Upgrade notice ==
-= 4.28.0 =
-* Total redesign of settings pages.
+= 4.28.1 =
+* Total redesign of settings pages, fixed searching settings.
