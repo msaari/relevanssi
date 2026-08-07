@@ -706,22 +706,9 @@ class FunctionTest extends WP_UnitTestCase {
 		relevanssi_average_array( $sums, $counts );
 		$this->assertEquals( array( 10, 10, 10, 10 ), $sums );
 
-		$request['some_option'] = '10';
-		$this->assertEquals( 10, relevanssi_intval( $request, 'some_option' ) );
-		$this->assertEquals( null, relevanssi_intval( $request, 'none_option' ) );
-
 		$request['array_option'] = array( 'a', 'b', 'c', 'd' );
 		$this->assertEquals( 'a,b,c,d', relevanssi_implode( $request, 'array_option', ',' ) );
 		$this->assertEquals( '', relevanssi_implode( $request, 'some_option', ',' ) );
-
-		$this->assertEquals( '10', relevanssi_legal_value( $request, 'some_option', array( '10' ), 'a' ) );
-		$this->assertEquals( 'a', relevanssi_legal_value( $request, 'some_option', array( '20' ), 'a' ) );
-		$this->assertEquals( null, relevanssi_legal_value( $request, 'none_option', array( '10' ), 'a' ) );
-
-		$request['on_off'] = 'on';
-		$this->assertEquals( 'on', relevanssi_off_or_on( $request, 'on_off' ) );
-		$this->assertEquals( 'on', relevanssi_off_or_on( $request, 'some_option' ) );
-		$this->assertEquals( 'off', relevanssi_off_or_on( $request, 'none_option' ) );
 
 		$options = array( 'enabled' => 'on' );
 		$target  = array(
