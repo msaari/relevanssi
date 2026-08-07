@@ -521,6 +521,7 @@ function relevanssi_load_compatibility_code() {
 	class_exists( 'WooCommerce', false ) && require_once 'compatibility/woocommerce.php';
 	defined( 'AIOSEO_DIR' ) && require_once 'compatibility/aioseo.php';
 	defined( 'AVADA_VERSION' ) && require_once 'compatibility/avada.php';
+	defined( 'Barn2\Plugin\Document_Library_Advanced\PLUGIN_VERSION' ) && require_once 'compatibility/document-library-pro.php';
 	defined( 'BRICKS_VERSION' ) && require_once 'compatibility/bricks.php';
 	defined( 'CT_VERSION' ) && require_once 'compatibility/oxygen.php';
 	defined( 'ELEMENTOR_VERSION' ) && require_once 'compatibility/elementor.php';
