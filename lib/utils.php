@@ -76,22 +76,6 @@ function relevanssi_average_array( array &$arr, array $counts ) {
 }
 
 /**
- * Returns 'checked' if the option is enabled.
- *
- * @param string $option Value to check.
- *
- * @return string If the option is 'on', returns 'checked', otherwise returns an
- * empty string.
- */
-function relevanssi_check( string $option ) {
-	$checked = '';
-	if ( 'on' === $option ) {
-		$checked = 'checked';
-	}
-	return $checked;
-}
-
-/**
  * Closes tags in a bit of HTML code.
  *
  * Used to make sure no tags are left open in excerpts. This method is not
@@ -732,23 +716,6 @@ function relevanssi_increase_value( &$value, $increase = 1, $def_value = 0 ) {
 }
 
 /**
- * Returns the intval of the option if it exists, null otherwise.
- *
- * @see intval()
- *
- * @param array  $request An array of option values.
- * @param string $option  The key to check.
- *
- * @return int|null Integer value of the option, or null.
- */
-function relevanssi_intval( array $request, string $option ) {
-	if ( isset( $request[ $option ] ) ) {
-		return intval( $request[ $option ] );
-	}
-	return null;
-}
-
-/**
  * Returns true if the search is from Relevanssi Live Ajax Search.
  *
  * Checks if $wp_query->query_vars['action'] is set to "relevanssi_live_search".
@@ -875,28 +842,6 @@ function relevanssi_launch_ajax_action( string $action, array $payload_args = ar
 }
 
 /**
- * Returns a legal value.
- *
- * @param array  $request An array of option values.
- * @param string $option  The key to check.
- * @param array  $values  The legal values.
- * @param string $def_val The default value.
- *
- * @return string|null A legal value or the default value, null if the option
- * isn't set.
- */
-function relevanssi_legal_value( array $request, string $option, array $values, string $def_val ) {
-	$value = null;
-	if ( isset( $request[ $option ] ) ) {
-		$value = $def_val;
-		if ( in_array( $request[ $option ], $values, true ) ) {
-			$value = $request[ $option ];
-		}
-	}
-	return $value;
-}
-
-/**
  * Multibyte friendly case-insensitive string comparison.
  *
  * If multibyte string functions are available, do strnatcmp() after using
@@ -966,21 +911,6 @@ function relevanssi_mb_trim( string $str ) {
 	$str = str_replace( "\0", '', $str );
 	$str = preg_replace( '/(^\s+)|(\s+$)/us', '', $str );
 	return $str;
-}
-
-/**
- * Returns 'on' if option exists and value is not 'off', otherwise 'off'.
- *
- * @param array  $request An array of option values.
- * @param string $option  The key to check.
- *
- * @return string 'on' or 'off'.
- */
-function relevanssi_off_or_on( array $request, string $option ) {
-	if ( isset( $request[ $option ] ) && 'off' !== $request[ $option ] ) {
-		return 'on';
-	}
-	return 'off';
 }
 
 /**
@@ -1196,23 +1126,6 @@ function relevanssi_sanitize_hex_color( string $color ) {
 	}
 
 	return '';
-}
-
-/**
- * Returns 'selected' if the option matches a value.
- *
- * @param string $option Value to check.
- * @param string $value  The 'selected' value.
- *
- * @return string If the option matches the value, returns 'selected', otherwise
- * returns an empty string.
- */
-function relevanssi_select( string $option, string $value ) {
-	$selected = '';
-	if ( $option === $value ) {
-		$selected = 'selected';
-	}
-	return $selected;
 }
 
 /**
