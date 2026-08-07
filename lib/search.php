@@ -473,32 +473,6 @@ function relevanssi_search( $args ) {
 	}
 
 	if ( count( $hits ) < 1 ) {
-		if ( 'AND' === $operator && 'on' !== get_option( 'relevanssi_disable_or_fallback' ) ) {
-			$or_args             = $args;
-			$or_args['operator'] = 'OR';
-			global $wp_query;
-			$wp_query->set( 'operator', 'OR' );
-
-			$or_args['q_no_synonyms'] = $q;
-			$or_args['q']             = relevanssi_add_synonyms( $q );
-			$return                   = relevanssi_search( $or_args );
-
-			$hits                        = $return['hits'];
-			$match_arrays['body']        = $return['body_matches'];
-			$match_arrays['title']       = $return['title_matches'];
-			$match_arrays['tag']         = $return['tag_matches'];
-			$match_arrays['category']    = $return['category_matches'];
-			$match_arrays['taxonomy']    = $return['taxonomy_matches'];
-			$match_arrays['comment']     = $return['comment_matches'];
-			$match_arrays['link']        = $return['link_matches'];
-			$match_arrays['author']      = $return['author_matches'];
-			$match_arrays['customfield'] = $return['customfield_matches'];
-			$match_arrays['mysqlcolumn'] = $return['mysqlcolumn_matches'];
-			$match_arrays['excerpt']     = $return['excerpt_matches'];
-			$term_hits                   = $return['term_hits'];
-			$doc_weight                  = $return['doc_weights'];
-			$q                           = $return['query'];
-		}
 		$params = array( 'args' => $args );
 		/**
 		 * Filters the fallback search parameters.
@@ -1371,6 +1345,51 @@ function relevanssi_control_media_queries( bool $search_ok, WP_Query $query ): b
 	}
 
 	return $search_ok;
+}
+
+/**
+ * Fallback to OR search.
+ *
+ * Runs on relevanssi_fallback. If the AND search finds no results, this
+ * function runs and uses OR to search. The new search query is stored in a global
+ * variable $relevanssi_or_fallback.
+ *
+ * @uses relevanssi_fallback
+ *
+ * @param array $params The search parameters.
+ * @return array Modified search parameters with corrected query.
+ */
+function relevanssi_or_fallback( $params ) {
+	// Early return if we already have results.
+	if ( isset( $params['return']['hits'] ) && count( $params['return']['hits'] ) > 0 ) {
+		return $params;
+	}
+	// Verify AND query operator.
+	if ( 'AND' !== $params['args']['operator'] ) {
+		return $params;
+	}
+	// Verify OR fallback disable is off.
+	if ( 'on' === get_option( 'relevanssi_disable_or_fallback' ) ) {
+		return $params;
+	}
+
+	$or_args             = $params['args'];
+	$or_args['operator'] = 'OR';
+
+	global $wp_query;
+	$old_operator = $wp_query->get( 'operator' );
+	$wp_query->set( 'operator', 'OR' );
+
+	$or_args['q_no_synonyms'] = $or_args['q'];
+	$or_args['q']             = relevanssi_add_synonyms( $or_args['q'] );
+
+	$return = relevanssi_search( $or_args );
+
+	$params['return'] = $return;
+	$wp_query->set( 'operator', $old_operator );
+
+	// Return results.
+	return $params;
 }
 
 /**

@@ -25,6 +25,7 @@ add_filter( 'relevanssi_search_ok', 'relevanssi_block_on_admin_searches', 10, 2 
 add_filter( 'relevanssi_admin_search_ok', 'relevanssi_block_on_admin_searches', 10, 2 );
 add_filter( 'relevanssi_prevent_default_request', 'relevanssi_block_on_admin_searches', 10, 2 );
 add_filter( 'relevanssi_search_ok', 'relevanssi_control_media_queries', 11, 2 );
+add_filter( 'relevanssi_fallback', 'relevanssi_or_fallback', 10 );
 
 // Post indexing.
 global $wp_version;
