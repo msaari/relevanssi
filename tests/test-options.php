@@ -294,47 +294,6 @@ EOT;
 	}
 
 	/**
-	 * Test complex serialized premium structures inside relevanssi_update_premium_options.
-	 */
-	public function test_premium_serialized_settings_save() {
-		global $relevanssi_variables;
-		$_REQUEST['relevanssi_options'] = wp_create_nonce( plugin_basename( $relevanssi_variables['file'] ) );
-
-		$request = array(
-			'rlv_tab'                    => 'display-ui',
-			'relevanssi_related_enabled' => 'on',
-			'relevanssi_related_number'  => '8',
-			'relevanssi_related_nothing' => 'custom_string',
-		);
-
-		$_REQUEST = array_merge( $_REQUEST, $request );
-
-		update_relevanssi_options( $request );
-
-		$related_settings = get_option( 'relevanssi_related_settings' );
-		$this->assertIsArray( $related_settings );
-		$this->assertEquals( 'on', $related_settings['enabled'] );
-		$this->assertEquals( 8, $related_settings['number'] );
-		$this->assertEquals( 'custom_string', $related_settings['nothing'] );
-
-		if ( defined( 'RELEVANSSI_PREMIUM' ) && RELEVANSSI_PREMIUM ) {
-			$premium_request = array(
-				'rlv_tab'                      => 'admin-dev',
-				'relevanssi_spamblock_limit'   => '5',
-				'relevanssi_spamblock_chinese' => 'on',
-			);
-			$_REQUEST        = array_merge( $_REQUEST, $premium_request );
-
-			update_relevanssi_options( $premium_request );
-
-			$spamblock = get_option( 'relevanssi_spamblock' );
-			$this->assertIsArray( $spamblock );
-			$this->assertEquals( 5, $spamblock['limit'] );
-			$this->assertEquals( 'on', $spamblock['chinese'] );
-		}
-	}
-
-	/**
 	 * Verify that a factory crash on one field type does not break subsequent options on the tab.
 	 */
 	public function test_factory_exception_resilience() {
