@@ -568,6 +568,7 @@ function relevanssi_load_compatibility_code() {
 	defined( 'PRLI_PLUGIN_NAME' ) && require_once 'compatibility/pretty-links.php';
 	defined( 'SEOPRESS_VERSION' ) && require_once 'compatibility/seopress.php';
 	defined( 'SIMPLE_WP_MEMBERSHIP_VER' ) && require_once 'compatibility/simplemembership.php';
+	defined( 'SLIM_SEO_VER' ) && require_once 'compatibility/slimseo.php';
 	defined( 'THE_SEO_FRAMEWORK_VERSION' ) && require_once 'compatibility/seoframework.php';
 	defined( 'WPFD_VERSION' ) && require_once 'compatibility/wp-file-download.php';
 	defined( 'WPM_PRODUCT_GTIN_WC_VERSION' ) && require_once 'compatibility/product-gtin-ean-upc-isbn-for-woocommerce.php';
