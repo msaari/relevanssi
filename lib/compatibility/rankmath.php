@@ -106,5 +106,6 @@ function relevanssi_rankmath_sidebar() {
  * @param array $request An array of option values from the request.
  */
 function relevanssi_rankmath_options( array $request ) {
+	$request['relevanssi_seo_noindex'] = $request['relevanssi_rankmath'] ?? false;
 	relevanssi_update_off_or_on( $request, 'relevanssi_seo_noindex', true );
 }
