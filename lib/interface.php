@@ -273,7 +273,7 @@ function relevanssi_options_form() {
 	<div class="relevanssi-floating-save">
 		<input type='submit' name='submit' value='<?php esc_attr_e( 'Save the options', 'relevanssi' ); ?>' class='button button-primary button-hero' />
 	</div>
-	
+
 	<?php endif; ?>
 
 	</form>
@@ -299,6 +299,7 @@ function relevanssi_add_admin_scripts( $hook ) {
 	// Only enqueue on Relevanssi pages.
 	$acceptable_hooks = array(
 		'toplevel_page_relevanssi',
+		'toplevel_page_relevanssi/relevanssi',
 		'toplevel_page_relevanssi-premium/relevanssi',
 		'relevanssi_page_relevanssi_admin_search',
 		'relevanssi_page_relevanssi_user_searches',
