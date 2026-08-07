@@ -41,15 +41,6 @@ function relevanssi_searching_tab() {
 	$index_users            = get_option( 'relevanssi_index_users' );
 	$index_terms            = get_option( 'relevanssi_index_taxonomies' );
 
-	$throttle               = relevanssi_check( $throttle );
-	$respect_exclude        = relevanssi_check( $respect_exclude );
-	$admin_search           = relevanssi_check( $admin_search );
-	$wpml_only_current      = relevanssi_check( $wpml_only_current );
-	$polylang_allow_all     = relevanssi_check( $polylang_allow_all );
-	$exact_match_bonus      = relevanssi_check( $exact_match_bonus );
-	$disable_or_fallback    = relevanssi_check( $disable_or_fallback );
-	$ignore_theme_post_type = relevanssi_check( $ignore_theme_post_type );
-
 	if ( ! $throttle ) {
 		$docs_count = get_transient( 'relevanssi_docs_count' );
 		if ( ! $docs_count ) {
