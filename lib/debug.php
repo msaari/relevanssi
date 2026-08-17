@@ -65,7 +65,7 @@ function relevanssi_debug_posts( $posts ) {
 function relevanssi_debug_array( $array_value, $title ) {
 	echo '<h2>' . esc_html( $title ) . '</h2>';
 	echo '<pre>';
-	print_r( $array_value ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
+	echo esc_html( print_r( $array_value, true ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
 	echo '</pre>';
 }
 

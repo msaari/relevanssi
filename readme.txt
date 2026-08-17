@@ -128,6 +128,8 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+* Security: Fix for a vulnerability in the debugging mode.
+
 = 4.28.1 =
 * Minor fix: Some setting values were not displayed correctly on the searching settings page.
 
