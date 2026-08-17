@@ -24,8 +24,9 @@ function relevanssi_display_ui_tab() {
 	// Voice Search Notice.
 	$voice_search_privacy = array(
 		'type' => 'warning',
-		'text' => wp_sprintf(
-			'The voice search uses the WebSpeech API and prioritizes local speech detection. However, the WebSpeech API may use external speech recognition services (such as Google or Apple). Your privacy policy may need to reflect this.'
+		'text' => __(
+			'The voice search uses the WebSpeech API and prioritizes local speech detection. However, the WebSpeech API may use external speech recognition services (such as Google or Apple). Your privacy policy may need to reflect this.',
+			'relevanssi'
 		),
 	);
 
@@ -98,6 +99,10 @@ function relevanssi_display_ui_tab() {
 		'text' => __( 'If you need PDF excerpts you must enable this setting!', 'relevanssi' ),
 	);
 
+	$length_unit = get_option( 'relevanssi_excerpt_type' ) === 'words'
+		? __( 'words', 'relevanssi' )
+		: __( 'characters', 'relevanssi' );
+
 	$snippet_config = array(
 		'relevanssi_excerpts'                => array(
 			'type'          => 'checkbox',
@@ -129,7 +134,7 @@ function relevanssi_display_ui_tab() {
 			'min'           => 1,
 			'max'           => 999,
 			'step'          => 1,
-			'unit'          => get_option( 'relevanssi_excerpt_type' ),
+			'unit'          => $length_unit,
 			'hover_target'  => 'sb-excerpts-len',
 			'sidebar_title' => __( 'Snippet Length:', 'relevanssi' ),
 			'sidebar_desc'  => __( 'Controls snippet length using the measurement unit selected below.', 'relevanssi' ),
@@ -925,8 +930,8 @@ function relevanssi_display_ui_tab() {
 						}
 
 						file_frame = wp.media.frames.file_frame = wp.media({
-							title: 'Select an image to upload',
-							button: { text: 'Use this image' },
+							title: '<?php esc_html_e( 'Select an image to upload', 'relevanssi' ); ?>',
+							button: { text: '<?php esc_html_e( 'Use this image', 'relevanssi' ); ?>' },
 							multiple: false
 						});
 

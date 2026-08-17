@@ -65,7 +65,7 @@ class Relevanssi_Setting_Field_Redirects extends Relevanssi_Abstract_Setting_Fie
 					<p class="description"><?php esc_html_e( 'Target URL to route users to when a query yields zero hits.', 'relevanssi' ); ?></p>
 				</div>
 				<div class="rlv-fallback-input-block">
-					<input type="text" id="redirect_empty_searches" name="redirect_empty_searches" class="rlv-redirect-base-input" value="<?php echo esc_attr( str_replace( $site_url, '', $empty_redirect ) ); ?>" placeholder="/no-results-landing/" />
+					<input type="text" id="redirect_empty_searches" name="redirect_empty_searches" class="rlv-redirect-base-input" value="<?php echo esc_attr( str_replace( $site_url, '', $empty_redirect ) ); ?>" placeholder="<?php esc_html_e( '/no-results-landing/', 'relevanssi' ); ?>" />
 				</div>
 			</div>
 
@@ -75,7 +75,7 @@ class Relevanssi_Setting_Field_Redirects extends Relevanssi_Abstract_Setting_Fie
 					<p class="description"><?php esc_html_e( 'Target URL to route users to when an empty string search form is submitted.', 'relevanssi' ); ?></p>
 				</div>
 				<div class="rlv-fallback-input-block">
-					<input type="text" id="redirect_no_terms" name="redirect_no_terms" class="rlv-redirect-base-input" value="<?php echo esc_attr( str_replace( $site_url, '', $termless_redirect ) ); ?>" placeholder="/search-help/" />
+					<input type="text" id="redirect_no_terms" name="redirect_no_terms" class="rlv-redirect-base-input" value="<?php echo esc_attr( str_replace( $site_url, '', $termless_redirect ) ); ?>" placeholder="<?php esc_html_e( '/search-help/', 'relevanssi' ); ?>" />
 				</div>
 			</div>
 		</div>
@@ -87,7 +87,7 @@ class Relevanssi_Setting_Field_Redirects extends Relevanssi_Abstract_Setting_Fie
 				<div class="rlv-hdr-url"><?php esc_html_e( 'Target Redirect URL', 'relevanssi' ); ?></div>
 				<div class="rlv-hdr-hits"><?php esc_html_e( 'Hits', 'relevanssi' ); ?></div>
 			</div>
-			
+
 			<div class="rlv-redirects-matrix-body">
 			<?php
 			if ( empty( $redirects ) ) {
@@ -119,7 +119,7 @@ class Relevanssi_Setting_Field_Redirects extends Relevanssi_Abstract_Setting_Fie
 			</summary>
 			<div class="rlv-bulk-card-content">
 				<label for="relevanssi_csv_redirects"><strong><?php esc_html_e( 'CSV Redirect Data', 'relevanssi' ); ?></strong></label>
-				<textarea name="relevanssi_csv_redirects" id="relevanssi_csv_redirects" rows="5" placeholder="keyword; /target-url/; 0"></textarea>
+				<textarea name="relevanssi_csv_redirects" id="relevanssi_csv_redirects" rows="5" placeholder="<?php esc_html_e( 'keyword; /target-url/', 'relevanssi' ); ?>; 0"></textarea>
 				<p class="description">
 					<?php esc_html_e( 'Format: query;url;partial matching flag [1|0]. Separate each rule with a line break.', 'relevanssi' ); ?>
 				</p>
@@ -146,25 +146,25 @@ class Relevanssi_Setting_Field_Redirects extends Relevanssi_Abstract_Setting_Fie
 			<div class="rlv-matrix-cell rlv-col-keyword" data-label="<?php esc_attr_e( 'Query String keyword', 'relevanssi' ); ?>">
 				<div class="rlv-input-with-actions">
 					<label class="screen-reader-text" for="query_<?php echo (int) $row_id; ?>"><?php esc_html_e( 'Query string', 'relevanssi' ); ?></label>
-					<input type="text" id="query_<?php echo (int) $row_id; ?>" name="query_<?php echo (int) $row_id; ?>" class="rlv-redirect-base-input" value="<?php echo esc_attr( $query ); ?>" placeholder="e.g., help" />
-					
+					<input type="text" id="query_<?php echo (int) $row_id; ?>" name="query_<?php echo (int) $row_id; ?>" class="rlv-redirect-base-input" value="<?php echo esc_attr( $query ); ?>" placeholder="<?php esc_html_e( 'e.g., help', 'relevanssi' ); ?>" />
+
 					<div class="row-actions rlv-redirect-row-utilities">
 						<span class="copy"><a href="#" class="copy"><?php esc_html_e( 'Copy', 'relevanssi' ); ?></a></span>
 						<span class="delete"><a href="#" class="remove"><?php esc_html_e( 'Remove', 'relevanssi' ); ?></a></span>
 					</div>
 				</div>
 			</div>
-			
+
 			<div class="rlv-matrix-cell rlv-col-partial" data-label="<?php esc_attr_e( 'Partial match', 'relevanssi' ); ?>">
 				<label class="screen-reader-text" for="partial_<?php echo (int) $row_id; ?>"><?php esc_html_e( 'Partial match', 'relevanssi' ); ?></label>
 				<input class="relevanssi-toggle" type="checkbox" id="partial_<?php echo (int) $row_id; ?>" name="partial_<?php echo (int) $row_id; ?>" <?php checked( $is_partial ); ?> />
 			</div>
-			
+
 			<div class="rlv-matrix-cell rlv-col-url" data-label="<?php esc_attr_e( 'Target Redirect URL', 'relevanssi' ); ?>">
 				<label class="screen-reader-text" for="url_<?php echo (int) $row_id; ?>"><?php esc_html_e( 'Target URL', 'relevanssi' ); ?></label>
-				<input type="text" name="url_<?php echo (int) $row_id; ?>" id="url_<?php echo (int) $row_id; ?>" class="rlv-redirect-base-input" value="<?php echo esc_attr( $url ); ?>" placeholder="/support/" />
+				<input type="text" name="url_<?php echo (int) $row_id; ?>" id="url_<?php echo (int) $row_id; ?>" class="rlv-redirect-base-input" value="<?php echo esc_attr( $url ); ?>" placeholder="<?php esc_html_e( '/support/', 'relevanssi' ); ?>" />
 			</div>
-			
+
 			<div class="rlv-matrix-cell rlv-col-hits" data-label="<?php esc_attr_e( 'Hits', 'relevanssi' ); ?>">
 				<input type="hidden" name="hits_<?php echo (int) $row_id; ?>" id="hits_<?php echo (int) $row_id; ?>" value="<?php echo (int) $hits; ?>" />
 				<span class="rlv-redirect-hits-badge"><?php echo esc_html( $hits ); ?></span>

@@ -131,7 +131,7 @@ function relevanssi_overview_tab() {
 									</p>
 
 									<div style="display: flex; gap: 8px; max-width: 480px;">
-										<input type="text" name="relevanssi_api_key" id="relevanssi_api_key" class="regular-text" placeholder="Enter your api key..." style="flex-grow: 1; font-family: monospace;" />
+										<input type="text" name="relevanssi_api_key" id="relevanssi_api_key" class="regular-text" placeholder="<?php esc_html_e( 'Enter your api key...', 'relevanssi' ); ?>" style="flex-grow: 1; font-family: monospace;" />
 									</div>
 									<p class="description" style="margin-top: 10px; font-size: 12px; color: #47494e;">
 										<?php esc_html_e( 'Enter your token and save changes to update the local instance configuration.', 'relevanssi' ); ?>
