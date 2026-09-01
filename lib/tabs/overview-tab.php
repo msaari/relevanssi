@@ -145,12 +145,17 @@ function relevanssi_overview_tab() {
 							<div class="relevanssi-info-box" style="height: 100%; box-sizing: border-box; margin-bottom: 0;">
 								<h3 style="margin-top: 0; font-size: 14px;"><?php esc_html_e( 'License Verification', 'relevanssi' ); ?></h3>
 								<p style="font-size: 13px; line-height: 1.5; margin-bottom: 16px; color: #50575e;">
-									<?php esc_html_e( 'An active API key lets you use PDF indexing, automatic update services, and premium support.', 'relevanssi' ); ?>
+											<?php esc_html_e( 'An active API key lets you use PDF indexing, automatic update services, and premium support.', 'relevanssi' ); ?>
 								</p>
 								<a href="https://www.relevanssi.com/account/" target="_blank" rel="noopener noreferrer" style="text-decoration: none; display: inline-flex; align-items: center; gap: 4px; font-weight: 500; font-size: 13px;">
-									<?php esc_html_e( 'Access Account Profile', 'relevanssi' ); ?>
+											<?php esc_html_e( 'Access Account Profile', 'relevanssi' ); ?>
 									<span class="dashicons dashicons-external" style="font-size: 14px; width: 14px; height: 14px; margin: 0; position: relative; top: 1px;"></span>
 								</a>
+
+								<hr style="border: 0; border-top: 1px solid #dcdcde; margin: 16px 0;" />
+
+									<?php echo wp_kses_post( relevanssi_get_api_key_tracking_privacy_notice() ); ?>
+								</p>
 							</div>
 						</aside>
 					</div>
