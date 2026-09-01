@@ -99,12 +99,15 @@ function relevanssi_noindex_shortcode_indexing() {
  * <input type="hidden" name="post_types" value="post,product" />
  *
  * to the search form.
+ * The optional modal context adds semantic wrappers and classes for modal
+ * filter controls while preserving the legacy [searchform] markup.
  *
- * @param array $atts The shortcode attributes.
+ * @param array   $atts          The shortcode attributes.
+ * @param boolean $modal_context Whether the form is rendered inside a modal search form.
  *
  * @return string A search form.
  */
-function relevanssi_search_form( $atts ) {
+function relevanssi_search_form( $atts, $modal_context = false ) {
 	$form = get_search_form( false );
 	if ( is_array( $atts ) ) {
 		$additional_fields = array();
@@ -118,24 +121,50 @@ function relevanssi_search_form( $atts ) {
 			if ( 'post_type_boxes' === $key ) {
 				$post_types = explode( ',', $value );
 				if ( is_array( $post_types ) ) {
-					$post_type_objects   = get_post_types( array(), 'objects' );
-					$additional_fields[] = '<div class="post_types"><strong>Post types</strong>: ';
+					$post_type_objects = get_post_types( array(), 'objects' );
+					if ( $modal_context ) {
+						$additional_fields[] = '<fieldset class="post_types relevanssi-search-form__post-types">';
+						$additional_fields[] = '<legend>' . esc_html__( 'Post types', 'relevanssi' ) . '</legend>';
+						$additional_fields[] = '<div class="relevanssi-search-form__choices">';
+					} else {
+						$additional_fields[] = '<div class="post_types"><strong>Post types</strong>: ';
+					}
 					foreach ( $post_types as $post_type ) {
-						$checked = '';
+						$post_type = trim( $post_type );
+						$checked   = '';
 						if ( '*' === substr( $post_type, 0, 1 ) ) {
 							$post_type = substr( $post_type, 1 );
 							$checked   = ' checked="checked" ';
 						}
 						if ( isset( $post_type_objects[ $post_type ] ) ) {
-							$additional_fields[] = '<span class="post_type post_type_' . $post_type . '">'
-							. '<input type="checkbox" name="post_types[]" value="' . $post_type . '"' . $checked . '/> '
-							. $post_type_objects[ $post_type ]->name . '</span>';
+							if ( $modal_context ) {
+								$post_type_class = sanitize_html_class( $post_type );
+								$post_type_id    = 'relevanssi-search-post-type-' . $post_type_class . '-' . wp_unique_id();
+								$post_type_label = $post_type_objects[ $post_type ]->name;
+								if ( isset( $post_type_objects[ $post_type ]->labels->name ) ) {
+									$post_type_label = $post_type_objects[ $post_type ]->labels->name;
+								}
+								$additional_fields[] = sprintf(
+									'<label class="post_type post_type_%1$s relevanssi-search-form__choice" for="%2$s"><input id="%2$s" type="checkbox" name="post_types[]" value="%3$s"%4$s /> %5$s</label>',
+									esc_attr( $post_type_class ),
+									esc_attr( $post_type_id ),
+									esc_attr( $post_type ),
+									$checked,
+									esc_html( $post_type_label )
+								);
+							} else {
+								$additional_fields[] = '<span class="post_type post_type_' . $post_type . '">'
+								. '<input type="checkbox" name="post_types[]" value="' . $post_type . '"' . $checked . '/> '
+								. $post_type_objects[ $post_type ]->name . '</span>';
+							}
 						}
 					}
-					$additional_fields[] = '</div>';
+					$additional_fields[] = $modal_context ? '</div></fieldset>' : '</div>';
 				}
 			} elseif ( 'dropdown' === $key && 'post_type' === $value ) {
-				$field = '<select name="post_type">';
+				$field = $modal_context
+					? '<label class="relevanssi-search-form__field"><span class="relevanssi-search-form__field-label">' . esc_html__( 'Filter by post type', 'relevanssi' ) . '</span><select name="post_type">'
+					: '<select name="post_type">';
 				$types = get_option( 'relevanssi_index_post_types', array() );
 				if ( ! is_array( $types ) ) {
 					$types = array();
@@ -143,10 +172,10 @@ function relevanssi_search_form( $atts ) {
 				foreach ( $types as $type ) {
 					if ( post_type_exists( $type ) ) {
 						$object = get_post_type_object( $type );
-						$field .= '<option value="' . $type . '">' . $object->labels->singular_name . '</option>';
+						$field .= '<option value="' . esc_attr( $type ) . '">' . esc_html( $object->labels->singular_name ) . '</option>';
 					}
 				}
-				$field              .= '</select>';
+				$field              .= $modal_context ? '</select></label>' : '</select>';
 				$additional_fields[] = $field;
 
 			} elseif ( 'dropdown' === $key && 'post_type' !== $value ) {
@@ -157,7 +186,7 @@ function relevanssi_search_form( $atts ) {
 				if ( 'post_tag' === $value ) {
 					$name = 'tag';
 				}
-				$args                = array(
+				$args     = array(
 					'taxonomy'          => $value,
 					'echo'              => 0,
 					'hide_if_empty'     => true,
@@ -166,7 +195,7 @@ function relevanssi_search_form( $atts ) {
 					'option_none_value' => 0,
 					'orderby'           => 'name',
 				);
-				$additional_fields[] = wp_dropdown_categories(
+				$dropdown = wp_dropdown_categories(
 					/**
 					 * Filters the arguments for the Relevanssi search form
 					 * taxonomy dropdowns.
@@ -178,6 +207,19 @@ function relevanssi_search_form( $atts ) {
 					 */
 					apply_filters( 'relevanssi_searchform_dropdown_args', $args )
 				);
+				if ( $modal_context && ! empty( $dropdown ) ) {
+					$taxonomy_label  = $value;
+					$taxonomy_object = get_taxonomy( $value );
+					if ( $taxonomy_object && isset( $taxonomy_object->labels->name ) ) {
+						$taxonomy_label = $taxonomy_object->labels->name;
+					}
+					/* translators: %s: taxonomy name. */
+					$filter_label = sprintf( esc_html__( 'Filter by %s', 'relevanssi' ), esc_html( $taxonomy_label ) );
+					$dropdown     = '<label class="relevanssi-search-form__field"><span class="relevanssi-search-form__field-label">'
+						. $filter_label
+						. '</span>' . $dropdown . '</label>';
+				}
+				$additional_fields[] = $dropdown;
 			} elseif ( 'checklist' === $key && 'post_type' !== $value ) {
 				$name = $value;
 				if ( 'category' === $value ) {
@@ -193,12 +235,25 @@ function relevanssi_search_form( $atts ) {
 				if ( ! function_exists( 'wp_terms_checklist' ) ) {
 					include ABSPATH . 'wp-admin/includes/template.php';
 				}
-				$checklist           = wp_terms_checklist( 0, $args );
-				$checklist           = str_replace( 'post_category', 'cats', $checklist );
-				$checklist           = str_replace( 'tax_input[post_tag]', 'tags', $checklist );
-				$checklist           = str_replace( "disabled='disabled'", '', $checklist );
-				$checklist           = preg_replace( '/tax_input\[(.*?)\]/', '\1', $checklist );
-				$additional_fields[] = $checklist;
+				$checklist_items = wp_terms_checklist( 0, $args );
+				$checklist_items = str_replace( 'post_category', 'cats', $checklist_items );
+				$checklist_items = str_replace( 'tax_input[post_tag]', 'tags', $checklist_items );
+				$checklist_items = str_replace( "disabled='disabled'", '', $checklist_items );
+				$checklist_items = preg_replace( '/tax_input\[(.*?)\]/', '\1', $checklist_items );
+				if ( $modal_context && ! empty( $checklist_items ) ) {
+					$taxonomy_label  = $value;
+					$taxonomy_object = get_taxonomy( $value );
+					if ( $taxonomy_object && isset( $taxonomy_object->labels->name ) ) {
+						$taxonomy_label = $taxonomy_object->labels->name;
+					}
+					$taxonomy_class = sanitize_html_class( $value );
+					/* translators: %s: taxonomy name. */
+					$filter_label    = sprintf( esc_html__( 'Filter by %s', 'relevanssi' ), esc_html( $taxonomy_label ) );
+					$checklist_items = '<fieldset class="relevanssi-search-form__checklist relevanssi-search-form__checklist--' . esc_attr( $taxonomy_class ) . '"><legend>'
+						. $filter_label
+						. '</legend><ul class="categorychecklist form-no-clear">' . $checklist_items . '</ul></fieldset>';
+				}
+				$additional_fields[] = $checklist_items;
 			} else {
 				$key   = esc_attr( $key );
 				$value = esc_attr( $value );

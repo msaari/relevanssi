@@ -128,6 +128,7 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+* New feature: Relevanssi now provides a modal search form.
 * Minor fix: When Relevanssi does the automatic Did you mean? fallback search, the in-document highlighting now uses the corrected search term.
 
 = 4.28.2 =
