@@ -1196,7 +1196,7 @@ function relevanssi_common_words( $limit = 25, $wp_cli = false ) {
 								</span>
 
 								<div class="relevanssi-word-actions" style="display: flex; gap: 6px;">
-									<button type="submit" name="term" value="<?php echo esc_attr( $word->term ); ?>" class="button button-small" aria-label="
+									<button type="submit" name="term" value="<?php echo esc_attr( $word->term ); ?>" class="button button-small" formaction="#card-stopwords-indexing" aria-label="
 									<?php
 										/* translators: %s is the literal keyword string token. */
 										echo esc_attr( sprintf( __( 'Add "%s" to global stopwords', 'relevanssi' ), $word->term ) );
@@ -1206,7 +1206,7 @@ function relevanssi_common_words( $limit = 25, $wp_cli = false ) {
 									</button>
 
 									<?php if ( RELEVANSSI_PREMIUM ) : ?>
-										<button type="submit" name="body_term" value="<?php echo esc_attr( $word->term ); ?>" class="button button-small button-secondary" aria-label="
+										<button type="submit" name="body_term" value="<?php echo esc_attr( $word->term ); ?>" class="button button-small button-secondary" formaction="#card-stopwords-indexing" aria-label="
 										<?php
 											/* translators: %s is the literal keyword string token. */
 											echo esc_attr( sprintf( __( 'Add "%s" to content body stopwords only', 'relevanssi' ), $word->term ) );

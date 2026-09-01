@@ -22,6 +22,26 @@
 function relevanssi_indexing_tab() {
 	global $wpdb, $relevanssi_variables;
 
+	$stopword_actions = array(
+		'relevanssi_stopwords_action',
+		'removestopword',
+		'removeallstopwords',
+		'repopulatestopwords',
+		'relevanssi_body_stopwords_action',
+		'removebodystopword',
+		'removeallbodystopwords',
+		'repopulatebodystopwords',
+		'term',
+		'body_term',
+	);
+	$stopwords_open   = false;
+	foreach ( $stopword_actions as $stopword_action ) {
+		if ( isset( $_REQUEST[ $stopword_action ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Used only to retain presentation state after a stopword action.
+			$stopwords_open = true;
+			break;
+		}
+	}
+
 	// --- Index Statistics & Counts ---
 	$is_premium  = defined( 'RELEVANSSI_PREMIUM' ) && RELEVANSSI_PREMIUM;
 	$docs_count  = get_option( 'relevanssi_doc_count', 0 );
@@ -634,7 +654,7 @@ function relevanssi_indexing_tab() {
 
 				<div class="relevanssi-settings-row" style="margin-bottom: 24px;">
 					<div class="relevanssi-settings-content">
-						<details class="relevanssi-card" id="card-stopwords-indexing">
+						<details class="relevanssi-card" id="card-stopwords-indexing"<?php echo $stopwords_open ? ' open' : ''; ?>>
 							<summary style="cursor: pointer; outline: none;"><h2 style="display: inline-block; margin: 0;"><?php esc_html_e( 'Stopwords Exclusions', 'relevanssi' ); ?></h2></summary>
 							<div style="margin-top: 16px;">
 								<?php

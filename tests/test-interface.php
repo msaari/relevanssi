@@ -57,6 +57,29 @@ class InterfaceTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Stopword actions reopen and return to the stopwords card.
+	 */
+	public function test_stopword_action_retains_stopwords_card_state() {
+		$original_request = $_REQUEST; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Preserving test state.
+
+		try {
+			$_REQUEST = array(
+				'rlv_tab'                     => 'indexing',
+				'relevanssi_stopwords_action' => 'Add',
+			);
+
+			ob_start();
+			relevanssi_indexing_tab();
+			$output = ob_get_clean();
+
+			$this->assertContains( '<details class="relevanssi-card" id="card-stopwords-indexing" open>', $output );
+			$this->assertContains( 'formaction="#card-stopwords-indexing"', $output );
+		} finally {
+			$_REQUEST = $original_request;
+		}
+	}
+
+	/**
 	 * Uninstalls Relevanssi.
 	 */
 	public static function wpTearDownAfterClass() {

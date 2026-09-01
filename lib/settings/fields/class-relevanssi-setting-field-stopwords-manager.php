@@ -30,7 +30,7 @@ class Relevanssi_Setting_Field_Stopwords_Manager extends Relevanssi_Abstract_Set
 			<div class="rlv-input-group">
 				<textarea name="addstopword" id="addstopword" placeholder="<?php esc_attr_e( 'Enter words separated by commas (e.g. and, the, with)...', 'relevanssi' ); ?>"></textarea>
 				<label for="addstopword" class="screen-reader-text"><?php esc_html_e( 'Add a comma-separated list of stopwords here.', 'relevanssi' ); ?></label>
-				<input type="submit" value="<?php esc_attr_e( 'Add', 'relevanssi' ); ?>" class="button button-secondary" />
+				<input type="submit" name="relevanssi_stopwords_action" value="<?php esc_attr_e( 'Add', 'relevanssi' ); ?>" class="button button-secondary" formaction="#card-stopwords-indexing" />
 			</div>
 			<p class="description"><?php esc_html_e( 'Exclusions are automatically and immediately removed from the search index.', 'relevanssi' ); ?></p>
 
@@ -42,7 +42,7 @@ class Relevanssi_Setting_Field_Stopwords_Manager extends Relevanssi_Abstract_Set
 					<ul class="rlv-word-list">
 						<?php foreach ( $stopwords as $word ) : ?>
 							<li class="rlv-word-item">
-								<input type="submit" name="removestopword" value="<?php echo esc_attr( $word ); ?>" class="button button-small" title="<?php esc_attr_e( 'Click to remove this stopword', 'relevanssi' ); ?>" />
+								<input type="submit" name="removestopword" value="<?php echo esc_attr( $word ); ?>" class="button button-small" title="<?php esc_attr_e( 'Click to remove this stopword', 'relevanssi' ); ?>" formaction="#card-stopwords-indexing" />
 							</li>
 						<?php endforeach; ?>
 					</ul>
@@ -53,7 +53,7 @@ class Relevanssi_Setting_Field_Stopwords_Manager extends Relevanssi_Abstract_Set
 
 			<div class="rlv-control-row">
 				<div class="rlv-actions-left">
-					<input type="submit" id="repopulatestopwords" name="repopulatestopwords" value="<?php esc_attr_e( 'Restore Defaults', 'relevanssi' ); ?>" class="button button-secondary" />
+					<input type="submit" id="repopulatestopwords" name="repopulatestopwords" value="<?php esc_attr_e( 'Restore Defaults', 'relevanssi' ); ?>" class="button button-secondary" formaction="#card-stopwords-indexing" />
 
 					<?php if ( ! empty( $stopwords ) ) : ?>
 						<button type="button" class="button button-secondary rlv-copy-trigger" data-clipboard-text="<?php echo esc_attr( $export_list ); ?>">
@@ -64,7 +64,7 @@ class Relevanssi_Setting_Field_Stopwords_Manager extends Relevanssi_Abstract_Set
 				</div>
 
 				<div class="rlv-actions-right">
-					<input type="submit" id="removeallstopwords" name="removeallstopwords" value="<?php esc_attr_e( 'Clear All', 'relevanssi' ); ?>" class="button button-link-delete" onclick="return confirm('<?php echo esc_js( __( 'Are you sure you want to permanently clear all stopwords from your database?', 'relevanssi' ) ); ?>');" />
+					<input type="submit" id="removeallstopwords" name="removeallstopwords" value="<?php esc_attr_e( 'Clear All', 'relevanssi' ); ?>" class="button button-link-delete" formaction="#card-stopwords-indexing" onclick="return confirm('<?php echo esc_js( __( 'Are you sure you want to permanently clear all stopwords from your database?', 'relevanssi' ) ); ?>');" />
 				</div>
 			</div>
 		</div>
