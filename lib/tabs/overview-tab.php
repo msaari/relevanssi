@@ -60,7 +60,8 @@ function relevanssi_overview_tab() {
 	$is_logging_active     = 'on' === get_option( 'relevanssi_log_queries' );
 	$is_didyoumean_active  = 'on' === get_option( 'relevanssi_enable_didyoumean' );
 	$is_voicesearch_active = 'on' === get_option( 'relevanssi_voice_search' );
-	$is_related_active     = $related_settings['enabled'] ?? 'off';
+	$related_settings      = get_option( 'relevanssi_related_settings', array() );
+	$is_related_active     = $related_settings['enabled'] ?? false;
 
 	?>
 	<div id="overview_tab_dashboard" class="wrap">
