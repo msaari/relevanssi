@@ -537,6 +537,11 @@ function rlv_help_tab_send_email( array $request, string $support_email ) {
 		return;
 	}
 
+	// Api Key Tracking.
+	if ( function_exists( 'relevanssi_premium_schedule_api_key_tracking' ) ) {
+		relevanssi_premium_schedule_api_key_tracking( 'support_form' );
+	}
+
 	$user_name = ! empty( $request['relevanssi_support_name'] ) ? sanitize_text_field( $request['relevanssi_support_name'] ) : 'User';
 	$message   = $request['relevanssi_support_message'] ?? '';
 	$subject   = $request['relevanssi_support_subject'] ?? '';
