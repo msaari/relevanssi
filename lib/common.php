@@ -1008,6 +1008,12 @@ function relevanssi_switch_blog() {
 function relevanssi_add_highlight( $permalink, $link_post = null ) {
 	$highlight_docs = get_option( 'relevanssi_highlight_docs', 'off' );
 	$query          = get_search_query();
+
+	global $relevanssi_dym_fallback;
+	if ( isset( $relevanssi_dym_fallback ) && ! empty( $relevanssi_dym_fallback ) ) {
+		$query = $relevanssi_dym_fallback;
+	}
+
 	if ( isset( $highlight_docs ) && 'off' !== $highlight_docs && ! empty( $query ) ) {
 		if ( ! relevanssi_is_front_page_id( $link_post->ID ?? null ) ) {
 			global $wp_query;

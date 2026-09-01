@@ -128,6 +128,8 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+* Minor fix: When Relevanssi does the automatic Did you mean? fallback search, the in-document highlighting now uses the corrected search term.
+
 = 4.28.2 =
 * Security: Fix for a vulnerability in the debugging mode.
 
