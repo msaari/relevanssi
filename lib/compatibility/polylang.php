@@ -89,33 +89,46 @@ function relevanssi_polylang_filter( $query ) {
 function relevanssi_polylang_where_include_terms( $where ) {
 	global $wpdb;
 
-	$current_language = substr( get_locale(), 0, 2 );
-	if ( function_exists( 'pll_current_language' ) ) {
-		$current_language = pll_current_language();
-	}
-	$languages   = get_terms( array( 'taxonomy' => 'language' ) );
-	$language_id = 0;
+	$languages = get_terms(
+		array(
+			'taxonomy'   => 'language',
+			'hide_empty' => false,
+		)
+	);
+
+	$language_ids = array();
 	foreach ( $languages as $language ) {
-		if (
-			! is_wp_error( $language ) &&
-			$language instanceof WP_Term &&
-			$language->slug === $current_language
-			) {
-			$language_id = intval( $language->term_id );
-			break;
+		$language_ids[] = $language->term_id;
+	}
+
+	// Do a simple search-and-replace to modify the query.
+	$where = preg_replace( '/\s+/', ' ', $where );
+	$where = preg_replace( '/\(\s/', '(', $where );
+
+	// Find all term queries matching the Polylang format.
+	preg_match_all( "/AND relevanssi.doc IN \(SELECT DISTINCT\(tr.object_id\) FROM {$wpdb->prefix}term_relationships AS tr WHERE tr.term_taxonomy_id IN \((.*?)\)\)/", $where, $matches );
+	if ( isset( $matches[1] ) ) {
+		foreach ( $matches[1] as $match_terms ) {
+			$lang_restriction = false;
+
+			$terms = explode( ',', $match_terms );
+			$term  = $terms[0];
+			if ( in_array( (int) $term, $language_ids, true ) ) {
+				// This query has a language term, it's the one we're looking for.
+				$lang_restriction = true;
+			}
+
+			if ( $lang_restriction ) {
+				$where = str_replace(
+					"AND relevanssi.doc IN (SELECT DISTINCT(tr.object_id) FROM {$wpdb->prefix}term_relationships AS tr WHERE tr.term_taxonomy_id IN ($match_terms))",
+					"AND (relevanssi.doc IN ( SELECT DISTINCT(tr.object_id) FROM {$wpdb->prefix}term_relationships AS tr WHERE tr.term_taxonomy_id IN ($match_terms)) OR (relevanssi.doc = -1))",
+					$where
+				);
+				break;
+			}
 		}
 	}
-	// Language ID should now have current language ID.
-	if ( 0 !== $language_id ) {
-		// Do a simple search-and-replace to modify the query.
-		$where = preg_replace( '/\s+/', ' ', $where );
-		$where = preg_replace( '/\(\s/', '(', $where );
-		$where = str_replace(
-			"AND relevanssi.doc IN (SELECT DISTINCT(tr.object_id) FROM {$wpdb->prefix}term_relationships AS tr WHERE tr.term_taxonomy_id IN ($language_id))",
-			"AND (relevanssi.doc IN ( SELECT DISTINCT(tr.object_id) FROM {$wpdb->prefix}term_relationships AS tr WHERE tr.term_taxonomy_id IN ($language_id)) OR (relevanssi.doc = -1))",
-			$where
-		);
-	}
+
 	return $where;
 }
 
