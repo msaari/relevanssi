@@ -82,6 +82,7 @@ require_once 'lib/init.php';
 require_once 'lib/install.php';
 require_once 'lib/interface.php';
 require_once 'lib/log.php';
+require_once 'lib/modal-search.php';
 require_once 'lib/options.php';
 require_once 'lib/phrases.php';
 require_once 'lib/privacy.php';
