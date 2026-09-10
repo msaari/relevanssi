@@ -73,6 +73,16 @@ class ModalSearchTest extends WP_UnitTestCase {
 		wp_insert_term( 'Modal category', 'category' );
 		wp_insert_term( 'Modal tag', 'post_tag' );
 
+		$post_id = wp_insert_post(
+			array(
+				'post_title'   => 'Test',
+				'post_content' => 'Content',
+				'post_status'  => 'publish'
+			)
+		);
+
+		wp_set_post_terms( $post_id, 'Modal tag', 'post_tag' );
+
 		$html = relevanssi_get_modal_search(
 			array(
 				'checklist'       => 'category',
