@@ -14,6 +14,48 @@
 class Relevanssi_Setting_Field_Textarea extends Relevanssi_Abstract_Setting_Field {
 
 	/**
+	 * Sanitizes multiline text while preserving the breakdown template tags.
+	 *
+	 * @param mixed $value The raw unvalidated string input from the form post.
+	 * @return string Cleaned multiline string safe for database inclusion.
+	 */
+	protected function sanitize( $value ) {
+		$value = wp_unslash( $value );
+
+		if ( 'relevanssi_show_matches_text' !== $this->id ) {
+			return sanitize_textarea_field( $value );
+		}
+
+		$breakdown_tags = array(
+			'%body%',
+			'%title%',
+			'%tags%',
+			'%categories%',
+			'%taxonomies%',
+			'%comments%',
+			'%customfields%',
+			'%author%',
+			'%excerpt%',
+			'%mysqlcolumns%',
+			'%score%',
+			'%terms%',
+			'%total%',
+			'%missing%',
+		);
+		$protected_tags = array();
+
+		foreach ( $breakdown_tags as $index => $breakdown_tag ) {
+			$protected_tag                    = sprintf( 'RELEVANSSI_BREAKDOWN_TAG_%d', $index );
+			$value                            = str_replace( $breakdown_tag, $protected_tag, $value );
+			$protected_tags[ $protected_tag ] = $breakdown_tag;
+		}
+
+		$value = sanitize_textarea_field( $value );
+
+		return strtr( $value, $protected_tags );
+	}
+
+	/**
 	 * Outputs the operational HTML textarea input form control segment.
 	 *
 	 * @return void

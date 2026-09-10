@@ -130,6 +130,7 @@ Each document database is full of useless words. All the little words that appea
 == Changelog ==
 * New feature: Relevanssi now provides a modal search form.
 * New feature: More debugging information on the admin search page.
+* Minor fix: The search results breakdown can now include categories again.
 * Compatibility: The broken Document Library Pro compatibility features were removed.
 
 = 4.28.2 =

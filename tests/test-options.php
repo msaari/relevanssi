@@ -294,6 +294,24 @@ EOT;
 	}
 
 	/**
+	 * Test breakdown textarea sanitization preserves template tags.
+	 */
+	public function test_breakdown_template_preserves_tags_and_linefeeds() {
+		global $relevanssi_variables;
+		$_REQUEST['relevanssi_options'] = wp_create_nonce( plugin_basename( $relevanssi_variables['file'] ) );
+
+		$template = "First line: %categories%\nSecond line: %title%";
+		$request  = array(
+			'rlv_tab'                      => 'display-ui',
+			'relevanssi_show_matches_text' => $template,
+		);
+
+		update_relevanssi_options( $request );
+
+		$this->assertSame( $template, get_option( 'relevanssi_show_matches_text' ) );
+	}
+
+	/**
 	 * Verify that a factory crash on one field type does not break subsequent options on the tab.
 	 */
 	public function test_factory_exception_resilience() {
