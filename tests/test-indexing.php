@@ -1236,7 +1236,7 @@ class IndexingTest extends WP_UnitTestCase {
 
 		$this->assertEquals(
 			'donotindex',
-			relevanssi_index_comment( $pingback_id, 'add' ),
+			relevanssi_index_comment( $pingback_id ),
 			"relevanssi_index_comment doesn't block pingback when it should."
 		);
 
@@ -1244,7 +1244,7 @@ class IndexingTest extends WP_UnitTestCase {
 
 		$this->assertEquals(
 			'donotindex',
-			relevanssi_index_comment( 123456, 'add' ),
+			relevanssi_index_comment( 123456 ),
 			"relevanssi_index_comment doesn't return the correct response for a disabled comment indexing."
 		);
 

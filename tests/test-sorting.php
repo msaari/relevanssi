@@ -175,7 +175,10 @@ class SortingTest extends WP_UnitTestCase {
 
 		$keys = relevanssi_get_compare_values( 'meta_value', true, false );
 		$this->assertEquals(
-			array( 'key1' => '', 'key2' => '' ),
+			array(
+				'key1' => '',
+				'key2' => '',
+			),
 			$keys
 		);
 

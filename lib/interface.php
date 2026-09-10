@@ -45,7 +45,7 @@ function relevanssi_options() {
 					check_admin_referer( plugin_basename( $relevanssi_variables['file'] ), 'relevanssi_options' );
 					relevanssi_add_stopword( $_REQUEST['term'] );
 				}
-				if ( isset( $_REQUEST['body_term'] ) ) {
+				if ( function_exists( 'relevanssi_add_body_stopword' ) && isset( $_REQUEST['body_term'] ) ) {
 					check_admin_referer( plugin_basename( $relevanssi_variables['file'] ), 'relevanssi_options' );
 					relevanssi_add_body_stopword( $_REQUEST['body_term'] );
 				}
@@ -73,17 +73,17 @@ function relevanssi_options() {
 			relevanssi_populate_stopwords( $verbose );
 		}
 
-		if ( isset( $_REQUEST['addbodystopword'] ) ) {
+		if ( function_exists( 'relevanssi_add_body_stopword' ) && isset( $_REQUEST['addbodystopword'] ) ) {
 			check_admin_referer( plugin_basename( $relevanssi_variables['file'] ), 'relevanssi_options' );
 			relevanssi_add_body_stopword( $_REQUEST['addbodystopword'] );
 		}
 
-		if ( isset( $_REQUEST['removebodystopword'] ) ) {
+		if ( function_exists( 'relevanssi_remove_body_stopword' ) && isset( $_REQUEST['removebodystopword'] ) ) {
 			check_admin_referer( plugin_basename( $relevanssi_variables['file'] ), 'relevanssi_options' );
 			relevanssi_remove_body_stopword( $_REQUEST['removebodystopword'] );
 		}
 
-		if ( isset( $_REQUEST['removeallbodystopwords'] ) ) {
+		if ( function_exists( 'relevanssi_remove_all_body_stopwords' ) && isset( $_REQUEST['removeallbodystopwords'] ) ) {
 			check_admin_referer( plugin_basename( $relevanssi_variables['file'] ), 'relevanssi_options' );
 			relevanssi_remove_all_body_stopwords();
 		}

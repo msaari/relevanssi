@@ -43,7 +43,7 @@ class SearchingTest extends WP_UnitTestCase {
 	/**
 	 * Number of users generated.
 	 *
-	 * @var int $this->user_count
+	 * @var int $user_count
 	 */
 	public static $user_count;
 

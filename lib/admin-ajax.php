@@ -351,9 +351,9 @@ function relevanssi_admin_search_format_sql_queries( array $sql_queries ): strin
 	$result .= '<summary class="relevanssi-sql-summary">';
 	$result .= '<h3>' . esc_html__( 'Search SQL queries', 'relevanssi' ) . '</h3>';
 	$result .= '<span class="relevanssi-sql-summary-counts">';
-	// Translators: %d is the number of document frequency queries used for scoring.
 	$result .= '<span class="relevanssi-badge">' . sprintf(
-		esc_html__(
+		esc_html(
+			// Translators: %d is the number of document frequency queries used for scoring.
 			_n(
 				'%d frequency query',
 				'%d frequency queries',
@@ -361,7 +361,7 @@ function relevanssi_admin_search_format_sql_queries( array $sql_queries ): strin
 				'relevanssi'
 			)
 		),
-		$query_types['df']['count'],
+		$query_types['df']['count']
 	) . '</span>';
 	// Translators: %d is the number of search result queries.
 	$result .= '<span class="relevanssi-badge">' . sprintf(
