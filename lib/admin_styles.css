@@ -118,10 +118,6 @@ table.form-table table.widefat th {
     margin-left: 1.5em;
 }
 
-#relevanssi_filter_list {
-    display: none;
-}
-
 #redirect_table td {
     vertical-align: top;
 }
@@ -153,6 +149,15 @@ a:hover {
     border-top: 3px solid #dba617;
     background: #ffffff;
     font-size: 13px;
+    padding: 16px;
+}
+
+#debugging > h3 {
+    margin: 0 0 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f0f0f1;
+    color: #1d2327;
+    font-size: 13px;
 }
 
 #debugging code,
@@ -169,7 +174,7 @@ a:hover {
     overflow-x: auto;
 }
 
-/* Compact rules for the nested filter lists */
+/* Compact rules for the active filter list */
 #relevanssi_filter_list {
     background: #f8f9fa;
     border: 1px solid #e2e4e7;
@@ -177,6 +182,20 @@ a:hover {
     padding: 12px;
     max-height: 400px;
     overflow-y: auto;
+}
+
+.relevanssi-filter-details {
+    margin-top: 16px;
+}
+
+.relevanssi-filter-details > summary {
+    cursor: pointer;
+    color: #1d2327;
+    font-weight: 600;
+}
+
+.relevanssi-filter-details[open] > summary {
+    margin-bottom: 10px;
 }
 
 /* Nav tabs */
@@ -1237,6 +1256,120 @@ details[open].relevanssi-card summary::after {
 details[open].relevanssi-card summary {
     border-bottom: 1px solid #f0f0f1;
     margin-bottom: 24px;
+}
+
+/* Admin Search SQL report. Keep after the generic card accordion rules. */
+#relevanssi-search-sql-queries {
+    padding: 0;
+    overflow: hidden;
+}
+
+#relevanssi-search-sql-queries > .relevanssi-sql-summary {
+    position: relative;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: flex-start;
+    margin: 0;
+    padding: 18px 20px;
+    cursor: pointer;
+}
+
+#relevanssi-search-sql-queries[open] > .relevanssi-sql-summary {
+    margin-bottom: 0;
+}
+
+.relevanssi-sql-summary h3 {
+    margin: 0;
+    font-size: 15px;
+}
+
+.relevanssi-sql-summary::after {
+    flex: 0 0 auto;
+    margin-left: auto;
+}
+
+.relevanssi-sql-summary-counts {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.relevanssi-sql-summary-counts .relevanssi-badge,
+.relevanssi-sql-query-number {
+    padding: 3px 7px;
+    border: 1px solid #dcdcde;
+    border-radius: 4px;
+    background: #f0f2f5;
+    color: #646970;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.relevanssi-sql-report {
+    padding: 0 20px 20px;
+}
+
+.relevanssi-sql-report > .description {
+    margin: 14px 0;
+}
+
+.relevanssi-sql-query-list {
+    display: flex;
+    max-height: 48rem;
+    flex-direction: column;
+    gap: 14px;
+    overflow-y: auto;
+}
+
+.relevanssi-sql-query {
+    min-width: 0;
+}
+
+.relevanssi-sql-query-header {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 6px;
+    font-size: 12px;
+}
+
+.relevanssi-sql-query pre {
+    max-height: 20rem;
+    margin: 0;
+    padding: 12px;
+    overflow: auto;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    background: #f6f7f7;
+    white-space: pre-wrap;
+}
+
+.relevanssi-sql-query pre code {
+    display: block;
+    padding: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    white-space: inherit;
+}
+
+@media screen and (max-width: 782px) {
+    #relevanssi-search-sql-queries > .relevanssi-sql-summary {
+        align-items: flex-start;
+        flex-wrap: wrap;
+        padding-right: 48px;
+    }
+
+    .relevanssi-sql-summary::after {
+        position: absolute;
+        right: 16px;
+    }
+
+    .relevanssi-sql-summary-counts {
+        width: 100%;
+    }
 }
 
 /* Floating Save Button */

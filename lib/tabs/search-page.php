@@ -18,7 +18,7 @@ function relevanssi_search_tab() {
 	<div class="relevanssi-settings-row">
 		<div class="relevanssi-settings-content">
 			<div class="relevanssi-card">
-				<h2><?php esc_html_e( 'Admin Search Tool', 'relevanssi' ); ?></h2>
+				<h2><?php esc_html_e( 'Search', 'relevanssi' ); ?></h2>
 
 				<form action="" method="get">
 					<table class="form-table" role="presentation">

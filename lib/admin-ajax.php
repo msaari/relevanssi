@@ -219,7 +219,12 @@ function relevanssi_admin_search() {
 	$query->parse_query( $args );
 	$query->set( 'relevanssi_admin_search', true );
 	$query = apply_filters( 'relevanssi_modify_wp_query', $query );
-	relevanssi_do_query( $query );
+	relevanssi_admin_search_start_query_capture();
+	try {
+		relevanssi_do_query( $query );
+	} finally {
+		$sql_queries = relevanssi_admin_search_stop_query_capture();
+	}
 
 	$results = relevanssi_admin_search_debugging_info( $query );
 
@@ -229,9 +234,170 @@ function relevanssi_admin_search() {
 		$offset = $query->query_vars['offset'];
 	}
 	$results .= relevanssi_admin_search_format_posts( $query->posts, $query->found_posts, $offset, $args['s'] );
+	$results .= relevanssi_admin_search_format_sql_queries( $sql_queries );
 
 	echo wp_json_encode( $results );
 	wp_die();
+}
+
+/**
+ * Starts capturing SQL queries for an Admin Search Tool search.
+ *
+ * The filters use the latest possible priority so that the captured SQL includes
+ * changes made by other filter callbacks.
+ */
+function relevanssi_admin_search_start_query_capture() {
+	global $relevanssi_admin_search_sql_queries;
+
+	$relevanssi_admin_search_sql_queries = array();
+	add_filter( 'relevanssi_df_query_filter', 'relevanssi_admin_search_capture_df_query', PHP_INT_MAX );
+	add_filter( 'relevanssi_query_filter', 'relevanssi_admin_search_capture_result_query', PHP_INT_MAX );
+}
+
+/**
+ * Stops capturing Admin Search Tool SQL queries.
+ *
+ * @return array The captured queries in execution order.
+ */
+function relevanssi_admin_search_stop_query_capture(): array {
+	global $relevanssi_admin_search_sql_queries;
+
+	remove_filter( 'relevanssi_df_query_filter', 'relevanssi_admin_search_capture_df_query', PHP_INT_MAX );
+	remove_filter( 'relevanssi_query_filter', 'relevanssi_admin_search_capture_result_query', PHP_INT_MAX );
+
+	$sql_queries = is_array( $relevanssi_admin_search_sql_queries )
+		? $relevanssi_admin_search_sql_queries
+		: array();
+	unset( $relevanssi_admin_search_sql_queries );
+
+	return $sql_queries;
+}
+
+/**
+ * Captures a document-frequency SQL query.
+ *
+ * @param string $query The SQL query.
+ *
+ * @return string The unmodified SQL query.
+ */
+function relevanssi_admin_search_capture_df_query( string $query ): string {
+	return relevanssi_admin_search_capture_query( $query, 'df' );
+}
+
+/**
+ * Captures a search-result SQL query.
+ *
+ * @param string $query The SQL query.
+ *
+ * @return string The unmodified SQL query.
+ */
+function relevanssi_admin_search_capture_result_query( string $query ): string {
+	return relevanssi_admin_search_capture_query( $query, 'result' );
+}
+
+/**
+ * Adds an SQL query to the current Admin Search Tool trace.
+ *
+ * @param string $query The SQL query.
+ * @param string $type  The query type, either 'df' or 'result'.
+ *
+ * @return string The unmodified SQL query.
+ */
+function relevanssi_admin_search_capture_query( string $query, string $type ): string {
+	global $relevanssi_admin_search_sql_queries;
+
+	if ( is_array( $relevanssi_admin_search_sql_queries ) ) {
+		$relevanssi_admin_search_sql_queries[] = array(
+			'type' => $type,
+			'sql'  => $query,
+		);
+	}
+
+	return $query;
+}
+
+/**
+ * Formats captured Admin Search Tool SQL queries.
+ *
+ * The report is collapsed by default and presents the queries in a flat list so
+ * a multi-term or fuzzy search does not overwhelm the search results page.
+ *
+ * @param array $sql_queries The captured SQL queries.
+ *
+ * @return string The formatted query report.
+ */
+function relevanssi_admin_search_format_sql_queries( array $sql_queries ): string {
+	$query_types = array(
+		'df'     => array(
+			'label' => __( 'Document frequency', 'relevanssi' ),
+			'count' => 0,
+		),
+		'result' => array(
+			'label' => __( 'Search results', 'relevanssi' ),
+			'count' => 0,
+		),
+	);
+
+	$valid_queries = array();
+	foreach ( $sql_queries as $query ) {
+		if ( ! isset( $query['type'], $query['sql'], $query_types[ $query['type'] ] ) ) {
+			continue;
+		}
+		++$query_types[ $query['type'] ]['count'];
+		$valid_queries[] = $query;
+	}
+
+	$result  = '<details class="relevanssi-card" id="relevanssi-search-sql-queries" style="margin-top: 24px;">';
+	$result .= '<summary class="relevanssi-sql-summary">';
+	$result .= '<h3>' . esc_html__( 'Search SQL queries', 'relevanssi' ) . '</h3>';
+	$result .= '<span class="relevanssi-sql-summary-counts">';
+	// Translators: %d is the number of document frequency queries used for scoring.
+	$result .= '<span class="relevanssi-badge">' . sprintf(
+		esc_html__(
+			_n(
+				'%d frequency query',
+				'%d frequency queries',
+				$query_types['df']['count'],
+				'relevanssi'
+			)
+		),
+		$query_types['df']['count'],
+	) . '</span>';
+	// Translators: %d is the number of search result queries.
+	$result .= '<span class="relevanssi-badge">' . sprintf(
+		esc_html(
+			// Translators: %d is the number of search result queries.
+			_n(
+				'%d search query',
+				'%d search queries',
+				$query_types['result']['count'],
+				'relevanssi'
+			)
+		),
+		$query_types['result']['count']
+	) . '</span>';
+	$result .= '</span>';
+	$result .= '</summary>';
+	$result .= '<div class="relevanssi-sql-report">';
+	$result .= '<p class="description">' . esc_html__( 'Captured after filters, in execution order.', 'relevanssi' ) . '</p>';
+	$result .= '<div class="relevanssi-sql-query-list">';
+
+	foreach ( $valid_queries as $execution_number => $query ) {
+		$result .= '<div class="relevanssi-sql-query">';
+		$result .= '<div class="relevanssi-sql-query-header">';
+		// Translators: %d is the SQL query execution number.
+		$result .= '<span class="relevanssi-sql-query-number">' . sprintf( esc_html__( 'Query %d', 'relevanssi' ), $execution_number + 1 ) . '</span>';
+		$result .= '<strong>' . esc_html( $query_types[ $query['type'] ]['label'] ) . '</strong>';
+		$result .= '</div>';
+		$result .= '<pre><code>' . esc_html( $query['sql'] ) . '</code></pre>';
+		$result .= '</div>';
+	}
+
+	$result .= '</div>';
+	$result .= '</div>';
+	$result .= '</details>';
+
+	return $result;
 }
 
 /**
@@ -358,10 +524,9 @@ function relevanssi_admin_search_format_posts( $posts, $total, $offset, $query )
  * @since 2.2.0
  */
 function relevanssi_admin_search_debugging_info( $query ) {
-	// Style adjustments: Removed border-top accent and updated margins to cleanly sit inside the sidebar container.
-	$result  = '<details class="relevanssi-card" id="debugging" style="margin-top: 16px; background: #ffffff; border: 1px solid #c3c4c7; border-radius: 4px; width: 100%; box-sizing: border-box;">';
-	$result .= '<summary style="cursor: pointer; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; user-select: none;"><h3 style="margin: 0; font-size: 13px; font-weight: 600; color: #1d2327;">' . __( 'Advanced Query Details', 'relevanssi' ) . '</h3></summary>';
-	$result .= '<div class="accordion-content" style="padding: 0 16px 16px 16px;">';
+	$result  = '<div class="relevanssi-card" id="debugging">';
+	$result .= '<h3>' . __( 'Advanced Query Details', 'relevanssi' ) . '</h3>';
+	$result .= '<div class="accordion-content">';
 	$result .= '<h3 style="margin-top: 12px; font-size: 13px; font-weight: 600; color: #1d2327; margin-bottom: 12px; border-bottom: 1px solid #f0f0f1; padding-bottom: 8px;">' . __( 'Query variables', 'relevanssi' ) . '</h3>';
 	$result .= '<ul class="relevanssi-sidebar-list" style="margin-left: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; padding-left: 0;">';
 
@@ -436,13 +601,20 @@ function relevanssi_admin_search_debugging_info( $query ) {
 		'relevanssi_ignore_theme_post_type',
 	);
 
-	$result .= '<h3 style="margin-top: 16px; font-size: 13px; font-weight: 600; color: #1d2327; margin-bottom: 12px; border-bottom: 1px solid #f0f0f1; padding-bottom: 8px;">' . __( 'Filters', 'relevanssi' ) . '</h3>';
-	$result .= '<div class="relevanssi-action-group" style="margin-bottom: 12px;">';
-	$result .= '<button type="button" id="show_filters" class="button button-outline" style="padding: 4px 12px; font-size: 11px; height: auto; min-height: auto;">' . __( 'show', 'relevanssi' ) . '</button>';
-	$result .= '<button type="button" id="hide_filters" class="button button-outline" style="display: none; padding: 4px 12px; font-size: 11px; height: auto; min-height: auto;">' . __( 'hide', 'relevanssi' ) . '</button>';
-	$result .= '</div>';
+	$active_filter_count = 0;
+	foreach ( $filters as $filter ) {
+		if ( ! isset( $wp_filter[ $filter ] ) ) {
+			continue;
+		}
+		foreach ( $wp_filter[ $filter ] as $functions ) {
+			$active_filter_count += count( $functions );
+		}
+	}
 
-	$result .= '<div id="relevanssi_filter_list" style="background: #f8f9fa; border: 1px solid #e2e4e7; border-radius: 6px; padding: 12px; display: none; max-height: 350px; overflow-y: auto;">';
+	$result .= '<details class="relevanssi-filter-details">';
+	// Translators: %d is the number of active Relevanssi search filter callbacks.
+	$result .= '<summary>' . sprintf( __( 'Active filters (%d)', 'relevanssi' ), $active_filter_count ) . '</summary>';
+	$result .= '<div id="relevanssi_filter_list">';
 	foreach ( $filters as $filter ) {
 		if ( isset( $wp_filter[ $filter ] ) ) {
 			$result .= '<h4 style="margin: 8px 0 4px 0; font-size: 11px; color: #1b853d; font-family: monospace; word-break: break-all;">' . esc_html( $filter ) . '</h4>';
@@ -459,8 +631,9 @@ function relevanssi_admin_search_debugging_info( $query ) {
 		}
 	}
 	$result .= '</div>';
-	$result .= '</div>';
 	$result .= '</details>';
+	$result .= '</div>';
+	$result .= '</div>';
 
 	return $result;
 }
