@@ -5,7 +5,7 @@ Tags: search, relevance, better search, product search, woocommerce search
 Requires at least: 4.9
 Tested up to: 7.1
 Requires PHP: 7.1
-Stable tag: 4.28.2
+Stable tag: 4.28.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -128,6 +128,7 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.28.3 =
 * New feature: Relevanssi now provides a modal search form.
 * New feature: More debugging information on the admin search page.
 * Minor fix: The search results breakdown can now include categories again.
