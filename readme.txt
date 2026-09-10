@@ -129,7 +129,7 @@ Each document database is full of useless words. All the little words that appea
 
 == Changelog ==
 * New feature: Relevanssi now provides a modal search form.
-* Minor fix: When Relevanssi does the automatic Did you mean? fallback search, the in-document highlighting now uses the corrected search term.
+* Compatibility: The broken Document Library Pro compatibility features were removed.
 
 = 4.28.2 =
 * Security: Fix for a vulnerability in the debugging mode.
