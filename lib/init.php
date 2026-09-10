@@ -192,7 +192,7 @@ function relevanssi_menu() {
 	global $relevanssi_variables;
 
 	$menu_title  = 'Relevanssi';
-	$page_title  = RELEVANSSI_PREMIUM ? __( 'Relevanssi Premium Settings', 'relevanssi' ) : __( 'Relevanssi Settings', 'relevanssi' );
+	$page_title  = relevanssi_is_premium() ? __( 'Relevanssi Premium Settings', 'relevanssi' ) : __( 'Relevanssi Settings', 'relevanssi' );
 	$icon_url    = plugin_dir_url( $relevanssi_variables['file'] ) . 'images/relevanssi-icon.svg';
 	$parent_slug = $relevanssi_variables['file'];
 	$capability  = apply_filters( 'relevanssi_options_capability', 'manage_options' );
@@ -485,13 +485,13 @@ function relevanssi_create_database_tables( $relevanssi_db_version ) {
  */
 function relevanssi_action_links( $links ) {
 	$root = 'relevanssi';
-	if ( RELEVANSSI_PREMIUM ) {
+	if ( relevanssi_is_premium() ) {
 		$root = 'relevanssi-premium';
 	}
 	$relevanssi_links = array(
 		'<a href="' . admin_url( 'options-general.php?page=' . $root . '/relevanssi.php' ) . '">' . __( 'Settings', 'relevanssi' ) . '</a>',
 	);
-	if ( ! RELEVANSSI_PREMIUM ) {
+	if ( ! relevanssi_is_premium() ) {
 		$relevanssi_links[] = '<a href="https://www.relevanssi.com/buy-premium/">' . __( 'Go Premium!', 'relevanssi' ) . '</a>';
 	}
 	return array_merge( $relevanssi_links, $links );

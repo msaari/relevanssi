@@ -268,7 +268,7 @@ function relevanssi_process_weights_and_indexing( $request ) {
 
 	if ( 'indexing' === $request['rlv_tab'] ) {
 		update_option( 'relevanssi_index_taxonomies_list', array_keys( $index_taxonomies_list ), false );
-		if ( RELEVANSSI_PREMIUM ) {
+		if ( relevanssi_is_premium() ) {
 			update_option( 'relevanssi_index_terms', array_keys( $index_terms_list ), false );
 		}
 	}

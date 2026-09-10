@@ -22,7 +22,7 @@ function relevanssi_admin_dev_tab() {
 	global $wpdb;
 
 	// --- State Logic: Environment Assessment ---
-	$is_premium       = defined( 'RELEVANSSI_PREMIUM' ) && RELEVANSSI_PREMIUM;
+	$is_premium       = relevanssi_is_premium();
 	$has_hide_control = function_exists( 'relevanssi_get_hide_post_controls_config' );
 	$has_call_home    = function_exists( 'relevanssi_get_do_not_call_home_config' );
 	$has_translations = function_exists( 'relevanssi_get_update_translations_config' );

@@ -19,7 +19,7 @@
 function relevanssi_help_tab() {
 	global $relevanssi_variables;
 
-	$is_premium = defined( 'RELEVANSSI_PREMIUM' ) && RELEVANSSI_PREMIUM;
+	$is_premium = relevanssi_is_premium();
 
 	// Process support ticket actions if the premium pipeline is functional.
 	if ( $is_premium ) {
@@ -27,7 +27,9 @@ function relevanssi_help_tab() {
 
 		if ( isset( $_REQUEST['relevanssi_support_form'] ) ) {
 			check_admin_referer( 'relevanssi_support_form', 'relevanssi_support_form' );
-			rlv_help_tab_send_email( $_REQUEST, $support_email );
+			if ( function_exists( 'relevanssi_help_tab_send_email' ) ) {
+				relevanssi_help_tab_send_email( $_REQUEST, $support_email );
+			}
 		}
 	}
 
@@ -503,164 +505,4 @@ function relevanssi_help_tab() {
 </script>
 
 	<?php
-}
-
-
-
-/**
- * Sends out an email to Relevanssi support with extended diagnostic parameters.
- *
- * @global wpdb   $wpdb                  The WordPress database interface.
- * @global string $wp_version            The version of WordPress running.
- * @global array  $relevanssi_variables  The global Relevanssi variables array.
- *
- * @param array  $request       The request data payload directly from administrative form posts.
- * @param string $support_email The validated remote support recipient email endpoint address.
- * @return void Handles direct system email execution loops and errors displays.
- */
-function rlv_help_tab_send_email( array $request, string $support_email ) {
-	global $wpdb, $wp_version, $relevanssi_variables;
-
-	if ( empty( $support_email ) || ! is_email( $support_email ) ) {
-		return;
-	}
-
-	$user_email = sanitize_email( $request['relevanssi_support_email'] ?? '' );
-
-	// Guardrail validation check: Catch malformed typos before executing mail routine.
-	if ( ! is_email( $user_email ) ) {
-		?>
-		<div class="notice notice-error is-dismissible">
-			<p><?php esc_html_e( 'Error: The email address provided is malformed. Please verify for typos and try again.', 'relevanssi' ); ?></p>
-		</div>
-		<?php
-		return;
-	}
-
-	// Api Key Tracking.
-	if ( function_exists( 'relevanssi_premium_schedule_api_key_tracking' ) ) {
-		relevanssi_premium_schedule_api_key_tracking( 'support_form' );
-	}
-
-	$user_name = ! empty( $request['relevanssi_support_name'] ) ? sanitize_text_field( $request['relevanssi_support_name'] ) : 'User';
-	$message   = $request['relevanssi_support_message'] ?? '';
-	$subject   = $request['relevanssi_support_subject'] ?? '';
-
-	// Fetch account details to bypass user input errors.
-	$current_user = wp_get_current_user();
-
-	$headers   = array();
-	$headers[] = 'Content-Type: text/plain; charset=UTF-8';
-	$headers[] = "Reply-To: $user_name <$user_email>";
-
-	// Active Theme context data parsing.
-	$theme_data = wp_get_theme();
-	$theme_info = $theme_data->get( 'Name' ) . ' v' . $theme_data->get( 'Version' );
-	if ( is_child_theme() ) {
-		$theme_info .= ' (Child Theme of: ' . $theme_data->get( 'Template' ) . ')';
-	}
-
-	// Server configurations tracking.
-	$php_memory_limit = ini_get( 'memory_limit' );
-	$wp_memory_limit  = defined( 'WP_MEMORY_LIMIT' ) ? WP_MEMORY_LIMIT : $php_memory_limit;
-	$max_exec_time    = ini_get( 'max_execution_time' );
-	$mysql_version    = $wpdb->db_version();
-	$server_software  = $_SERVER['SERVER_SOFTWARE'] ?? 'Unknown';
-
-	// --- Fetch Advanced Debugging Metrics ---
-
-	// 1. Fetch MySQL max_allowed_packet configuration
-	$max_packet = $wpdb->get_var( 'SELECT @@max_allowed_packet' );
-	if ( ! $max_packet ) {
-		$packet_row = $wpdb->get_row( "SHOW VARIABLES LIKE 'max_allowed_packet'", ARRAY_A );
-		$max_packet = ! empty( $packet_row['Value'] ) ? $packet_row['Value'] : 'Unknown';
-	}
-	if ( is_numeric( $max_packet ) && function_exists( 'size_format' ) ) {
-		$max_packet = size_format( $max_packet );
-	}
-
-	// 2. Reconstruct the active Relevanssi indexing query footprint
-	$indexing_query = 'Unavailable (Relevanssi indexing core functions are missing)';
-	if ( function_exists( 'relevanssi_generate_indexing_query' ) ) {
-		$restriction    = function_exists( 'relevanssi_post_type_restriction' ) ? relevanssi_post_type_restriction() : '';
-		$valid_status   = function_exists( 'relevanssi_valid_status_array' ) ? relevanssi_valid_status_array() : '';
-		$indexing_query = relevanssi_generate_indexing_query( $valid_status, false, $restriction, '' );
-	}
-
-	// Active plugins collection processing loops.
-	$active_plugins = get_option( 'active_plugins', array() );
-	$plugin_list    = array();
-
-	if ( ! function_exists( 'get_plugins' ) ) {
-		require_once ABSPATH . 'wp-admin/includes/plugin.php';
-	}
-	$all_installed_plugins = get_plugins();
-
-	foreach ( $active_plugins as $plugin_path ) {
-		if ( isset( $all_installed_plugins[ $plugin_path ] ) ) {
-			$plugin_list[] = $all_installed_plugins[ $plugin_path ]['Name'] . ' (v' . $all_installed_plugins[ $plugin_path ]['Version'] . ')';
-		}
-	}
-
-	// Account for Network Wide Activated Plugins (Multisite Compatibility).
-	$is_multisite_status = 'No';
-	if ( is_multisite() ) {
-		$is_multisite_status = 'Yes';
-		$network_active      = get_site_option( 'active_sitewide_plugins', array() );
-		foreach ( array_keys( $network_active ) as $plugin_path ) {
-			if ( isset( $all_installed_plugins[ $plugin_path ] ) ) {
-				$plugin_list[] = $all_installed_plugins[ $plugin_path ]['Name'] . ' (v' . $all_installed_plugins[ $plugin_path ]['Version'] . ') [Network Wide]';
-			}
-		}
-	}
-
-	$formatted_plugins = ! empty( $plugin_list ) ? implode( "\n   - ", $plugin_list ) : 'None detected';
-
-	// --- Build Standardized Diagnostic Signature ---
-	$message_builder .= 'Name: ' . $user_name . "\n";
-	$message_builder .= 'Email: ' . $user_email . "\n";
-	$message_builder .= 'Site URL: ' . home_url() . "\n\n";
-
-	$message_builder .= 'USER MESSAGE:' . "\n" . stripslashes( $message ) . "\n\n";
-
-	$message_builder .= "==================== Additional Data ====================\n\n";
-
-	$message_builder .= "PLATFORM VERSIONS:\n";
-	$message_builder .= 'WP Version: ' . $wp_version . "\n";
-	$message_builder .= 'Is Multisite: ' . $is_multisite_status . "\n";
-	$message_builder .= 'PHP Version: ' . phpversion() . "\n";
-	$message_builder .= 'MySQL Version: ' . $mysql_version . "\n";
-	$message_builder .= 'Server Software: ' . $server_software . "\n";
-	$message_builder .= 'Relevanssi Version: ' . ( $relevanssi_variables['plugin_version'] ?? 'Premium' ) . "\n\n";
-
-	$message_builder .= "RESOURCE BOUNDARIES:\n";
-	$message_builder .= 'WP Memory Limit: ' . $wp_memory_limit . "\n";
-	$message_builder .= 'PHP Memory Limit: ' . $php_memory_limit . "\n";
-	$message_builder .= 'Max Execution Time: ' . $max_exec_time . " seconds\n";
-	$message_builder .= 'MySQL Max Allowed Packet: ' . $max_packet . "\n\n";
-
-	$message_builder .= "WEBSITE THEME:\n";
-	$message_builder .= 'Active Theme: ' . $theme_info . "\n\n";
-
-	$message_builder .= "ACTIVE PLUGINS:\n";
-	$message_builder .= '   - ' . $formatted_plugins . "\n\n";
-
-	$message_builder .= "DATABASE & INDEXING METRICS:\n";
-	$message_builder .= "Baseline Indexing Query:\n" . $indexing_query . "\n";
-
-	$success = wp_mail( $support_email, $subject, $message_builder, $headers );
-
-	if ( $success ) {
-		?>
-		<div class="notice notice-success is-dismissible">
-			<p><?php esc_html_e( 'Email sent successfully!', 'relevanssi' ); ?></p>
-		</div>
-		<?php
-	} else {
-		?>
-		<div class="notice notice-error is-dismissible">
-			<p><?php esc_html_e( 'Email dispatch failed. Please check your system mail setup parameters.', 'relevanssi' ); ?></p>
-		</div>
-		<?php
-	}
 }

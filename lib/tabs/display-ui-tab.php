@@ -17,7 +17,7 @@
  */
 function relevanssi_display_ui_tab() {
 	global $relevanssi_variables;
-	$is_premium = defined( 'RELEVANSSI_PREMIUM' ) && RELEVANSSI_PREMIUM;
+	$is_premium = relevanssi_is_premium();
 
 	// --- Card 1: Voice Search ---
 

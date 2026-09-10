@@ -16,11 +16,11 @@
 function relevanssi_options() {
 	global $relevanssi_variables;
 	$options_txt = __( 'Relevanssi Search Options', 'relevanssi' );
-	if ( RELEVANSSI_PREMIUM ) {
+	if ( relevanssi_is_premium() ) {
 		$options_txt = __( 'Relevanssi Premium Search Options', 'relevanssi' );
 	}
 
-	printf( "<div class='wrap'><h2>%s</h2>", esc_html( $options_txt ) );
+	printf( "<div class='wrap'><h1 class='wp-heading-inline'>%s</h1>", esc_html( $options_txt ) );
 	if ( ! empty( $_REQUEST ) ) {
 		if ( isset( $_REQUEST['submit'] ) ) {
 			check_admin_referer( plugin_basename( $relevanssi_variables['file'] ), 'relevanssi_options' );
@@ -259,7 +259,7 @@ function relevanssi_options_form() {
 
 	<?php
 	$current_tab = $tabs[ array_search( $active_tab, wp_list_pluck( $tabs, 'slug' ), true ) ];
-	if ( ! $current_tab['save'] || ( ! RELEVANSSI_PREMIUM && 'premium' === $current_tab['save'] ) ) {
+	if ( ! $current_tab['save'] || ( ! relevanssi_is_premium() && 'premium' === $current_tab['save'] ) ) {
 		$display_save_button = false;
 	}
 	if ( $current_tab['require'] ) {
@@ -328,10 +328,10 @@ function relevanssi_add_admin_scripts( $hook ) {
 
 	wp_enqueue_style( 'wp-color-picker' );
 	wp_enqueue_script( 'relevanssi_admin_js', $plugin_dir_url . 'lib/admin_scripts.js', array( 'wp-color-picker' ), $relevanssi_variables['plugin_version'], true );
-	if ( ! RELEVANSSI_PREMIUM ) {
+	if ( ! relevanssi_is_premium() ) {
 		wp_enqueue_script( 'relevanssi_admin_js_free', $plugin_dir_url . 'lib/admin_scripts_free.js', array( 'relevanssi_admin_js' ), $relevanssi_variables['plugin_version'], true );
 	}
-	if ( RELEVANSSI_PREMIUM ) {
+	if ( relevanssi_is_premium() ) {
 		wp_enqueue_script( 'relevanssi_admin_js_premium', $plugin_dir_url . 'premium/admin_scripts_premium.js', array( 'relevanssi_admin_js' ), $relevanssi_variables['plugin_version'], true );
 	}
 	wp_enqueue_style( 'relevanssi_admin_css', $plugin_dir_url . 'lib/admin_styles.css', array(), $relevanssi_variables['plugin_version'] );
@@ -391,7 +391,7 @@ function relevanssi_add_admin_scripts( $hook ) {
 		'searching_nonce' => wp_create_nonce( 'relevanssi_admin_search_nonce' ),
 	);
 
-	if ( ! RELEVANSSI_PREMIUM ) {
+	if ( ! relevanssi_is_premium() ) {
 		wp_localize_script( 'relevanssi_admin_js', 'nonce', $nonce );
 	}
 

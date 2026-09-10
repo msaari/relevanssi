@@ -215,7 +215,7 @@ function relevanssi_query_log() {
 								'relevanssi'
 							);
 
-							if ( RELEVANSSI_PREMIUM ) {
+							if ( relevanssi_is_premium() ) {
 								// Translators: do not translate "reset".
 								$message = esc_html__(
 									'To reset the logs, type "reset" into the box here and click the Reset button. This will reset both the search log and the click tracking log.',

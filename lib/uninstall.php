@@ -18,8 +18,8 @@
 function relevanssi_drop_database_tables() {
 	global $wpdb;
 
-	if ( defined( 'RELEVANSSI_PREMIUM' ) && RELEVANSSI_PREMIUM && ! defined( 'UNINSTALLING_RELEVANSSI_PREMIUM' ) ) {
-		// Relevanssi Premium exists, do not drop the tables.
+	if ( function_exists( 'relevanssi_premium_init' ) && ! defined( 'UNINSTALLING_RELEVANSSI_PREMIUM' ) ) {
+		// Relevanssi Premium is loaded, do not drop the shared tables.
 		return;
 	}
 
@@ -55,8 +55,8 @@ function relevanssi_drop_database_tables() {
  * @global object $wpdb The WordPress database interface.
  */
 function relevanssi_uninstall_free() {
-	if ( defined( 'RELEVANSSI_PREMIUM' ) && RELEVANSSI_PREMIUM && ! defined( 'UNINSTALLING_RELEVANSSI_PREMIUM' ) ) {
-		// Relevanssi Premium exists, do not drop the tables.
+	if ( function_exists( 'relevanssi_premium_init' ) && ! defined( 'UNINSTALLING_RELEVANSSI_PREMIUM' ) ) {
+		// Relevanssi Premium is loaded, do not remove the shared options and tables.
 		return;
 	}
 

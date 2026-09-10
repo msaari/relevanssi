@@ -43,7 +43,7 @@ function relevanssi_indexing_tab() {
 	}
 
 	// --- Index Statistics & Counts ---
-	$is_premium  = defined( 'RELEVANSSI_PREMIUM' ) && RELEVANSSI_PREMIUM;
+	$is_premium  = relevanssi_is_premium();
 	$docs_count  = get_option( 'relevanssi_doc_count', 0 );
 	$terms_count = get_option( 'relevanssi_terms_count', 0 );
 

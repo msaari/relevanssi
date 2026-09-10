@@ -48,7 +48,7 @@ function relevanssi_debugging_tab() {
 		),
 	);
 
-	if ( RELEVANSSI_PREMIUM ) {
+	if ( relevanssi_is_premium() ) {
 		$sees_config['type'] = array(
 			'type'    => 'select',
 			'label'   => __( 'Content Type', 'relevanssi' ),
@@ -131,7 +131,7 @@ function relevanssi_debugging_tab() {
 						<li><?php esc_html_e( 'Hover your mouse over the title of the item you want to inspect.', 'relevanssi' ); ?></li>
 						<li><?php esc_html_e( 'Look at the status bar at the bottom left of your web browser. The number following "post=" inside the URL is your ID (for example, if the URL ends in post=123, the ID is 123).', 'relevanssi' ); ?></li>
 					</ol>
-					<?php if ( RELEVANSSI_PREMIUM ) : ?>
+					<?php if ( relevanssi_is_premium() ) : ?>
 						<p style="margin: 10px 0 0 0; font-size: 12px; color: #1b853d; font-weight: 500;">
 							<?php esc_html_e( '💡 Tip: You do not need to look up IDs manually. This exact analysis engine is available directly inside your editor sidebar when editing any post, page, or category term. Click the "How Relevanssi sees this post" button.', 'relevanssi' ); ?>
 						</p>
@@ -172,7 +172,7 @@ function relevanssi_debugging_tab() {
 							<h2><?php esc_html_e( 'Inspect how Relevanssi reads your content', 'relevanssi' ); ?></h2>
 							<p><?php esc_html_e( 'If certain items are not being indexed correctly, enter their numeric ID below to view the plain text format Relevanssi generates from them.', 'relevanssi' ); ?></p>
 							<?php
-							if ( RELEVANSSI_PREMIUM ) {
+							if ( relevanssi_is_premium() ) {
 								?>
 								<p><?php esc_html_e( 'You can also inspect categories, tags, or user profiles by switching the Content Type dropdown.', 'relevanssi' ); ?></p>
 								<?php

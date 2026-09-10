@@ -64,7 +64,7 @@ class Relevanssi_Setting_Field_Weights_Table extends Relevanssi_Abstract_Setting
 						</td>
 					</tr>
 					<?php
-					if ( ! defined( 'RELEVANSSI_PREMIUM' ) || ! RELEVANSSI_PREMIUM ) {
+					if ( ! relevanssi_is_premium() ) {
 						if ( function_exists( 'relevanssi_form_tag_weight' ) ) {
 							relevanssi_form_tag_weight();
 						}

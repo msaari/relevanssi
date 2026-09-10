@@ -42,7 +42,7 @@ class Relevanssi_Setting_Field_Synonyms extends Relevanssi_Abstract_Setting_Fiel
 	 * @return void Writes layout elements straight onto the active administration view.
 	 */
 	protected function render_input() {
-		$is_premium = defined( 'RELEVANSSI_PREMIUM' ) && RELEVANSSI_PREMIUM;
+		$is_premium = relevanssi_is_premium();
 
 		if ( class_exists( 'Polylang', false ) && function_exists( 'pll_current_language' ) && ! pll_current_language() ) {
 			?>

@@ -26,7 +26,7 @@ function relevanssi_register_privacy_policy() {
 		return;
 	}
 	$name = 'Relevanssi';
-	if ( RELEVANSSI_PREMIUM ) {
+	if ( relevanssi_is_premium() ) {
 		$name .= ' Premium';
 	}
 	$content = '';
