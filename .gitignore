@@ -1,2 +1,4 @@
 sync_svn.sh
 .DS_Store
+vendor/
+composer.lock
