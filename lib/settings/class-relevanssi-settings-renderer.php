@@ -26,6 +26,9 @@ class Relevanssi_Settings_Renderer {
 		echo '<table class="form-table" role="presentation">';
 
 		foreach ( $fields as $id => $config ) {
+			if ( isset( $config['visible'] ) && false === $config['visible'] ) {
+				continue;
+			}
 			try {
 				$field_instance = Relevanssi_Setting_Field_Factory::create( $id, $config );
 				$field_instance->render();
