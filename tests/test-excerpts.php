@@ -359,6 +359,7 @@ diam donec adipiscing tristique risus nec feugiat in. Fusce ut placerat orci
 nulla. Pharetra vel turpis nunc eget lorem dolor. Tristique senectus et netus
 et malesuada.
 EOT;
+		$text = str_replace( "\r\n", "\n", $text );
 
 		$this->assertEquals(
 			array( 345, 448, 499 ),
@@ -684,8 +685,8 @@ facilisis gravida. Nisl nunc mi ipsum faucibus vitae aliquet nec ullamcorper.
 EOT;
 
 		$this->assertEquals(
-			str_replace( "\n", ' ', $highlighted ),
-			str_replace( "\n", ' ', $excerpt ),
+			str_replace( "\n", ' ', str_replace( "\r", '', $highlighted ) ),
+			str_replace( "\n", ' ', str_replace( "\r", '', $excerpt ) ),
 			'relevanssi_highlight_term() mark test failed.'
 		);
 
@@ -702,8 +703,8 @@ facilisis gravida. Nisl nunc mi ipsum <mark>faucibus</mark> vitae aliquet nec ul
 EOT;
 
 		$this->assertEquals(
-			str_replace( "\n", ' ', $highlighted ),
-			str_replace( "\n", ' ', $excerpt ),
+			str_replace( "\n", ' ', str_replace( "\r", '', $highlighted ) ),
+			str_replace( "\n", ' ', str_replace( "\r", '', $excerpt ) ),
 			'relevanssi_highlight_term() mark test failed.'
 		);
 
@@ -719,8 +720,8 @@ facilisis gravida. Nisl nunc mi ipsum faucibus vitae aliquet nec ullamcorper.
 EOT;
 
 		$this->assertEquals(
-			str_replace( "\n", ' ', $highlighted ),
-			str_replace( "\n", ' ', $excerpt ),
+			str_replace( "\n", ' ', str_replace( "\r", '', $highlighted ) ),
+			str_replace( "\n", ' ', str_replace( "\r", '', $excerpt ) ),
 			'relevanssi_highlight_term() fuzzy test failed.'
 		);
 
@@ -777,8 +778,8 @@ faucibus vitae aliquet nec ullamcorper.
 EOT;
 
 			$this->assertEquals(
-				str_replace( "\n", ' ', $highlighted ),
-				str_replace( "\n", ' ', $excerpt ),
+				str_replace( "\n", ' ', str_replace( "\r", '', $highlighted ) ),
+				str_replace( "\n", ' ', str_replace( "\r", '', $excerpt ) ),
 				'relevanssi_highlight_term() ' . $type . ' test failed.'
 			);
 		}
@@ -823,8 +824,8 @@ aliquet nec ullamcorper.
 EOT;
 
 		$this->assertEquals(
-			str_replace( "\n", ' ', $highlighted ),
-			str_replace( "\n", ' ', $excerpt ),
+			str_replace( "\n", ' ', str_replace( "\r", '', $highlighted ) ),
+			str_replace( "\n", ' ', str_replace( "\r", '', $excerpt ) ),
 			'relevanssi_highlight_term() phrase test failed.'
 		);
 
@@ -1029,8 +1030,8 @@ END;
 
 		$args = array(
 			'ID'           => $post_id,
-			'post_content' => str_replace( "\n", ' ', $post_content ),
-			'post_excerpt' => str_replace( "\n", ' ', $post_excerpt ),
+			'post_content' => str_replace( array( "\r\n", "\n" ), ' ', $post_content ),
+			'post_excerpt' => str_replace( array( "\r\n", "\n" ), ' ', $post_excerpt ),
 		);
 		wp_update_post( $args );
 		$post = get_post( $post_id );
@@ -1044,7 +1045,7 @@ END;
 
 		$args = array(
 			'comment_post_ID' => $post_id,
-			'comment_content' => str_replace( "\n", ' ', $comment_content ),
+			'comment_content' => str_replace( array( "\r\n", "\n" ), ' ', $comment_content ),
 		);
 		wp_insert_comment( $args );
 
