@@ -662,6 +662,67 @@ EOT;
 	}
 
 	/**
+	 * Allowed excerpt tags must match complete names and have safe attributes.
+	 */
+	public function test_fix_entities_rejects_prefix_tags_and_event_attributes() {
+		update_option( 'relevanssi_excerpt_allowable_tags', '<p><a><strong>' );
+
+		$audio = relevanssi_fix_entities( '<audio src=x onerror="window.relevanssiTest=1">', false );
+		$this->assertStringContainsString( '&lt;audio', $audio );
+		$this->assertStringNotContainsString( '<audio', $audio );
+
+		$anchor = relevanssi_fix_entities(
+			'<a href="https://example.org" onclick="window.relevanssiTest=1">link</a>',
+			false
+		);
+		$this->assertStringContainsString( '<a href="https://example.org">link</a>', $anchor );
+		$this->assertStringNotContainsString( 'onclick', $anchor );
+
+		update_option( 'relevanssi_excerpt_allowable_tags', '<audio>' );
+		$allowed_audio = relevanssi_fix_entities( '<audio src=x onerror="window.relevanssiTest=1">', false );
+		$this->assertStringNotContainsString( 'onerror=', $allowed_audio );
+	}
+
+	/**
+	 * Encoded comment markup must stay inert after excerpt generation.
+	 */
+	public function test_encoded_comment_markup_is_safe_in_excerpt() {
+		update_option( 'relevanssi_index_comments', 'normal' );
+		update_option( 'relevanssi_excerpt_allowable_tags', '<p><a><strong>' );
+
+		$post_id = self::factory()->post->create(
+			array(
+				'post_content' => 'A short unrelated post.',
+				'post_status'  => 'publish',
+			)
+		);
+		$comment_id = wp_insert_comment(
+			array(
+				'comment_post_ID'  => $post_id,
+				'comment_author'   => 'Visitor',
+				'comment_content'  => 'Shipping details &lt;audio src=x onerror="window.relevanssiTest=1"&gt;&lt;/audio&gt;',
+				'comment_approved' => 1,
+				'comment_type'     => '',
+			)
+		);
+		$this->assertNotEmpty( $comment_id );
+		$this->assertSame( 'normal', get_option( 'relevanssi_index_comments' ) );
+		$this->assertSame( '1', (string) get_comment( $comment_id )->comment_approved );
+		$this->assertNotEmpty( get_approved_comments( $post_id ) );
+		$this->assertNotEmpty( get_approved_comments( $post_id, array( 'type' => array( 'comment' ) ) ) );
+		$this->assertStringContainsString( 'Shipping details', relevanssi_get_comments( $post_id ) );
+
+		$excerpt = relevanssi_do_excerpt( get_post( $post_id ), 'shipping' );
+		$this->assertStringContainsString( '<strong>Shipping</strong>', $excerpt );
+		$this->assertStringContainsString( '&lt;audio', $excerpt );
+		$this->assertStringNotContainsString( '<audio', $excerpt );
+
+		update_option( 'relevanssi_highlight', 'no' );
+		$unhighlighted = relevanssi_do_excerpt( get_post( $post_id ), 'shipping' );
+		$this->assertStringNotContainsString( '<audio', $unhighlighted );
+	}
+
+	/**
 	 * Test relevanssi_highlight_terms().
 	 */
 	public function test_highlight_terms() {

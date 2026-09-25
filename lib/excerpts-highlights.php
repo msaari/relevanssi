@@ -353,7 +353,9 @@ function relevanssi_do_excerpt( $t_post, $query, $excerpt_length = null, $excerp
 		$post = $old_global_post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 	}
 
-	return $excerpt_text;
+	// Excerpts may contain decoded comment entities and HTML from filters. Keep
+	// the formatting while removing unsafe tags and attributes before display.
+	return wp_kses_post( $excerpt_text );
 }
 
 /**
@@ -880,7 +882,9 @@ function relevanssi_fix_entities( $excerpt, $in_docs ) {
 
 		$i = 0;
 		foreach ( $tags_entitied as $tag ) {
-			$tag     = str_replace( '&gt;', '(.*?)&gt;', $tag );
+			// Match the complete tag name: <a> must not also restore <audio>.
+			$tag     = preg_quote( $tag, '~' );
+			$tag     = str_replace( '&gt;', '(?=[\s/]|&gt;)(.*?)&gt;', $tag );
 			$pattern = "~$tag~";
 
 			$tags_entitied_regexped[] = $pattern;
@@ -911,6 +915,8 @@ function relevanssi_fix_entities( $excerpt, $in_docs ) {
 		// anything.
 		$excerpt = str_replace( '&quot;', '"', $excerpt );
 		$excerpt = str_replace( '&#039;', "'", $excerpt );
+		// Allowed tag names do not imply that all their attributes are safe.
+		$excerpt = wp_kses_post( $excerpt );
 	} else {
 		// Running htmlentities() for whole posts tends to ruin things.
 		// However, we may want to run htmlentities() for anything inside
