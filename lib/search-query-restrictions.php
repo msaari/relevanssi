@@ -632,7 +632,8 @@ function relevanssi_add_phrase_restrictions( $query_restrictions, $phrase_querie
 		$or_queries = array_filter(
 			$phrase_queries['or'],
 			function ( $terms ) use ( $term ) {
-				return relevanssi_stripos( $terms, $term ) !== false;
+				// Trim is necessary, as numeric terms will have an extra space at the beginning.
+				return relevanssi_stripos( $terms, trim( $term ) ) !== false;
 			},
 			ARRAY_FILTER_USE_KEY
 		);
