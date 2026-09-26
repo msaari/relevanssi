@@ -47,7 +47,7 @@ function relevanssi_overview_tab() {
 	}
 
 	$this_page  = '?page=' . plugin_basename( $relevanssi_variables['file'] );
-	$update_url = wp_nonce_url( $this_page . '&rlv_tab=overview&update_counts=1', 'update_counts' );
+	$update_url = wp_nonce_url( $this_page . '&rlv_tab=overview&relevanssi_update_counts=1', 'relevanssi_update_counts' );
 
 	$user_count    = 0;
 	$taxterm_count = 0;
@@ -61,7 +61,7 @@ function relevanssi_overview_tab() {
 	$is_didyoumean_active  = 'on' === get_option( 'relevanssi_enable_didyoumean' );
 	$is_voicesearch_active = 'on' === get_option( 'relevanssi_voice_search' );
 	$related_settings      = get_option( 'relevanssi_related_settings', array() );
-	$is_related_active     = $related_settings['enabled'] ?? false;
+	$is_related_active     = isset( $related_settings['enabled'] ) && 'off' !== $related_settings['enabled'];
 
 	?>
 	<div id="overview_tab_dashboard" class="wrap">

@@ -131,6 +131,7 @@ Each document database is full of useless words. All the little words that appea
 = 4.28.4 =
 * Security: Fixes a XSS vulnerability based on indexing comments and showing comment content in excerpts.
 * New feature: A Did You Mean? suggestion block.
+* Minor fix: Indexing document count updates didn't work correctly.
 
 = 4.28.3 =
 * New feature: Relevanssi now provides a modal search form.

@@ -652,12 +652,11 @@ function relevanssi_admin_search_debugging_info( $query ) {
 function relevanssi_update_counts() {
 	global $wpdb, $relevanssi_variables;
 
-	if ( ! current_user_can( 'manage_options' ) ) {
+	if ( ! defined( 'DOING_CRON' ) && ! current_user_can( 'manage_options' ) ) {
 		die();
 	}
 
-	check_admin_referer( 'update_counts', '_wpnonce' );
-
+	! defined( 'DOING_CRON' ) && check_admin_referer( 'relevanssi_update_counts', '_wpnonce' );
 	relevanssi_update_doc_count();
 
 	$terms_count = $wpdb->get_var( 'SELECT COUNT(*) FROM ' . $relevanssi_variables['relevanssi_table'] );  // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQL.NotPrepared

@@ -89,7 +89,7 @@ function relevanssi_options() {
 		}
 
 		if ( isset( $_REQUEST['update_counts'] ) ) {
-			check_admin_referer( 'update_counts' );
+			check_admin_referer( 'relevanssi_update_counts' );
 			relevanssi_update_counts();
 		}
 	}

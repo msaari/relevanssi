@@ -825,8 +825,8 @@ function relevanssi_launch_ajax_action( string $action, array $payload_args = ar
 		);
 	}
 	$default_payload = array(
-		'action' => $action,
-		'_nonce' => wp_create_nonce( $action ),
+		'action'   => $action,
+		'_wpnonce' => wp_create_nonce( $action ),
 	);
 	$payload         = array_merge( $default_payload, $payload_args );
 	$args            = array(
