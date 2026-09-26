@@ -127,27 +127,49 @@ function relevanssi_wpml_term_fix( string $term_content, array $terms, string $t
 		$term_content = '';
 
 		global $sitepress;
-		remove_filter( 'get_term', array( $sitepress, 'get_term_adjust_id' ), 1 );
+		$had_filter = remove_filter( 'get_term', array( $sitepress, 'get_term_adjust_id' ), 1 );
 
-		foreach ( $terms as $term ) {
-			$term = get_term(
-				apply_filters(
-					'wpml_object_id',
-					$term->term_id,
-					$taxonomy,
-					true,
-					$post_language['language_code']
-				),
-				$taxonomy
-			);
+		try {
+			foreach ( $terms as $term ) {
+				$term = get_term(
+					apply_filters(
+						'wpml_object_id',
+						$term->term_id,
+						$taxonomy,
+						true,
+						$post_language['language_code']
+					),
+					$taxonomy
+				);
 
-			$term_content .= ' ' . $term->name;
+				$term_content .= ' ' . $term->name;
+			}
+		} finally {
+			if ( $had_filter ) {
+				add_filter( 'get_term', array( $sitepress, 'get_term_adjust_id' ), 1, 1 );
+			}
 		}
-
-		add_filter( 'get_term', array( $sitepress, 'get_term_adjust_id' ), 1, 1 );
 	}
 
 	return $term_content;
+}
+
+/**
+ * Remembers which nested taxonomy indexing calls removed WPML's term filter.
+ *
+ * @param bool|null $removed Whether the current call removed the filter, or null
+ *                           to retrieve the most recent state.
+ * @return bool Whether the most recent call removed the filter.
+ */
+function relevanssi_wpml_term_filter_state( $removed = null ) {
+	static $removed_stack = array();
+
+	if ( null !== $removed ) {
+		$removed_stack[] = $removed;
+		return $removed;
+	}
+
+	return (bool) array_pop( $removed_stack );
 }
 
 /**
@@ -158,7 +180,7 @@ function relevanssi_wpml_term_fix( string $term_content, array $terms, string $t
  */
 function relevanssi_disable_wpml_terms() {
 	global $sitepress;
-	remove_filter( 'get_term', array( $sitepress, 'get_term_adjust_id' ), 1 );
+	relevanssi_wpml_term_filter_state( remove_filter( 'get_term', array( $sitepress, 'get_term_adjust_id' ), 1 ) );
 }
 
 /**
@@ -168,5 +190,7 @@ function relevanssi_disable_wpml_terms() {
  */
 function relevanssi_enable_wpml_terms() {
 	global $sitepress;
-	add_filter( 'get_term', array( $sitepress, 'get_term_adjust_id' ), 1, 1 );
+	if ( relevanssi_wpml_term_filter_state() ) {
+		add_filter( 'get_term', array( $sitepress, 'get_term_adjust_id' ), 1, 1 );
+	}
 }
