@@ -483,7 +483,7 @@ function relevanssi_indexing_tab() {
 		<h1 class="wp-heading-inline"><?php esc_html_e( 'Indexing Settings', 'relevanssi' ); ?></h1>
 
 		<?php
-		if ( count( $index_post_types ) < 2 ) {
+		if ( count( $index_post_types ) < 1 ) {
 			$index_users      = get_option( 'relevanssi_index_users', 'off' );
 			$index_taxonomies = get_option( 'relevanssi_index_taxonomies', 'off' );
 			if ( 'off' === $index_users && 'off' === $index_taxonomies ) {

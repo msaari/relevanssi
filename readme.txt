@@ -133,6 +133,7 @@ Each document database is full of useless words. All the little words that appea
 * New feature: A Did You Mean? suggestion block.
 * Minor fix: Indexing document count updates didn't work correctly.
 * Minor fix: Fixes problems with WPML get_term filter state.
+* Minor fix: No more complaints about missing post types in the index with just one post type selected.
 
 = 4.28.3 =
 * New feature: Relevanssi now provides a modal search form.
