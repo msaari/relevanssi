@@ -72,4 +72,21 @@ class AdminSearchTest extends WP_UnitTestCase {
 		$this->assertStringContainsString( '&lt;word&gt;', $report );
 		$this->assertStringNotContainsString( '<word>', $report );
 	}
+
+	/**
+	 * Admin search keeps excerpt formatting without event attributes.
+	 */
+	public function test_admin_search_sanitizes_excerpt_html() {
+		relevanssi_install();
+		$post_id = self::factory()->post->create();
+		$post    = get_post( $post_id );
+		$post->relevance_score = 1;
+		$post->post_excerpt = '<strong>Shipping</strong> <a href="javascript:alert(1)" onclick="window.relevanssiTest=1">details</a>';
+
+		$html = relevanssi_admin_search_format_posts( array( $post ), 1, 0, 'shipping' );
+		$this->assertStringContainsString( '<strong>Shipping</strong>', $html );
+		$this->assertStringContainsString( '>details</a>', $html );
+		$this->assertStringNotContainsString( 'onclick', $html );
+		$this->assertStringNotContainsString( 'javascript:', $html );
+	}
 }

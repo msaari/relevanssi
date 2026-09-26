@@ -129,6 +129,7 @@ Each document database is full of useless words. All the little words that appea
 
 == Changelog ==
 = 4.28.4 =
+* Security: Fixes a XSS vulnerability based on indexing comments and showing comment content in excerpts.
 * New feature: A Did You Mean? suggestion block.
 
 = 4.28.3 =

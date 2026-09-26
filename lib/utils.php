@@ -1406,7 +1406,7 @@ function relevanssi_substr_replace( $str, $replacement, int $start, $length ) {
 function relevanssi_the_excerpt() {
 	global $post;
 	if ( ! post_password_required( $post ) ) {
-		echo '<p>' . $post->post_excerpt . '</p>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo '<p>' . wp_kses_post( $post->post_excerpt ) . '</p>';
 	} else {
 		esc_html_e( 'There is no excerpt because this is a protected post.', 'relevanssi' );
 	}
