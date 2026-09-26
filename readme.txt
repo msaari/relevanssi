@@ -5,7 +5,7 @@ Tags: search, relevance, better search, product search, woocommerce search
 Requires at least: 4.9
 Tested up to: 7.1
 Requires PHP: 7.1
-Stable tag: 4.28.3
+Stable tag: 4.28.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -152,21 +152,6 @@ Each document database is full of useless words. All the little words that appea
 * Compatibility: Added built-in support for Document Library Pro above-documents search box.
 * Compatibility: Added support for Slim SEO 'Hide from search results' feature.
 
-= 4.27.2 =
-* Security: Fixes a vulnerability where a contributor-level user could make a SQL injection.
-* Minor fix: Remove warnings caused by removed synced patterns.
-
-= 4.27.1 =
-* Minor fix: Remove complaints from meta_queries.
-
-= 4.27.0 =
-* New feature: Setting to disable all 'post_type' parameters to let Relevanssi control the post types in the search.
-* New feature: New filter hook `relevanssi_truncate_search_queries` can be used to truncate search queries to a certain length to eliminate too long queries.
-* New feature: New filter hook `relevanssi_allow_meta_query_regexp` allows REGEXP or NOT REGEXP meta queries. They are blocked by default for security reasons.
-* New feature: New shortcode `[relevanssi_didyoumean]` makes it easier to add a "Did you mean" suggestion on a search results page without modifying the template code.
-* Minor fix: You can now assign anonymous functions to the `relevanssi_indexing_restriction` filter hook.
-* Minor fix: Relevanssi now clears the scheduled actions on deactivation, not on uninstall.
-
 == Upgrade notice ==
-= 4.28.2 =
-* Debugging mode vulnerability fix.
+= 4.28.4 =
+* XSS vulnerability from comment excerpts fixed.
