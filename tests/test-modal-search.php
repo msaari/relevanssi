@@ -10,6 +10,13 @@
  */
 class ModalSearchTest extends WP_UnitTestCase {
 	/**
+	 * Installs the Relevanssi database tables used by post cleanup hooks.
+	 */
+	public static function wpSetUpBeforeClass() {
+		relevanssi_install();
+	}
+
+	/**
 	 * Provides predictable search form markup.
 	 */
 	public function setUp() {
@@ -77,7 +84,7 @@ class ModalSearchTest extends WP_UnitTestCase {
 			array(
 				'post_title'   => 'Test',
 				'post_content' => 'Content',
-				'post_status'  => 'publish'
+				'post_status'  => 'publish',
 			)
 		);
 
