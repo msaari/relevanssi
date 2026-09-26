@@ -128,6 +128,9 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.28.4 =
+* New feature: A Did You Mean? suggestion block.
+
 = 4.28.3 =
 * New feature: Relevanssi now provides a modal search form.
 * New feature: More debugging information on the admin search page.

@@ -217,3 +217,5 @@ function relevanssi_simple_generate_suggestion( $query ) {
 
 	return $suggestion;
 }
+
+require_once __DIR__ . '/blocks/did-you-mean/render.php';

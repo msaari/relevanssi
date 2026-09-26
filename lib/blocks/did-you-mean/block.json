@@ -1,0 +1,37 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "relevanssi/did-you-mean",
+	"title": "Did You Mean?",
+	"category": "widgets",
+	"description": "Displays spelling suggestions for search queries.",
+	"icon": "editor-spellcheck",
+	"keywords": [ "search", "spelling", "suggestion" ],
+	"textdomain": "relevanssi",
+	"supports": {
+		"html": false,
+		"color": {
+			"text": true,
+			"link": true
+		},
+		"typography": {
+			"fontSize": true,
+			"lineHeight": true
+		}
+	},
+	"attributes": {
+		"prefix": {
+			"type": "string",
+			"default": "Did you mean:"
+		},
+		"suffix": {
+			"type": "string",
+			"default": "?"
+		},
+		"maxResults": {
+			"type": "integer",
+			"default": 5
+		}
+	},
+	"editorScript": "relevanssi-did-you-mean-editor"
+}
