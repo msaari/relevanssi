@@ -882,7 +882,6 @@ function relevanssi_fix_entities( $excerpt, $in_docs ) {
 
 		$i = 0;
 		foreach ( $tags_entitied as $tag ) {
-			$tag     = str_replace( '&gt;', '(.*?)&gt;', $tag );
 			// Match the complete tag name: <a> must not also restore <audio>.
 			$tag     = preg_quote( $tag, '~' );
 			$tag     = str_replace( '&gt;', '(?=[\s/]|&gt;)(.*?)&gt;', $tag );
