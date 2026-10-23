@@ -382,6 +382,7 @@ function relevanssi_add_admin_scripts( $hook ) {
 		'minutes'              => __( 'minutes', 'relevanssi' ),
 		'underminute'          => __( 'less than a minute', 'relevanssi' ),
 		'notimeremaining'      => __( "we're done!", 'relevanssi' ),
+		'searching'            => __( 'Searching...', 'relevanssi' ),
 	);
 
 	wp_localize_script( 'relevanssi_admin_js', 'relevanssi', $localizations );
