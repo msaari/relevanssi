@@ -159,4 +159,4 @@ Each document database is full of useless words. All the little words that appea
 
 == Upgrade notice ==
 = 4.28.5 =
-* Polylang-related object
+* Polylang-related object injection vulnerability fix.
