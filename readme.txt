@@ -128,6 +128,8 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+* Security: Fixes an object injection vulnerability that happened in adding stopwords with Polylang.
+
 = 4.28.4 =
 * Security: Fixes a XSS vulnerability based on indexing comments and showing comment content in excerpts.
 * New feature: A Did You Mean? suggestion block.

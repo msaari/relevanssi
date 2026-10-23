@@ -205,8 +205,11 @@ function relevanssi_get_language_term_taxonomy_id( $locale ) {
 	);
 	$term_id   = 0;
 	foreach ( $languages as $row ) {
-		$description = unserialize( $row->description ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions
-		if ( $description['locale'] === $locale ) {
+		$matches = preg_match( '/s:6:"locale";s:\d+:"(.*?)"/', $row->description, $row_locale );
+		if ( ! $matches ) {
+			continue;
+		}
+		if ( $row_locale[1] === $locale ) {
 			$term_id = $row->term_taxonomy_id;
 			break;
 		}
