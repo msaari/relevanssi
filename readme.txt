@@ -5,7 +5,7 @@ Tags: search, relevance, better search, product search, woocommerce search
 Requires at least: 4.9
 Tested up to: 7.1
 Requires PHP: 7.1
-Stable tag: 4.28.4
+Stable tag: 4.28.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -128,6 +128,7 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.28.5 =
 * Security: Fixes an object injection vulnerability that happened in adding stopwords with Polylang.
 * New feature: New filter hook `relevanssi_term_balance_power` lets you add a penalty for uneven search term distribution in documents.
 * Minor fix: Search results breakdowns now calculate term counts correctly.
@@ -157,5 +158,5 @@ Each document database is full of useless words. All the little words that appea
 * Compatibility: Added support for Slim SEO 'Hide from search results' feature.
 
 == Upgrade notice ==
-= 4.28.4 =
-* XSS vulnerability from comment excerpts fixed.
+= 4.28.5 =
+* Polylang-related object
