@@ -334,6 +334,74 @@ class SearchingTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Search breakdowns must include every matching indexed variant.
+	 *
+	 * @dataProvider term_hit_searches
+	 * @param string $fuzzy         Partial matching mode.
+	 * @param string $search        Original search query.
+	 * @param bool   $include_exact Whether the content contains an exact match.
+	 * @param array  $expected      Expected occurrences per search term.
+	 */
+	public function test_term_hit_search_breakdown( string $fuzzy, string $search, bool $include_exact, array $expected ) {
+		update_option( 'relevanssi_fuzzy', $fuzzy );
+		update_option( 'relevanssi_show_matches_text', '%terms% | %total% | %body%' );
+		$content = str_repeat( 'qzxalpha ', 100 ) . 'omegaqzx plugh plugh';
+		if ( $include_exact ) {
+			$content .= ' qzx qzx qzx';
+		}
+		$post_id = self::factory()->post->create(
+			array(
+				'post_title'   => 'Occurrence fixture',
+				'post_content' => $content,
+				'post_status'  => 'publish',
+			)
+		);
+		relevanssi_index_doc( $post_id, true );
+		$posts = self::results_from_args(
+			array(
+				's'              => $search,
+				'post__in'       => array( $post_id ),
+				'post_type'      => 'post',
+				'posts_per_page' => -1,
+			)
+		)['posts'];
+
+		$this->assertCount( 1, $posts );
+		$this->assertSame( $post_id, $posts[0]->ID );
+		$this->assertSame( $expected, $posts[0]->relevanssi_hits['terms'] );
+		$this->assertSame( array_sum( $expected ), $posts[0]->relevanssi_hits['body'] );
+		$terms = '';
+		foreach ( $expected as $term => $count ) {
+			$terms .= " $term: $count";
+		}
+		$total = array_sum( $expected );
+		$this->assertSame( " $terms | $total | $total", relevanssi_show_matches( $posts[0] ) );
+	}
+
+	/**
+	 * Provides exact, partial, fallback and multiple-term searches.
+	 *
+	 * @return array Search modes and expected occurrence counts.
+	 */
+	public function term_hit_searches(): array {
+		return array(
+			'exact only'          => array( 'never', 'qzx', true, array( 'qzx' => 3 ) ),
+			'exact with partials' => array( 'always', 'qzx', true, array( 'qzx' => 104 ) ),
+			'exact avoids retry'  => array( 'sometimes', 'qzx', true, array( 'qzx' => 3 ) ),
+			'partial fallback'    => array( 'sometimes', 'qzx', false, array( 'qzx' => 101 ) ),
+			'multiple terms'      => array(
+				'always',
+				'qzx plugh',
+				true,
+				array(
+					'qzx'   => 104,
+					'plugh' => 2,
+				),
+			),
+		);
+	}
+
+	/**
 	 * Tests custom field searching.
 	 *
 	 * Should find content that is in a visible custom field.

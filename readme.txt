@@ -129,6 +129,8 @@ Each document database is full of useless words. All the little words that appea
 
 == Changelog ==
 * Security: Fixes an object injection vulnerability that happened in adding stopwords with Polylang.
+* New feature: New filter hook `relevanssi_term_balance_power` lets you add a penalty for uneven search term distribution in documents.
+* Minor fix: Search results breakdowns now calculate term counts correctly.
 
 = 4.28.4 =
 * Security: Fixes a XSS vulnerability based on indexing comments and showing comment content in excerpts.

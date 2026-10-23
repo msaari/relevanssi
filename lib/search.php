@@ -402,6 +402,7 @@ function relevanssi_search( $args ) {
 	$total_terms = count( $terms['original_terms_no_stops'] );
 
 	if ( isset( $doc_weight ) ) {
+		$scoring_context = relevanssi_build_scoring_context( $doc_weight, $term_hits, $no_terms ? array() : array_keys( $df_counts ), $operator );
 		/**
 		 * Filters the results Relevanssi finds.
 		 *
@@ -410,8 +411,11 @@ function relevanssi_search( $args ) {
 		 *
 		 * @param array  $doc_weight An array of (post ID, weight) pairs.
 		 * @param string $q          The query string.
+		 * @param array  $scoring_context The effective operator, lookup terms and
+		 *                               per-document occurrence counts. See
+		 *                               relevanssi_build_scoring_context().
 		 */
-		$doc_weight = apply_filters( 'relevanssi_results', $doc_weight, $q );
+		$doc_weight = apply_filters( 'relevanssi_results', $doc_weight, $q, $scoring_context );
 	}
 
 	$missing_terms = array();
@@ -1482,8 +1486,33 @@ function relevanssi_calculate_weight( $match_object, $idf, $post_type_weights ) 
 }
 
 /**
+ * Builds scoring context using the same document identifiers as the weights.
+ *
+ * @param array<int|string, float>             $weights   Document weights.
+ * @param array<int|string, array<string,int>> $term_hits Occurrences by storage identifier.
+ * @param array<int|string>                    $terms     Processed positive lookup terms.
+ * @param string                               $operator  Effective search operator.
+ * @param int                                  $blog_id   Site identifier, or zero for single-site search.
+ * @return array{operator:string,terms:string[],term_hits:array<int|string,array<string,int>>} Scoring context.
+ */
+function relevanssi_build_scoring_context( array $weights, array $term_hits, array $terms, string $operator, int $blog_id = 0 ): array {
+	$document_counts = array();
+	foreach ( $weights as $document_id => $weight ) {
+		$storage_id = $blog_id ? $blog_id . '|' . $document_id : $document_id;
+		if ( isset( $term_hits[ $storage_id ] ) ) {
+			$document_counts[ $document_id ] = $term_hits[ $storage_id ];
+		}
+	}
+	return array(
+		'operator'  => $operator,
+		'terms'     => array_values( array_unique( array_map( 'strval', $terms ) ) ),
+		'term_hits' => $document_counts,
+	);
+}
+
+/**
  * Updates the $term_hits array used for showing how many hits were found for
- * each term.
+ * each search term, including all matching indexed variants.
  *
  * @param array    $term_hits    The term hits array (passed as reference).
  * @param array    $match_arrays The matches array (passed as reference).
@@ -1494,7 +1523,8 @@ function relevanssi_calculate_weight( $match_object, $idf, $post_type_weights ) 
 function relevanssi_update_term_hits( &$term_hits, &$match_arrays, $match_object, $term, $blog_id = 0 ) {
 	$object_id = $blog_id ? $blog_id . '|' . $match_object->doc : $match_object->doc;
 
-	$term_hits[ $object_id ][ $term ] =
+	relevanssi_increase_value(
+		$term_hits[ $object_id ][ $term ],
 		$match_object->title +
 		$match_object->content +
 		$match_object->comment +
@@ -1504,7 +1534,9 @@ function relevanssi_update_term_hits( &$term_hits, &$match_arrays, $match_object
 		$match_object->category +
 		$match_object->excerpt +
 		$match_object->taxonomy +
-		$match_object->customfield;
+		$match_object->customfield +
+		( $match_object->mysqlcolumn ?? 0 )
+	);
 
 	relevanssi_increase_value( $match_arrays['body'][ $object_id ], $match_object->content );
 	relevanssi_increase_value( $match_arrays['title'][ $object_id ], $match_object->title );
