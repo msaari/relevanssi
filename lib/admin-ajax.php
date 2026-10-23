@@ -421,8 +421,8 @@ function relevanssi_admin_search_format_posts( $posts, $total, $offset, $query )
 
 	$start = $offset + 1;
 	$end   = $offset + count( $posts );
-	// Translators: %1$d is the total number of posts found, %2$d is the current search result count, %3$d is the offset.
-	$result .= '<p class="description" style="margin: 0; font-size: 14px;">' . sprintf( __( 'Found a total of %1$d posts, showing posts %2$d–%3$s.', 'relevanssi' ), $total, $start, '<span id="offset" style="font-weight: 600; color: #1d2327;">' . $end . '</span>' ) . '</p>';
+	// Translators: %1$s is the total number of posts found, %2$d is the first displayed result number, %3$s is the last displayed result number in a span.
+	$result .= '<p class="description" style="margin: 0; font-size: 14px;">' . sprintf( __( 'Found a total of %1$s posts, showing posts %2$d–%3$s.', 'relevanssi' ), '<strong>' . (int) $total . '</strong>', $start, '<span id="offset">' . $end . '</span>' ) . '</p>';
 	$result .= '</div>';
 
 	if ( $offset > 0 || count( $posts ) + $offset < $total ) {
