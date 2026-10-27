@@ -173,8 +173,12 @@ function relevanssi_simple_generate_suggestion( $query ) {
 		 *
 		 * @return string The token.
 		 */
-		$token = apply_filters( 'relevanssi_didyoumean_token', trim( $token ) );
+		$token        = apply_filters( 'relevanssi_didyoumean_token', trim( $token ) );
+		$token_length = relevanssi_strlen( $token );
 		if ( ! $token ) {
+			continue;
+		}
+		if ( $token_length < 2 ) {
 			continue;
 		}
 		$closest  = '';
