@@ -137,7 +137,6 @@ function relevanssi_init() {
 		add_filter( 'the_content', 'relevanssi_highlight_in_docs', 11 );
 	}
 	if ( 'off' !== get_option( 'relevanssi_highlight_comments', 'off' ) ) {
-		add_filter( 'comment_text', 'relevanssi_highlight_in_docs', 11 );
 	}
 
 	if ( get_option( 'relevanssi_trim_logs' ) > 0 ) {

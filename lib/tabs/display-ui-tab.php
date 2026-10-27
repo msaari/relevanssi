@@ -268,7 +268,7 @@ function relevanssi_display_ui_tab() {
 	$show_matches_text = stripslashes( get_option( 'relevanssi_show_matches_text', '' ) );
 
 	$target_config = array(
-		'relevanssi_hilite_title'       => array(
+		'relevanssi_hilite_title'      => array(
 			'type'          => 'checkbox',
 			'label'         => __( 'Highlight terms in titles', 'relevanssi' ),
 			'description'   => __( 'Highlight matching keywords directly inside post and page titles.', 'relevanssi' ),
@@ -277,7 +277,7 @@ function relevanssi_display_ui_tab() {
 			'sidebar_title' => __( 'Title Highlighting:', 'relevanssi' ),
 			'sidebar_desc'  => __( 'Note: This requires theme code changes. You must replace standard the_title() calls with relevanssi_the_title() in your search templates.', 'relevanssi' ),
 		),
-		'relevanssi_highlight_docs'     => array(
+		'relevanssi_highlight_docs'    => array(
 			'type'          => 'checkbox',
 			'label'         => __( 'Keep highlights active on the full page', 'relevanssi' ),
 			'description'   => __( 'Keep search terms highlighted even after a user clicks through to read the full post.', 'relevanssi' ),
@@ -286,6 +286,12 @@ function relevanssi_display_ui_tab() {
 			'sidebar_title' => __( 'Single Post Highlighting:', 'relevanssi' ),
 			'sidebar_desc'  => __( 'Adds a temporary parameter to search result links so terms stay highlighted when visitors view the full article.', 'relevanssi' ),
 		),
+
+		/*
+		Temporarily disabled on 27.10.2026 to block a vulnerability. To be
+		considered if a fix is necessary, or should the whole feature be
+		removed.
+
 		'relevanssi_highlight_comments' => array(
 			'type'          => 'checkbox',
 			'label'         => __( 'Highlight terms in comments', 'relevanssi' ),
@@ -295,7 +301,8 @@ function relevanssi_display_ui_tab() {
 			'sidebar_title' => __( 'Comment Highlighting:', 'relevanssi' ),
 			'sidebar_desc'  => __( 'Extends highlighting to the comments section, using the same style rules selected for post content.', 'relevanssi' ),
 		),
-		'relevanssi_expand_highlights'  => array(
+		*/
+		'relevanssi_expand_highlights' => array(
 			'type'          => 'checkbox',
 			'label'         => __( 'Highlight whole words', 'relevanssi' ),
 			'description'   => __( 'Highlight the entire word even if the search query only matches a part of it.', 'relevanssi' ),
@@ -304,7 +311,7 @@ function relevanssi_display_ui_tab() {
 			'sidebar_title' => __( 'Whole Word Highlighting:', 'relevanssi' ),
 			'sidebar_desc'  => __( 'For example, if someone searches for "cat" and matches "catastrophe", this highlights the entire word "catastrophe" instead of just the "cat" part.', 'relevanssi' ),
 		),
-		'relevanssi_show_matches'       => array(
+		'relevanssi_show_matches'      => array(
 			'type'          => 'checkbox',
 			'label'         => __( 'Show search score breakdown', 'relevanssi' ),
 			'description'   => __( 'Display a breakdown of how many times terms matched next to each search result.', 'relevanssi' ),
@@ -313,7 +320,7 @@ function relevanssi_display_ui_tab() {
 			'sidebar_title' => __( 'Search Score Breakdown:', 'relevanssi' ),
 			'sidebar_desc'  => __( 'Displays a text summary showing exactly how many keyword matches occurred in the title, body, tags, or categories.', 'relevanssi' ),
 		),
-		'relevanssi_show_matches_text'  => array(
+		'relevanssi_show_matches_text' => array(
 			'type'          => 'textarea',
 			'label'         => __( 'Score breakdown template', 'relevanssi' ),
 			'description'   => __( 'Customize the breakdown text format. Only works if "Show search score breakdown" is enabled above.', 'relevanssi' ),

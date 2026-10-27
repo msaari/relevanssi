@@ -128,7 +128,10 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.28.6 =
+* Security: Highlighting in comment text has been removed to prevent a XSS vulnerability.
 * Minor fix: Better handling of one-letter search terms in Did you mean? suggestions.
+
 = 4.28.5 =
 * Security: Fixes an object injection vulnerability that happened in adding stopwords with Polylang.
 * New feature: New filter hook `relevanssi_term_balance_power` lets you add a penalty for uneven search term distribution in documents.
