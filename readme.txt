@@ -5,7 +5,7 @@ Tags: search, relevance, better search, product search, woocommerce search
 Requires at least: 4.9
 Tested up to: 7.1
 Requires PHP: 7.1
-Stable tag: 4.28.5
+Stable tag: 4.28.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -162,5 +162,5 @@ Each document database is full of useless words. All the little words that appea
 * Compatibility: Added support for Slim SEO 'Hide from search results' feature.
 
 == Upgrade notice ==
-= 4.28.5 =
-* Polylang-related object injection vulnerability fix.
+= 4.28.6 =
+* XSS vulnerability fix in highlighted comments.
