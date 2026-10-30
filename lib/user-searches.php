@@ -54,6 +54,20 @@ function relevanssi_search_stats() {
 function relevanssi_query_log() {
 	global $wpdb, $relevanssi_variables;
 
+	if ( isset( $_REQUEST['_relevanssi_nonce'] ) && ! wp_verify_nonce( $_REQUEST['_relevanssi_nonce'], 'relevanssi_user_searches' ) ) {
+		// Old request, clear date parameters.
+		$_REQUEST['to']         = '';
+		$_REQUEST['from']       = '';
+		$_REQUEST['everything'] = '';
+		$_REQUEST['this_year']  = '';
+		$_REQUEST['this_month'] = '';
+		$_REQUEST['last_month'] = '';
+		$_REQUEST['this_week']  = '';
+		$_REQUEST['last_week']  = '';
+		$_REQUEST['last_30']    = '';
+		$_REQUEST['last_7']     = '';
+	}
+
 	$source = '';
 	if ( function_exists( 'relevanssi_validate_source' ) ) {
 		$source = relevanssi_validate_source( $_REQUEST['source'] ?? '' );
@@ -75,8 +89,6 @@ function relevanssi_query_log() {
 			$from = $point->day;
 		}
 	}
-
-	wp_verify_nonce( '_relevanssi_nonce', 'relevanssi_user_searches' );
 
 	$from_and_to = relevanssi_from_and_to( $_REQUEST, $from );
 	$to          = $from_and_to['to'];

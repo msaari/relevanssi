@@ -22,13 +22,15 @@ function relevanssi_debugging_tab() {
 	$selected_type       = isset( $_REQUEST['type'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['type'] ) ) : 'post';
 
 	if ( $current_post_id > 0 ) {
-		wp_verify_nonce( '_relevanssi_nonce', 'relevanssi_how_relevanssi_sees' );
-		$how_relevanssi_sees = relevanssi_generate_how_relevanssi_sees( $current_post_id, true, $selected_type );
+		if ( isset( $_REQUEST['_relevanssi_nonce'] ) && wp_verify_nonce( $_REQUEST['_relevanssi_nonce'], 'relevanssi_how_relevanssi_sees' ) ) {
+			$how_relevanssi_sees = relevanssi_generate_how_relevanssi_sees( $current_post_id, true, $selected_type );
+		}
 	}
 
 	if ( $current_db_post_id > 0 ) {
-		wp_verify_nonce( '_relevanssi_nonce', 'relevanssi_how_relevanssi_sees' );
-		$db_post_view = relevanssi_generate_db_post_view( $current_db_post_id );
+		if ( isset( $_REQUEST['_relevanssi_nonce'] ) && wp_verify_nonce( $_REQUEST['_relevanssi_nonce'], 'relevanssi_how_relevanssi_sees' ) ) {
+			$db_post_view = relevanssi_generate_db_post_view( $current_db_post_id );
+		}
 	}
 
 	wp_nonce_field( 'relevanssi_how_relevanssi_sees', '_relevanssi_nonce', true, true );
