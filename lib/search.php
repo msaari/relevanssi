@@ -2130,24 +2130,21 @@ function relevanssi_add_exact_match_boost( $doc_weight, $query ) {
  * @return void
  */
 function relevanssi_check_meta_queries_for_regexp_compare( &$meta_query ) {
-	$meta_query_count = count( $meta_query );
-	for ( $i = 0; $i < $meta_query_count; $i++ ) {
-		if (
-			isset( $meta_query[ $i ]['compare'] ) &&
-			in_array( strtolower( $meta_query[ $i ]['compare'] ), array( 'regexp', 'not regexp' ), true ) &&
-		/**
-		 * Filters whether meta query can use REGEXP or NOT REGEXP
-		 * comparison. This is a potential blind oracle attack, so it's
-		 * behind bars by default.
-		*
-		* @param bool Whether REGEXP or NOT REGEXP is allowed, default
-		* false.
-		*/
-		! apply_filters( 'relevanssi_allow_meta_query_regexp', false ) ) {
-			$meta_query[ $i ]['compare'] = '=';
+	foreach ( $meta_query as &$clause ) {
+		if ( ! is_array( $clause ) ) {
+			continue;
 		}
-		if ( ! isset( $meta_query[ $i ]['key'] ) && ! isset( $meta_query[ $i ]['value'] ) ) {
-			relevanssi_check_meta_queries_for_regexp_compare( $meta_query[ $i ] );
+		if (
+			isset( $clause['compare'] ) &&
+			in_array( strtolower( $clause['compare'] ), array( 'regexp', 'not regexp' ), true ) &&
+			/** This filter is documented in lib/search.php */
+			! apply_filters( 'relevanssi_allow_meta_query_regexp', false )
+		) {
+			$clause['compare'] = '=';
+		}
+		if ( ! isset( $clause['key'] ) && ! isset( $clause['value'] ) ) {
+			relevanssi_check_meta_queries_for_regexp_compare( $clause );
 		}
 	}
+	unset( $clause );
 }

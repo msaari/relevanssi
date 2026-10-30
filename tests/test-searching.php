@@ -2279,6 +2279,52 @@ class SearchingTest extends WP_UnitTestCase {
 		}
 	}
 
+	/**
+	 * Tests relevanssi_check_meta_queries_for_regexp_compare() function.
+	 */
+	public function test_check_regexp_meta_queries() {
+		$meta_query = array(
+			'relation' => 'OR',
+			array(
+				'key'     => 'key_name',
+				'value'   => '^value',
+				'compare' => 'REGEXP',
+			),
+			array(
+				'relation' => 'AND',
+				array(
+					'key'     => 'key_name',
+					'value'   => 'value',
+					'compare' => 'NOT REGEXP',
+				),
+			),
+		);
+		add_filter( 'relevanssi_allow_meta_query_regexp', '__return_true' );
+		relevanssi_check_meta_queries_for_regexp_compare( $meta_query );
+		$this->assertEquals(
+			'REGEXP',
+			$meta_query[0]['compare'],
+			"REGEXP compare converts to '='."
+		);
+		$this->assertEquals(
+			'NOT REGEXP',
+			$meta_query[1][0]['compare'],
+			"NOT REGEXP compare converts to '='."
+		);
+
+		remove_filter( 'relevanssi_allow_meta_query_regexp', '__return_true' );
+		relevanssi_check_meta_queries_for_regexp_compare( $meta_query );
+		$this->assertEquals(
+			'=',
+			$meta_query[0]['compare'],
+			"REGEXP compare doesn't convert to '='."
+		);
+		$this->assertEquals(
+			'=',
+			$meta_query[1][0]['compare'],
+			"NOT REGEXP compare doesn't convert to '='."
+		);
+	}
 
 	/**
 	 * Returns true if no posts have the particular tag.
