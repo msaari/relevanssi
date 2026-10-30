@@ -561,7 +561,7 @@ function relevanssi_highlight_terms( $content, $query, $convert_entities = false
 			$end_emp   = '</em>';
 			break;
 		case 'col':
-			$col = get_option( 'relevanssi_txt_col' );
+			$col = relevanssi_sanitize_hex_color( get_option( 'relevanssi_txt_col' ) );
 			if ( ! $col ) {
 				$col = '#ff0000';
 			}
@@ -569,7 +569,7 @@ function relevanssi_highlight_terms( $content, $query, $convert_entities = false
 			$end_emp   = '</span>';
 			break;
 		case 'bgcol':
-			$col = get_option( 'relevanssi_bg_col' );
+			$col = relevanssi_sanitize_hex_color( get_option( 'relevanssi_bg_col' ) );
 			if ( ! $col ) {
 				$col = '#ff0000';
 			}
@@ -581,6 +581,7 @@ function relevanssi_highlight_terms( $content, $query, $convert_entities = false
 			if ( ! $css ) {
 				$css = 'color: #ff0000';
 			}
+			$css       = esc_attr( $css );
 			$start_emp = "<span style='$css'>";
 			$end_emp   = '</span>';
 			break;
@@ -589,6 +590,7 @@ function relevanssi_highlight_terms( $content, $query, $convert_entities = false
 			if ( ! $css ) {
 				$css = 'relevanssi-query-term';
 			}
+			$css       = esc_attr( $css );
 			$start_emp = "<span class='$css'>";
 			$end_emp   = '</span>';
 			break;

@@ -48,4 +48,27 @@ class Relevanssi_Setting_Field_Color extends Relevanssi_Abstract_Setting_Field {
 			printf( '<p class="description" style="margin-top: 4px;">%s</p>', esc_html( $this->config['description'] ) );
 		}
 	}
+
+	/**
+	 * Extracts, sanitizes, and updates the database option value from a raw request payload.
+	 *
+	 * Child variations can override this method entirely to perform composite field parsing
+	 * or handle special multi-key database update patterns.
+	 *
+	 * @param array $request The raw request matrix from the administration page form post.
+	 * @return bool True if the database option was successfully updated, false otherwise.
+	 */
+	public function save( array $request ): bool {
+		if ( ! isset( $request[ $this->id ] ) ) {
+			return false;
+		}
+		$raw_value       = $request[ $this->id ];
+		$sanitized_value = relevanssi_sanitize_hex_color( $raw_value );
+		if ( empty( $sanitized_value ) ) {
+			$sanitized_value = $this->config['default'] ?? '#ff0000';
+		}
+		$autoload_state = $this->config['autoload'] ?? true;
+
+		return update_option( $this->id, $sanitized_value, $autoload_state );
+	}
 }
