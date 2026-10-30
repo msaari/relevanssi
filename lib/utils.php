@@ -1534,12 +1534,11 @@ function relevanssi_the_tags( string $before = '', string $separator = ', ', str
 			$highlighted_tag_name = relevanssi_highlight_terms( $tag_names[ $i ], get_search_query(), true );
 			$highlighted[ $i ]    = str_replace( '>' . $tag_names[ $i ] . '<', '>' . $highlighted_tag_name . '<', $originals[ $i ] );
 		}
-
 		$tag_list = str_replace( $originals, $highlighted, $tag_list );
 	}
 
 	if ( $echoed ) {
-		echo $tag_list; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo wp_kses_post( $tag_list );
 	} else {
 		return $tag_list;
 	}
