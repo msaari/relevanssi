@@ -252,7 +252,9 @@ function relevanssi_default_post_ok( $post_ok, $post_id ) {
 	)
 	&& is_admin() && ! relevanssi_is_live_search() ) {
 		// Only show drafts, pending and future posts in admin search.
-		$post_ok = true;
+		if ( current_user_can( 'read_post', $post_id ) ) {
+			$post_ok = true;
+		}
 	}
 
 	return $post_ok;

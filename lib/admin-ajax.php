@@ -191,10 +191,7 @@ function relevanssi_admin_search() {
 	}
 
 	$args = array();
-	if ( isset( $_POST['args'] ) ) {
-		parse_str( $_POST['args'], $args );
-		$args = wp_slash( $args );
-	}
+
 	if ( isset( $_POST['posts_per_page'] ) ) {
 		$posts_per_page = intval( $_POST['posts_per_page'] );
 		if ( $posts_per_page > 0 ) {
@@ -213,6 +210,20 @@ function relevanssi_admin_search() {
 	}
 	if ( isset( $_POST['s'] ) ) {
 		$args['s'] = $_POST['s'];
+	}
+
+	if ( isset( $_POST['args'] ) ) {
+		$parsed_args = array();
+		parse_str( $_POST['args'], $parsed_args );
+		$parsed_args = wp_slash( $parsed_args );
+
+		$args_allowlist = relevanssi_query_arg_allowlist();
+
+		foreach ( $args_allowlist as $arg ) {
+			if ( isset( $parsed_args[ $arg ] ) ) {
+				$args[ $arg ] = $parsed_args[ $arg ];
+			}
+		}
 	}
 
 	$query = new WP_Query();
