@@ -14,6 +14,8 @@ add_filter( 'relevanssi_hits_filter', 'relevanssi_wpml_filter', 9 );
 add_filter( 'relevanssi_tag_before_tokenize', 'relevanssi_wpml_term_fix', 10, 4 );
 add_action( 'relevanssi_pre_index_taxonomies', 'relevanssi_disable_wpml_terms' );
 add_action( 'relevanssi_post_index_taxonomies', 'relevanssi_enable_wpml_terms' );
+add_action( 'pre_relevanssi_related', 'relevanssi_wpml_pre_related_language_switcher' );
+add_action( 'post_relevanssi_related', 'relevanssi_wpml_post_related_language_switcher' );
 
 /**
  * Filters posts based on WPML language.
@@ -192,5 +194,28 @@ function relevanssi_enable_wpml_terms() {
 	global $sitepress;
 	if ( relevanssi_wpml_term_filter_state() ) {
 		add_filter( 'get_term', array( $sitepress, 'get_term_adjust_id' ), 1, 1 );
+	}
+}
+
+/**
+ * Switches the language to the current post language before Related posts.
+ *
+ * @param int $post_id The post ID.
+ */
+function relevanssi_wpml_pre_related_language_switcher( $post_id ) {
+	$d = apply_filters( 'wpml_post_language_details', null, $post_id );
+	if ( is_array( $d ) && ! empty( $d['language_code'] ) ) {
+		$GLOBALS['rlv_prev_lang'] = apply_filters( 'wpml_current_language', null );
+		do_action( 'wpml_switch_language', $d['language_code'] );
+	}
+}
+
+/**
+ * Switches the language back to the original language after Related posts.
+ */
+function relevanssi_wpml_post_related_language_switcher() {
+	if ( isset( $GLOBALS['rlv_prev_lang'] ) ) {
+		do_action( 'wpml_switch_language', $GLOBALS['rlv_prev_lang'] );
+		unset( $GLOBALS['rlv_prev_lang'] );
 	}
 }
