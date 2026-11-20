@@ -5,7 +5,7 @@ Tags: search, relevance, better search, product search, woocommerce search
 Requires at least: 4.9
 Tested up to: 7.1
 Requires PHP: 7.1
-Stable tag: 4.28.8
+Stable tag: 4.28.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -128,6 +128,7 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.28.9 =
 * Security: Even more effective block against meta query blind oracle attacks.
 * New feature: New filter hook `relevanssi_allow_meta_queries_in_admin_search` controls whether authors and contributors can use meta queries in the admin search. By default it is not allowed.
 * Minor fix: Big reduction in the number of database queries made when searching.
@@ -174,5 +175,5 @@ Each document database is full of useless words. All the little words that appea
 * Compatibility: Added support for Slim SEO 'Hide from search results' feature.
 
 == Upgrade notice ==
-= 4.28.8 =
-* Fixes fatal errors from specific meta_queries.
+= 4.28.9 =
+* Improved security against admin search blind oracle attacks.
