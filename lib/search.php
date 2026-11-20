@@ -1264,9 +1264,9 @@ function relevanssi_meta_query_from_query_vars( $query ) {
 		// Set meta compare.
 		$build_meta_query['compare'] = '=';
 		if ( ! empty( $query->query_vars['meta_compare'] ) ) {
-			if ( isset( $query->query_vars['meta_compare'] ) && ! in_array( strtolower( $query->query_vars['meta_compare'] ), array( 'regexp', 'not regexp' ), true ) ) {
+			if ( isset( $query->query_vars['meta_compare'] ) && ! in_array( strtolower( $query->query_vars['meta_compare'] ), array( 'regexp', 'not regexp', 'rlike', 'like' ), true ) ) {
 				$build_meta_query['compare'] = $query->query_vars['meta_compare'];
-			} elseif ( isset( $query->query_vars['meta_compare'] ) && in_array( strtolower( $query->query_vars['meta_compare'] ), array( 'regexp', 'not regexp' ), true )
+			} elseif ( isset( $query->query_vars['meta_compare'] ) && in_array( strtolower( $query->query_vars['meta_compare'] ), array( 'regexp', 'not regexp', 'rlike', 'like' ), true )
 			/**
 			 * Filters whether meta query can use REGEXP or NOT REGEXP
 			 * comparison. This is a potential blind oracle attack, so it's
@@ -2136,7 +2136,7 @@ function relevanssi_check_meta_queries_for_regexp_compare( &$meta_query ) {
 		}
 		if (
 			isset( $clause['compare'] ) &&
-			in_array( strtolower( $clause['compare'] ), array( 'regexp', 'not regexp' ), true ) &&
+			in_array( strtolower( $clause['compare'] ), array( 'regexp', 'not regexp', 'rlike', 'like' ), true ) &&
 			/** This filter is documented in lib/search.php */
 			! apply_filters( 'relevanssi_allow_meta_query_regexp', false )
 		) {
