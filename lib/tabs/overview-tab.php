@@ -15,9 +15,10 @@
  *
  * @global array     $relevanssi_variables The global Relevanssi variables array.
  * @global wpdb      $wpdb                  The WordPress database management object.
+ * @param int|null $instant               Unix timestamp; defaults to the current instant.
  * @return void Writes raw markup buffers straight onto the administration viewport.
  */
-function relevanssi_overview_tab() {
+function relevanssi_overview_tab( ?int $instant = null ) {
 	global $relevanssi_variables, $wpdb;
 
 	// --- State Logic: Environment Assessment ---
@@ -138,6 +139,7 @@ function relevanssi_overview_tab() {
 										<?php esc_html_e( 'Enter your token and save changes to update the local instance configuration.', 'relevanssi' ); ?>
 									</p>
 								<?php endif; ?>
+								<?php relevanssi_render_upgrade_offer_panel( $instant ); ?>
 							</div>
 						</div>
 
@@ -159,18 +161,22 @@ function relevanssi_overview_tab() {
 							</div>
 						</aside>
 					</div>
+				<?php elseif ( relevanssi_upgrade_offer_is_visible( $instant ) ) : ?>
+					<div class="relevanssi-card" id="card-license-management">
+						<h2><?php esc_html_e( 'License Authentication', 'relevanssi' ); ?></h2>
+						<?php relevanssi_render_upgrade_offer_panel( $instant ); ?>
+					</div>
 				<?php endif; ?>
-
 			<?php else : ?>
-				<div class="relevanssi-settings-row" style="margin-bottom: 24px;">
+				<div class="relevanssi-settings-row<?php echo relevanssi_black_friday_is_active( $instant ) ? ' relevanssi-campaign-row' : ''; ?>" style="margin-bottom: 24px;">
 					<div class="relevanssi-settings-content">
-						<div class="relevanssi-card" id="card-license-upsell" style="padding: 24px; background: #f0f6fa; border: 1px dashed #005885;">
-							<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid #d2e3ed; padding-bottom: 14px;">
+						<details class="relevanssi-card relevanssi-upgrade-panel" id="card-license-upsell" style="padding: 24px; background: #f0f6fa; border: 1px dashed #005885;"<?php relevanssi_upgrade_panel_attributes( 'features' ); ?>>
+							<summary>
 								<h2 style="margin: 0; padding: 0; border: none; font-size: 1.25rem; font-weight: 600; color: #1d2327;">
 									<?php esc_html_e( 'Unlock Professional Search Power', 'relevanssi' ); ?>
 								</h2>
 								<span class="badge" style="background: #d63638; color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;"><?php esc_html_e( 'Using Standard Edition', 'relevanssi' ); ?></span>
-							</div>
+							</summary>
 
 							<p style="font-size: 14px; line-height: 1.5; color: #2c3338; margin-bottom: 16px;">
 								<?php esc_html_e( 'You are currently running Relevanssi Standard. Upgrading to a premium license unlocks a deep-scanning engine that lets visitors search inside files, user profiles, and complex custom plugin settings seamlessly.', 'relevanssi' ); ?>
@@ -193,23 +199,10 @@ function relevanssi_overview_tab() {
 									<?php esc_html_e( 'Upgrade to Premium and unlock these advanced options →', 'relevanssi' ); ?>
 								</a>
 							</p>
-						</div>
+						</details>
 					</div>
 
-					<aside class="relevanssi-settings-sidebar">
-						<div class="relevanssi-info-box" >
-							<h3><?php esc_html_e( 'Get 20% Off Today', 'relevanssi' ); ?></h3>
-							<p style="font-size: 13px; line-height: 1.5; margin-bottom: 16px; color: #50575e;">
-								<?php
-								/* translators: %1$s is the coupon code bolded, %2$s is the year. */
-								printf( esc_html__( 'Use coupon code %1$s at checkout for a 20%% initialization discount. Valid through the end of %2$s.', 'relevanssi' ), '<strong>FREE2026</strong>', '2026' );
-								?>
-							</p>
-							<a href="https://www.relevanssi.com/buy-premium/" target="_blank" rel="noopener noreferrer" class="button button-primary" style="text-align: center; display: block; width: 100%; box-sizing: border-box;">
-								<?php esc_html_e( 'Upgrade License Now', 'relevanssi' ); ?>
-							</a>
-						</div>
-					</aside>
+					<?php relevanssi_render_upgrade_sidebar( $instant ); ?>
 				</div>
 			<?php endif; ?>
 
@@ -402,6 +395,7 @@ function relevanssi_overview_tab() {
 							</div>
 						</li>
 
+						<?php if ( $is_premium ) : ?>
 						<li style="display: flex; align-items: flex-start; gap: 12px;">
 							<span class="dashicons dashicons-sos" style="color: #1b853d; margin-top: 2px; font-size: 18px; width: 18px; height: 18px;"></span>
 							<div>
@@ -410,71 +404,66 @@ function relevanssi_overview_tab() {
 								<span class="description" style="margin-top: 2px; display: block;"><?php esc_html_e( 'Direct support form for active premium license holders.', 'relevanssi' ); ?></span>
 							</div>
 						</li>
+						<?php endif; ?>
 					</ul>
 				</div>
 			</div>
 
-			<div class="relevanssi-settings-row">
-
-				<div class="relevanssi-settings-content" style="<?php echo ! $is_premium ? 'width: 100%; max-width: 100%;' : ''; ?>">
-
-					<div class="relevanssi-card" id="card-live-search-addon" style="margin-bottom: 24px;">
-						<h2 style="border-bottom: none; margin-bottom: 8px; padding-bottom: 0;"><?php esc_html_e( 'Live Ajax Search Integration', 'relevanssi' ); ?></h2>
-						<p class="description" style="margin-top: 0; margin-bottom: 16px; font-size: 14px;">
-							<?php
-							// Translators: %1$s opens the link, %2$s closes it.
-							printf( esc_html__( 'Provide interactive instant results using the official companion plugin. %1$sGet Relevanssi Live Ajax Search from the plugin repository%2$s.', 'relevanssi' ), "<a href='https://wordpress.org/plugins/relevanssi-live-ajax-search/' target='_blank'>", '</a>' );
-							?>
-						</p>
-						<a href="https://wordpress.org/plugins/relevanssi-live-ajax-search/" target="_blank" class="button button-outline"><?php esc_html_e( 'Get Live Search Plugin', 'relevanssi' ); ?></a>
-					</div>
-
-					<div class="relevanssi-card" id="card-privacy-compliance">
-						<h2><?php esc_html_e( 'Privacy, Security & GDPR Governance', 'relevanssi' ); ?></h2>
-						<p style="margin: 0; line-height: 1.6; font-size: 13.5px; color: #50575e;">
-							<?php
-							// Translators: %1$s and %3$s open links, %2$s closes them.
-							printf( esc_html__( 'Review our %1$sGDPR Compliance guide%2$s to learn how using Relevanssi affects your site. Relevanssi interfaces with native WordPress %3$sPrivacy Policy Tools%2$s to honor personal profile export and erase actions.', 'relevanssi' ), "<a href='https://www.relevanssi.com/knowledge-base/gdpr-compliance/' target='_blank'>", '</a>', "<a href='privacy.php'>" );
-							?>
-						</p>
-					</div>
-
-
+			<div class="relevanssi-overview-resources">
+				<div class="relevanssi-card" id="card-live-search-addon">
+					<h2 style="border-bottom: none; margin-bottom: 8px; padding-bottom: 0;"><?php esc_html_e( 'Live Ajax Search Integration', 'relevanssi' ); ?></h2>
+					<p class="description" style="margin-top: 0; margin-bottom: 16px; font-size: 14px;">
+						<?php
+						// Translators: %1$s opens the link, %2$s closes it.
+						printf( esc_html__( 'Provide interactive instant results using the official companion plugin. %1$sGet Relevanssi Live Ajax Search from the plugin repository%2$s.', 'relevanssi' ), "<a href='https://wordpress.org/plugins/relevanssi-live-ajax-search/' target='_blank'>", '</a>' );
+						?>
+					</p>
+					<a href="https://wordpress.org/plugins/relevanssi-live-ajax-search/" target="_blank" class="button button-outline"><?php esc_html_e( 'Get Live Search Plugin', 'relevanssi' ); ?></a>
 				</div>
 
-				<?php if ( $is_premium ) : ?>
-					<aside class="relevanssi-settings-sidebar">
-						<div class="relevanssi-info-box" style="margin-bottom: 20px;">
-							<h3><?php esc_html_e( 'Documentation Links', 'relevanssi' ); ?></h3>
-							<p><?php esc_html_e( 'If you are having issues with Relevanssi, please consult the knowledge base to see if your problem has been solved before. Otherwise send us a support message in the Help tab!', 'relevanssi' ); ?></p>
-							<div style="margin-top: 12px; font-weight: 500; display: flex; flex-direction: column; gap: 8px;">
-								<div>
-									<?php
-									// Translators: %1$s opens the link, %2$s closes the link.
-									printf( esc_html__( '&rarr; Read our deep %1$sKnowledge Base manual%2$s.', 'relevanssi' ), "<a href='https://www.relevanssi.com/knowledge-base/' target='_blank'>", '</a>' );
-									?>
-								</div>
-								<div>
-									<?php
-									// Translators: %1$s opens the link, %2$s closes the link.
-									printf( esc_html__( '&rarr; Read our %1$sUser Manual%2$s.', 'relevanssi' ), "<a href='https://www.relevanssi.com/user-manual/' target='_blank'>", '</a>' );
-									?>
-								</div>
-							</div>
+				<div class="relevanssi-info-box" id="card-documentation-links">
+					<h3><?php esc_html_e( 'Documentation Links', 'relevanssi' ); ?></h3>
+					<p><?php esc_html_e( 'If you are having issues with Relevanssi, please consult the knowledge base to see if your problem has been solved before.', 'relevanssi' ); ?>
+					<?php
+					if ( $is_premium ) :
+						?>
+						<?php esc_html_e( 'Otherwise send us a support message in the Help tab!', 'relevanssi' ); ?><?php endif; ?></p>
+					<div style="margin-top: 12px; font-weight: 500; display: flex; flex-direction: column; gap: 8px;">
+						<div>
+							<?php
+							// Translators: %1$s opens the link, %2$s closes the link.
+							printf( esc_html__( '&rarr; Read our deep %1$sKnowledge Base manual%2$s.', 'relevanssi' ), "<a href='https://www.relevanssi.com/knowledge-base/' target='_blank'>", '</a>' );
+							?>
 						</div>
+						<div>
+							<?php
+							// Translators: %1$s opens the link, %2$s closes the link.
+							printf( esc_html__( '&rarr; Read our %1$sUser Manual%2$s.', 'relevanssi' ), "<a href='https://www.relevanssi.com/user-manual/' target='_blank'>", '</a>' );
+							?>
+						</div>
+					</div>
+				</div>
 
-						<div class="relevanssi-info-box">
-							<h3><?php esc_html_e( 'Leave a review', 'relevanssi' ); ?></h3>
-							<p><?php esc_html_e( 'If you had a positive experience with Relevanssi Premium, don\'t forget to leave a 5 star review!', 'relevanssi' ); ?></p>
-							<p style="margin-top: 12px; font-weight: 600;">
-								<?php
-								// Translators: %1$s opens the link, %2$s closes the link.
-								printf( esc_html__( '%1$sSubmit a five-star review on WordPress.org &rarr;%2$s', 'relevanssi' ), "<a href='https://wordpress.org/support/plugin/relevanssi/reviews/#new-post' target='_blank' style='text-decoration: none;'>", '</a>' );
-								?>
-							</p>
-						</div>
-					</aside>
-				<?php endif; ?>
+				<div class="relevanssi-card" id="card-privacy-compliance">
+					<h2><?php esc_html_e( 'Privacy, Security & GDPR Governance', 'relevanssi' ); ?></h2>
+					<p style="margin: 0; line-height: 1.6; font-size: 13.5px; color: #50575e;">
+						<?php
+						// Translators: %1$s and %3$s open links, %2$s closes them.
+						printf( esc_html__( 'Review our %1$sGDPR Compliance guide%2$s to learn how using Relevanssi affects your site. Relevanssi interfaces with native WordPress %3$sPrivacy Policy Tools%2$s to honor personal profile export and erase actions.', 'relevanssi' ), "<a href='https://www.relevanssi.com/knowledge-base/gdpr-compliance/' target='_blank'>", '</a>', "<a href='privacy.php'>" );
+						?>
+					</p>
+				</div>
+
+				<div class="relevanssi-info-box" id="card-review">
+					<h3><?php esc_html_e( 'Leave a review', 'relevanssi' ); ?></h3>
+					<p><?php esc_html_e( 'If you had a positive experience with Relevanssi, don\'t forget to leave a 5 star review!', 'relevanssi' ); ?></p>
+					<p style="margin-top: 12px; font-weight: 600;">
+						<?php
+						// Translators: %1$s opens the link, %2$s closes the link.
+						printf( esc_html__( '%1$sSubmit a five-star review on WordPress.org &rarr;%2$s', 'relevanssi' ), "<a href='https://wordpress.org/support/plugin/relevanssi/reviews/#new-post' target='_blank' style='text-decoration: none;'>", '</a>' );
+						?>
+					</p>
+				</div>
 			</div>
 
 		</div>

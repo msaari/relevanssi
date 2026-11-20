@@ -321,7 +321,8 @@ h2.nav-tab-wrapper {
     line-height: 1.6;
 }
 
-.relevanssi-info-box h3 {
+.relevanssi-info-box h3,
+.relevanssi-license-offer h3 {
     margin-top: 0;
     font-size: 15px;
     font-weight: 600;
@@ -1258,6 +1259,357 @@ details[open].relevanssi-card summary {
     margin-bottom: 24px;
 }
 
+.relevanssi-upgrade-panel > summary {
+    cursor: pointer;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+#card-license-upsell > summary h2 {
+    flex: 1 1 200px;
+}
+
+details.relevanssi-info-box > summary,
+.relevanssi-license-offer > summary {
+    font-weight: 600;
+    color: #1d2327;
+}
+
+details.relevanssi-info-box[open] > summary,
+.relevanssi-license-offer[open] > summary {
+    margin-bottom: 12px;
+}
+
+.relevanssi-upgrade-panel-error {
+    color: #b32d2e;
+}
+
+.relevanssi-license-offer {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid #dcdcde;
+}
+
+.relevanssi-license-offer:first-child {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
+}
+
+.relevanssi-campaign-cta {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+    white-space: normal;
+}
+
+.relevanssi-license-offer .relevanssi-campaign-cta {
+    display: inline-block;
+    width: auto;
+    max-width: 100%;
+}
+
+#relevanssi-upgrade-offer.relevanssi-campaign-offer {
+    container-type: inline-size;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 556px;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    background: #071d18;
+    border: 1px solid #245840;
+    border-radius: 12px;
+    color: #fff;
+    box-shadow: 0 3px 12px rgba(15, 23, 19, .08);
+}
+
+#relevanssi-upgrade-offer.relevanssi-campaign-offer > summary {
+    padding: 14px 27px;
+    margin: 0;
+    color: #e9f4ed;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+#relevanssi-upgrade-offer.relevanssi-campaign-offer[open] > summary {
+    border-bottom: 1px solid #245840;
+}
+
+#relevanssi-upgrade-offer.relevanssi-campaign-offer > summary:focus-visible {
+    outline: 2px solid #c9f578;
+    outline-offset: -4px;
+}
+
+#relevanssi-upgrade-offer .rv-cw-card {
+    --rv-accent: #c9f578;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    box-sizing: border-box;
+    width: 100%;
+    margin: 0;
+    padding: 25px 27px 20px;
+    background: linear-gradient(132deg, #09251d 0%, #071b17 58%, #08271d 100%);
+    color: #fff;
+    border: 0;
+    border-radius: 0;
+    box-shadow: 0 3px 12px rgba(15,23,19,.08);
+}
+#relevanssi-upgrade-offer .rv-cw-card::before {
+    content: "";
+    position: absolute;
+    inset: auto -70px -155px auto;
+    width: 320px;
+    height: 320px;
+    background: radial-gradient(circle, rgba(53,149,85,.16), transparent 65%);
+    pointer-events: none;
+    z-index: -1;
+}
+#relevanssi-upgrade-offer .rv-cw-brandmark {
+    position: absolute;
+    top: 25px;
+    right: 27px;
+    width: 54px;
+    height: 74px;
+    opacity: .9;
+    pointer-events: none;
+}
+#relevanssi-upgrade-offer .rv-cw-brandmark path {
+    fill: #fff;
+}
+#relevanssi-upgrade-offer .rv-cw-eyebrow {
+    margin: 0 0 25px;
+    font-size: 16px;
+    line-height: 1;
+    font-weight: 700;
+    color: #e9f4ed;
+}
+#relevanssi-upgrade-offer .rv-cw-kicker {
+    margin: 0 0 5px;
+    font-weight: 750;
+    letter-spacing: .14em;
+    font-size: 12px;
+    color: #b4d7be;
+}
+#relevanssi-upgrade-offer .rv-cw-discount {
+    margin: 0;
+    font-size: clamp(44px, 14cqi, 67px);
+    line-height: .99;
+    font-weight: 850;
+    letter-spacing: -.05em;
+    color: var(--rv-accent);
+}
+#relevanssi-upgrade-offer .rv-cw-product {
+    margin: 9px 0 14px;
+    font-size: 20px;
+    letter-spacing: -.025em;
+    font-weight: 700;
+    line-height: 1.2;
+}
+#relevanssi-upgrade-offer .rv-cw-price {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 4px;
+}
+#relevanssi-upgrade-offer .rv-cw-now {
+    font-size: 30px;
+    line-height: 1.2;
+    font-weight: 800;
+    letter-spacing: -.035em;
+}
+#relevanssi-upgrade-offer .rv-cw-before {
+    font-size: 17px;
+    color: #a9baaf;
+    text-decoration: line-through;
+    text-decoration-thickness: 1px;
+}
+#relevanssi-upgrade-offer .rv-cw-tax {
+    font-size: 10px;
+    color: #b4c8bc;
+}
+#relevanssi-upgrade-offer .rv-cw-first {
+    margin: 0 0 18px;
+    color: #b8d0c2;
+    font-size: 12px;
+}
+#relevanssi-upgrade-offer .rv-cw-coupon-area {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 14px;
+    margin-bottom: 14px;
+    background: rgba(255,255,255,.045);
+    border: 1px solid rgba(174,220,184,.13);
+    border-radius: 8px;
+}
+#relevanssi-upgrade-offer .rv-cw-label {
+    margin: 0 0 7px;
+    font-size: 10px;
+    letter-spacing: .11em;
+    font-weight: 750;
+    color: #b5cbbb;
+}
+#relevanssi-upgrade-offer .rv-cw-code {
+    display: inline-block;
+    padding: 8px 13px;
+    color: #ecffa8;
+    border: 1.5px dashed #c5f477;
+    border-radius: 6px;
+    background: rgba(177,241,110,.045);
+    font-size: 18px;
+    letter-spacing: .055em;
+    line-height: 1;
+    font-weight: 850;
+}
+#relevanssi-upgrade-offer .rv-cw-copy {
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    border: 1px solid #517864;
+    background: rgba(255,255,255,.025);
+    color: #e5f2e8;
+    padding: 9px 12px;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 650;
+    transition: background .15s, border-color .15s;
+}
+#relevanssi-upgrade-offer .rv-cw-copy:hover {
+    background: rgba(255,255,255,.09);
+    border-color: #a8cb99;
+}
+#relevanssi-upgrade-offer .rv-cw-copy:focus-visible, #relevanssi-upgrade-offer .rv-cw-cta:focus-visible {
+    outline: 3px solid #fff;
+    outline-offset: 3px;
+}
+#relevanssi-upgrade-offer .rv-cw-cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    min-height: 47px;
+    background: var(--rv-accent);
+    color: #11291a;
+    padding: 10px;
+    box-sizing: border-box;
+    border-radius: 7px;
+    text-decoration: none;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 800;
+    transition: background .15s, transform .15s;
+}
+#relevanssi-upgrade-offer .rv-cw-cta:hover {
+    background: #d9ff99;
+    transform: translateY(-1px);
+}
+#relevanssi-upgrade-offer .rv-cw-footer {
+    text-align: center;
+    margin: 12px 0 0;
+    color: #adbeaf;
+    font-size: 12px;
+}
+
+
+@container (max-width: 380px) {
+    #relevanssi-upgrade-offer .rv-cw-card {
+        padding: 22px 18px 18px;
+    }
+
+    #relevanssi-upgrade-offer .rv-cw-brandmark {
+        right: 18px;
+        width: 40px;
+        height: 55px;
+    }
+
+    #relevanssi-upgrade-offer .rv-cw-eyebrow {
+        padding-right: 44px;
+        line-height: 1.3;
+    }
+
+    #relevanssi-upgrade-offer .rv-cw-coupon-area {
+        padding: 12px;
+        gap: 10px;
+    }
+
+    #relevanssi-upgrade-offer .rv-cw-code {
+        font-size: 16px;
+        padding: 8px 10px;
+    }
+}
+
+/* Standalone campaigns share a wide layout in Overview and the other settings tabs. */
+:is(.relevanssi-premium-campaign, .relevanssi-settings-campaign, #card-license-management) #relevanssi-upgrade-offer {
+    max-width: none;
+}
+
+@container (min-width: 700px) {
+    :is(.relevanssi-premium-campaign, .relevanssi-settings-campaign, #card-license-management) #relevanssi-upgrade-offer .rv-cw-card {
+        display: grid;
+        grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+        column-gap: 48px;
+        padding: 24px 32px;
+    }
+
+    :is(.relevanssi-premium-campaign, .relevanssi-settings-campaign, #card-license-management) #relevanssi-upgrade-offer .rv-cw-brandmark {
+        top: 20px;
+        right: 32px;
+        width: 26px;
+        height: 36px;
+    }
+
+    :is(.relevanssi-premium-campaign, .relevanssi-settings-campaign, #card-license-management) #relevanssi-upgrade-offer .rv-cw-eyebrow {
+        grid-area: 1 / 1;
+        margin-bottom: 16px;
+    }
+
+    :is(.relevanssi-premium-campaign, .relevanssi-settings-campaign, #card-license-management) #relevanssi-upgrade-offer .rv-cw-kicker {
+        grid-area: 2 / 1;
+    }
+
+    :is(.relevanssi-premium-campaign, .relevanssi-settings-campaign, #card-license-management) #relevanssi-upgrade-offer .rv-cw-discount {
+        grid-area: 3 / 1;
+        font-size: 48px;
+    }
+
+    :is(.relevanssi-premium-campaign, .relevanssi-settings-campaign, #card-license-management) #relevanssi-upgrade-offer .rv-cw-product {
+        grid-area: 4 / 1;
+        margin: 8px 0 12px;
+        font-size: 18px;
+    }
+
+    :is(.relevanssi-premium-campaign, .relevanssi-settings-campaign, #card-license-management) #relevanssi-upgrade-offer .rv-cw-price {
+        grid-area: 5 / 1;
+    }
+
+    :is(.relevanssi-premium-campaign, .relevanssi-settings-campaign, #card-license-management) #relevanssi-upgrade-offer .rv-cw-first {
+        grid-area: 6 / 1;
+        margin: 0;
+    }
+
+    :is(.relevanssi-premium-campaign, .relevanssi-settings-campaign, #card-license-management) #relevanssi-upgrade-offer .rv-cw-coupon-area {
+        grid-area: 2 / 2 / 5 / 3;
+        align-self: end;
+    }
+
+    :is(.relevanssi-premium-campaign, .relevanssi-settings-campaign, #card-license-management) #relevanssi-upgrade-offer .rv-cw-cta {
+        grid-area: 5 / 2;
+    }
+
+    :is(.relevanssi-premium-campaign, .relevanssi-settings-campaign, #card-license-management) #relevanssi-upgrade-offer .rv-cw-footer {
+        grid-area: 6 / 2;
+    }
+}
+
 /* Admin Search SQL report. Keep after the generic card accordion rules. */
 #relevanssi-search-sql-queries {
     padding: 0;
@@ -1436,7 +1788,7 @@ details[open].relevanssi-card summary {
 
 .relevanssi-dashboard-layout {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 24px;
     margin-top: 16px;
 }
@@ -1897,4 +2249,92 @@ details[open].relevanssi-card summary {
     .relevanssi-index-grid .relevanssi-card {
         margin-bottom: 24px;
     }
+}
+
+.relevanssi-settings-campaign {
+    margin-top: 24px;
+}
+
+.relevanssi-settings-campaign-indexing {
+    max-width: 95%;
+}
+
+/* Match only the two expanded campaign panels; regular sidebar offers keep their natural height. */
+html:has(.relevanssi-campaign-row) {
+    scrollbar-gutter: stable;
+}
+
+.relevanssi-campaign-row:has(#card-license-upsell[open]):has(#relevanssi-upgrade-offer.relevanssi-campaign-offer[open]) {
+    align-items: stretch;
+    grid-auto-rows: 1fr;
+}
+
+.relevanssi-campaign-row:has(#card-license-upsell[open]):has(#relevanssi-upgrade-offer.relevanssi-campaign-offer[open]) > :is(.relevanssi-settings-content, .relevanssi-settings-sidebar) {
+    display: grid;
+    align-items: stretch;
+}
+
+.relevanssi-campaign-row:has(#card-license-upsell[open]):has(#relevanssi-upgrade-offer.relevanssi-campaign-offer[open]) > .relevanssi-settings-sidebar {
+    position: static;
+}
+
+.relevanssi-campaign-row:has(#card-license-upsell[open]):has(#relevanssi-upgrade-offer.relevanssi-campaign-offer[open]) :is(#card-license-upsell, #relevanssi-upgrade-offer) {
+    height: 100%;
+    max-width: none;
+}
+
+@media screen and (max-width: 1240px) {
+    .relevanssi-campaign-row:has(#card-license-upsell[open]):has(#relevanssi-upgrade-offer.relevanssi-campaign-offer[open]) {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) !important;
+        grid-auto-rows: auto;
+    }
+
+    .relevanssi-campaign-row:has(#card-license-upsell[open]):has(#relevanssi-upgrade-offer.relevanssi-campaign-offer[open]) > .relevanssi-settings-sidebar {
+        margin-top: 0 !important;
+    }
+}
+
+/* Shared rows keep resource cards aligned as their text wraps at different widths. */
+.relevanssi-overview-resources {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    grid-template-areas: "live documentation" "privacy review";
+    gap: 24px;
+    align-items: stretch;
+}
+
+.relevanssi-overview-resources > * {
+    box-sizing: border-box;
+    min-width: 0;
+    margin: 0;
+}
+
+.relevanssi-overview-resources #card-live-search-addon {
+    grid-area: live;
+}
+
+.relevanssi-overview-resources #card-documentation-links {
+    grid-area: documentation;
+}
+
+.relevanssi-overview-resources #card-privacy-compliance {
+    grid-area: privacy;
+}
+
+.relevanssi-overview-resources #card-review {
+    grid-area: review;
+}
+
+
+@media screen and (max-width: 1240px) {
+    .relevanssi-overview-resources {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas: "live" "documentation" "privacy" "review";
+    }
+}
+
+#card-license-management #relevanssi-upgrade-offer {
+    margin-top: 20px;
+    max-width: none;
 }

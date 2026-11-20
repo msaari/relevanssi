@@ -1,0 +1,39 @@
+#relevanssi-campaign-notice .relevanssi-campaign-notice-layout {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 12px 0;
+}
+
+#relevanssi-campaign-notice .relevanssi-campaign-notice-layout > img {
+    flex: 0 0 36px;
+    width: 36px;
+    height: 49px;
+    object-fit: contain;
+}
+
+#relevanssi-campaign-notice .relevanssi-campaign-notice-layout > div {
+    min-width: 0;
+}
+
+#relevanssi-campaign-notice .relevanssi-campaign-notice-layout p {
+    margin: 0 0 8px;
+    padding: 0;
+}
+
+#relevanssi-campaign-notice .relevanssi-campaign-notice-layout p:last-child {
+    margin-bottom: 0;
+}
+
+#relevanssi-campaign-notice .relevanssi-campaign-notice-heading {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+#relevanssi-campaign-notice strong {
+    font-weight: 700;
+}
+
+#relevanssi-campaign-notice .relevanssi-campaign-coupon {
+    overflow-wrap: anywhere;
+}

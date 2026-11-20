@@ -147,8 +147,9 @@ function relevanssi_truncate_logs( $verbose = true ) {
  * Prints out the Relevanssi options form.
  *
  * @global array $relevanssi_variables The global Relevanssi variables array.
+ * @param int|null $instant Unix timestamp; defaults to the current instant.
  */
-function relevanssi_options_form() {
+function relevanssi_options_form( ?int $instant = null ) {
 	global $relevanssi_variables;
 
 	echo "<div class='postbox-container'>";
@@ -258,6 +259,13 @@ function relevanssi_options_form() {
 </h2>
 
 	<?php
+	if ( ! relevanssi_is_premium() && 'overview' !== $active_tab && relevanssi_black_friday_is_active( $instant ) && relevanssi_black_friday_customer_eligible() ) {
+		$campaign_class = 'indexing' === $active_tab ? ' relevanssi-settings-campaign-indexing' : '';
+		echo '<div class="wrap relevanssi-settings-campaign' . esc_attr( $campaign_class ) . '">';
+		relevanssi_render_upgrade_offer_panel( $instant );
+		echo '</div>';
+	}
+
 	$current_tab = $tabs[ array_search( $active_tab, wp_list_pluck( $tabs, 'slug' ), true ) ];
 	if ( ! $current_tab['save'] || ( ! relevanssi_is_premium() && 'premium' === $current_tab['save'] ) ) {
 		$display_save_button = false;
@@ -334,7 +342,7 @@ function relevanssi_add_admin_scripts( $hook ) {
 	if ( relevanssi_is_premium() ) {
 		wp_enqueue_script( 'relevanssi_admin_js_premium', $plugin_dir_url . 'premium/admin_scripts_premium.js', array( 'relevanssi_admin_js' ), $relevanssi_variables['plugin_version'], true );
 	}
-	wp_enqueue_style( 'relevanssi_admin_css', $plugin_dir_url . 'lib/admin_styles.css', array(), $relevanssi_variables['plugin_version'] );
+	wp_enqueue_style( 'relevanssi_admin_css', $plugin_dir_url . 'lib/admin_styles.css', array(), $relevanssi_variables['plugin_version'] . '-' . substr( hash_file( 'sha256', __DIR__ . '/admin_styles.css' ), 0, 12 ) );
 
 	if (
 		strpos( $hook, 'relevanssi_user_searches' ) !== false ||
