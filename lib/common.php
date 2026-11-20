@@ -755,6 +755,8 @@ function relevanssi_get_post_status( $post_id ) {
 	if ( is_multisite() ) {
 		$blog_id = get_current_blog_id();
 		$post_id = $blog_id . '|' . $post_id;
+	} else {
+		$post_id = '1|' . $post_id;
 	}
 	if ( isset( $relevanssi_post_array[ $post_id ] ) ) {
 		$status = $relevanssi_post_array[ $post_id ]->post_status;

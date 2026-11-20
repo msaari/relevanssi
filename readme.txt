@@ -130,6 +130,7 @@ Each document database is full of useless words. All the little words that appea
 == Changelog ==
 * Security: Even more effective block against meta query blind oracle attacks.
 * New feature: New filter hook `relevanssi_allow_meta_queries_in_admin_search` controls whether authors and contributors can use meta queries in the admin search. By default it is not allowed.
+* Minor fix: Big reduction in the number of database queries made when searching.
 
 = 4.28.8 =
 * Fixes fatal errors from specific meta_queries.
