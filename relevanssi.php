@@ -72,6 +72,8 @@ $relevanssi_variables['plugin_basename']                       = plugin_basename
 $relevanssi_variables['plugin_version']                        = '4.28.9';
 
 require_once 'lib/admin-ajax.php';
+require_once 'lib/black-friday.php';
+require_once 'lib/campaign-notice.php';
 require_once 'lib/common.php';
 require_once 'lib/deactivate.php';
 require_once 'lib/debug.php';
@@ -90,9 +92,10 @@ require_once 'lib/search.php';
 require_once 'lib/search-tax-query.php';
 require_once 'lib/search-query-restrictions.php';
 require_once 'lib/shortcodes.php';
-require_once 'lib/sorting.php';
 require_once 'lib/stopwords.php';
+require_once 'lib/sorting.php';
 require_once 'lib/term-balance.php';
+require_once 'lib/upgrade-panels.php';
 require_once 'lib/user-searches.php';
 require_once 'lib/utils.php';
 
