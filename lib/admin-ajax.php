@@ -231,6 +231,10 @@ function relevanssi_admin_search() {
 				unset( $parsed_args['meta_query'] );
 				unset( $parsed_args['meta_key'] );
 				unset( $parsed_args['meta_value'] );
+				unset( $parsed_args['meta_value_num'] );
+				unset( $parsed_args['meta_compare'] );
+				unset( $parsed_args['customfield_key'] );
+				unset( $parsed_args['customfield_value'] );
 			}
 		}
 
