@@ -1540,7 +1540,7 @@ function relevanssi_the_tags( string $before = '', string $separator = ', ', str
 	if ( $echoed ) {
 		echo wp_kses_post( $tag_list );
 	} else {
-		return $tag_list;
+		return wp_kses_post( $tag_list );
 	}
 }
 

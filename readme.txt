@@ -129,6 +129,7 @@ Each document database is full of useless words. All the little words that appea
 
 == Changelog ==
 * Security: Even more effective block against meta query blind oracle attacks.
+* Security: Block stored cross-site scripting attack through post tags and `relevanssi_the_tags()`.
 
 = 4.28.9 =
 * Security: Even more effective block against meta query blind oracle attacks.
