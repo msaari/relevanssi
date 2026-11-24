@@ -3,9 +3,9 @@ Contributors: msaari
 Donate link: https://www.relevanssi.com/buy-premium/
 Tags: search, relevance, better search, product search, woocommerce search
 Requires at least: 4.9
-Tested up to: 7.1
+Tested up to: 7.2
 Requires PHP: 7.1
-Stable tag: 4.28.9
+Stable tag: 4.28.10
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -128,6 +128,7 @@ Each document database is full of useless words. All the little words that appea
 * John Calahan for extensive 4.0 beta testing.
 
 == Changelog ==
+= 4.28.10 =
 * Security: Even more effective block against meta query blind oracle attacks.
 * Security: Block stored cross-site scripting attack through post tags and `relevanssi_the_tags()`.
 
@@ -178,5 +179,5 @@ Each document database is full of useless words. All the little words that appea
 * Compatibility: Added support for Slim SEO 'Hide from search results' feature.
 
 == Upgrade notice ==
-= 4.28.9 =
-* Improved security against admin search blind oracle attacks.
+= 4.28.10 =
+* Security fixes against blind oracle attacks and stored cross-site scripting.
